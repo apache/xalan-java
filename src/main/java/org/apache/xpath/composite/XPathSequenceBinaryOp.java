@@ -32,10 +32,16 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Div;
+import org.apache.xpath.operations.Equals;
+import org.apache.xpath.operations.Gt;
+import org.apache.xpath.operations.Gte;
 import org.apache.xpath.operations.IDiv;
+import org.apache.xpath.operations.Lt;
+import org.apache.xpath.operations.Lte;
 import org.apache.xpath.operations.Minus;
 import org.apache.xpath.operations.Mod;
 import org.apache.xpath.operations.Mult;
+import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.VcEquals;
 import org.apache.xpath.operations.VcGe;
@@ -47,7 +53,8 @@ import org.apache.xpath.operations.VcNotEquals;
 /**
  * A class definition, to implement XPath 3.1 binary operator
  * expressions like (if ...) + (if ...) , 
- *                  2 + (if ...)
+ *                  2 + (if ...),
+ *                  (1, 2, 3) = (4, 5)
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -57,11 +64,22 @@ public class XPathSequenceBinaryOp extends Expression {
 
 	private static final long serialVersionUID = -4920578903670425812L;
 	
-    private String m_leftStr = null;
+    /**
+     * Class field, denoting an XPath binary operator's
+     * XPath lhs expression string. 
+     */
+	private String m_leftStr = null;
 	
+	/**
+     * Class field, denoting an XPath binary operator's
+     * XPath rhs expression string. 
+     */
 	private String m_rightStr = null;
 	
-	private String m_opStr = null;
+	/**
+	 * Class field, denoting an XPath binary operator name string.
+	 */
+	private String m_xpathOpStr = null;
 	
     private Vector m_vars;
     
@@ -98,66 +116,96 @@ public class XPathSequenceBinaryOp extends Expression {
 
 		XObject rObj = rXPath.execute(xctxt, currentNode, xctxt.getNamespaceContext());
 
-		if ("+".equals(m_opStr)) {
+		if ("+".equals(m_xpathOpStr)) {
 		   Plus plus = new Plus();
 		   
 		   result = plus.operate(lObj, rObj);
 		}
-		else if ("-".equals(m_opStr)) {
+		else if ("-".equals(m_xpathOpStr)) {
 		   Minus minus = new Minus();
 			   
 		   result = minus.operate(lObj, rObj);
 		}
-		else if ("*".equals(m_opStr)) {
+		else if ("*".equals(m_xpathOpStr)) {
 			Mult mult = new Mult();
 
 			result = mult.operate(lObj, rObj);
 		}
-		else if ("idiv".equals(m_opStr)) {
+		else if ("idiv".equals(m_xpathOpStr)) {
 			IDiv idiv = new IDiv();
 
 			result = idiv.operate(lObj, rObj);
 		}		
-		else if ("div".equals(m_opStr)) {
+		else if ("div".equals(m_xpathOpStr)) {
 			Div div = new Div();
 
 			result = div.operate(lObj, rObj);
 		}
-		else if ("mod".equals(m_opStr)) {
+		else if ("mod".equals(m_xpathOpStr)) {
 			Mod mod = new Mod();
 
 			result = mod.operate(lObj, rObj);
 		}		
-		else if ("eq".equals(m_opStr)) {
+		else if ("eq".equals(m_xpathOpStr)) {
 			VcEquals vcEquals = new VcEquals();
 
 			result = vcEquals.operate(lObj, rObj);
 		}
-		else if ("ne".equals(m_opStr)) {
+		else if ("ne".equals(m_xpathOpStr)) {
 			VcNotEquals vcNotEquals = new VcNotEquals();
 
 			result = vcNotEquals.operate(lObj, rObj);
 		}
-		else if ("lt".equals(m_opStr)) {
+		else if ("lt".equals(m_xpathOpStr)) {
 			VcLt vcLt = new VcLt();
 
 			result = vcLt.operate(lObj, rObj);
 		}
-		else if ("gt".equals(m_opStr)) {
+		else if ("gt".equals(m_xpathOpStr)) {
 			VcGt vcGt = new VcGt();
 
 			result = vcGt.operate(lObj, rObj);
 		}
-		else if ("le".equals(m_opStr)) {
+		else if ("le".equals(m_xpathOpStr)) {
 			VcLe vcLe = new VcLe();
 
 			result = vcLe.operate(lObj, rObj);
 		}
-		else if ("ge".equals(m_opStr)) {
+		else if ("ge".equals(m_xpathOpStr)) {
 			VcGe vcGe = new VcGe();
 
 			result = vcGe.operate(lObj, rObj);
 		}
+		else if ("=".equals(m_xpathOpStr)) {
+			Equals equals = new Equals();
+
+			result = equals.operate(lObj, rObj);
+		}
+		else if ("<".equals(m_xpathOpStr)) {
+			Lt lt = new Lt();
+
+			result = lt.operate(lObj, rObj);
+		}
+		else if ("<=".equals(m_xpathOpStr)) {
+			Lte lte = new Lte();
+
+			result = lte.operate(lObj, rObj);
+		}
+		else if (">".equals(m_xpathOpStr)) {
+			Gt gt = new Gt();
+
+			result = gt.operate(lObj, rObj);
+		}
+		else if (">=".equals(m_xpathOpStr)) {
+			Gte gte = new Gte();
+
+			result = gte.operate(lObj, rObj);
+		}
+		else if ("!=".equals(m_xpathOpStr)) {
+			NotEquals notEquals = new NotEquals();
+
+			result = notEquals.operate(lObj, rObj);
+		}				
 
 		return result;
 	}
@@ -189,12 +237,12 @@ public class XPathSequenceBinaryOp extends Expression {
 		this.m_rightStr = right;
 	}
 
-	public String getOpStr() {
-		return m_opStr;
+	public String getXPathOpStr() {
+		return m_xpathOpStr;
 	}
 
-	public void setOpStr(String opStr) {
-		this.m_opStr = opStr;
+	public void setXPathOpStr(String opStr) {
+		this.m_xpathOpStr = opStr;
 	}
 	
 	@Override

@@ -190,7 +190,7 @@ public class XPathParser
   protected final static int FILTER_MATCH_PREDICATES = 2;
   
   /**
-   * With XPath parse of certain expressions, we use this constant string 
+   * With XPath parse for certain expressions, we use this constant string 
    * array to make parse decisions. The elements of this array are certain 
    * XPath language key words and symbols that need this support.
    */
@@ -740,14 +740,19 @@ public class XPathParser
 	  m_ops.shrink();		
   }
 
-  /** The error listener where syntax errors are to be sent.
+  /** 
+   * The error listener where syntax errors are to be sent.
    */
   private ErrorListener m_errorListener;
   
-  /** The source location of the XPath. */
+  /** 
+   * The source location of the XPath. 
+   */
   javax.xml.transform.SourceLocator m_sourceLocator;
   
-  /** The table contains build-in functions and customized functions */
+  /** 
+   * The table contains build-in functions and customized functions. 
+   */
   private FunctionTable m_functionTable; 
   
   /**
@@ -1063,7 +1068,7 @@ public class XPathParser
       String prevToken = getTokenRelative(-2);
       
       if (tokenIs('(') && (prevToken.equals("(") || prevToken.equals(","))) {
-     	 // XPath parse of literal sequence
+     	 // XPath parse for literal sequence
     	  
      	 StringBuffer strBuff = new StringBuffer();
      	 strBuff.append(m_token);    	 
@@ -1088,7 +1093,7 @@ public class XPathParser
      	 }
       }
       else if (tokenIs('[') && (prevToken.equals("(") || prevToken.equals(","))) {
-     	 // XPath parse of literal array
+     	 // XPath parse for literal array
     	  
      	 StringBuffer strBuff = new StringBuffer();
      	 strBuff.append(m_token);    	 
@@ -1174,7 +1179,7 @@ public class XPathParser
   }
   
   /**
-   * XPath parse of sequence type expressions.
+   * XPath parse for sequence type expressions.
    */
   private void setSequenceTypeOccurenceIndicator(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
                                                                                      boolean isXPathInlineFunctionParse) throws TransformerException {
@@ -1225,7 +1230,7 @@ public class XPathParser
    }
    
    /**
-    * This method supports XPath parse of sequence type expressions.
+    * This method supports XPath parse for sequence type expressions.
     */
    private XPathSequenceTypeKindTest constructSequenceTypeKindTestForXDMNodes(XPathSequenceTypeExpr 
                                                                                      xpathSequenceTypeExpr, 
@@ -1503,6 +1508,7 @@ public class XPathParser
   // ============= EXPRESSIONS FUNCTIONS =================
   
   /**
+   * 
    * Expr   ::=   ExprSingle ("," ExprSingle)*
    * 
    * @throws javax.xml.transform.TransformerException
@@ -1512,7 +1518,7 @@ public class XPathParser
 	  
 	  if ((m_isXPathExprBeginParse || m_isSequenceOperand) && isLiteralSequenceOrArrayBegin()) {
     	  /**
-		   * We consider XPath parse of sequence and array, in similar 
+		   * We consider XPath parse for sequence and array, in similar 
     	   * way. These are lexically different only by virtue of sequence/array 
     	   * expression's left-most and right-most delimiter characters.
 		   */
@@ -1542,116 +1548,21 @@ public class XPathParser
           
           if (isSequenceConstructor && tokenIs(')')) {
         	  if (lookahead(null, 1)) {
-        		  // The XPath expression is ()        	  
+        		  // An XPath expression is ()        	  
         		  parseXPathEmptyLiteralSequence();
 
         		  return;
         	  }
         	  else {
-        		  List<String> seqOrArrayXPathItems = new ArrayList<String>();
-
-        		  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-
-        		  consumeExpected(')');                            
-
-        		  seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
-
-        		  m_xpathSequenceConstructor = new XPathSequenceConstructor();              
-        		  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+        		  // An XPath expression is of the form, () = ... , () >= ...         		  
+        		  xpathParseEmptySequenceGeneralCmp();
         		  
-        		  boolean isXPathGeneralCmp = false;
-        		  if (tokenIs('=')) {
-        			 isXPathGeneralCmp = true;
-        			 
-        			 appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-        			 
-        			 nextToken();         			  
-       			     insertOp(opPos, 2, OpCodes.OP_EQUALS);
-        		  }
-        		  else if (tokenIs('>') && lookahead('=', 1)) {
-        			  isXPathGeneralCmp = true;
-        			  
-        			  appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-         			 
-         			  nextToken();
-         			  nextToken();
-         			  
-        			  insertOp(opPos, 2, OpCodes.OP_GTE); 
-        		  }
-        		  else if (tokenIs('>')) {
-        			  isXPathGeneralCmp = true;
-        			  
-        			  appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-         			 
-         			  nextToken();
-         			  
-        			  insertOp(opPos, 2, OpCodes.OP_GT); 
-        		  }
-        		  else if (tokenIs('<') && lookahead('=', 1)) {
-        			  isXPathGeneralCmp = true;
-        			  
-        			  appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-         			 
-         			  nextToken();
-         			  nextToken();
-         			  
-        			  insertOp(opPos, 2, OpCodes.OP_LTE); 
-        		  }
-        		  else if (tokenIs('<')) {
-        			  isXPathGeneralCmp = true;
-        			  
-        			  appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-         			 
-         			  nextToken();
-         			  
-        			  insertOp(opPos, 2, OpCodes.OP_LT); 
-        		  }
-        		  else if (tokenIs('!') && lookahead('=', 1)) {
-        			  isXPathGeneralCmp = true;
-        			  
-        			  appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-         			 
-         			  nextToken();
-         			  nextToken();
-         			  
-        			  insertOp(opPos, 2, OpCodes.OP_NOTEQUALS); 
-        		  }
-        		  
-        		  if (isXPathGeneralCmp) {
-        			  if (tokenIs('(')) {
-        				  consumeExpected('(');    		
-      	 	    		
-        			      List<String> seqConstructorXPathParts = new ArrayList<String>();
-        			      parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');
-        			      consumeExpected(')');
-        			      
-        			      appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-
-        			      m_xpathSequenceConstructor2 = new XPathSequenceConstructor();              
-        			      m_xpathSequenceConstructor2.setSequenceConstructorXPathParts(seqConstructorXPathParts);
-        			  }
-        			  else {
-        				 Expr(); 
-        			  }
-        			  
-        			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-                                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-
-                      return;
-        		  }
-        		  else {
-        			  // Resume XPath parse, reusing the same token queue
-        			  m_queueMark = 0;            		  
-        			  nextToken();            		  
-            		  ExprSingle();
-            		  
-            		  return;
-        		  }
+        		  return;
         	  }
           }          
           else if (((isSquareArrayConstructor && tokenIs(']')) || (isCurlyArrayConstructor && tokenIs('}'))) && 
         		  																					lookahead(null, 1)) {
-             // The XPath expression is [], or {}        	 
+             // An XPath expression is [], or {}        	 
              parseXPathEmptyLiteralArray();
              
              return;             
@@ -1659,22 +1570,24 @@ public class XPathParser
           
           if (isSequenceConstructor && tokenIs("if") || tokenIs("some") || tokenIs("every") || 
         		                                                                  tokenIs("let") || tokenIs("for")) {
-        	  String str1 = null;
-        	  String str2 = null;
-        	  String opStr1 = null;
+        	  // An XPath expression is of the form, '(' 'if' ... ')' , '(' 'some' ... ')' 
+        	  
+        	  String lStr = null;
+        	  String rStr = null;
+        	  String xpathOpStr = null;
 
         	  boolean isXPathExprOk = false;
 
         	  StringBuffer strBuff = new StringBuffer();        	   
         	  while (m_token != null) {
         		  if (tokenIs(')')) {
-        			  str1 = (strBuff.toString()).trim();
-        			  if (StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {        			  
+        			  lStr = (strBuff.toString()).trim();
+        			  if (StringUtil.isStrHasBalancedParentheses(lStr, '(', ')')) {        			  
         				  consumeExpected(')');        			  
         				  if (tokenIs('+') || tokenIs('-') || tokenIs('*') || tokenIs("idiv") || tokenIs("div") || tokenIs("mod") || 
         						                                                  tokenIs("eq") || tokenIs("ne") || tokenIs("lt") || tokenIs("gt") || 
         						                                                  tokenIs("le") || tokenIs("ge")) {
-        					  opStr1 = m_token;
+        					  xpathOpStr = m_token;
         					  nextToken();
         					  StringBuffer strBuff2 = new StringBuffer();
         					  while (m_token != null) {        					 
@@ -1682,7 +1595,7 @@ public class XPathParser
         						  nextToken();
         					  }
 
-        					  str2 = (strBuff2.toString()).trim();
+        					  rStr = (strBuff2.toString()).trim();
 
         					  isXPathExprOk = true;
         					  
@@ -1701,11 +1614,11 @@ public class XPathParser
         		  
         		  m_sequenceBinaryOp = new XPathSequenceBinaryOp();
         		  
-        		  str1 = str1.replace(" : ", ":");      // XML namespace declaration whitespace handling
+        		  lStr = lStr.replace(" : ", ":");      // XML namespace declaration whitespace handling
         		  
-        		  m_sequenceBinaryOp.setLeft(str1);
-        		  m_sequenceBinaryOp.setRight(str2);
-        		  m_sequenceBinaryOp.setOpStr(opStr1);
+        		  m_sequenceBinaryOp.setLeft(lStr);
+        		  m_sequenceBinaryOp.setRight(rStr);
+        		  m_sequenceBinaryOp.setXPathOpStr(xpathOpStr);
         		  
         		  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQ_BINARY_EXPR);
         		  
@@ -1819,9 +1732,9 @@ public class XPathParser
                     
           if (isSquareArrayConstructor) {
         	  /**
-        	   * XPath parse of general comparison (i.e, =, !=, <, <=, >, >=)
-        	   * between an xdm array on LHS and another appropriate XPath
-        	   * operand on RHS.
+        	   * XPath parse for general comparison (i.e, =, !=, <, <=, >, >=)
+        	   * between an xdm array on lhs and another appropriate XPath
+        	   * operand on rhs.
         	   */        	  
         	  boolean result = xpathParseLiteralArrayCmp(prevTokenQueueScanPos);        	  
         	  if (result) {
@@ -1830,9 +1743,9 @@ public class XPathParser
           }
           else if (isSequenceConstructor) {
         	  /**
-        	   * XPath parse of general comparison (i.e, =, !=, <, <=, >, >=) between
+        	   * XPath parse for general comparison (i.e, =, !=, <, <=, >, >=) between
         	   * an XPath expression (which is either 'for', 'let', 'some', 'every', 'if')
-        	   * on LHS and another XPath operand on RHS (like a literal array, literal
+        	   * on lhs and another XPath operand on rhs (like a literal array, literal
         	   * sequence or another appropriate XPath expression).
         	   */
         	  if (tokenIs("for") || tokenIs("let") || tokenIs("some") || tokenIs("every") || tokenIs("if")) {
@@ -1923,7 +1836,7 @@ public class XPathParser
 	    				                               xpathExprStr.startsWith("some") || 
 	    				                               xpathExprStr.startsWith("every") || 
 	    				                               xpathExprStr.startsWith("if")) {
-	    			 // XPath parse of expressions like (for ...). i.e, XPath 'for' 
+	    			 // XPath parse for expressions like (for ...). i.e, XPath 'for' 
 	    			 // and other such expressions contained within '(' & ')'.
 	    			 isXPathParseOkToProceed = true; 
 	    		 }
@@ -1944,7 +1857,7 @@ public class XPathParser
 	      boolean trailProcessingReq = false;
 	      
 	      if (!isXPathParseOkToProceed) {
-	    	 // XPath parse of expressions like (p,q)/*, (p,q)/*/a etc 
+	    	 // XPath parse for expressions like (p,q)/*, (p,q)/*/a etc 
 	    	 
 	    	 // Construct an XPath original expression string from token queue
 	    	 StringBuffer strBuff2 = new StringBuffer();
@@ -2071,16 +1984,19 @@ public class XPathParser
         	  if (m_isSequenceOperand) {
         		  m_isSequenceOperand = false; 
         	  }
-        	  else {        		  
-        		  // Resume XPath parse, reusing the same token queue        		                 	  
+        	  else {
+        		  // Resume XPath parse, reusing the same token queue
                	  m_queueMark = 0;
         		  nextToken();       		  
-        		  ExprSingle();
+        		  
+        		  xpathParseSequenceGeneralCmp();
+        		  
+        		  return;
         	  }
           }
       }
 	  else if (m_isXPathExprBeginParse && tokenIs("(") && (lookahead("to", 2) || lookahead("to", 3))) {
-		  // XPath parse of expression like '(a to b) => function()'
+		  // XPath parse for expression like '(a to b) => function()'
 		  
 		  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 		  
@@ -2115,7 +2031,7 @@ public class XPathParser
 	      m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
 	  }
       else if (m_isXPathExprBeginParse && tokenIs("map")) {
-    	  // XPath parse of map expression string
+    	  // XPath parse for map expression string
     	  
     	  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
      	  
@@ -2253,7 +2169,7 @@ public class XPathParser
                   m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
       }
       else if (lookahead(':', 1)) {    	  
-    	 // XPath parse of named function reference, for XPath built-in 
+    	 // XPath parse for named function reference, for XPath built-in 
     	 // functions & stylesheet functions    	  
     	 
     	 int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
@@ -2261,7 +2177,7 @@ public class XPathParser
     	 handleXPathParseNamedFuncRefWithNSQual(opPos);
 	  }
 	  else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {	    	
-	     // XPath parse of named function reference, for XPath built-in functions
+	     // XPath parse for named function reference, for XPath built-in functions
 		  
 	     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 	     
@@ -2365,33 +2281,33 @@ public class XPathParser
     		 
     		int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     		 
-    		String str1 = m_token;    		    		
+    		String lStr = m_token;    		    		
     		nextToken();    		
-    		String opStr1 = m_token;     				
+    		String xpathOpStr = m_token;     				
     		nextToken();
     		nextToken();    		
     		StringBuffer strBuff = new StringBuffer();
-    		String str2 = null;
+    		String rStr = null;
     		while (m_token != null) {
     		   strBuff.append(m_token + " ");
     		   
     		   nextToken();
     		}
     		
-    		str2 = (strBuff.toString()).trim();
-    		str2 = str2.replace(" : ", ":");   // XML namespace declaration whitespace handling
+    		rStr = (strBuff.toString()).trim();
+    		rStr = rStr.replace(" : ", ":");   // XML namespace declaration whitespace handling
     		
     		m_queueMark--;
     		nextToken();
     		consumeExpected(')');
     		
-    		str2 = str2.substring(0, str2.length() - 1);    		    		
+    		rStr = rStr.substring(0, rStr.length() - 1);    		    		
 
     		m_sequenceBinaryOp = new XPathSequenceBinaryOp();        		  
 
-    		m_sequenceBinaryOp.setLeft(str1);
-    		m_sequenceBinaryOp.setRight(str2);
-    		m_sequenceBinaryOp.setOpStr(opStr1);
+    		m_sequenceBinaryOp.setLeft(lStr);
+    		m_sequenceBinaryOp.setRight(rStr);
+    		m_sequenceBinaryOp.setXPathOpStr(xpathOpStr);
 
     		insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQ_BINARY_EXPR);
 
@@ -2405,10 +2321,10 @@ public class XPathParser
   }
 
   /**
-   * Method definition, for XPath parse of literal array comparison, 
+   * Method definition, for XPath parse for literal array comparison, 
    * with another xdm value using XPath general comparison operators.
    * 
-   * This method, supports XPath parse of expressions like: 
+   * This method, supports XPath parse for expressions like: 
    *   
    *   [...] OP xpath_expr
    *   
@@ -2479,10 +2395,10 @@ public class XPathParser
   }
   
   /**
-   * Method definition, for XPath parse of literal sequence comparison, 
+   * Method definition, for XPath parse for literal sequence comparison, 
    * with another xdm value using XPath general comparison operators.
    * 
-   * This method, supports XPath parse of expressions like: 
+   * This method, supports XPath parse for expressions like: 
    *   
    *   (for ...) OP xpath_expr
    *   (let ...) OP xpath_expr
@@ -2604,7 +2520,7 @@ public class XPathParser
   }
 
   /**
-   * Method definition, to support XPath parse of RHS of general
+   * Method definition, to support XPath parse for rhs of general
    * comparison operator (i.e, =, !=, <, <=, >, >=).
    * 
    * @return									  List of XPath expression string
@@ -2615,7 +2531,7 @@ public class XPathParser
 	  List<String> xpathExprPartsRhs = new ArrayList<String>();
 
 	  if (tokenIs('[')) {
-		  // An XPath RHS operand is a literal array constructor		  
+		  // An XPath rhs operand is a literal array constructor		  
 		  consumeExpected('[');
 		  StringBuffer seqArrItemXPathStrBuff = new StringBuffer();
 		  while (m_token != null) {
@@ -2637,7 +2553,7 @@ public class XPathParser
 		  }
 	  }
 	  else {
-		  // An XPath RHS operand XPath expression
+		  // An XPath rhs operand XPath expression
 		  StringBuffer seqArrItemXPathStrBuff = new StringBuffer();
 		  while (m_token != null) {
 			  seqArrItemXPathStrBuff.append(m_token);
@@ -2651,7 +2567,7 @@ public class XPathParser
   
   /**
    * Method definition to check, which XPath general comparison
-   * operator occurs, after XPath parse of RHS which can be 
+   * operator occurs, after XPath parse for rhs which can be 
    * XPathArrayComparison or XPath3ExprSingleComparison.
    * 
    * @param expr						 An XPath expression which is either
@@ -3846,8 +3762,8 @@ public class XPathParser
     	  // Previous token is, '='.    	  
     	  
     	  /**
-    	   * XPath parse for RHS of general comparison operators, =, !=.
-    	   * RHS of these operators that're handled here, have syntax of
+    	   * XPath parse for rhs of general comparison operators, =, !=.
+    	   * rhs of these operators that're handled here, have syntax of
     	   * type (a,b,c ...), i.e a literal sequence.
     	   */
     	  
@@ -3956,7 +3872,7 @@ public class XPathParser
         }
         else 
         {
-           // XPath parse of simple map operator '!'        	           
+           // XPath parse for simple map operator '!'        	           
             
            nextToken();
            insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_SIMPLE_MAP_OPERATOR);
@@ -3983,7 +3899,7 @@ public class XPathParser
       }
       else if (tokenIs("eq"))
       {
-        // XPath parse of value comparison operator "eq"
+        // XPath parse for value comparison operator "eq"
           
         nextToken();
         insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_VC_EQUALS);
@@ -3997,7 +3913,7 @@ public class XPathParser
       }
       else if (tokenIs("ne"))
       {
-        // XPath parse of value comparison operator "ne"
+        // XPath parse for value comparison operator "ne"
           
         nextToken();
         insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_VC_NOT_EQUALS);
@@ -4051,10 +3967,31 @@ public class XPathParser
     
     if (tokenIs('(')) {
         if (isXPathGeneralRelationalComparisonWithSequence()) {
-        	// XPath parse for RHS of general comparison relational 
-        	// operators <, <=, >, >=.        	
-       	    // RHS for these XPath operators that're handled here, have 
-        	// syntax of type (a,b,c), i.e a literal sequence.
+        	/**
+        	 * XPath parse for general comparison relational operators
+        	 * <, <=, >, >= , with XPath literal sequence constructor 
+        	 * on rhs.
+        	 */
+        	
+        	if (lookahead(')', 1) && lookahead(null, 2)) {
+        	   // XPath relational operator's rhs is a literal 
+        	   // empty sequence.
+        		
+        		insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+    			
+    			m_xpathSequenceConstructor = new XPathSequenceConstructor();
+    			
+    			List<String> seqXPathItems = new ArrayList<String>();
+    			seqXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+    			
+    			m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqXPathItems);                  
+
+    			m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+    					                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+    			return addPos;	
+        		
+        	}
         	
         	TokenQueueScanPosition prevTokQueueScanPosition = new 
         			                                     TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
@@ -4082,11 +4019,12 @@ public class XPathParser
         		}
 
         		boolean isXPathParseOkToProceed = true;
-
-        		for (int idx = 0; idx < seqXPathItems.size(); idx++) {
+        		int size1 = seqXPathItems.size();
+        		
+        		for (int idx = 0; idx < size1; idx++) {
         			String seqItemXPathExprStr = seqXPathItems.get(idx);
         			
-        			if (m_isXPathPredicateParsingActive && (idx == (seqXPathItems.size()-1))) {
+        			if (m_isXPathPredicateParsingActive && (idx == (size1 - 1))) {
                        if (seqItemXPathExprStr.endsWith(")")) {
                     	  seqItemXPathExprStr = seqItemXPathExprStr.substring(0, seqItemXPathExprStr.length()-1);
                     	  seqXPathItems.set(idx, seqItemXPathExprStr);                	   
@@ -4095,8 +4033,8 @@ public class XPathParser
         			
         			char lParenChar = '(';
         			char rParenChar = ')';                 
-        			boolean isStrHasBalancedParentheses = StringUtil.isStrHasBalancedParentheses(seqItemXPathExprStr, 
-        					                                                          												lParenChar, rParenChar);
+        			boolean isStrHasBalancedParentheses = StringUtil.isStrHasBalancedParentheses(
+        					                                                                    seqItemXPathExprStr, lParenChar, rParenChar);
         			if (!isStrHasBalancedParentheses) {
         				isXPathParseOkToProceed = false;
         				break;
@@ -4104,10 +4042,7 @@ public class XPathParser
         		}
 
         		if (isXPathParseOkToProceed) {                  
-        			if (m_isXPathPredicateParsingActive) {
-               		   // An XPath parse above has gone one token ahead, than 
-               		   // what should be. We set these variables, to their expected 
-               		   // values.
+        			if (m_isXPathPredicateParsingActive) {        			   
                		   m_tokenChar = ']';
                		   m_token = "]";
                	    }
@@ -4147,7 +4082,7 @@ public class XPathParser
         }
         else if (tokenIs('<'))
         {
-          // XPath parse of node comparison operator "<<"
+          // XPath parse for node comparison operator "<<"
           
           nextToken();
           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_NC_PRECEDE); 
@@ -4175,7 +4110,7 @@ public class XPathParser
         }
         else if (tokenIs('>'))
         {
-          // XPath parse of node comparison operator ">>"
+          // XPath parse for node comparison operator ">>"
           
           nextToken();
           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_NC_FOLLOWS);
@@ -4194,7 +4129,7 @@ public class XPathParser
       }
       else if (tokenIs("to"))
       {
-          // XPath parse of range "to" expression    	     	  
+          // XPath parse for range "to" expression    	     	  
           
           nextToken();
           
@@ -4210,7 +4145,7 @@ public class XPathParser
       }
       else if (tokenIs("||"))
       {
-          // XPath parse of string concatenation operator "||"    	  
+          // XPath parse for string concatenation operator "||"    	  
           
           nextToken();
           
@@ -4226,20 +4161,20 @@ public class XPathParser
       }
       else if (tokenIs("=>"))
       {
-          // XPath parse of arrow operator "=>"
+          // XPath parse for arrow operator "=>"
     	  
           consumeExpected("=>");
 
           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_ARROW);
           
           if ((m_tokenChar == '$') && (lookahead('(', 2))) {
-        	  // XPath parse of dynamic function call, and map &
+        	  // XPath parse for dynamic function call, and map &
         	  // array information lookup using function call syntax.
 
         	  xpathParseDfcSyntax(opPos);              
           }
           else if ((m_tokenChar == '(') && (lookahead('$', 1)) && (lookahead(')', 3))) {
-        	  // XPath parse of dynamic function call, and map &
+        	  // XPath parse for dynamic function call, and map &
         	  // array information lookup using function call syntax.
         	  
         	  // An XPath dynamic function call like, ($funcName)(..),
@@ -4262,7 +4197,7 @@ public class XPathParser
       }
       else if (tokenIs("lt"))
       {
-          // XPath parse of value comparison operator "lt"
+          // XPath parse for value comparison operator "lt"
           
           nextToken();
         
@@ -4277,7 +4212,7 @@ public class XPathParser
       }
       else if (tokenIs("gt"))
       {
-          // XPath parse of value comparison operator "gt"
+          // XPath parse for value comparison operator "gt"
           
           nextToken();
         
@@ -4292,7 +4227,7 @@ public class XPathParser
       }
       else if (tokenIs("le"))
       {
-          // XPath parse of value comparison operator "le"
+          // XPath parse for value comparison operator "le"
           
           nextToken();
         
@@ -4307,7 +4242,7 @@ public class XPathParser
       }
       else if (tokenIs("ge"))
       {
-          // XPath parse of value comparison operator "ge"
+          // XPath parse for value comparison operator "ge"
           
           nextToken();
         
@@ -4322,7 +4257,7 @@ public class XPathParser
       }
       else if (tokenIs("is"))
       {
-          // XPath parse of node comparison operator "is"
+          // XPath parse for node comparison operator "is"
           
           nextToken();
         
@@ -4336,7 +4271,7 @@ public class XPathParser
           addPos += 2;
       }
       else if (tokenIs("instance") && lookahead("of", 1)) {
-          // XPath parse of "instance of" expression    	  
+          // XPath parse for "instance of" expression    	  
           
           consumeExpected("instance");
           consumeExpected("of");
@@ -4351,7 +4286,7 @@ public class XPathParser
           addPos += 2;
       }      
       else if (tokenIs("cast") && lookahead("as", 1)) {
-          // XPath parse of "cast as" expression    	  
+          // XPath parse for "cast as" expression    	  
           
           consumeExpected("cast");
           consumeExpected("as");
@@ -4367,7 +4302,7 @@ public class XPathParser
           addPos += 2;
       }
       else if (tokenIs("castable") && lookahead("as", 1)) {
-          // XPath parse of "castable as" expression    	  
+          // XPath parse for "castable as" expression    	  
           
           consumeExpected("castable");
           consumeExpected("as");
@@ -4383,7 +4318,7 @@ public class XPathParser
           addPos += 2;
       }
       else if (tokenIs("treat") && lookahead("as", 1)) {
-          // XPath parse of "treat as" expression    	  
+          // XPath parse for "treat as" expression    	  
           
           consumeExpected("treat");
           consumeExpected("as");
@@ -4404,14 +4339,14 @@ public class XPathParser
   }
 
   /**
-   * Check whether, there is XPath parse of general relational comparison using
-   * operators <, <=, >, >=.
+   * Method definition, to check whether, there's an XPath parse for general 
+   * comparison using XPath operators <, <=, >, >=.
    */
   private boolean isXPathGeneralRelationalComparisonWithSequence() {
 	  return ("<".equals(getTokenRelative(-2)) || 
-			  ("=".equals(getTokenRelative(-2)) && "<".equals(getTokenRelative(-3)))) ||
-			  (">".equals(getTokenRelative(-2)) || 
-					  ("=".equals(getTokenRelative(-2)) && ">".equals(getTokenRelative(-3))));
+			                           ("=".equals(getTokenRelative(-2)) && "<".equals(getTokenRelative(-3)))) ||
+			                           (">".equals(getTokenRelative(-2)) || 
+					                   ("=".equals(getTokenRelative(-2)) && ">".equals(getTokenRelative(-3))));
   }
 
   /**
@@ -4975,7 +4910,7 @@ public class XPathParser
       matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('(', 2))) {
-       // XPath parse of dynamic function call, and map &
+       // XPath parse for dynamic function call, and map &
        // array information lookup using function call syntax.
                      
        xpathParseDfcSyntax(opPos);
@@ -5069,7 +5004,7 @@ public class XPathParser
       matchFound = true;
     }
     else if (tokenIs("function") && lookahead('(', 1)) {
-      // XPath parse of inline function expression    	
+      // XPath parse for inline function expression    	
       
       appendOp(2, OpCodes.XPath3OpCodes.OP_INLINE_FUNCTION);
       
@@ -5083,7 +5018,7 @@ public class XPathParser
     }
     else if ((tokenIs("text") || tokenIs("node")) && lookahead('(', 1) && 
     		                                                       lookahead(')', 2) && lookahead('[', 3)) {
-    	// XPath parse of expression string like text()[..],
+    	// XPath parse for expression string like text()[..],
     	// text()[..]/abc, or node() pattern equivalents.
     	
     	appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
@@ -5433,19 +5368,19 @@ public class XPathParser
        m_funcArgPlaceHolderList.add(funcArgPlaceholder);
     }
     else if (lookahead(':', 1)) {
-       // XPath parse of named function reference, for XPath built-in functions 
+       // XPath parse for named function reference, for XPath built-in functions 
    	   // and stylesheet functions.    	
        handleXPathParseNamedFuncRefWithNSQual(opPos);
     }
     else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
-    	// XPath parse of named function reference, for XPath built-in functions    	
+    	// XPath parse for named function reference, for XPath built-in functions    	
     	handleXPathParseNamedFuncRefWithoutNSQual(opPos);
     }
     else if (tokenIs("if") || tokenIs("some") || tokenIs("every") || tokenIs("let") || tokenIs("for")) {
        ExprSingle();
     }
     else if (isTextAndNodeExpr(m_queueMark)) {
-    	// XPath parse of expression string like text()[..],
+    	// XPath parse for expression string like text()[..],
     	// text()[..]/abc, or node() pattern equivalents.
 
     	appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
@@ -5794,7 +5729,7 @@ public class XPathParser
 
 	  if (tokenIs('(')) {
 		  /**
-		   * XPath parse of a possible function argument literal list suffix. 
+		   * XPath parse for a possible function argument literal list suffix. 
 		   * This can handle an XPath function call syntax like prefix:func1(args1)(args2), 
 		   * where an XPath expression syntax prefix:func1(args1) returns a function item 
 		   * that can be called with it's required arguments (i.e, args2).
@@ -5872,7 +5807,7 @@ public class XPathParser
 	  boolean textAndNodeExpr = isTextAndNodeExpr(m_queueMark);
 	  
 	  if (textAndNodeExpr) {		  		  
-		  // XPath parse of expression string like text()[..],
+		  // XPath parse for expression string like text()[..],
 		  // text()[..]/abc, or node() pattern equivalents.
 		  
 		  appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
@@ -6005,7 +5940,7 @@ public class XPathParser
       if (!Step())
       {    	  
     	if (!isXPathPatternExcludeTrailingNodeFunctions() && ((m_tokenChar == '$') && (lookahead('(', 2)))) {
-            // XPath parse of expression like /a/b/$func(..), i.e an XPath path expression 
+            // XPath parse for expression like /a/b/$func(..), i.e an XPath path expression 
     		// with a dynamic function call suffix.
     		
     		String xpathOneStr = "";
@@ -7141,7 +7076,7 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of literal map as function argument.
+    * XPath parse for literal map as function argument.
     */
    private void mapFuncArg() throws TransformerException {	  
 
@@ -7227,7 +7162,7 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of sequence type expressions.
+    * XPath parse for sequence type expressions.
     */
    private XPathSequenceTypeExpr SequenceTypeExpr(boolean isXPathInlineFunctionParse) 
 		                                                                         throws javax.xml.transform.TransformerException {
@@ -7432,7 +7367,7 @@ public class XPathParser
    }
 
    /**
-    * While XPath parse of sequence type expression, check for the possibility of
+    * While XPath parse for sequence type expression, check for the possibility of
     * user-defined schema type specified within the sequence type expression.
     */
    private void parseSequenceTypeExprWithUserDefinedType(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeName) 
@@ -7488,7 +7423,7 @@ public class XPathParser
    }
 
    /**
-    * XPath parse of xsl:import-schema instruction, where schema details are available as child contents
+    * XPath parse for xsl:import-schema instruction, where schema details are available as child contents
     * of xsl:import-schema element.
     */
    private void parseImportSchemaWithChildSchemaContents(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
@@ -7535,7 +7470,7 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of xsl:import-schema instruction, where schema details are available from
+    * XPath parse for xsl:import-schema instruction, where schema details are available from
     * xsl:import-schema element's attribute schema-location.
     */
    private void parseImportSchemaFromExternalLocation(XPathSequenceTypeExpr xpathSequenceTypeExpr, String xslSystemId,
@@ -7636,7 +7571,7 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of built-in XML Schema sequence type expressions.
+    * XPath parse for built-in XML Schema sequence type expressions.
     */
    private void parseXdmBuiltInXmlSchemaSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
 		                                             boolean isXPathInlineFunctionParse) throws TransformerException {	  
@@ -7791,7 +7726,7 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of function item sequence type expressions.
+    * XPath parse for function item sequence type expressions.
     */
    private void parseFunctionItemSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
  	
@@ -7889,7 +7824,7 @@ public class XPathParser
     }
 
    /**
-    * XPath parse of map sequence type expressions.
+    * XPath parse for map sequence type expressions.
     */
    private void parseXdmMapSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, boolean isNested) throws TransformerException {
  	  
@@ -7978,7 +7913,7 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of array sequence type expressions.
+    * XPath parse for array sequence type expressions.
     */
    private void parseXdmArraySequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, boolean isNested) throws TransformerException {
  	  
@@ -8072,7 +8007,7 @@ public class XPathParser
    }
 
    /**
-    * Method definition, to support XPath parse of map and array sequence
+    * Method definition, to support XPath parse for map and array sequence
     * type expressions.
     */
    private void populateSequenceTypeData(XPathSequenceTypeData seqTypeData) throws TransformerException {
@@ -8408,8 +8343,8 @@ public class XPathParser
    }
    
    /**
-    * XPath parse of literal sequence constructor, which is an 
-    * RHS operand of XPath binary operators like +, -, *, div,
+    * XPath parse for literal sequence constructor, which is an 
+    * rhs operand of XPath binary operators like +, -, *, div,
     * idiv, mod, quo.
     */
    private int handleXPathParseRhsSequenceOperand(int addPos, int opCode) throws TransformerException {
@@ -8447,7 +8382,7 @@ public class XPathParser
    }
 
     /**
-    * XPath parse of named function reference with function reference 
+    * XPath parse for named function reference with function reference 
     * name being namespace qualified.
     * 
     * @param opPos
@@ -8566,7 +8501,7 @@ public class XPathParser
 
 				}
 				else {
-					error("XPath parse of named function reference failed. XSL stylesheet expected an existing user "
+					error("XPath parse for named function reference failed. XSL stylesheet expected an existing user "
 																											+ "defined stylesheet function at "
 																											+ "this stylesheet location.", new Object[]{});
 				}
@@ -8583,7 +8518,7 @@ public class XPathParser
 	}
 	
 	/**
-	 * XPath parse of named function reference with function reference 
+	 * XPath parse for named function reference with function reference 
 	 * name not being namespace qualified.
 	 * 
 	 * @param opPos
@@ -8623,7 +8558,7 @@ public class XPathParser
 	
 	/**
 	  * Method definition to mutate XPathDynamicFunctionCall object reference,
-	  * to handle XPath parse of expressions like $func1(args)(2,3) i.e,
+	  * to handle XPath parse for expressions like $func1(args)(2,3) i.e,
 	  * an XPath dynamic function call reference returning a function item
 	  * which is subsequence called with function call arguments.
 	  * 
@@ -9156,7 +9091,7 @@ public class XPathParser
   	  
     	String result = xpathExprStr;
 
-    	// XPath string LHS value. i.e, for XPath string abc/pqr(), 
+    	// XPath string lhs value. i.e, for XPath string abc/pqr(), 
     	// this is abc.
     	String str1 = result.substring(0, idx1);
     	
@@ -9167,7 +9102,7 @@ public class XPathParser
     	String str2 = result.substring(idx1 + 1);
     	boolean isStrRhsFuncCall = (pattern.matcher(str2)).matches();
     	
-    	// XPath string LHS value, should be an XPath axes reference, or function call
+    	// XPath string lhs value, should be an XPath axes reference, or function call
     	
     	boolean strHasXPathAxisNamePrefix = isStrHasXPathAxisNamePrefix(str1);    	    	    	
 		
@@ -9183,7 +9118,7 @@ public class XPathParser
     }
     
     /**
-     * XPath parse of inline function expression.
+     * XPath parse for inline function expression.
      * 
      * @param seqOrArrayXPathItems			   The supplied empty list to be
      *                                         populated with token strings from
@@ -9436,7 +9371,7 @@ public class XPathParser
        	   consumeExpected('(');
     	}
 
-    	// XPath parse of dynamic function call argument information          
+    	// XPath parse for dynamic function call argument information          
 
     	XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();       
     	xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
@@ -9453,7 +9388,7 @@ public class XPathParser
     		}
 
     		/**
-    		 * XPath parse of chained access of consecutive specification
+    		 * XPath parse for chained access of consecutive specification
     		 * (with chaining of two or more XPath expressions) of XPath
     		 * dynamic function call, map and array information lookup
     		 * syntax.
@@ -9538,5 +9473,223 @@ public class XPathParser
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
     			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     }
+    
+    /**
+     * Method definition, to do XPath parse of literal empty sequence 
+     * expression followed by XPath general comparison operator and 
+     * an XPath rhs operand.
+     *   
+     * @throws TransformerException
+     */
+    private void xpathParseEmptySequenceGeneralCmp() throws TransformerException {
+    	
+    	List<String> seqOrArrayXPathItems = new ArrayList<String>();
+
+    	int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+
+    	consumeExpected(')');                            
+
+    	seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+
+    	m_xpathSequenceConstructor = new XPathSequenceConstructor();              
+    	m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+
+    	boolean isXPathGeneralCmp = false;
+    	if (tokenIs('=')) {
+    		isXPathGeneralCmp = true;
+
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		nextToken();         			  
+    		insertOp(opPos, 2, OpCodes.OP_EQUALS);
+    	}
+    	else if (tokenIs('>') && lookahead('=', 1)) {
+    		isXPathGeneralCmp = true;
+
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		nextToken();
+    		nextToken();
+
+    		insertOp(opPos, 2, OpCodes.OP_GTE); 
+    	}
+    	else if (tokenIs('>')) {
+    		isXPathGeneralCmp = true;
+
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		nextToken();
+
+    		insertOp(opPos, 2, OpCodes.OP_GT); 
+    	}
+    	else if (tokenIs('<') && lookahead('=', 1)) {
+    		isXPathGeneralCmp = true;
+
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		nextToken();
+    		nextToken();
+
+    		insertOp(opPos, 2, OpCodes.OP_LTE); 
+    	}
+    	else if (tokenIs('<')) {
+    		isXPathGeneralCmp = true;
+
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		nextToken();
+
+    		insertOp(opPos, 2, OpCodes.OP_LT); 
+    	}
+    	else if (tokenIs('!') && lookahead('=', 1)) {
+    		isXPathGeneralCmp = true;
+
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		nextToken();
+    		nextToken();
+
+    		insertOp(opPos, 2, OpCodes.OP_NOTEQUALS); 
+    	}
+
+    	if (isXPathGeneralCmp) {
+    		if (tokenIs('(')) {
+    			consumeExpected('(');    		
+
+    			List<String> seqConstructorXPathParts = new ArrayList<String>();
+    			parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');
+    			consumeExpected(')');
+
+    			appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    			m_xpathSequenceConstructor2 = new XPathSequenceConstructor();              
+    			m_xpathSequenceConstructor2.setSequenceConstructorXPathParts(seqConstructorXPathParts);
+    		}
+    		else {
+    			Expr(); 
+    		}
+
+    		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+    				                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+    	}
+    	else {
+    		// Resume XPath parse, reusing the same token queue
+    		m_queueMark = 0;            		  
+    		nextToken();            		  
+    		ExprSingle();
+    	}
+    }
+    
+    /**
+     * Method definition, to do XPath parse of literal sequence
+     * constructor followed by XPath general comparison operator
+     * and an XPath rhs operand.
+     * 
+     * An XPath literal sequence constructor lhs operand, should have
+     * at-least two XPath literal item constructor expressions.
+     * 
+     * @throws TransformerException
+     */
+    private void xpathParseSequenceGeneralCmp() throws TransformerException {
+    	
+    	StringBuffer strBuff = new StringBuffer();
+    	
+    	strBuff.append(m_token + " ");
+    	consumeExpected('(');
+    	while (m_token != null) {
+    		strBuff.append(m_token + " ");        			 
+    		if (StringUtil.isStrHasBalancedParentheses(strBuff.toString(), '(', ')')) {
+    			consumeExpected(')');
+
+    			break; 
+    		}
+
+    		nextToken();
+    	}
+
+    	String lStr = (strBuff.toString()).trim();        		  
+    	if (!lStr.contains(",")) {
+    		// Resume XPath parse, reusing the same token queue
+    		m_queueMark = 0;
+    		nextToken();       		  
+    		ExprSingle();
+
+    		return; 
+    	}
+
+    	String rStr = null;
+    	String xpathOp = null;
+
+    	strBuff = new StringBuffer();
+
+    	if (tokenIs('=')) {        			 
+    		xpathOp = m_token;
+    		nextToken();
+    	}
+    	else if (tokenIs('>') && lookahead('=', 1)) {         			 
+    		xpathOp = ">=";
+    		nextToken();
+    		nextToken();
+    	} 
+    	else if (tokenIs('>')) {        			 
+    		xpathOp = m_token;
+    		nextToken();
+    	}
+    	else if (tokenIs('<') && lookahead('=', 1)) {         			 
+    		xpathOp = "<=";
+    		nextToken();
+    		nextToken(); 
+    	}
+    	else if (tokenIs('<')) {        			 
+    		xpathOp = m_token;
+    		nextToken();
+    	}
+    	else if (tokenIs('!') && lookahead('=', 1)) {
+    		xpathOp = "!=";
+    		nextToken();
+    		nextToken(); 
+    	}        		          		  
+
+    	if (xpathOp != null) {        		  
+    		while (m_token != null) {
+    			strBuff.append(m_token + " ");
+    			nextToken();
+    		}
+
+    		rStr = (strBuff.toString()).trim();
+
+    		if (rStr.length() > 0) {
+    			int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+
+    			m_sequenceBinaryOp = new XPathSequenceBinaryOp();
+
+    			// XML namespace declaration whitespace handling
+    			lStr = lStr.replace(" : ", ":");
+    			rStr = rStr.replace(" : ", ":");
+
+    			m_sequenceBinaryOp.setLeft(lStr);
+    			m_sequenceBinaryOp.setRight(rStr);
+    			m_sequenceBinaryOp.setXPathOpStr(xpathOp);
+
+    			insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQ_BINARY_EXPR);
+
+    			m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+    					                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    		}
+    		else {
+    			// Resume XPath parse, reusing the same token queue
+    			m_queueMark = 0;
+    			nextToken();       		  
+    			ExprSingle();
+    		}
+    	}
+    	else {
+    		// Resume XPath parse, reusing the same token queue
+    		m_queueMark = 0;
+    		nextToken();       		  
+    		ExprSingle();
+    	}
+     }
   
 }

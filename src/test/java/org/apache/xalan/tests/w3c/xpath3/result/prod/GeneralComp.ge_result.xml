@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-08T11:37:03Z" fail="45" name="prod-GeneralComp.ge" pass="13" run="58" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-09T11:14:41Z" fail="18" name="prod-GeneralComp.ge" pass="40" run="58" statusUnknown="0">
    <testResult status="pass" testName="generalexpression496"/>
    <testResult status="pass" testName="generalexpression497"/>
    <testResult status="pass" testName="generalexpression498"/>
@@ -6,43 +6,43 @@
    <testResult status="pass" testName="generalexpression503"/>
    <testResult status="pass" testName="generalexpression504"/>
    <testResult status="pass" testName="generalexpression505"/>
-   <testResult status="fail" testName="generalexpression506"/>
+   <testResult status="pass" testName="generalexpression506"/>
    <testResult status="pass" testName="generalexpression507"/>
    <testResult status="pass" testName="generalexpression508"/>
-   <testResult status="fail" testName="generalexpression512"/>
-   <testResult status="fail" testName="generalexpression513"/>
-   <testResult status="fail" testName="generalexpression514"/>
-   <testResult status="fail" testName="generalexpression515"/>
+   <testResult status="pass" testName="generalexpression512"/>
+   <testResult status="pass" testName="generalexpression513"/>
+   <testResult status="pass" testName="generalexpression514"/>
+   <testResult status="pass" testName="generalexpression515"/>
    <testResult status="pass" testName="generalexpression516"/>
    <testResult status="pass" testName="generalexpression517"/>
    <testResult status="pass" testName="generalexpression518"/>
-   <testResult status="fail" testName="generalexpression522"/>
-   <testResult status="fail" testName="generalexpression523"/>
-   <testResult status="fail" testName="generalexpression524"/>
-   <testResult status="fail" testName="generalexpression525"/>
-   <testResult status="fail" testName="generalexpression526"/>
-   <testResult status="fail" testName="generalexpression527"/>
-   <testResult status="fail" testName="generalexpression528"/>
-   <testResult status="fail" testName="generalexpression532"/>
-   <testResult status="fail" testName="generalexpression533"/>
-   <testResult status="fail" testName="generalexpression534"/>
-   <testResult status="fail" testName="generalexpression565"/>
+   <testResult status="pass" testName="generalexpression522"/>
+   <testResult status="pass" testName="generalexpression523"/>
+   <testResult status="pass" testName="generalexpression524"/>
+   <testResult status="pass" testName="generalexpression525"/>
+   <testResult status="pass" testName="generalexpression526"/>
+   <testResult status="pass" testName="generalexpression527"/>
+   <testResult status="pass" testName="generalexpression528"/>
+   <testResult status="pass" testName="generalexpression532"/>
+   <testResult status="pass" testName="generalexpression533"/>
+   <testResult status="pass" testName="generalexpression534"/>
+   <testResult status="pass" testName="generalexpression565"/>
    <testResult status="pass" testName="generalexpression566"/>
-   <testResult status="fail" testName="generalexpression567"/>
-   <testResult status="fail" testName="generalexpression568"/>
-   <testResult status="fail" testName="generalexpression572"/>
-   <testResult status="fail" testName="generalexpression573"/>
+   <testResult status="pass" testName="generalexpression567"/>
+   <testResult status="pass" testName="generalexpression568"/>
+   <testResult status="pass" testName="generalexpression572"/>
+   <testResult status="pass" testName="generalexpression573"/>
    <testResult status="fail" testName="generalexpression574"/>
-   <testResult status="fail" testName="generalexpression575"/>
-   <testResult status="fail" testName="generalexpression576"/>
-   <testResult status="fail" testName="generalexpression577"/>
+   <testResult status="pass" testName="generalexpression575"/>
+   <testResult status="pass" testName="generalexpression576"/>
+   <testResult status="pass" testName="generalexpression577"/>
    <testResult status="fail" testName="generalexpression578"/>
-   <testResult status="fail" testName="generalexpression582"/>
+   <testResult status="pass" testName="generalexpression582"/>
    <testResult status="fail" testName="generalexpression583"/>
    <testResult status="fail" testName="generalexpression584"/>
-   <testResult status="fail" testName="generalexpression585"/>
-   <testResult status="fail" testName="generalexpression586"/>
-   <testResult status="fail" testName="generalexpression587"/>
+   <testResult status="pass" testName="generalexpression585"/>
+   <testResult status="pass" testName="generalexpression586"/>
+   <testResult status="pass" testName="generalexpression587"/>
    <testResult status="fail" testName="generalexpression588"/>
    <testResult status="fail" testName="generalexpression592"/>
    <testResult status="fail" testName="generalexpression593"/>

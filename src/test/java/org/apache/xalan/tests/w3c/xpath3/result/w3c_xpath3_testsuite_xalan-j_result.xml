@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-08T11:41:48Z" desc="W3C XPath 3.1 test suite results" fail="2048" pass="5372" run="7427" skipped="8" success="72.33%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-09T11:17:00Z" desc="W3C XPath 3.1 test suite results" fail="1897" pass="5523" run="7427" skipped="8" success="74.36%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
@@ -145,12 +145,12 @@
     <prod-AxisStep fail="53" pass="180" run="233" skipped="1" success="77.25%"/>
     <prod-CastableExpr fail="147" pass="695" run="842" success="82.54%"/>
     <prod-ForClause fail="58" pass="12" run="74" success="16.22%"/>
-    <prod-GeneralComp.eq fail="65" pass="54" run="119" success="45.38%"/>
-    <prod-GeneralComp.ge fail="45" pass="13" run="58" success="22.41%"/>
-    <prod-GeneralComp.gt fail="48" pass="19" run="67" success="28.36%"/>
-    <prod-GeneralComp.le fail="37" pass="20" run="57" success="35.09%"/>
-    <prod-GeneralComp.lt fail="47" pass="27" run="74" success="36.49%"/>
-    <prod-GeneralComp.ne fail="54" pass="35" run="89" success="39.33%"/>
+    <prod-GeneralComp.eq fail="39" pass="80" run="119" success="67.23%"/>
+    <prod-GeneralComp.ge fail="18" pass="40" run="58" success="68.97%"/>
+    <prod-GeneralComp.gt fail="17" pass="50" run="67" success="74.63%"/>
+    <prod-GeneralComp.le fail="16" pass="41" run="57" success="71.93%"/>
+    <prod-GeneralComp.lt fail="20" pass="54" run="74" success="72.97%"/>
+    <prod-GeneralComp.ne fail="35" pass="54" run="89" success="60.67%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
     <prod-InlineFunctionExpr fail="16" pass="10" run="26" success="38.46%"/>
     <prod-InstanceofExpr fail="60" pass="213" run="273" success="78.02%"/>

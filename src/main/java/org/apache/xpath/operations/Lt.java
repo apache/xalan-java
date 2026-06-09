@@ -20,6 +20,8 @@ package org.apache.xpath.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -80,6 +82,18 @@ public class Lt extends Operation
 		  if (str1.startsWith("0")) { 
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
 		  }
+	  }
+	  
+	  if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 0)) {
+		  result = XBoolean.S_FALSE;
+
+		  return result;
+	  }
+	  
+	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
+		  result = XBoolean.S_FALSE;
+
+		  return result;
 	  }
 	  
 	  XObject lObj = null;
@@ -381,19 +395,62 @@ public class Lt extends Operation
 		  
 		  return result;
 	  }
-  	  
+	  
 	  if (right instanceof ResultSequence) {
-		 if (left instanceof XNumber) {
-			 boolean bool = XPathGeneralComparisonRelationalOpSupport.lessThan((XNumber)left, (ResultSequence)right, false);
-			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
-		 }
-		 else if (left instanceof XSNumericType) {
-			 boolean bool = XPathGeneralComparisonRelationalOpSupport.lessThan((XSNumericType)left, (ResultSequence)right, false);
-			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
-		 }		 
+		  if (left instanceof XNumber) {
+			  boolean bool = XPathGeneralCmpOpSupport.lessThan((XNumber)left, (ResultSequence)right, false);
+
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+		  }
+		  else if (left instanceof XSNumericType) {
+			  boolean bool = XPathGeneralCmpOpSupport.lessThan((XSNumericType)left, (ResultSequence)right, false);
+
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else if (left instanceof ResultSequence) {
+			  boolean bool = XPathGeneralCmpOpSupport.lessThan((ResultSequence)left, (ResultSequence)right, false);
+
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else if (left instanceof XMLNodeCursorImpl) {
+			  java.lang.String lStrVal = ((XMLNodeCursorImpl)left).str();
+			  try {
+				  double lhsDbl = Double.valueOf(lStrVal);
+				  boolean bool = XPathGeneralCmpOpSupport.lessThan(new XNumber(lhsDbl), (ResultSequence)right, false);
+
+				  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+			  }
+			  catch (NumberFormatException ex) {
+				  throw new TransformerException("FORG0001 : The string value '" + lStrVal + "' cannot be converted to double.");
+			  }
+		  }
+	  }
+	  else if (left instanceof ResultSequence) {
+		  if (right instanceof XNumber) {
+			  boolean bool = XPathGeneralCmpOpSupport.lessThan((ResultSequence)left, (XNumber)right, false);
+
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+		  }
+		  else if (right instanceof XSNumericType) {
+			  boolean bool = XPathGeneralCmpOpSupport.lessThan((ResultSequence)left, (XSNumericType)right, false);
+
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else if (right instanceof XMLNodeCursorImpl) {
+			  java.lang.String rStrVal = ((XMLNodeCursorImpl)right).str();
+			  try {
+				  double rhsDbl = Double.valueOf(rStrVal);
+				  boolean bool = XPathGeneralCmpOpSupport.lessThan((ResultSequence)left, new XNumber(rhsDbl), false);
+
+				  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+			  }
+			  catch (NumberFormatException ex) {
+				  throw new TransformerException("FORG0001 : The string value '" + rStrVal + "' cannot be converted to double.");
+			  }
+		  }
 	  }
 	  else {
-		 result = left.lessThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+		  result = left.lessThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
 	  }
 	  
 	  return result;

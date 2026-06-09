@@ -20,6 +20,8 @@ package org.apache.xpath.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -87,6 +89,12 @@ public class Gte extends Operation
 		 result = XBoolean.S_FALSE;
 		 
 		 return result;
+	  }
+	  
+	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
+		  result = XBoolean.S_FALSE;
+
+		  return result;
 	  }
 	  
 	  XObject lObj = null;
@@ -205,16 +213,59 @@ public class Gte extends Operation
   	  
 	  if (right instanceof ResultSequence) {
 		 if (left instanceof XNumber) {
-			 boolean bool = XPathGeneralComparisonRelationalOpSupport.greaterThan((XNumber)left, (ResultSequence)right, true);
+			 boolean bool = XPathGeneralCmpOpSupport.greaterThan((XNumber)left, (ResultSequence)right, true);
+			 
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
 		 }
 		 else if (left instanceof XSNumericType) {
-			 boolean bool = XPathGeneralComparisonRelationalOpSupport.greaterThan((XSNumericType)left, (ResultSequence)right, true);
+			 boolean bool = XPathGeneralCmpOpSupport.greaterThan((XSNumericType)left, (ResultSequence)right, true);
+			 
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
-		 }		 
+		 }
+		 else if (left instanceof ResultSequence) {
+			 boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, (ResultSequence)right, true);
+			 
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		 }
+		 else if (left instanceof XMLNodeCursorImpl) {
+			 java.lang.String lStrVal = ((XMLNodeCursorImpl)left).str();
+			 try {
+				 double lhsDbl = Double.valueOf(lStrVal);
+				 boolean bool = XPathGeneralCmpOpSupport.greaterThan(new XNumber(lhsDbl), (ResultSequence)right, true);
+
+				 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+			 }
+			 catch (NumberFormatException ex) {
+				 throw new TransformerException("FORG0001 : The string value '" + lStrVal + "' cannot be converted to double.");
+			 }
+		 }
+	  }
+	  else if (left instanceof ResultSequence) {
+		  if (right instanceof XNumber) {
+			  boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, (XNumber)right, true);
+				 
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);  
+		  }
+		  else if (right instanceof XSNumericType) {
+			  boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, (XSNumericType)right, true);
+				 
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else if (right instanceof XMLNodeCursorImpl) {
+			  java.lang.String rStrVal = ((XMLNodeCursorImpl)right).str();
+			  try {
+				  double rhsDbl = Double.valueOf(rStrVal);
+				  boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, new XNumber(rhsDbl), true);
+					 
+				  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+			  }
+			  catch (NumberFormatException ex) {
+				  throw new TransformerException("FORG0001 : The string value '" + rStrVal + "' cannot be converted to double.");
+			  }
+		  }
 	  }
 	  else {
-		 result = left.greaterThanOrEqual(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+		  result = left.greaterThanOrEqual(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
 	  }
 	  
 	  return result;
