@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath;
 
 import javax.xml.transform.SourceLocator;
@@ -359,7 +356,7 @@ public class VariableStack implements Cloneable
    *
    * @throws TransformerException
    */
-  public XObject getLocalVariable(XPathContext xctxt, int index, boolean destructiveOK)
+  public XObject getLocalVariable(XPathContext xctxt, int index, boolean destructiveOk)
           throws TransformerException
   {
 
@@ -376,7 +373,7 @@ public class VariableStack implements Cloneable
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
       return (_stackFrames[index] = val.execute(xctxt));
 
-    return destructiveOK ? val : val.getFresh();
+    return destructiveOk ? val : val.getFresh();
   }
 
   /**
@@ -466,7 +463,7 @@ public class VariableStack implements Cloneable
    *
    * @throws TransformerException
    */
-  public XObject getGlobalVariable(XPathContext xctxt, final int index, boolean destructiveOK)
+  public XObject getGlobalVariable(XPathContext xctxt, final int index, boolean destructiveOk)
           throws TransformerException
   {
 
@@ -476,7 +473,7 @@ public class VariableStack implements Cloneable
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
       return (_stackFrames[index] = val.execute(xctxt));
 
-    return destructiveOK ? val : val.getFresh();
+    return destructiveOk ? val : val.getFresh();
   }
 
   /**

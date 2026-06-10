@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:36Z" fail="10" name="op-subtract-dayTimeDuration-from-time" pass="16" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-10T11:59:51Z" fail="7" name="op-subtract-dayTimeDuration-from-time" pass="19" run="26" statusUnknown="0">
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-1"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-2"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-3"/>
@@ -6,20 +6,20 @@
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-5"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-1"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-2"/>
-   <testResult status="fail" testName="op-subtract-dayTimeDuration-from-time-3"/>
+   <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-3"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-4"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-5"/>
    <testResult status="fail" testName="op-subtract-dayTimeDuration-from-time-6"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-7"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-8"/>
    <testResult status="fail" testName="op-subtract-dayTimeDuration-from-time-9"/>
-   <testResult status="fail" testName="op-subtract-dayTimeDuration-from-time-10"/>
+   <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-10"/>
    <testResult status="fail" testName="op-subtract-dayTimeDuration-from-time-12"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-13"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-14"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-15"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-16"/>
-   <testResult status="fail" testName="op-subtract-dayTimeDuration-from-time-17"/>
+   <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-17"/>
    <testResult status="pass" testName="K-TimeSubtractDTD-1"/>
    <testResult status="fail" testName="K-TimeSubtractDTD-2"/>
    <testResult status="fail" testName="K-TimeSubtractDTD-3"/>

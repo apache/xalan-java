@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:36Z" fail="6" name="op-subtract-yearMonthDuration-from-date" pass="16" run="22" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-10T11:59:51Z" fail="3" name="op-subtract-yearMonthDuration-from-date" pass="19" run="22" statusUnknown="0">
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date2args-1"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date2args-2"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date2args-3"/>
@@ -12,13 +12,13 @@
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-7"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-8"/>
    <testResult status="fail" testName="op-subtract-yearMonthDuration-from-date-9"/>
-   <testResult status="fail" testName="op-subtract-yearMonthDuration-from-date-10"/>
+   <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-10"/>
    <testResult status="fail" testName="op-subtract-yearMonthDuration-from-date-12"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-13"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-14"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-15"/>
    <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-16"/>
-   <testResult status="fail" testName="op-subtract-yearMonthDuration-from-date-17"/>
-   <testResult status="fail" testName="op-subtract-yearMonthDuration-from-date-18"/>
+   <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-17"/>
+   <testResult status="pass" testName="op-subtract-yearMonthDuration-from-date-18"/>
    <testResult status="pass" testName="K-DateSubtractYMD-1"/>
 </testrun>

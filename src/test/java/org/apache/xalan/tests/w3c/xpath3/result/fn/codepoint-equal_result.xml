@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:19:16Z" fail="12" name="fn-codepoint-equal" pass="18" run="30" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-10T11:59:26Z" fail="0" name="fn-codepoint-equal" pass="30" run="30" statusUnknown="0">
    <testResult status="pass" testName="fn-codepoint-equal-1"/>
    <testResult status="pass" testName="fn-codepoint-equal-2"/>
    <testResult status="pass" testName="fn-codepoint-equal-2a"/>
    <testResult status="pass" testName="fn-codepoint-equal-2b"/>
    <testResult status="pass" testName="fn-codepoint-equal-3"/>
    <testResult status="pass" testName="fn-codepoint-equal-4"/>
-   <testResult status="fail" testName="fn-codepoint-equal-5"/>
-   <testResult status="fail" testName="fn-codepoint-equal-6"/>
-   <testResult status="fail" testName="fn-codepoint-equal-7"/>
+   <testResult status="pass" testName="fn-codepoint-equal-5"/>
+   <testResult status="pass" testName="fn-codepoint-equal-6"/>
+   <testResult status="pass" testName="fn-codepoint-equal-7"/>
    <testResult status="pass" testName="fn-codepoint-equal-8"/>
    <testResult status="pass" testName="fn-codepoint-equal-9"/>
-   <testResult status="fail" testName="fn-codepoint-equal-10"/>
-   <testResult status="fail" testName="fn-codepoint-equal-11"/>
-   <testResult status="fail" testName="fn-codepoint-equal-12"/>
+   <testResult status="pass" testName="fn-codepoint-equal-10"/>
+   <testResult status="pass" testName="fn-codepoint-equal-11"/>
+   <testResult status="pass" testName="fn-codepoint-equal-12"/>
    <testResult status="pass" testName="fn-codepoint-equal-13"/>
-   <testResult status="fail" testName="fn-codepoint-equal-14"/>
+   <testResult status="pass" testName="fn-codepoint-equal-14"/>
    <testResult status="pass" testName="fn-codepoint-equal-15"/>
    <testResult status="pass" testName="fn-codepoint-equal-16"/>
    <testResult status="pass" testName="fn-codepoint-equal-17"/>
@@ -22,11 +22,11 @@
    <testResult status="pass" testName="fn-codepoint-equal-19"/>
    <testResult status="pass" testName="fn-codepoint-equal-20"/>
    <testResult status="pass" testName="fn-codepoint-equal-21"/>
-   <testResult status="fail" testName="fn-codepoint-equal-22"/>
+   <testResult status="pass" testName="fn-codepoint-equal-22"/>
    <testResult status="pass" testName="K2-CodepointEqual-1"/>
    <testResult status="pass" testName="K2-CodepointEqual-2"/>
-   <testResult status="fail" testName="K2-CodepointEqual-3"/>
-   <testResult status="fail" testName="K2-CodepointEqual-4"/>
-   <testResult status="fail" testName="K2-CodepointEqual-5"/>
-   <testResult status="fail" testName="K2-CodepointEqual-6"/>
+   <testResult status="pass" testName="K2-CodepointEqual-3"/>
+   <testResult status="pass" testName="K2-CodepointEqual-4"/>
+   <testResult status="pass" testName="K2-CodepointEqual-5"/>
+   <testResult status="pass" testName="K2-CodepointEqual-6"/>
 </testrun>

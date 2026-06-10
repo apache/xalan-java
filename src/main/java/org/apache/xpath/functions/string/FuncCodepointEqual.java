@@ -17,19 +17,22 @@
 package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the codepoint-equal() function.
+ * Implementation of XPath 3.1 function fn:codepoint-equal.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -57,115 +60,148 @@ public class FuncCodepointEqual extends Function2Args {
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         
-        ResultSequence result = new ResultSequence();
+        XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
 
-        XObject xObject0 = m_arg0.execute(xctxt);        
-        XObject xObject1 = m_arg1.execute(xctxt);
+        XObject xObj0 = m_arg0.execute(xctxt); 
         
-        // If either argument to this function is an empty sequence, the function returns 
-        // an empty sequence (as required by the XPath 3.1 F&O spec).
+        XObject xObj1 = m_arg1.execute(xctxt);
+        
+        if ((xObj0 instanceof XSNumericType) || (xObj0 instanceof XNumber)) {
+        	throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoint-equal' accepts string as its first "
+        			                                                                               + "argument. But the supplied argument "
+        			                                                                               + "is numeric.", srcLocator);
+        }
+        
+        if ((xObj1 instanceof XSNumericType) || (xObj1 instanceof XNumber)) {
+        	throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoint-equal' accepts string as its second "
+        			                                                                               + "argument. But the supplied argument "
+        			                                                                               + "is numeric.", srcLocator);
+        }
+        
+        // If either of the argument to this function is an empty sequence, 
+        // the function returns an empty sequence.
         
         // Get the string value of first argument, to function call fn:codepoint-equal
         
         String arg0Str = null;
         
-        if (xObject0 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
-           if (nodeSet.getLength() == 0) {
-              return result; 
-           }
-           else {
-              arg0Str = nodeSet.str(); 
-           }
+        if (xObj0 instanceof XMLNodeCursorImpl) {
+        	XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;
+        	if (nodeSet.getLength() == 0) {
+        		result = new ResultSequence();
+
+        		return result;
+        	}
+        	else {
+        		arg0Str = nodeSet.str(); 
+        	}
         }
-        else if (xObject0 instanceof ResultSequence) {
-           ResultSequence resultSequence = (ResultSequence)xObject0;
-           if (resultSequence.size() == 0) {
-              return result; 
-           }
-           else {
-              arg0Str = getStringValueOfResultSequence(resultSequence); 
-           }
+        else if (xObj0 instanceof ResultSequence) {
+        	ResultSequence resultSequence = (ResultSequence)xObj0;
+        	if (resultSequence.size() == 0) {
+        		result = new ResultSequence();
+
+        		return result; 
+        	}
+        	else {
+        		arg0Str = getResultSequenceStrValue(resultSequence); 
+        	}
         }
-        else if (xObject0 instanceof XSAnyType) {
-           arg0Str = ((XSAnyType)xObject0).stringValue();  
+        else if (xObj0 instanceof XSAnyType) {
+           arg0Str = ((XSAnyType)xObj0).stringValue();  
         }
         else {
-           arg0Str = xObject0.str();  
+           arg0Str = xObj0.str();  
         }
         
         // Get the string value of second argument, to function call fn:codepoint-equal
         
         String arg1Str = null;
         
-        if (xObject1 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject1;
+        if (xObj1 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj1;
            if (nodeSet.getLength() == 0) {
-              return result; 
+        	   result = new ResultSequence();
+
+        	   return result; 
            }
            else {
-              arg1Str = nodeSet.str();  
+        	   arg1Str = nodeSet.str();  
            } 
         }
-        else if (xObject1 instanceof ResultSequence) {
-           ResultSequence resultSequence = (ResultSequence)xObject1;
+        else if (xObj1 instanceof ResultSequence) {
+           ResultSequence resultSequence = (ResultSequence)xObj1;
            if (resultSequence.size() == 0) {
-              return result; 
+        	   result = new ResultSequence();
+
+        	   return result; 
            }
            else {
-              arg1Str = getStringValueOfResultSequence(resultSequence);    
+        	   arg1Str = getResultSequenceStrValue(resultSequence);    
            } 
         }
-        else if (xObject1 instanceof XSAnyType) {
-           arg1Str = ((XSAnyType)xObject1).stringValue();  
+        else if (xObj1 instanceof XSAnyType) {
+           arg1Str = ((XSAnyType)xObj1).stringValue();  
         }
         else {
-           arg1Str = xObject1.str();  
+           arg1Str = xObj1.str();  
         }
         
-        // Do the comparison of string arguments of this function, using 'Unicode codepoint collation',
-        // as required by XPath 3.1 F&O spec.
-        int strComparisonResult = xPathCollationSupport.compareStringsUsingCollation(arg0Str, 
-                                                                                          arg1Str, xctxt.getDefaultCollation());        
-        if (strComparisonResult == 0) {
-           // The strings are equal codepoint by codepoint            
-           result.add(new XSBoolean(true));   
+        // Comparison of string arguments for this function, using 'Unicode codepoint collation'
+        XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+        
+        int strCmpResult = xPathCollationSupport.compareStringsUsingCollation(arg0Str, arg1Str, xctxt.getDefaultCollation());
+        
+        if (strCmpResult == 0) {
+        	// The strings are equal codepoint by codepoint            
+        	result = new XSBoolean(true); 
         }
         else {
-           // The strings are not equal codepoint by codepoint
-           result.add(new XSBoolean(false)); 
+        	// The strings are not equal codepoint by codepoint
+        	result = new XSBoolean(false); 
         }
         
         return result;
     }
     
     /**
-     * Get the string value of an 'ResultSequence' object. 
+     * Method definition, to get string value for the supplied
+     * xdm sequence object. 
+     * 
+     * @param seq1                         The supplied xdm sequence object
+     * @return                             String value for the supplied
+     *                                     xdm sequence object.
      */
-    private String getStringValueOfResultSequence(ResultSequence resultSeq) {
-        String strValue = null;
+    private String getResultSequenceStrValue(ResultSequence seq1) throws TransformerException {
+        
+    	String result = null;
         
         StringBuffer strBuff = new StringBuffer(); 
         
-        for (int idx = 0; idx < resultSeq.size(); idx++) {
-           XObject resultSeqItem = resultSeq.item(idx);
+        int size1 = seq1.size();
+        for (int idx = 0; idx < size1; idx++) {
+           XObject xObj = seq1.item(idx);
            
-           if (resultSeqItem instanceof XMLNodeCursorImpl) {
-              strBuff.append(((XMLNodeCursorImpl)resultSeqItem).str());
+           if ((xObj instanceof XSNumericType) || (xObj instanceof XNumber)) {
+        	  throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoint-equal' accepts string for both of "
+        	  		                                                                                         + "its arguments, but one or both of supplied "
+        	  		                                                                                         + "argument contains a numeric value.");  
            }
-           else if (resultSeqItem instanceof XSAnyType) {
-              strBuff.append(((XSAnyType)resultSeqItem).stringValue()); 
+           
+           if (xObj instanceof XMLNodeCursorImpl) {
+              strBuff.append(((XMLNodeCursorImpl)xObj).str());
+           }
+           else if (xObj instanceof XSAnyType) {
+              strBuff.append(((XSAnyType)xObj).stringValue()); 
            }
            else {
-              strBuff.append(resultSeqItem.str()); 
+              strBuff.append(xObj.str()); 
            }
         }
         
-        return strValue; 
+        return result; 
     }
 
 }

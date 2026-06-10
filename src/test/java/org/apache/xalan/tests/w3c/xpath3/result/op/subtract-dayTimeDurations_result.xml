@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:36Z" fail="12" name="op-subtract-dayTimeDurations" pass="20" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-10T11:59:51Z" fail="9" name="op-subtract-dayTimeDurations" pass="23" run="32" statusUnknown="0">
    <testResult status="pass" testName="op-subtract-dayTimeDurations2args-1"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations2args-2"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations2args-3"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations2args-4"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations2args-5"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-1"/>
-   <testResult status="fail" testName="op-subtract-dayTimeDurations-2"/>
-   <testResult status="fail" testName="op-subtract-dayTimeDurations-3"/>
+   <testResult status="pass" testName="op-subtract-dayTimeDurations-2"/>
+   <testResult status="pass" testName="op-subtract-dayTimeDurations-3"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-4"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-5"/>
    <testResult status="fail" testName="op-subtract-dayTimeDurations-6"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-7"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-8"/>
    <testResult status="fail" testName="op-subtract-dayTimeDurations-9"/>
-   <testResult status="fail" testName="op-subtract-dayTimeDurations-10"/>
+   <testResult status="pass" testName="op-subtract-dayTimeDurations-10"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-11"/>
    <testResult status="fail" testName="op-subtract-dayTimeDurations-12"/>
    <testResult status="pass" testName="op-subtract-dayTimeDurations-13"/>

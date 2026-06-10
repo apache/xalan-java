@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath;
 
 import java.util.ArrayList;
@@ -158,14 +155,14 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    *
    *
    * @param xctxt The XPath runtime context.
-   * @param destructiveOK true if a "safe" object doesn't need to be returned.
+   * @param destructiveOk true if a "safe" object doesn't need to be returned.
    *
    * @return The result of the expression in the form of a <code>XObject</code>.
    *
    * @throws javax.xml.transform.TransformerException if a runtime exception
    *         occurs.
    */
-  public XObject execute(XPathContext xctxt, boolean destructiveOK)
+  public XObject execute(XPathContext xctxt, boolean destructiveOk)
     throws javax.xml.transform.TransformerException
   {
   	return execute(xctxt);

@@ -452,7 +452,7 @@ public class XPathParser
       
       Expr();
 
-      if (null != m_token)
+      if (m_token != null)
       {    	
     	// Retry XPath expression parse once again by parenthesizing the 
     	// original XPath expression.
@@ -502,17 +502,17 @@ public class XPathParser
 
         		Expr();
 
-        		if (null != m_token)
+        		if (m_token != null)
         		{            	
         			String extraTokens = "";
 
-        			while (null != m_token)
+        			while (m_token != null)
         			{
         				extraTokens += "'" + m_token + "'";
 
         				nextToken();
 
-        				if (null != m_token)
+        				if (m_token != null)
         					extraTokens += ", ";
         			}
 
@@ -533,13 +533,13 @@ public class XPathParser
         
         String extraTokens = "";
 
-        while (null != m_token)
+        while (m_token != null)
         {
           extraTokens += "'" + m_token + "'";
 
           nextToken();
 
-          if (null != m_token)
+          if (m_token != null)
             extraTokens += ", ";
         }
 
@@ -649,17 +649,17 @@ public class XPathParser
         }
     }
 
-    if (null != m_token)
+    if (m_token != null)
     {
       String extraTokens = "";
 
-      while (null != m_token)
+      while (m_token != null)
       {
         extraTokens += "'" + m_token + "'";
 
         nextToken();
 
-        if (null != m_token)
+        if (m_token != null)
           extraTokens += ", ";
       }
 
@@ -716,17 +716,17 @@ public class XPathParser
 		  nextToken();
 	  }
 
-	  if (null != m_token)
+	  if (m_token != null)
 	  {
 		  String extraTokens = "";
 
-		  while (null != m_token)
+		  while (m_token != null)
 		  {
 			  extraTokens += "'" + m_token + "'";
 
 			  nextToken();
 
-			  if (null != m_token)
+			  if (m_token != null)
 				  extraTokens += ", ";
 		  }
 
@@ -3649,56 +3649,56 @@ public class XPathParser
   protected void OrExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-    
-    if (tokenIs('(') && lookahead(')', 1)) {
-    	consumeExpected('(');    	
-    	parseXPathEmptyLiteralSequence();
-    }
-    
-    if ((null != m_token) && tokenIs("or"))
-    {
-    	nextToken();
-    	insertOp(opPos, 2, OpCodes.OP_OR);
-    	if (tokenIs('(') && lookahead(')', 1)) {
-    		consumeExpected('(');    	
-    		parseXPathEmptyLiteralSequence();
-    	}
-    	else {
-    		OrExpr();
+	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
-    		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-    				                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-    	}
-    }
-    else if ((null != m_token) && tokenIs("and"))
-    {
-      nextToken();
-      insertOp(opPos, 2, OpCodes.OP_AND);
-      if (tokenIs('(') && lookahead(')', 1)) {    	 
-    	  consumeExpected('(');    	
-  		  parseXPathEmptyLiteralSequence();
-      }
-      else {
-    	  AndExpr();
+	  if (tokenIs('(') && lookahead(')', 1)) {
+		  consumeExpected('(');    	
+		  parseXPathEmptyLiteralSequence();
+	  }
 
-    	  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-    			                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-      }
-    }
-    else {
-    	AndExpr();
+	  if ((m_token != null) && tokenIs("or"))
+	  {
+		  nextToken();
+		  insertOp(opPos, 2, OpCodes.OP_OR);
+		  if (tokenIs('(') && lookahead(')', 1)) {
+			  consumeExpected('(');    	
+			  parseXPathEmptyLiteralSequence();
+		  }
+		  else {
+			  OrExpr();
 
-    	if ((null != m_token) && tokenIs("or"))
-    	{
-    		nextToken();
-    		insertOp(opPos, 2, OpCodes.OP_OR);
-    		OrExpr();
+			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+					  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+		  }
+	  }
+	  else if ((m_token != null) && tokenIs("and"))
+	  {
+		  nextToken();
+		  insertOp(opPos, 2, OpCodes.OP_AND);
+		  if (tokenIs('(') && lookahead(')', 1)) {    	 
+			  consumeExpected('(');    	
+			  parseXPathEmptyLiteralSequence();
+		  }
+		  else {
+			  AndExpr();
 
-    		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-    				                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-    	}
-    }
+			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+					  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+		  }
+	  }
+	  else if (m_token != null) {
+		  AndExpr();
+
+		  if ((m_token != null) && tokenIs("or"))
+		  {
+			  nextToken();
+			  insertOp(opPos, 2, OpCodes.OP_OR);
+			  OrExpr();
+
+			  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+					  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+		  }
+	  }
   }
 
   /**
@@ -3717,11 +3717,11 @@ public class XPathParser
 		  consumeExpected('(');
 		  parseXPathEmptyLiteralSequence();
 	  }
-	  else {
+	  else {		  		  
 		  EqualityExpr(-1);
 	  }
 
-	  if ((null != m_token) && tokenIs("and"))
+	  if ((m_token != null) && tokenIs("and"))
 	  {
 		  nextToken();
 		  insertOp(opPos, 2, OpCodes.OP_AND);      
@@ -3853,7 +3853,7 @@ public class XPathParser
 
     RelationalExpr(-1);
 
-    if (null != m_token)
+    if (m_token != null)
     {
       if (tokenIs('!'))
       {
@@ -4069,7 +4069,7 @@ public class XPathParser
 
     AdditiveExpr(-1);
 
-    if (null != m_token)
+    if (m_token != null)
     {
       if (tokenIs('<'))
       {
@@ -4375,7 +4375,7 @@ public class XPathParser
 
     MultiplicativeExpr(-1);
 
-    if (null != m_token)
+    if (m_token != null)
     {
       if (tokenIs('+'))
       {    	  
@@ -4456,7 +4456,7 @@ public class XPathParser
 
     UnaryExpr();
 
-    if (null != m_token)
+    if (m_token != null)
     {
       if (tokenIs('*'))
       {
@@ -4992,7 +4992,7 @@ public class XPathParser
 
       matchFound = true;
     }
-    else if ((null != m_token) && ((('.' == m_tokenChar) && (m_token.length() > 1) && Character.isDigit(
+    else if ((m_token != null) && ((('.' == m_tokenChar) && (m_token.length() > 1) && Character.isDigit(
             m_token.charAt(1))) || Character.isDigit(m_tokenChar)))
     {
       appendOp(2, OpCodes.OP_NUMBERLIT);
@@ -6783,7 +6783,7 @@ public class XPathParser
 
     if (relativePathStatus != RELATIVE_PATH_NOT_PERMITTED)
     {
-      if (!tokenIs('|') && (null != m_token))
+      if (!tokenIs('|') && (m_token != null))
       {
         RelativePathPattern();
         

@@ -70,9 +70,9 @@ public class XslTransformData {
     
     /**
      * This class field represents, a string buffer value which is
-     * RHS of an XPath expression like '* except (a,b)' i.e (a,b) and when used 
-     * with a node combining operator like union (and equivalently '|'), 
-     * intersect or except.
+     * rhs of an XPath expression like '* except (a,b)' i.e (a,b) and when used 
+     * with a node combining operator like 'union' (and equivalently '|'), 
+     * 'intersect', 'except'.
      */
     public static StringBuffer m_xpathNodeCombiningExprRhsStrBuff;
     

@@ -236,7 +236,7 @@ public class Variable extends Expression implements PathComponent
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt, boolean destructiveOK) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt, boolean destructiveOk) throws javax.xml.transform.TransformerException
   {
       
         XObject result = null;
@@ -300,10 +300,18 @@ public class Variable extends Expression implements PathComponent
         try {
            if (m_fixUpWasCalled) {        	  
               if (m_isGlobal) {
-                 result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
+                 result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOk);
               }
-              else {
-                 result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
+              else {            	  
+            	 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("v1_([0-9]{13,13})");
+            	 java.util.regex.Matcher matcher = pattern.matcher(m_qname.toString());
+            	  
+            	 if (!matcher.matches()) {
+                    result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOk);
+            	 }
+            	 else {
+            		result = xctxt.getVarStack().getVariableOrParam(xctxt, m_qname);
+            	 }
               }
            } 
            else {  
@@ -313,8 +321,7 @@ public class Variable extends Expression implements PathComponent
            ElemVariable elemVariable = this.getElemVariable();           
            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(getExpressionOwner());                      
            if ((elemVariable == null) && (elemTemplateElement instanceof ElemIterateOnCompletion)) {
-        	   throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " "
-             			                                                                  + "accessed before it is bound.", srcLocator); 
+        	   throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " accessed before it is bound.", srcLocator); 
            }
            else {
                /**
@@ -366,15 +373,14 @@ public class Variable extends Expression implements PathComponent
            else {
         	  try {
         		  if (m_isGlobal) {
-        			  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
+        			  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOk);
         		  }
         		  else {
-        			  result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
+        			  result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOk);
         		  }
         	  }
         	  catch (TransformerException ex1) {
-                  throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
-                                                                                                  			+ "accessed before it is bound.", srcLocator);
+                  throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " accessed before it is bound.", srcLocator);
         	  }
            }
         }

@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:20:30Z" fail="15" name="op-divide-dayTimeDuration" pass="22" run="37" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-10T11:59:49Z" fail="12" name="op-divide-dayTimeDuration" pass="25" run="37" statusUnknown="0">
    <testResult status="pass" testName="op-divide-dayTimeDuration2args-1"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration2args-2"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration2args-3"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration2args-4"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration2args-5"/>
-   <testResult status="fail" testName="op-divide-dayTimeDuration-2"/>
-   <testResult status="fail" testName="op-divide-dayTimeDuration-3"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-2"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-3"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration-4"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration-5"/>
    <testResult status="fail" testName="op-divide-dayTimeDuration-6"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration-7"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration-8"/>
    <testResult status="fail" testName="op-divide-dayTimeDuration-9"/>
-   <testResult status="fail" testName="op-divide-dayTimeDuration-10"/>
+   <testResult status="pass" testName="op-divide-dayTimeDuration-10"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration-11"/>
    <testResult status="fail" testName="op-divide-dayTimeDuration-12"/>
    <testResult status="pass" testName="op-divide-dayTimeDuration-13"/>

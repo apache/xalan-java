@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import org.apache.xml.dtm.DTMManager;
@@ -55,10 +52,10 @@ public class VariableSafeAbsRef extends Variable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt, boolean destructiveOK) 
+  public XObject execute(XPathContext xctxt, boolean destructiveOk) 
   	throws javax.xml.transform.TransformerException
   {
-  	XMLNodeCursorImpl xns = (XMLNodeCursorImpl)super.execute(xctxt, destructiveOK);
+  	XMLNodeCursorImpl xns = (XMLNodeCursorImpl)super.execute(xctxt, destructiveOk);
   	DTMManager dtmMgr = xctxt.getDTMManager();
   	int context = xctxt.getContextNode();
   	if (dtmMgr.getDTM(xns.getRoot()).getDocument() != 
