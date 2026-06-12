@@ -241,7 +241,7 @@ public class ElemResultDocument extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:result-document transformation.
+   * Evaluate the xsl:result-document transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

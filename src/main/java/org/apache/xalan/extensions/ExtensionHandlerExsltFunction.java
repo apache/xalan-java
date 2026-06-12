@@ -151,7 +151,7 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
   }
 
   /**
-   * Execute the EXSLT function and return the result value.
+   * Evaluate the EXSLT function and return the result value.
    * 
    * @param funcName Name of the EXSLT function.
    * @param args     The arguments of the function call.
@@ -168,7 +168,7 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
   }
 
   /**
-   * Execute the EXSLT function and return the result value.
+   * Evaluate the EXSLT function and return the result value.
    *
    * @param extFunction The XPath extension function
    * @param args The arguments of the function call.

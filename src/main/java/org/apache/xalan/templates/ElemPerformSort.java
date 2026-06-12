@@ -296,7 +296,7 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 	}
 	
 	/**
-	 * Evaluation of the xsl:perform-sort XSL transformation.
+	 * Evaluate an XSL instruction xsl:perform-sort.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *

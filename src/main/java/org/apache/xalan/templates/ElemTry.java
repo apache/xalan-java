@@ -267,7 +267,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	}
 	
 	/**
-	 * Run an xsl:try transformation.
+	 * Evaluate an xsl:try transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *

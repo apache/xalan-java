@@ -454,8 +454,8 @@ public class ElemVariable extends ElemTemplateElement
   }
 
   /**
-   * Execute a variable declaration and push it onto the variable stack.
-   * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
+   * Evaluate a variable declaration and push it onto the variable stack.
+   * @see <a href="http://www.w3.org/TR/xslt#variables">variables within XSLT specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

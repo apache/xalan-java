@@ -191,7 +191,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
   }
 
   /**
-   * Execute the xsl:matching-substring transformation
+   * Evaluate the xsl:matching-substring transformation
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:28Z" fail="22" name="regex" pass="42" run="64" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T12:02:29Z" fail="19" name="regex" pass="45" run="64" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
@@ -27,24 +27,12 @@
    <testResult status="fail" testName="regex-030"/>
    <testResult status="pass" testName="regex-031"/>
    <testResult status="pass" testName="regex-032"/>
-   <testResult status="fail" testName="regex-038">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: Illegal group reference</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="regex-039">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: Illegal group reference: group index is missing</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="regex-038"/>
+   <testResult status="pass" testName="regex-039"/>
    <testResult status="fail" testName="regex-040">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a&gt;Some n HTML&lt;/a&gt;&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="regex-041">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: character to be escaped is missing</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="regex-041"/>
    <testResult status="pass" testName="regex-043"/>
    <testResult status="pass" testName="regex-044"/>
    <testResult status="pass" testName="regex-054"/>
@@ -60,74 +48,74 @@
    <testResult status="pass" testName="regex-068"/>
    <testResult status="fail" testName="regex-070a">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070b">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070c">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070d">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070e">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070f">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070g">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070h">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070i">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070j">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070k">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="regex-070l">
       <outResult>
-         <errTrace>Expected ,, but found: ''</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''
+java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: ''</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="regex-071"/>

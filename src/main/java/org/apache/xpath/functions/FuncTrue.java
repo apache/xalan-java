@@ -25,7 +25,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the True() function.
+ * Evaluate the True() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncTrue extends Function

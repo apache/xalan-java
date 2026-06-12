@@ -151,7 +151,7 @@ public class ElemNextMatch extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:next-match transformation.
+   * Evaluate the xsl:next-match transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

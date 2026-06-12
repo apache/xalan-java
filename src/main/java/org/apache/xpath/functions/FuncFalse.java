@@ -25,7 +25,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the False() function.
+ * Evaluate the False() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncFalse extends Function

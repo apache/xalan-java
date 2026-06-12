@@ -47,8 +47,8 @@ public class ElemVariablePsuedo extends ElemVariable
   }
   
   /**
-   * Execute a variable declaration and push it onto the variable stack.
-   * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
+   * Evaluate a variable declaration and push it onto the variable stack.
+   * @see <a href="http://www.w3.org/TR/xslt#variables">variables within XSLT specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -56,11 +56,6 @@ public class ElemVariablePsuedo extends ElemVariable
    */
   public void execute(TransformerImpl transformer) throws TransformerException
   {
-
-    // if (TransformerImpl.S_DEBUG)
-    //  transformer.getTraceManager().emitTraceEvent(this);
-
-    // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
     transformer.getXPathContext().getVarStack().setLocalVariable(m_index, m_lazyVar);
   }
 

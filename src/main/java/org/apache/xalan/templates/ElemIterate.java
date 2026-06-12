@@ -259,7 +259,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        }
 
        /**
-        * Execute an xsl:iterate transformation.
+        * Evaluate an xsl:iterate transformation.
         *
         * @param transformer non-null reference to the the current transform-time state.
         *

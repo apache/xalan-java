@@ -2845,12 +2845,12 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     	  
     	  if (m_debug)
     		  getTraceManager().emitTraceEvent(template);
-    	  // And execute the child templates.
+    	  // And evaluate the child templates.
     	  // 9/11/00: If template has been compiled, hand off to it
     	  // since much (most? all?) of the processing has been inlined.
     	  // (It would be nice if there was a single entry point that
     	  // worked for both... but the interpretive system works by
-    	  // having the Tranformer execute the children, while the
+    	  // having the Tranformer evaluate the children, while the
     	  // compiled obviously has to run its own code. It's
     	  // also unclear that "execute" is really the right name for
     	  // that entry point.)
@@ -4475,7 +4475,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   }
 
   /**
-   * This will execute the following XSLT instructions
+   * This will evaluate the following XSLT instructions
    * from the snapshot point, after the stylesheet execution
    * context has been reset from the snapshot point. 
    *

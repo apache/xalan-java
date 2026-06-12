@@ -30,7 +30,8 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Execute the SystemProperty() function.
+ * Evaluate the SystemProperty() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncSystemProperty extends FunctionOneArg

@@ -924,7 +924,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     				transformer.getTraceManager().emitTraceEvent(this);
     			}
 
-    			// And execute the child templates.
+    			// And evaluate the child templates.
     			// Loop through the children of the template, calling execute on 
     			// each of them.
     			for (ElemTemplateElement t = this.m_firstChild; t != null;

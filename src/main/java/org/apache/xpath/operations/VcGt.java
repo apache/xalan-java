@@ -497,45 +497,49 @@ public class VcGt extends XPathRelationalOp
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                          (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 					                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("boolean".equals(typeName1) && !"boolean".equals(typeName2)) || ("boolean".equals(typeName2) && !"boolean".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("string".equals(typeName1) && !"string".equals(typeName2)) || ("string".equals(typeName2) && !"string".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("date".equals(typeName1) && !"date".equals(typeName2)) || ("date".equals(typeName2) && !"date".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("time".equals(typeName1) && !"time".equals(typeName2)) || ("time".equals(typeName2) && !"time".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("dateTime".equals(typeName1) && !"dateTime".equals(typeName2)) || ("dateTime".equals(typeName2) && !"dateTime".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("yearMonthDuration".equals(typeName1) && !"yearMonthDuration".equals(typeName2)) || ("yearMonthDuration".equals(typeName2) && !"yearMonthDuration".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("dayTimeDuration".equals(typeName1) && !"dayTimeDuration".equals(typeName2)) || ("dayTimeDuration".equals(typeName2) && !"dayTimeDuration".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }		  
 		  else if (("hexBinary".equals(typeName1) && !"hexBinary".equals(typeName2)) || ("hexBinary".equals(typeName2) && !"hexBinary".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("base64Binary".equals(typeName1) && !"base64Binary".equals(typeName2)) || ("base64Binary".equals(typeName2) && !"base64Binary".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
-		  }		  
+		  }
+		  else if ("QName".equals(typeName1) && "QName".equals(typeName2)) {
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
+				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+		  }
 	  }
 	  
 	  List<XMLNSDecl> nsPrefixTable = null;	  

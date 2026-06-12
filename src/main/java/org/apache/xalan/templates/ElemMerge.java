@@ -217,7 +217,7 @@ public class ElemMerge extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:merge transformation.
+   * Evaluate the xsl:merge transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

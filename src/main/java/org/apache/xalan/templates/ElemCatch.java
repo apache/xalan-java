@@ -258,7 +258,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	}
 	
 	/**
-	 * Run an xsl:catch transformation.
+	 * Evaluate an xsl:catch transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *

@@ -170,7 +170,7 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        }
 
        /**
-        * Execute the xsl:on-completion transformation.
+        * Evaluate the xsl:on-completion transformation.
         *
         * @param transformer non-null reference to the the current transform-time state.
         *

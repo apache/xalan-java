@@ -141,7 +141,7 @@ public class ElemExtensionCall extends ElemLiteralResult
   }
   
   /**
-   * Execute the fallbacks when an extension is not available.
+   * Evaluate the fallbacks when an extension is not available.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -189,7 +189,7 @@ public class ElemExtensionCall extends ElemLiteralResult
 
 
   /**
-   * Execute an extension.
+   * Evaluate an extension.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

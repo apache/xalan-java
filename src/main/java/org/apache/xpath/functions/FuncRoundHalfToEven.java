@@ -212,7 +212,7 @@ public class FuncRoundHalfToEven extends Function2Args
       }
       
       /**
-       * Execute the first argument expression that is expected to return a
+       * Evaluate the first argument expression that is expected to return a
        * string. If the argument is null, then get the string value from the
        * current context node.
        *

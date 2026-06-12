@@ -622,7 +622,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
 
   /**
-   * Execute the match pattern step relative to another step.
+   * Evaluate the match pattern step relative to another step.
    *
    * @param xctxt The XPath runtime context.
    * @param dtm The DTM of the current node.
@@ -669,7 +669,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
 
   /**
-   * Execute the predicates on this step to determine if the current node 
+   * Evaluate the predicates on this step to determine if the current node 
    * should be filtered or accepted.
    *
    * @param xctxt The XPath runtime context.

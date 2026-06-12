@@ -163,8 +163,7 @@ public class ElemChoose extends ElemTemplateElement
   public ElemChoose(){}
 
   /**
-   * Execute the xsl:choose transformation.
-   *
+   * Evaluate the xsl:choose transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

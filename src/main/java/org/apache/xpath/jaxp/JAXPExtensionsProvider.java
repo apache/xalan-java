@@ -93,7 +93,7 @@ public class JAXPExtensionsProvider implements ExtensionsProvider {
     }
 
     /**
-     * Execute the extension function.
+     * Evaluate the extension function.
      */
     public Object extFunction(String ns, String funcName, Vector argVec,
         Object methodKey) throws javax.xml.transform.TransformerException {
@@ -153,7 +153,7 @@ public class JAXPExtensionsProvider implements ExtensionsProvider {
     }
 
     /**
-     * Execute the extension function.
+     * Evaluate the extension function.
      */
     public Object extFunction(XSL3ConstructorOrExtensionFunction extFunction,
                               Vector argVec)

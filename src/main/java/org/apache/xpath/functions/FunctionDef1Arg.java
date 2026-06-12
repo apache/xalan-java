@@ -41,8 +41,8 @@ public class FunctionDef1Arg extends FunctionOneArg
   static final long serialVersionUID = 2325189412814149264L;
 
   /**
-   * Execute the first argument expression that is expected to return a
-   * nodeset.  If the argument is null, then return the current context node.
+   * Evaluate the first argument expression that is expected to return a
+   * nodeset. If the argument is null, then return the current context node.
    *
    * @param xctxt Runtime XPath context.
    *
@@ -70,8 +70,8 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * Execute the first argument expression that is expected to return a
-   * string.  If the argument is null, then get the string value from the
+   * Evaluate the first argument expression that is expected to return a
+   * string. If the argument is null, then get the string value from the
    * current context node.
    *
    * @param xctxt Runtime XPath context.
@@ -124,8 +124,8 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * Execute the first argument expression that is expected to return a
-   * number.  If the argument is null, then get the number value from the
+   * Evaluate the first argument expression that is expected to return a
+   * number. If the argument is null, then get the number value from the
    * current context node.
    *
    * @param xctxt Runtime XPath context.

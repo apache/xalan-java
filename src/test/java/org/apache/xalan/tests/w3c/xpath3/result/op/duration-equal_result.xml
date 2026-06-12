@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:02Z" fail="72" name="op-duration-equal" pass="72" run="144" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:56:01Z" fail="24" name="op-duration-equal" pass="120" run="144" statusUnknown="0">
    <testResult status="pass" testName="op-duration-equal-1"/>
    <testResult status="pass" testName="op-duration-equal-2"/>
    <testResult status="pass" testName="op-duration-equal-3"/>
@@ -36,16 +36,16 @@
    <testResult status="pass" testName="op-yearMonthDuration-equal2args-8"/>
    <testResult status="pass" testName="op-yearMonthDuration-equal2args-9"/>
    <testResult status="pass" testName="op-yearMonthDuration-equal2args-10"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-11"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-12"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-13"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-14"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-15"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-16"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-17"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-18"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-19"/>
-   <testResult status="fail" testName="op-yearMonthDuration-equal2args-20"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-11"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-12"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-13"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-14"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-15"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-16"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-17"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-18"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-19"/>
+   <testResult status="pass" testName="op-yearMonthDuration-equal2args-20"/>
    <testResult status="pass" testName="op-dayTimeDuration-equal2args-1"/>
    <testResult status="pass" testName="op-dayTimeDuration-equal2args-2"/>
    <testResult status="pass" testName="op-dayTimeDuration-equal2args-3"/>
@@ -56,16 +56,16 @@
    <testResult status="pass" testName="op-dayTimeDuration-equal2args-8"/>
    <testResult status="pass" testName="op-dayTimeDuration-equal2args-9"/>
    <testResult status="pass" testName="op-dayTimeDuration-equal2args-10"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-11"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-12"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-13"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-14"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-15"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-16"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-17"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-18"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-19"/>
-   <testResult status="fail" testName="op-dayTimeDuration-equal2args-20"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-11"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-12"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-13"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-14"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-15"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-16"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-17"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-18"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-19"/>
+   <testResult status="pass" testName="op-dayTimeDuration-equal2args-20"/>
    <testResult status="fail" testName="distinct-duration-equal-1"/>
    <testResult status="fail" testName="distinct-duration-equal-2"/>
    <testResult status="pass" testName="K-DurationEQ-1"/>
@@ -100,34 +100,34 @@
    <testResult status="fail" testName="K-DurationEQ-30"/>
    <testResult status="pass" testName="K-DurationEQ-31"/>
    <testResult status="pass" testName="K-DurationEQ-32"/>
-   <testResult status="fail" testName="K-DurationEQ-33"/>
-   <testResult status="fail" testName="K-DurationEQ-34"/>
-   <testResult status="fail" testName="K-DurationEQ-35"/>
-   <testResult status="fail" testName="K-DurationEQ-36"/>
-   <testResult status="fail" testName="K-DurationEQ-37"/>
-   <testResult status="fail" testName="K-DurationEQ-38"/>
-   <testResult status="fail" testName="K-DurationEQ-39"/>
-   <testResult status="fail" testName="K-DurationEQ-40"/>
-   <testResult status="fail" testName="K-DurationEQ-41"/>
-   <testResult status="fail" testName="K-DurationEQ-42"/>
-   <testResult status="fail" testName="K-DurationEQ-43"/>
-   <testResult status="fail" testName="K-DurationEQ-44"/>
-   <testResult status="fail" testName="K-DurationEQ-45"/>
-   <testResult status="fail" testName="K-DurationEQ-46"/>
-   <testResult status="fail" testName="K-DurationEQ-47"/>
-   <testResult status="fail" testName="K-DurationEQ-48"/>
-   <testResult status="fail" testName="K-DurationEQ-49"/>
-   <testResult status="fail" testName="K-DurationEQ-50"/>
-   <testResult status="fail" testName="K-DurationEQ-51"/>
-   <testResult status="fail" testName="K-DurationEQ-52"/>
-   <testResult status="fail" testName="K-DurationEQ-53"/>
-   <testResult status="fail" testName="K-DurationEQ-54"/>
-   <testResult status="fail" testName="K-DurationEQ-55"/>
-   <testResult status="fail" testName="K-DurationEQ-56"/>
-   <testResult status="fail" testName="K-DurationEQ-57"/>
-   <testResult status="fail" testName="K-DurationEQ-58"/>
-   <testResult status="fail" testName="K-DurationEQ-59"/>
-   <testResult status="fail" testName="K-DurationEQ-60"/>
+   <testResult status="pass" testName="K-DurationEQ-33"/>
+   <testResult status="pass" testName="K-DurationEQ-34"/>
+   <testResult status="pass" testName="K-DurationEQ-35"/>
+   <testResult status="pass" testName="K-DurationEQ-36"/>
+   <testResult status="pass" testName="K-DurationEQ-37"/>
+   <testResult status="pass" testName="K-DurationEQ-38"/>
+   <testResult status="pass" testName="K-DurationEQ-39"/>
+   <testResult status="pass" testName="K-DurationEQ-40"/>
+   <testResult status="pass" testName="K-DurationEQ-41"/>
+   <testResult status="pass" testName="K-DurationEQ-42"/>
+   <testResult status="pass" testName="K-DurationEQ-43"/>
+   <testResult status="pass" testName="K-DurationEQ-44"/>
+   <testResult status="pass" testName="K-DurationEQ-45"/>
+   <testResult status="pass" testName="K-DurationEQ-46"/>
+   <testResult status="pass" testName="K-DurationEQ-47"/>
+   <testResult status="pass" testName="K-DurationEQ-48"/>
+   <testResult status="pass" testName="K-DurationEQ-49"/>
+   <testResult status="pass" testName="K-DurationEQ-50"/>
+   <testResult status="pass" testName="K-DurationEQ-51"/>
+   <testResult status="pass" testName="K-DurationEQ-52"/>
+   <testResult status="pass" testName="K-DurationEQ-53"/>
+   <testResult status="pass" testName="K-DurationEQ-54"/>
+   <testResult status="pass" testName="K-DurationEQ-55"/>
+   <testResult status="pass" testName="K-DurationEQ-56"/>
+   <testResult status="pass" testName="K-DurationEQ-57"/>
+   <testResult status="pass" testName="K-DurationEQ-58"/>
+   <testResult status="pass" testName="K-DurationEQ-59"/>
+   <testResult status="pass" testName="K-DurationEQ-60"/>
    <testResult status="pass" testName="K-DayTimeDurationEQ-1"/>
    <testResult status="pass" testName="K-DayTimeDurationEQ-2"/>
    <testResult status="pass" testName="K-DayTimeDurationEQ-3"/>

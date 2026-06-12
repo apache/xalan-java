@@ -178,7 +178,7 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
   }
 
   /**
-   * Execute the non-matching-substring transformation.
+   * Evaluate the non-matching-substring transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

@@ -74,7 +74,7 @@ public class FuncMatches extends Function3Args {
         
         if (m_arg2 != null) {
            flagStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
-           if (!RegexEvaluationSupport.isFlagStrValid(flagStr)) {               
+           if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {               
               throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
                                                                                             ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), srcLocator); 
            }
@@ -86,7 +86,7 @@ public class FuncMatches extends Function3Args {
         	Matcher regexMatcher = null;
         	
         	try {
-                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), 
+                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(patternStr), 
             																									flagStr != null ? flagStr : null, inputStr);
         	}
         	catch (Exception ex) {        		        		
@@ -108,7 +108,16 @@ public class FuncMatches extends Function3Args {
                                                         									ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator); 
         }
         catch (Exception ex) {
-        	throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);
+            String errMesg = ex.getMessage();        	
+        	
+        	String errCode = "FORX0004";
+        	if (errMesg.startsWith("No group")) {
+        	   errCode = "FORX0003";
+        	}
+        	
+        	errMesg = errCode + " : " + errMesg;  
+        	
+            throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
         }
         
         result = (boolValue ? new XSBoolean(true) : new XSBoolean(false));  

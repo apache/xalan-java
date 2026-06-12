@@ -27,12 +27,14 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.RegexEvaluationSupport;
 import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
@@ -41,8 +43,6 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
-import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of XPath 3.1 function fn:analyze-string.
@@ -73,8 +73,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
     /**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt                           An XPath context object
+     * @return                                A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -90,54 +90,49 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         // Get 'string value' of string to be analyzed by fn:analyze-string 
         // function call.
         String strToBeAnalyzed = null;
-        if (arg0XObj instanceof XSString) {
-           strToBeAnalyzed = ((XSString)arg0XObj).stringValue();
+        
+        if ((arg0XObj instanceof ResultSequence) && (((ResultSequence)arg0XObj).size() == 0)) {
+           strToBeAnalyzed  = "";
         }
-        else {
-     	   strToBeAnalyzed = arg0XObj.str();      	   
+        else if ((arg0XObj instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)arg0XObj).getLength() == 0)) {
+           strToBeAnalyzed  = "";
+        }
+        else {        
+           strToBeAnalyzed = XslTransformEvaluationHelper.getStrVal(arg0XObj);
         }
         
-        // Get 'string value' of regex argument of fn:analyze-string 
+        // Get 'string value' for regex argument of fn:analyze-string 
         // function call.
-        String regexStr = null;
-        if (arg1XObj instanceof XSString) {
-           regexStr = ((XSString)arg1XObj).stringValue();
-        }
-        else {
-           regexStr = arg1XObj.str();      	   
-        }
+        String regexStr = XslTransformEvaluationHelper.getStrVal(arg1XObj);
         
         String flagsStr = null;
+        
         if (m_arg2 != null) {
-           // Get 'string value' of flags argument of fn:analyze-string 
+           // Get 'string value' for flags argument of fn:analyze-string 
            // function call.
            XObject arg2XObj = m_arg2.execute(xctxt);
-           if (arg2XObj instanceof XSString) {
-        	  flagsStr = ((XSString)arg2XObj).stringValue();
-           }
-           else {
-              flagsStr = arg2XObj.str();      	   
-           }
+
+           flagsStr = XslTransformEvaluationHelper.getStrVal(arg2XObj);           
            
-           if (!RegexEvaluationSupport.isFlagStrValid(flagsStr)) {
-              throw new javax.xml.transform.TransformerException("XTDE1145 : Invalid regex flag value(s) is specified, "
-              		                                           + "as an argument to function call fn:analyze-string. XPath "
-              		                                           + "regex valid flag charcaters are : s, m, i, x, q.", srcLocator);    
+           if (!RegexEvaluationSupport.isRegexFlagStrValid(flagsStr)) {              
+              throw new javax.xml.transform.TransformerException("XTDE1145 : An XPath 3.1 function 'analyze-string' has been "
+              		                                                                                            + "called with incorrect regex flags "
+              		                                                                                            + "argument. XPath regex valid flag charcaters "
+              		                                                                                            + "are : s, m, i, x, q.", srcLocator);
            }
         }
         
         Document document = createEmptyXmlDom(srcLocator);
         
         Element analyzeStrResultElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, 
-        		                                                                                               "analyze-string-result");
+        		                                                                                            Constants.ELEMNAME_ANALYZESTRING_RESULT_STRING);
         document.appendChild(analyzeStrResultElem);
         
         if (strToBeAnalyzed.length() > 0) {
         	Matcher regexMatcher = null;
         	
         	try {
-        		regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr), 
-        				                                                                                                                flagsStr, strToBeAnalyzed);
+        		regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtrOp(regexStr), flagsStr, strToBeAnalyzed);
         	}
         	catch (Exception ex) {        		        		
                 String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
@@ -160,57 +155,69 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         	}
         	
         	regexMatcher.reset();
+        	
+        	int size1 = regexMatchInfoList.size();
 
-        	RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
-        	int startIdx1 = firstRegexMatchInfo.getStartIdx();
-        	if (startIdx1 == 0) {
-        		// Regex has matched a substring, which is prefix of an input string        		
-        		for (int idx = 0; idx < regexMatchInfoList.size(); idx++) {
-        			RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
-        			int idx1 = matchInfo.getStartIdx();
-        			int idx2 = matchInfo.getEndIdx();
-        			String matchStr = strToBeAnalyzed.substring(idx1, idx2);
-        			createMatchNodeToResult(document, analyzeStrResultElem, 
-        					                matchStr, regexStr); 
+        	if (size1 > 0) {
+        		RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
+        		int startIdx1 = firstRegexMatchInfo.getStartIdx();
+        		if (startIdx1 == 0) {
+        			// Regex has matched a substring, which is prefix of an input string 
         			
-        			if (isNonMatchingStringAvailable(strToBeAnalyzed, idx2)) {
-        				String nonMatchStr = null;
-        				if ((idx + 1) == regexMatchInfoList.size()) {
-        					nonMatchStr = strToBeAnalyzed.substring(idx2);
-        				}
-        				else {
-        					RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
-        					nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
-        				}                    	                    	
-        				createNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
-        			}        		
-        		}	
-        	}
-        	else if (startIdx1 > 0) {
-        		// Any prefix of an input string, hasn't been matched by regex        		
-        		RegexMatchInfo pof1 = regexMatchInfoList.get(0);
-        		String nonMatchStr = strToBeAnalyzed.substring(0, pof1.getStartIdx());
- 			    createNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
- 			    
-        		for (int idx = 0; idx < regexMatchInfoList.size(); idx++) {
-        			RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
-        			int idx1 = matchInfo.getStartIdx();
-        			int idx2 = matchInfo.getEndIdx();
-        			String matchStr = strToBeAnalyzed.substring(idx1, idx2);
-        			createMatchNodeToResult(document, analyzeStrResultElem, 
-        					                matchStr, regexStr);
+        			for (int idx = 0; idx < size1; idx++) {
+        				RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
+        				int idx1 = matchInfo.getStartIdx();
+        				int idx2 = matchInfo.getEndIdx();
+        				String matchStr = strToBeAnalyzed.substring(idx1, idx2);
+        				
+        				createXslMatchNodeToResult(document, analyzeStrResultElem, matchStr, regexStr); 
 
-        			if (isNonMatchingStringAvailable(strToBeAnalyzed, idx2)) {
-        				if ((idx + 1) == regexMatchInfoList.size()) {
-        					nonMatchStr = strToBeAnalyzed.substring(idx2);
-        				}
-        				else {
-        					RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
-        					nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
-        				}                    	                    	        				
-        				createNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
-        			}        			
+        				if (isXslNonMatchStringAvailable(strToBeAnalyzed, idx2)) {
+        					String nonMatchStr = null;
+        					if ((idx + 1) == size1) {
+        						nonMatchStr = strToBeAnalyzed.substring(idx2);
+        					}
+        					else {
+        						RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
+        						nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
+        					}
+        					
+        					createXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+        				}        		
+        			}	
         		}
+        		else if (startIdx1 > 0) {
+        			// An input string's prefix has not been matched by regex
+        			
+        			RegexMatchInfo pof1 = regexMatchInfoList.get(0);
+        			String nonMatchStr = strToBeAnalyzed.substring(0, pof1.getStartIdx());
+        			
+        			createXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+
+        			for (int idx = 0; idx < size1; idx++) {
+        				RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
+        				int idx1 = matchInfo.getStartIdx();
+        				int idx2 = matchInfo.getEndIdx();
+        				String matchStr = strToBeAnalyzed.substring(idx1, idx2);
+        				
+        				createXslMatchNodeToResult(document, analyzeStrResultElem, matchStr, regexStr);
+
+        				if (isXslNonMatchStringAvailable(strToBeAnalyzed, idx2)) {
+        					if ((idx + 1) == size1) {
+        						nonMatchStr = strToBeAnalyzed.substring(idx2);
+        					}
+        					else {
+        						RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
+        						nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
+        					}
+        					
+        					createXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+        				}        			
+        			}
+        		}
+            }
+        	else {
+        		createXslNonMatchNodeToResult(document, analyzeStrResultElem, strToBeAnalyzed);
         	}
         }
         
@@ -284,89 +291,103 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
     }
     
     /**
-     * This method, checks whether an XML "non-match" element can be appended at 
-     * certain places within the result of function call fn:analyze-string. 
+     * Method definition, to check whether an XML element named {http://www.w3.org/2005/xpath-functions}non-match 
+     * can be appended within the result of function call fn:analyze-string. 
      * 
-     * @param strToBeAnalyzed    this is an original string that is analyzed by 
-     *                           the function call fn:analyze-string. 
-     * @param idx                an end index of a particular regex match
-     * @return                   true, or false result, indicating whether an
-     *                           XML "non-match" element can be constructed.
+     * @param strToBeAnalyzed    An XPath 3.1 function call fn:analyze-string's 
+     *                           first argument. 
+     * @param idx                An end index for a particular regex match
+     * @return                   Boolean value true or false
      */
-    private boolean isNonMatchingStringAvailable(String strToBeAnalyzed, int idx) {
-		boolean isNonMatchAvailable;
-		try {
-			isNonMatchAvailable = (strToBeAnalyzed.charAt(idx) != -1);
+    private boolean isXslNonMatchStringAvailable(String strToBeAnalyzed, int idx) {
+		
+    	boolean result = false;
+		
+    	try {
+			result = (strToBeAnalyzed.charAt(idx) != -1);
 		}
 		catch (IndexOutOfBoundsException ex) {
-			isNonMatchAvailable = false;
+			// no op
 		}
-		return isNonMatchAvailable;
+    	
+		return result;
 	}
 
 	/**
-	 * Method to create an XML "non-match" element, and append to the result. 
+	 * Method definition, to create an XML element named {http://www.w3.org/2005/xpath-functions}non-match, 
+	 * and append to XPath 3.1 function 'analyze-string' call result.  
 	 * 
 	 * @param document                    XML document node
-	 * @param analyzeStrResultElem        XML result element, that is appended with more information
-	 * @param nonMatchStr                 text value that is appended as child of XML "non-match" element 
+	 * @param analyzeStrResultElem        An XML element, that is appended with result information 
+	 *                                    XPath 3.1 function 'analyze-string' result.
+	 * @param nonMatchStr                 An XML DOM text node's string value that is appended as 
+	 *                                    child of XML element named {http://www.w3.org/2005/xpath-functions}non-match.
+	 * @param regexStr					  Regex string value  
 	 */
-	private void createNonMatchNodeToResult(Document document, Element analyzeStrResultElem, 
-			                                String nonMatchStr) {
-		Element nonMatchElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "non-match");
+	private void createXslNonMatchNodeToResult(Document document, Element analyzeStrResultElem, String nonMatchStr) {
+		
+		Element nonMatchElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_NON_MATCH_STRING);
 		Text txtNode2 = document.createTextNode(nonMatchStr);
 		nonMatchElem.appendChild(txtNode2);
 		analyzeStrResultElem.appendChild(nonMatchElem);
 	}
 
 	/**
-	 * Method to create an XML "match" element, and append to the result. 
+	 * Method definition, to create an XML element named {http://www.w3.org/2005/xpath-functions}match, 
+	 * and append to XPath 3.1 function 'analyze-string' call result.  
 	 * 
 	 * @param document                    XML document node
-	 * @param analyzeStrResultElem        XML result element, that is appended with more information
-	 * @param subsequenceStr              text value that is appended as child of XML "match" element
-	 * @param regexStr					  regex string, provided as an argument to function 
-	 *                                    call fn:analyze-string. 
+	 * @param analyzeStrResultElem        An XML element, that is appended with result information
+	 * @param subsequenceStr              An XML DOM text node's string value that is appended as 
+	 *                                    child of XML element named {http://www.w3.org/2005/xpath-functions}match.
+	 * @param regexStr					  Regex string value 
 	 */
-	private void createMatchNodeToResult(Document document, Element analyzeStrResultElem, 
-			                             String subsequenceStr, String regexStr) {
-		Element matchElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "match");		
-		Pattern regexSubsequencePattern = Pattern.compile(regexStr);
-		Matcher regexSubsequenceMatcher = regexSubsequencePattern.matcher(subsequenceStr);
-		int grpCount = regexSubsequenceMatcher.groupCount();
+	private void createXslMatchNodeToResult(Document document, Element analyzeStrResultElem, 
+			                                                                            String subsequenceStr, String regexStr) {
+		
+		Element xslMatchElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_MATCH_STRING);
+		
+		Pattern pattern = Pattern.compile(regexStr);
+		Matcher matcher = pattern.matcher(subsequenceStr);
+		
+		int grpCount = matcher.groupCount();
+		
 		if (grpCount > 0) {
-		   if (regexSubsequenceMatcher.matches()) {
+		   if (matcher.matches()) {
 			   for (int idx = 0; idx < grpCount; idx++) {			  
-				  Element grpElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, "group");
-				  grpElem.setAttribute("nr", String.valueOf(idx+1));
-				  String grpStrValue = regexSubsequenceMatcher.group(idx+1);
+				  Element grpElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_GROUP_STRING);
+				  grpElem.setAttribute(Constants.ELEMNAME_ANALYZESTRING_NR_STRING, String.valueOf(idx + 1));
+				  String grpStrValue = matcher.group(idx + 1);
 				  Text grpTxtNode = document.createTextNode(grpStrValue);
 				  grpElem.appendChild(grpTxtNode);
-				  matchElem.appendChild(grpElem);
+				  xslMatchElem.appendChild(grpElem);
 				  if (idx < (grpCount - 1)) {
 					 Text hyphenTxtNode = document.createTextNode("-");
-					 matchElem.appendChild(hyphenTxtNode);
+					 xslMatchElem.appendChild(hyphenTxtNode);
 				  }
-			   }			   
-			   analyzeStrResultElem.appendChild(matchElem);
-		   }		   
-		   regexSubsequenceMatcher.reset();
+			   }
+			   
+			   analyzeStrResultElem.appendChild(xslMatchElem);
+		   }
+		   
+		   matcher.reset();
 		}				
 		else {
 		   Text txtNode1 = document.createTextNode(subsequenceStr);
-		   matchElem.appendChild(txtNode1);
-		   analyzeStrResultElem.appendChild(matchElem);
+		   xslMatchElem.appendChild(txtNode1);
+		   analyzeStrResultElem.appendChild(xslMatchElem);
 		}				
 	}
 
     /**
-     * Method to create an empty XML DOM document node.
+     * Method definition, to create an empty XML DOM document node.
      * 
-     * @param srcLocator   XSL transformation sourceLocator object
-     * @return an empty DOM document node
+     * @param srcLocator                           XSL transformation SourceLocator object
+     * @return                                     An empty DOM document node
      */
 	private Document createEmptyXmlDom(SourceLocator srcLocator) throws TransformerException {
-		Document document = null;
+		
+		Document result = null;
 		
 		System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 		
@@ -378,13 +399,14 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 		   dBuilder = dbf.newDocumentBuilder();
 		} 
         catch (ParserConfigurationException ex) {
-		   throw new javax.xml.transform.TransformerException("FOJS0001 : An error occured, within an XML parser "
-		   		                                                      + "library.", srcLocator);
+		   throw new javax.xml.transform.TransformerException("FOJS0001 : An XPath 3.1 function call 'analyze-string', has encountered "
+		   		                                                                                                + "an internal error within an XML "
+		   		                                                                                                + "parser library invocation.", srcLocator);
 		}
 		
-        document = dBuilder.newDocument();
+        result = dBuilder.newDocument();
         
-		return document;
+		return result;
 	}
 
 }

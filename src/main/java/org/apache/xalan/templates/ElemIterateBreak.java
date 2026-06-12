@@ -163,7 +163,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
        }
 
        /**
-        * Execute the xsl:break transformation.
+        * Evaluate the xsl:break transformation.
         *
         * @param transformer non-null reference to the the current transform-time state.
         *

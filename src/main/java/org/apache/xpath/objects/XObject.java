@@ -884,44 +884,88 @@ public class XObject extends Expression implements Serializable, Cloneable
  		  else if ((lXsNumericValue != null) && (rXsNumericValue != null)) {
  			  result = lXsNumericValue.vcLessThan(rXsNumericValue, expressionOwner, collationUri, isLtTest); 
  		  }		  
- 		  else if (this.vcLessThan(obj2, expressionOwner, collationUri, isLtTest)) {			  
- 			  result = true;
+ 		  else {			  
+ 			  result = this.vcLessThan(obj2, expressionOwner, collationUri, isLtTest);
  		  }
  		  
  		  return result;
  	   }      
  	   else if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
-          return ((XSDecimal)this).lt((XSDecimal)obj2);        
+          result = ((XSDecimal)this).lt((XSDecimal)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
-          return ((XSFloat)this).lt((XSFloat)obj2);        
+          result = ((XSFloat)this).lt((XSFloat)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
-          return ((XSDouble)this).lt((XSDouble)obj2);        
+          result = ((XSDouble)this).lt((XSDouble)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
-          return ((XSBoolean)this).lt((XSBoolean)obj2);    
+          result = ((XSBoolean)this).lt((XSBoolean)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
-          return ((XSInteger)this).lt((XSInteger)obj2);    
+          result = ((XSInteger)this).lt((XSInteger)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
-          return ((XSLong)this).lt((XSLong)obj2);    
+          result = ((XSLong)this).lt((XSLong)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
-          return ((XSInt)this).lt((XSInt)obj2);    
+          result = ((XSInt)this).lt((XSInt)obj2);
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-    	  return DateTimeUtil.isBefore((XSDate)this, (XSDate)obj2);
+    	  result = DateTimeUtil.isBefore((XSDate)this, (XSDate)obj2);
+    	  
+    	  result = (isLtTest) ? result : !result;
+    	  
+    	  return result;
        }
        else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-    	  return DateTimeUtil.isBefore((XSDateTime)this, (XSDateTime)obj2);   
+    	  result = DateTimeUtil.isBefore((XSDateTime)this, (XSDateTime)obj2);
+    	  
+    	  result = (isLtTest) ? result : !result;
+    	  
+    	  return result;
        }
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-    	  return DateTimeUtil.isBefore((XSTime)this, (XSTime)obj2);    
+    	  result = DateTimeUtil.isBefore((XSTime)this, (XSTime)obj2);
+    	  
+    	  result = (isLtTest) ? result : !result;
+    	  
+    	  return result;
        }
        else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
-          return ((XNumber)this).num() < ((XNumber)obj2).num(); 
+          result = ((XNumber)this).num() < ((XNumber)obj2).num();
+          
+          result = (isLtTest) ? result : !result;
+          
+          return result;
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
     	  String lStr = ((XSNumericType)this).stringValue();
@@ -930,7 +974,11 @@ public class XObject extends Expression implements Serializable, Cloneable
     	  double rdbl = ((XNumber)obj2).num();
     	  XSDouble rDouble = new XSDouble(rdbl);
     	  
-    	  return lDouble.lt(rDouble);
+    	  result = lDouble.lt(rDouble);
+    	  
+    	  result = (isLtTest) ? result : !result;
+    	  
+    	  return result;
        }
        else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {     	  
      	  double ldbl = ((XNumber)this).num();
@@ -939,7 +987,11 @@ public class XObject extends Expression implements Serializable, Cloneable
      	  String rStr = ((XSNumericType)obj2).stringValue();
     	  XSDouble rDouble = new XSDouble(rStr);
      	  
-     	  return lDouble.lt(rDouble);
+     	  result = lDouble.lt(rDouble);
+     	  
+     	  result = (isLtTest) ? result : !result;
+   	  
+   	      return result;
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {     	      	      	  
     	  double lDbl = 0;
@@ -960,63 +1012,83 @@ public class XObject extends Expression implements Serializable, Cloneable
     		 rDbl = (new XSDouble(rStr)).doubleValue();
     	  }
     	  
-    	  return (lDbl < rDbl);      	  
+    	  result = (lDbl < rDbl);
+    	  
+    	  result = (isLtTest) ? result : !result;
+       	  
+   	      return result;
        }
        else if ((this instanceof XString) && (obj2 instanceof XString)) {
           String lStr = (((XString)this)).str();
-          String rStr = (((XString)obj2)).str();                      
+          String rStr = (((XString)obj2)).str();          
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) < 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult < 0) ? true : false;
+        	  result = (comparisonResult < 0) ? true : false;
           }
+          
+          result = (isLtTest) ? result : !result;
+       	  
+   	      return result;
        }
        else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XSString)obj2)).stringValue();                      
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) < 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult < 0) ? true : false;
+        	  result = (comparisonResult < 0) ? true : false;
           }
+          
+          result = (isLtTest) ? result : !result;
+       	  
+   	      return result;
        }
        else if ((this instanceof XSString) && (obj2 instanceof XString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XString)obj2)).str();                      
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) < 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult < 0) ? true : false;
+        	  result = (comparisonResult < 0) ? true : false;
           }
+          
+          result = (isLtTest) ? result : !result;
+       	  
+   	      return result;
        }
        else if ((this instanceof XString) && (obj2 instanceof XSString)) {
           String lStr = (((XString)this)).str();
           String rStr = (((XSString)obj2)).stringValue();                      
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) < 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult < 0) ? true : false;
+        	  result = (comparisonResult < 0) ? true : false;
           }
+          
+          result = (isLtTest) ? result : !result;
+       	  
+   	      return result;
        }
        else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
     	  XSGDay val1 = (XSGDay)this;
@@ -1024,14 +1096,15 @@ public class XObject extends Expression implements Serializable, Cloneable
     	  BigInteger date1 = BigInteger.valueOf(val1.getDay());
    	      BigInteger date2 = BigInteger.valueOf(val2.getDay());
    	      if (date1.compareTo(date2) < 0) {
- 		     return true; 
+   	    	 result = true; 
  	      }
- 	      else if (date1.compareTo(date2) > 0) {
-  		     return false; 
-  	      }
- 	      else if (date1.compareTo(date2) == 0) {
-  		     return false; 
-  	      }
+   	      else {
+   	    	 result = false; 
+   	      }
+   	      
+   	      result = (isLtTest) ? result : !result;
+    	  
+	      return result;
        }
        else if ((this instanceof XSGMonth) && (obj2 instanceof XSGMonth)) {
     	   XSGMonth val1 = (XSGMonth)this;
@@ -1039,14 +1112,15 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
     	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   if (month1.compareTo(month2) < 0) {
-    		   return true; 
+    		   result = true; 
     	   }
-    	   else if (month1.compareTo(month2) > 0) {
-    		   return false; 
+    	   else {
+    		   result = false; 
     	   }
-    	   else if (month1.compareTo(month2) == 0) {
-    		   return false; 
-    	   }
+    	   
+    	   result = (isLtTest) ? result : !result;
+     	  
+ 	       return result;
        }
        else if ((this instanceof XSGMonthDay) && (obj2 instanceof XSGMonthDay)) {
     	   XSGMonthDay val1 = (XSGMonthDay)this;
@@ -1056,20 +1130,24 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   BigInteger day1 = BigInteger.valueOf(val1.getDay());
     	   BigInteger day2 = BigInteger.valueOf(val2.getDay());
     	   if (month1.compareTo(month2) < 0) {
-    		  return true; 
+    		   result = true; 
     	   }
     	   else if (month1.compareTo(month2) > 0) {
-     		  return false; 
-     	   }
+    		   result = false; 
+    	   }
     	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) == 0)) {
-      		  return false; 
-      	   }
+    		   result = false; 
+    	   }
     	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) < 0)) {
-       		  return true; 
-       	   }
+    		   result = true; 
+    	   }
     	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) > 0)) {
-        	  return false; 
-           }
+    		   result = false; 
+    	   }
+
+    	   result = (isLtTest) ? result : !result;
+
+    	   return result;
        }
        else if ((this instanceof XSGYear) && (obj2 instanceof XSGYear)) {
     	   XSGYear val1 = (XSGYear)this;
@@ -1077,14 +1155,18 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   BigInteger year1 = BigInteger.valueOf(val1.getYear());
     	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
     	   if (year1.compareTo(year2) < 0) {
-    		   return true; 
+    		   result = true; 
     	   }
     	   else if (year1.compareTo(year2) > 0) {
-    		   return false; 
+    		   result = false; 
     	   }
     	   else if (year1.compareTo(year2) == 0) {
-    		   return false; 
+    		   result = false; 
     	   }
+    	   
+    	   result = (isLtTest) ? result : !result;
+
+    	   return result;
        }
        else if ((this instanceof XSGYearMonth) && (obj2 instanceof XSGYearMonth)) {
     	   XSGYearMonth val1 = (XSGYearMonth)this;
@@ -1094,20 +1176,24 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
     	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   if (year1.compareTo(year2) < 0) {
-    		  return true; 
+    		   result = true; 
     	   }
     	   else if (year1.compareTo(year2) > 0) {
-     		  return false; 
-     	   }
+    		   result = false; 
+    	   }
     	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) == 0)) {
-      		  return false; 
-      	   }
+    		   result = false; 
+    	   }
     	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) < 0)) {
-       		  return true; 
-       	   }
+    		   result = true; 
+    	   }
     	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) > 0)) {
-        	  return false; 
-           }
+    		   result = false; 
+    	   }
+
+    	   result = (isLtTest) ? result : !result;
+
+    	   return result;
        }
        else if (this instanceof XSYearMonthDuration) {
  		  if (obj2 instanceof XSYearMonthDuration) {
@@ -1135,8 +1221,15 @@ public class XObject extends Expression implements Serializable, Cloneable
   		  
   		  return result;
   	   }
-       else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
-    	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
+       else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {    	   
+    	   String typeName1 = "xs:" + ((XSAnyAtomicType)this).typeName();
+    	   String typeName2 = "xs:" + ((XSAnyAtomicType)obj2).typeName();
+
+    	   String xpathOpName = isLtTest ? "lt" : "ge"; 
+
+    	   throw new TransformerException("XPTY0004 : An xdm value of type " + typeName1 + ", cannot be compared with "
+																	    			     + "xdm value of type " + typeName2 + ", "
+																	    			     + "using XPath operator '" + xpathOpName + "'.");
        }
        
        boolean isOperandNodeSet1 = false;
@@ -1159,10 +1252,18 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
        
        if (isOperandNodeSet1 || (this instanceof XNumber)) {
-           return this.num() < obj2.num();    
+    	   result = this.num() < obj2.num();
+
+    	   result = (isLtTest) ? result : !result;
+
+    	   return result;
        }    
        else if (isOperandNodeSet2 || (obj2 instanceof XNumber)) {
-           return obj2.num() < this.num();    
+    	   result = obj2.num() < this.num();
+
+    	   result = (isLtTest) ? result : !result;
+
+    	   return result;
        }
        
        return true;
@@ -1256,38 +1357,74 @@ public class XObject extends Expression implements Serializable, Cloneable
   		  else if ((lXsNumericValue != null) && (rXsNumericValue != null)) {
   			  result = lXsNumericValue.vcGreaterThan(rXsNumericValue, expressionOwner, collationUri, isGtTest); 
   		  }		  
-  		  else if (this.vcGreaterThan(obj2, expressionOwner, collationUri, isGtTest)) {			  
-  			  result = true;
+  		  else {			  
+  			  result = this.vcGreaterThan(obj2, expressionOwner, collationUri, isGtTest);
   		  }
   		  
   		  return result;
   	   }      
   	   else if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
-          return ((XSDecimal)this).gt((XSDecimal)obj2);        
+  		  result = ((XSDecimal)this).gt((XSDecimal)obj2);
+  		 
+  		  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
-          return ((XSFloat)this).gt((XSFloat)obj2);        
+    	  result = ((XSFloat)this).gt((XSFloat)obj2);
+    	  
+          result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
-          return ((XSDouble)this).gt((XSDouble)obj2);        
+    	  result = ((XSDouble)this).gt((XSDouble)obj2);
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
-          return ((XSBoolean)this).gt((XSBoolean)obj2);    
+    	  result = ((XSBoolean)this).gt((XSBoolean)obj2);
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
-          return ((XSInteger)this).gt((XSInteger)obj2);    
+    	  result = ((XSInteger)this).gt((XSInteger)obj2);
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
-          return ((XSLong)this).gt((XSLong)obj2);    
+    	  result = ((XSLong)this).gt((XSLong)obj2);
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
-          return ((XSInt)this).gt((XSInt)obj2);    
+    	  result = ((XSInt)this).gt((XSInt)obj2);
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-    	   return DateTimeUtil.isAfter((XSDate)this, (XSDate)obj2);
+    	  result = DateTimeUtil.isAfter((XSDate)this, (XSDate)obj2);
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-    	   return DateTimeUtil.isAfter((XSDateTime)this, (XSDateTime)obj2);   
+    	  result = DateTimeUtil.isAfter((XSDateTime)this, (XSDateTime)obj2); 
+    	  
+    	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }       
        else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {    	   
     	   XSTime xsTime1 = (XSTime)this;
@@ -1304,7 +1441,11 @@ public class XObject extends Expression implements Serializable, Cloneable
     		   xsTime2 = XSTime.parseTime(str2); 
      	   }    	   
     	   
-    	   return DateTimeUtil.isAfter(xsTime1, xsTime2);    
+    	   result = DateTimeUtil.isAfter(xsTime1, xsTime2);
+    	   
+    	   result = isGtTest ? result : !result; 
+ 		  
+ 		   return result;
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
      	  String lStr = ((XSNumericType)this).stringValue();
@@ -1313,7 +1454,11 @@ public class XObject extends Expression implements Serializable, Cloneable
      	  double rdbl = ((XNumber)obj2).num();
      	  XSDouble rDouble = new XSDouble(rdbl);
      	  
-     	  return lDouble.gt(rDouble);
+     	  result = lDouble.gt(rDouble);
+     	  
+     	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {     	  
       	  double ldbl = ((XNumber)this).num();
@@ -1322,7 +1467,11 @@ public class XObject extends Expression implements Serializable, Cloneable
       	  String rStr = ((XSNumericType)obj2).stringValue();
      	  XSDouble rDouble = new XSDouble(rStr);
       	  
-      	  return lDouble.gt(rDouble);
+     	  result = lDouble.gt(rDouble);
+     	  
+     	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {     	  
     	  double lDbl = 0;
@@ -1343,93 +1492,117 @@ public class XObject extends Expression implements Serializable, Cloneable
      		 rDbl = (new XSDouble(rStr)).doubleValue();
      	  }
      	  
-     	  return (lDbl > rDbl);
+     	  result = (lDbl > rDbl);
+     	  
+     	  result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XString) && (obj2 instanceof XString)) {          
           String lStr = (((XString)this)).str();
           String rStr = (((XString)obj2)).str();
           
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) > 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult > 0) ? true : false;
+        	  result = (comparisonResult > 0) ? true : false;
           }
+          
+          result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XSString)obj2)).stringValue();                      
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) > 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult > 0) ? true : false;
+        	  result = (comparisonResult > 0) ? true : false;
           }
+          
+          result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSString) && (obj2 instanceof XString)) {
           String lStr = (((XSString)this)).stringValue();
           String rStr = (((XString)obj2)).str();                      
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) > 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult > 0) ? true : false;
+        	  result = (comparisonResult > 0) ? true : false;
           }
+          
+          result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XString) && (obj2 instanceof XSString)) {
           String lStr = (((XString)this)).str();
           String rStr = (((XSString)obj2)).stringValue();                      
            
           if (collationUri == null) {
-        	  return (lStr.compareTo(rStr) < 0) ? true : false;  
+        	  result = (lStr.compareTo(rStr) > 0) ? true : false;  
           }
           else {
         	  XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();        	  
         	  int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
         	  
-        	  return (comparisonResult > 0) ? true : false;
+        	  result = (comparisonResult > 0) ? true : false;
           }
+          
+          result = isGtTest ? result : !result; 
+		  
+		  return result;
        }
        else if ((this instanceof XSGDay) && (obj2 instanceof XSGDay)) {
     	   XSGDay val1 = (XSGDay)this;
     	   XSGDay val2 = (XSGDay)obj2;
     	   BigInteger date1 = BigInteger.valueOf(val1.getDay());
-    	   BigInteger date2 = BigInteger.valueOf(val2.getDay());
-    	   if (date1.compareTo(date2) < 0) {
-    		   return false; 
+    	   BigInteger date2 = BigInteger.valueOf(val2.getDay());    	   
+    	   
+    	   if (date1.compareTo(date2) > 0) {
+    		   result = true; 
     	   }
-    	   else if (date1.compareTo(date2) > 0) {
-    		   return true; 
+    	   else {
+    		   result = false;
     	   }
-    	   else if (date1.compareTo(date2) == 0) {
-    		   return false; 
-    	   }
+    	   
+    	   result = isGtTest ? result : !result; 
+ 		  
+ 		   return result;
        }
        else if ((this instanceof XSGMonth) && (obj2 instanceof XSGMonth)) {
     	   XSGMonth val1 = (XSGMonth)this;
     	   XSGMonth val2 = (XSGMonth)obj2;
     	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
     	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
-    	   if (month1.compareTo(month2) < 0) {
-    		   return false; 
+    	   
+    	   if (month1.compareTo(month2) > 0) {
+    		   result = true; 
     	   }
-    	   else if (month1.compareTo(month2) > 0) {
-    		   return true; 
+    	   else {
+    		   result = false; 
     	   }
-    	   else if (month1.compareTo(month2) == 0) {
-    		   return false; 
-    	   }
+    	   
+    	   result = isGtTest ? result : !result; 
+  		  
+ 		   return result;
        }
        else if ((this instanceof XSGMonthDay) && (obj2 instanceof XSGMonthDay)) {
     	   XSGMonthDay val1 = (XSGMonthDay)this;
@@ -1438,36 +1611,46 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
     	   BigInteger day1 = BigInteger.valueOf(val1.getDay());
     	   BigInteger day2 = BigInteger.valueOf(val2.getDay());
+    	   
     	   if (month1.compareTo(month2) < 0) {
-    		  return false; 
+    		   result = false; 
     	   }
     	   else if (month1.compareTo(month2) > 0) {
-     		  return true; 
-     	   }
+    		   result = true; 
+    	   }
     	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) == 0)) {
-      		  return false; 
-      	   }
+    		   result = false; 
+    	   }
     	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) < 0)) {
-       		  return false; 
-       	   }
+    		   result = false; 
+    	   }
     	   else if ((month1.compareTo(month2) == 0) && (day1.compareTo(day2) > 0)) {
-        	  return true; 
-           }
+    		   result = true; 
+    	   }
+
+    	   result = isGtTest ? result : !result; 
+
+    	   return result;
        }
        else if ((this instanceof XSGYear) && (obj2 instanceof XSGYear)) {
     	   XSGYear val1 = (XSGYear)this;
     	   XSGYear val2 = (XSGYear)obj2;
     	   BigInteger year1 = BigInteger.valueOf(val1.getYear());
     	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
+    	   
     	   if (year1.compareTo(year2) < 0) {
-    		   return false; 
+    		   result = false; 
     	   }
     	   else if (year1.compareTo(year2) > 0) {
-    		   return true; 
+    		   result = true; 
     	   }
     	   else if (year1.compareTo(year2) == 0) {
-    		   return false; 
+    		   result = false; 
     	   }
+    	   
+    	   result = isGtTest ? result : !result; 
+
+    	   return result;
        }
        else if ((this instanceof XSGYearMonth) && (obj2 instanceof XSGYearMonth)) {
     	   XSGYearMonth val1 = (XSGYearMonth)this;
@@ -1476,21 +1659,26 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   BigInteger year2 = BigInteger.valueOf(val2.getYear());
     	   BigInteger month1 = BigInteger.valueOf(val1.getMonth());
     	   BigInteger month2 = BigInteger.valueOf(val2.getMonth());
+    	   
     	   if (year1.compareTo(year2) < 0) {
-    		  return false; 
+    		   result = false; 
     	   }
     	   else if (year1.compareTo(year2) > 0) {
-     		  return true; 
+    		   result = true; 
      	   }
     	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) == 0)) {
-      		  return false; 
+    		   result = false; 
       	   }
     	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) < 0)) {
-       		  return false; 
+    		   result = false; 
        	   }
     	   else if ((year1.compareTo(year2) == 0) && (month1.compareTo(month2) > 0)) {
-        	  return true; 
+    		   result = true; 
            }
+    	   
+    	   result = isGtTest ? result : !result; 
+
+    	   return result;
        }
        else if (this instanceof XSYearMonthDuration) {
   		  if (obj2 instanceof XSYearMonthDuration) {
@@ -1508,6 +1696,7 @@ public class XObject extends Expression implements Serializable, Cloneable
     	   if (obj2 instanceof XSDayTimeDuration) {  			  
     		   double dbl1 = ((XSDayTimeDuration)this).value();
     		   double dbl2 = ((XSDayTimeDuration)obj2).value();
+    		   
     		   result = ((dbl1 > dbl2) ? true : false); 
     	   }
     	   else {
@@ -1518,8 +1707,15 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     	   return result;
    	   }
-       else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
-    	  emitXsAnyAtomicTypeError(obj2, expressionOwner);   
+       else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {     	  
+    	  String typeName1 = "xs:" + ((XSAnyAtomicType)this).typeName();
+		  String typeName2 = "xs:" + ((XSAnyAtomicType)obj2).typeName();
+		  
+		  String xpathOpName = isGtTest ? "gt" : "le"; 
+		  
+		  throw new TransformerException("XPTY0004 : An xdm value of type " + typeName1 + ", cannot be compared with "
+		  		                                                                        + "xdm value of type " + typeName2 + ", "
+		  		                                                                        + "using XPath operator '" + xpathOpName + "'.");
        }
        
        boolean isOperandNodeSet1 = false;
@@ -1542,10 +1738,18 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
        
        if (isOperandNodeSet1 || (this instanceof XNumber)) {
-          return this.num() > obj2.num();    
+          result = this.num() > obj2.num();
+          
+          result = (isGtTest) ? result : !result;
+
+   	      return result;
        }    
        else if (isOperandNodeSet2 || (obj2 instanceof XNumber)) {
-          return obj2.num() > this.num();    
+    	  result = obj2.num() > this.num();
+    	  
+    	  result = (isGtTest) ? result : !result;
+
+   	      return result;
        }
        
        return true;
@@ -1965,6 +2169,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }		  
 		  else if (strVal1.equals(strVal2)) {			  
 			  result = true;
+			  
 			  result = (isEqTest) ? result : !result;
 		  }
 		  
@@ -1998,6 +2203,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 
 		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {
 		  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)this).num());		  
@@ -2005,6 +2212,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 
 		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
 		  double lDouble = ((XNumber)this).num();
@@ -2012,20 +2221,28 @@ public class XObject extends Expression implements Serializable, Cloneable
 
 		  result = (lDouble == rDouble);
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XSNumericType || this instanceof XNumber) && 
 			                                         !(obj2 instanceof XSNumericType || obj2 instanceof XNumber)) {
 		  result = false;
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (!(this instanceof XSNumericType || this instanceof XNumber) && 
                                                       (obj2 instanceof XSNumericType || obj2 instanceof XNumber)) {
           result = false;
           result = (isEqTest) ? result : !result;
+          
+          return result;
       }
 	  else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
 		  result = ((XSBoolean)this).equals((XSBoolean)obj2);
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XBoolean) && (obj2 instanceof XBoolean)) {
 		  boolean lBool = ((XBoolean)this).bool();
@@ -2033,6 +2250,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  result = (lBool == rBool);
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XSBoolean) && (obj2 instanceof XBoolean)) {
 		  boolean lBool = ((XSBoolean)this).bool();
@@ -2040,6 +2259,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  result = (lBool == rBool);
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XBoolean) && (obj2 instanceof XSBoolean)) {
 		  boolean lBool = ((XBoolean)this).bool();
@@ -2047,6 +2268,15 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  result = (lBool == rBool);
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
+	  }
+	  else if ((this instanceof XSQName) && (obj2 instanceof XSQName)) {
+		  result = ((XSQName)this).equals((XSQName)obj2);
+		  
+		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSAnyURI) {
 		  boolean isEqual = false;
@@ -2061,6 +2291,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  result = isEqual;
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
 		  String lStr = ((XSString)this).stringValue();
@@ -2077,6 +2309,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XString) && (obj2 instanceof XString)) {
 		  String lStr = ((XString)this).str();
@@ -2093,6 +2327,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XSString) && (obj2 instanceof XString)) {
 		  String lStr = ((XSString)this).stringValue();
@@ -2109,6 +2345,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XString) && (obj2 instanceof XSString)) {
 		  String lStr = ((XString)this).str();
@@ -2125,6 +2363,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSDate) {
 		  if (obj2 instanceof XSDate) {
@@ -2135,6 +2375,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }    
 	  else if (this instanceof XSDateTime) {
 		  if (obj2 instanceof XSDateTime) {
@@ -2145,6 +2387,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSTime) {
 		  if (obj2 instanceof XSTime) {
@@ -2155,6 +2399,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSYearMonthDuration) {
 		  if (obj2 instanceof XSYearMonthDuration) {
@@ -2165,6 +2411,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSDayTimeDuration) {
 		  if (obj2 instanceof XSDayTimeDuration) {
@@ -2175,6 +2423,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSDuration) {
 		  if (obj2 instanceof XSDuration) {
@@ -2185,6 +2435,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSGYearMonth) {
 		  if (obj2 instanceof XSGYearMonth) {
@@ -2195,6 +2447,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSGYear) {
 		  if (obj2 instanceof XSGYear) {
@@ -2205,6 +2459,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSGMonthDay) {
 		  if (obj2 instanceof XSGMonthDay) {
@@ -2215,6 +2471,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSGDay) {
 		  if (obj2 instanceof XSGDay) {
@@ -2225,6 +2483,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (this instanceof XSGMonth) {
 		  if (obj2 instanceof XSGMonth) {
@@ -2235,9 +2495,18 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if ((this instanceof XSAnyAtomicType) && (obj2 instanceof XSAnyAtomicType)) {
-   	      emitXsAnyAtomicTypeError(obj2, expressionOwner);   
+		  String typeName1 = "xs:" + ((XSAnyAtomicType)this).typeName();
+		  String typeName2 = "xs:" + ((XSAnyAtomicType)obj2).typeName();
+		  
+		  String xpathOpName = isEqTest ? "eq" : "ne"; 
+		  
+		  throw new TransformerException("XPTY0004 : An xdm value of type " + typeName1 + ", cannot be compared with "
+		  		                                                                        + "xdm value of type " + typeName2 + ", "
+		  		                                                                        + "using XPath operator '" + xpathOpName + "'.");
       }
 	  else if (this instanceof ResultSequence) {
 		  ResultSequence rSeq = (ResultSequence)this;
@@ -2247,21 +2516,28 @@ public class XObject extends Expression implements Serializable, Cloneable
 			 result = lXObj.vcEquals(obj2, expressionOwner, collationUri, isEqTest); 
 		  }
 		  else {
-			 // Revisit
-			 result = false; 
+			 result = false;
+			 
+			 result = (isEqTest) ? result : !result;
 		  }
+		  
+		  return result;
 	  }
 	  else if (obj2 instanceof ResultSequence) {
 		  ResultSequence rSeq = (ResultSequence)obj2;
 		  XObject rXObj = null;		  
 		  if (rSeq.size() == 1) {
 			 rXObj = rSeq.item(0);
+			 
 			 result = this.vcEquals(rXObj, expressionOwner, collationUri, isEqTest); 
 		  }
 		  else {
-			 // Revisit
-			 result = false; 
+			 result = false;
+			 
+			 result = (isEqTest) ? result : !result;
 		  }
+		  
+		  return result;
 	  }
 	  else if (this.getType() == XObject.CLASS_NODESET) {
 		  if ((((XMLNodeCursorImpl)this).getLength() > 1)) {
@@ -2282,6 +2558,8 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }    
 	  else if (obj2.getType() == XObject.CLASS_NODESET) { 
 		  if ((((XMLNodeCursorImpl)obj2).getLength() > 1)) {
@@ -2302,19 +2580,23 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  }
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else if (m_obj != null) {
 		  result = m_obj.equals(obj2.m_obj);
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
 	  else {
 		  result = (obj2.m_obj == null);
 		  
 		  result = (isEqTest) ? result : !result;
+		  
+		  return result;
 	  }
-
-	  return result;
     
   }
 
@@ -2489,14 +2771,6 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   public StylesheetRoot getXslStylesheetRoot() {
 	 return m_xslStylesheetRoot;  
-  }
-  
-  private void emitXsAnyAtomicTypeError(XObject xObject, ExpressionNode expressionOwner) throws TransformerException {
-	 String typeName1 = ((XSAnyAtomicType)this).typeName();
-	 String typeName2 = ((XSAnyAtomicType)xObject).typeName();
-		   
-	 error(XPATHErrorResources.ER_TYPE_COMPARISON_ERROR, new Object[] {"xs:" + typeName1, 
-			                                                                         "xs:" + typeName2}, expressionOwner);
   }
 
   public String getConsFuncArgStr() {

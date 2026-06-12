@@ -173,7 +173,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 	}
 
 	/**
-	 * Execute the xsl:next-iteration transformation.
+	 * Evaluate the xsl:next-iteration transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *

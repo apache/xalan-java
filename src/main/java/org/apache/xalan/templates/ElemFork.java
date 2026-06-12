@@ -125,7 +125,7 @@ public class ElemFork extends ElemTemplateElement
   }
 
   /**
-   * Implementation of xsl:fork transformation.
+   * Evaluation of xsl:fork transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

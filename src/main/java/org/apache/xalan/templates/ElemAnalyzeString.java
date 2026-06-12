@@ -39,7 +39,7 @@ import org.apache.xpath.regex.Matcher;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the XSLT 3.0 xsl:analyze-string instruction.
+ * Implementation of XSLT 3.0 instruction xsl:analyze-string.
  *   
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -270,7 +270,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   }
 
   /**
-   * Execute the XSLT element xsl:analyze-string's transformation.
+   * Evaluate the XSLT element xsl:analyze-string's transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -312,6 +312,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   }
 
   /**
+   * Method definition, to do XSL transformation for instruction xsl:analyze-string. 
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -363,7 +364,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     	  regex_flags_str = m_regex_flags.evaluate(xctxt, contextNode, xctxt.getNamespaceContext()); 
        }
        
-       if ((regex_flags_str != null) && !RegexEvaluationSupport.isFlagStrValid(regex_flags_str)) {
+       if ((regex_flags_str != null) && !RegexEvaluationSupport.isRegexFlagStrValid(regex_flags_str)) {
            throw new javax.xml.transform.TransformerException("XTDE1145 : Incorrect regex flag value(s) are present as value of 'flags' "
            		                                                                  									 + "attribute of an XSL analyze-string element.", srcLocator);    
        }
@@ -402,7 +403,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     	   Matcher regexMatcher = null;
     			   
     	   try {
-    	       regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(regexStr),
+    	       regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtrOp(regexStr),
     	    		                                                                                                                    regex_flags_str, strToBeAnalyzed);
     	   }
     	   catch (Exception ex) {    		   
@@ -458,7 +459,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 							   nonMatchStr = strToBeAnalyzed.substring(idx2);
 						   }
 						   else {
-							   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
+							   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
 							   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
 						   }
 						   
@@ -491,7 +492,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 							   nonMatchStr = strToBeAnalyzed.substring(idx2);
 						   }
 						   else {
-							   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
+							   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
 							   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
 						   }
 						   
@@ -542,7 +543,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 								   nonMatchStr = strToBeAnalyzed.substring(idx2);
 							   }
 							   else {
-								   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
+								   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
 								   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
 							   }       				          				   
 
@@ -593,7 +594,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 								   nonMatchStr = strToBeAnalyzed.substring(idx2);
 							   }
 							   else {
-								   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx+1);
+								   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
 								   nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
 							   }
 

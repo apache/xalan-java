@@ -35,7 +35,8 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the Key() function.
+ * Evaluate the Key() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncKey extends Function2Args

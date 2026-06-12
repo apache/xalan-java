@@ -155,7 +155,7 @@ public class ElemOutputCharacter extends ElemTemplateElement
 	}
 	
 	/**
-	 * Execute an XSL xsl:output-character transformation.
+	 * Evaluate an XSL xsl:output-character transformation.
 	 */
 	public void execute(TransformerImpl transformer) throws TransformerException {	    
 		// no op

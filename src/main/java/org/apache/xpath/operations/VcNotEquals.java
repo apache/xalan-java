@@ -494,63 +494,63 @@ public class VcNotEquals extends XPathRelationalOp
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                          (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 					                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("boolean".equals(typeName1) && !"boolean".equals(typeName2)) || ("boolean".equals(typeName2) && !"boolean".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("string".equals(typeName1) && !"string".equals(typeName2)) || ("string".equals(typeName2) && !"string".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("date".equals(typeName1) && !"date".equals(typeName2)) || ("date".equals(typeName2) && !"date".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("time".equals(typeName1) && !"time".equals(typeName2)) || ("time".equals(typeName2) && !"time".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("dateTime".equals(typeName1) && !"dateTime".equals(typeName2)) || ("dateTime".equals(typeName2) && !"dateTime".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("duration".equals(typeName1) && !"duration".equals(typeName2)) || ("duration".equals(typeName2) && !"duration".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gYearMonth".equals(typeName1) && !"gYearMonth".equals(typeName2)) || ("gYearMonth".equals(typeName2) && !"gYearMonth".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gYear".equals(typeName1) && !"gYear".equals(typeName2)) || ("gYear".equals(typeName2) && !"gYear".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gMonthDay".equals(typeName1) && !"gMonthDay".equals(typeName2)) || ("gMonthDay".equals(typeName2) && !"gMonthDay".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gDay".equals(typeName1) && !"gDay".equals(typeName2)) || ("gDay".equals(typeName2) && !"gDay".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gMonth".equals(typeName1) && !"gMonth".equals(typeName2)) || ("gMonth".equals(typeName2) && !"gMonth".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("hexBinary".equals(typeName1) && !"hexBinary".equals(typeName2)) || ("hexBinary".equals(typeName2) && !"hexBinary".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("base64Binary".equals(typeName1) && !"base64Binary".equals(typeName2)) || ("base64Binary".equals(typeName2) && !"base64Binary".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("QName".equals(typeName1) && !"QName".equals(typeName2)) || ("QName".equals(typeName2) && !"QName".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 	  }

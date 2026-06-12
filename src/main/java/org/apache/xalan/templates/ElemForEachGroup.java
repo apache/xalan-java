@@ -501,7 +501,7 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:for-each-group transformation.
+   * Evaluate the xsl:for-each-group transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

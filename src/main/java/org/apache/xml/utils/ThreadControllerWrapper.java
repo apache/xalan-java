@@ -51,7 +51,7 @@ public class ThreadControllerWrapper
   {
 
     /**
-     * Will get a thread from the pool, execute the task
+     * Will get a thread from the pool, evaluate the task
      *  and return the thread to the pool.
      *
      *  The return value is used only to wait for completion

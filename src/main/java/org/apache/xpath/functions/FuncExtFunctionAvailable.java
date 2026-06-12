@@ -28,7 +28,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the ExtFunctionAvailable() function.
+ * Evaluate the ExtFunctionAvailable() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncExtFunctionAvailable extends FunctionOneArg

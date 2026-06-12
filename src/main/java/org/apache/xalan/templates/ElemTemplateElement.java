@@ -293,7 +293,7 @@ public class ElemTemplateElement extends UnImplNode
   public void runtimeInit(TransformerImpl transformer) throws TransformerException{}
 
   /**
-   * Execute the element's primary function.  Subclasses of this
+   * Evaluate the element's primary function.  Subclasses of this
    * function may recursivly execute down the element tree.
    *
    * @param transformer The XSLT TransformerFactory.

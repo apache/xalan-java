@@ -44,7 +44,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the Doc() function.
+ * Evaluate the Doc() function.
  *
  * When the document function has exactly one argument and the argument
  * is a node-set, then the result is the union, for each node in the

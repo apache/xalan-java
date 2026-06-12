@@ -125,7 +125,7 @@ public class ElemMergeKey extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:merge-key transformation.
+   * Evaluate the xsl:merge-key transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

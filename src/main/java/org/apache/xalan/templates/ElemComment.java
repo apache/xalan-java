@@ -225,7 +225,7 @@ public class ElemComment extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:comment transformation 
+   * Evaluate the xsl:comment transformation 
    *
    *
    * @param transformer non-null reference to the the current transform-time state.

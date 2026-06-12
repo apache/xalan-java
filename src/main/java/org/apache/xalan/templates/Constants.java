@@ -158,9 +158,16 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_MERGE_ACTION_STRING = "merge-action",
       ELEMNAME_TRY_STRING = "try",
       ELEMNAME_CATCH_STRING = "catch",
-      ELEMNAME_ANALYZESTRING_STRING = "analyze-string",
+      ELEMNAME_ANALYZESTRING_STRING = "analyze-string",      
       ELEMNAME_MATCHINGSUBSTRING_STRING = "matching-substring",
       ELEMNAME_NONMATCHINGSUBSTRING_STRING = "non-matching-substring",
+      
+      ELEMNAME_ANALYZESTRING_RESULT_STRING = "analyze-string-result",
+      ELEMNAME_ANALYZESTRING_NON_MATCH_STRING = "non-match",
+      ELEMNAME_ANALYZESTRING_MATCH_STRING = "match",
+      ELEMNAME_ANALYZESTRING_GROUP_STRING = "group",
+      ELEMNAME_ANALYZESTRING_NR_STRING = "nr",
+      
       ELEMNAME_ITERATE_STRING = "iterate",
       ELEMNAME_ITERATE_ONCOMPLETION_STRING = "on-completion",
       ELEMNAME_ITERATE_NEXTITERATION_STRING = "next-iteration",

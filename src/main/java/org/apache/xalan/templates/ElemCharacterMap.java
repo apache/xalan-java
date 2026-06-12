@@ -154,7 +154,7 @@ public class ElemCharacterMap extends ElemTemplateElement
 	}
 	
 	/**
-	 * Execute an XSL xsl:character-map transformation.
+	 * Evaluate an XSL xsl:character-map transformation.
 	 */
 	public void execute(TransformerImpl transformer) throws TransformerException {	    
 		// no op

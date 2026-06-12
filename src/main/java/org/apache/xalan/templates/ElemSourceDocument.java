@@ -176,7 +176,7 @@ public class ElemSourceDocument extends ElemTemplateElement
   }
 
   /**
-   * Execute the xsl:source-document transformation.
+   * Evaluate the xsl:source-document transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

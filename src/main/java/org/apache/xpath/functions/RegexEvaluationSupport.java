@@ -21,9 +21,9 @@ import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 
 /**
- * This class provides supporting implementation, common to all
- * XPath 3.1 functions and the XSLT instruction xsl:analyze-string 
- * that require regex functionality.
+ * Class definition, providing support for implementing regex 
+ * features available within XPath 3.1 F&O and XSLT 3.0 
+ * specifications.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -31,56 +31,93 @@ import org.apache.xpath.regex.Pattern;
  */
 public class RegexEvaluationSupport {
 	
-	/**
-	 * Variable indicating that, XPath regex valid flag 
-	 * characters are : s, m, i, x, q.
-	 */
+	
+	// Class field, denoting allowable XPath regex flag characters.
     private static final String VALID_REGEX_FLAG_CHARS = "smixq";
 	
-	/*
-	 * Transform regex pattern input string, to resolve differences between, 
-	 * XML Schema regex subtraction operator and Java regex subtraction operator. 
-	 */
-	public static String transformRegexStrForSubtractionOp(String pattern) {
-		String transformedPatternStr = pattern;
+    
+    /**
+     * Method definition, to transform the supplied regex string, to 
+     * resolve differences between, XML Schema regex subtraction operator 
+     * and Java regex subtraction operator.
+     * 
+     * @param regexStr                         The supplied regex string
+     * @return                                 The transformed regex string
+     */
+	public static String transformRegexStrForSubtrOp(String regexStr) {
 		
-		int indx1 = transformedPatternStr.indexOf("-[");
+		String result = regexStr;
+		
+		int indx1 = result.indexOf("-[");
 		if (indx1 != -1) {
-			String subsPrev = transformedPatternStr.substring(0, indx1);
-			String subsAfter = transformedPatternStr.substring(indx1 + 2);
+			String subsPrev = result.substring(0, indx1);
+			String subsAfter = result.substring(indx1 + 2);
 			if ((subsPrev.indexOf("[") != -1) && (subsAfter.indexOf("]]") != -1)) {
-				transformedPatternStr = transformedPatternStr.replaceAll("\\-\\[", 
-						                                                    "&&[^");	
+				result = result.replaceAll("\\-\\[", "&&[^");	
 			}
 		}
 		
-		return transformedPatternStr;
+		return result;
 	}
 	
-	public static Matcher getRegexMatcher(String pattern, String flags, String src) {
-		Matcher matcher = compileAndExecute(pattern, flags, src);
+	/**
+	 * Method definition, to build regex matcher object, using the
+	 * supplied regex string, regex flags and input string to be 
+	 * matched.
+	 * 
+	 * @param regexStr                       The supplied regex string
+	 * @param regexFlags                     The supplied regex flags
+	 * @param str1                           An input string value to be 
+	 *                                       matched by regex.
+	 * @return                               Regex matcher object
+	 */
+	public static Matcher getRegexMatcher(String regexStr, String regexFlags, String str1) {
+		Matcher matcher = compileAndExecute(regexStr, regexFlags, str1);
 		
 		return matcher;
 	}
 	
-	public static boolean isFlagStrValid(String flags) {
-       boolean flagStrValid = true;
+	/**
+	 * Method definition, to check whether the supplied input
+	 * string contains allowable regex flag characters.
+	 * 
+	 * @param regexFlags                    The supplied regex flags
+	 * @return                              Boolean value true or false
+	 */
+	public static boolean isRegexFlagStrValid(String regexFlags) {
        
-       if (flags.length() > 0) {
-    	  for (int idx = 0; idx < flags.length(); idx++) {
-    		 if (VALID_REGEX_FLAG_CHARS.indexOf(flags.charAt(idx)) == -1) {
-    			flagStrValid = false;
+	   boolean result = true;
+       
+	   int size1 = regexFlags.length();
+	   
+       if (size1 > 0) {
+    	  for (int idx = 0; idx < size1; idx++) {
+    		 if (VALID_REGEX_FLAG_CHARS.indexOf(regexFlags.charAt(idx)) == -1) {
+    			result = false;
+    			
     			break;
     		 }
     	  }
        }
        
-       return flagStrValid; 
+       return result; 
 	}
 	
+	/**
+	 * Method definition, to compile a regex string, and build regex
+	 * matcher object.
+	 * 
+	 * @param regexStr                       The supplied regex string
+	 * @param regexFlags                     The supplied regex flags
+	 * @param str1                           An input string value to be 
+	 *                                       matched by regex.
+	 * @return                               Regex matcher object
+	 */
 	public static Matcher compileAndExecute(String regexStr, String regexFlags, 
-	                                                                  String inputStr) {	
+	                                                                  String str1) {	
 				
+		Matcher result = null;
+		
 		int flag = 0;
 		
 		String osNameStr = System.getProperty("os.name");
@@ -113,7 +150,9 @@ public class RegexEvaluationSupport {
 		    pattern = Pattern.compile(regexStr);
 		}
 		
-		return pattern.matcher(inputStr);
+		result = pattern.matcher(str1); 
+		
+		return result;
 	}
 
 }

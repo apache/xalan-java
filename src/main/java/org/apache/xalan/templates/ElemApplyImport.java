@@ -88,7 +88,7 @@ public class ElemApplyImport extends ElemTemplateElement
 	}
 
 	/**
-	 * Execute the xsl:apply-imports transformation.
+	 * Evaluate the xsl:apply-imports transformation.
 	 *
 	 * @param transformer non-null reference to the the current transform-time state.
 	 *

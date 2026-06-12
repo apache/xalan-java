@@ -47,8 +47,7 @@ public class ElemExsltFuncResult extends ElemVariable
  
   /**
    * Generate the EXSLT function return value, and assign it to the variable
-   * index slot assigned for it in ElemExsltFunction compose().
-   * 
+   * index slot assigned for it in ElemExsltFunction compose(). 
    */
   public void execute(TransformerImpl transformer) throws TransformerException
   {    

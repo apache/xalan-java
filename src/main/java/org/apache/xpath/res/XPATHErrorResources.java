@@ -393,8 +393,6 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_LE_OPERAND_CARDINALITY_ERROR = "ER_LE_OPERAND_CARDINALITY_ERROR";
   
   public static final String ER_GE_OPERAND_CARDINALITY_ERROR = "ER_GE_OPERAND_CARDINALITY_ERROR";
-  
-  public static final String ER_TYPE_COMPARISON_ERROR = "ER_TYPE_COMPARISON_ERROR";
 
   // Error messages...
 
@@ -678,9 +676,6 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_FASTSTRINGBUFFER_CANNOT_BE_NULL,
       "The FastStringBuffer argument can not be null"},
-  
-  { ER_TYPE_COMPARISON_ERROR,
-      "Value of type {0} cannot be compared with value of type {1}"},
 
   { ER_ZERO, "0"},
   
@@ -913,10 +908,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
        "Attempting to set a null XPathVariableResolver:{0}#setXPathVariableResolver(null)"},
   
   { ER_INVALID_REGEX_FLAGS,
-       "FORX0001: Invalid regex flag(s) usage, with function call {0}."},
+       "FORX0001 : Invalid regex flag(s) usage, with function call {0}."},
   
   { ER_INVALID_REGEX,
-       "FORX0002: Invalid regex syntax used, with function call {0}."},
+       "FORX0002 : Invalid regex syntax used, with function call {0}."},
   
   { ER_EQ_OPERAND_CARDINALITY_ERROR,
        "XPTY0004 : none of the eq's operands can be a sequence with length greater than one."},

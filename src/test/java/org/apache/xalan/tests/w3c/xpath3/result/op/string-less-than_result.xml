@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:39Z" fail="2" name="op-string-less-than" pass="8" run="10" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:56:05Z" fail="1" name="op-string-less-than" pass="9" run="10" statusUnknown="0">
    <testResult status="pass" testName="K-StringLT-1"/>
    <testResult status="pass" testName="K-StringLT-2"/>
    <testResult status="pass" testName="K-StringLT-3"/>
@@ -8,5 +8,5 @@
    <testResult status="pass" testName="cbcl-string-less-than-001"/>
    <testResult status="pass" testName="cbcl-string-less-than-002"/>
    <testResult status="fail" testName="cbcl-string-less-than-003"/>
-   <testResult status="fail" testName="cbcl-string-less-than-004"/>
+   <testResult status="pass" testName="cbcl-string-less-than-004"/>
 </testrun>

@@ -68,8 +68,7 @@ public class ContextMatchStepPattern extends StepPattern
   }
   
   /**
-   * Execute the match pattern step relative to another step.
-   *
+   * Evaluate the match pattern step relative to another step.
    *
    * @param xctxt The XPath runtime context.
    * NEEDSDOC @param prevStep

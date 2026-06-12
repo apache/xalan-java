@@ -123,7 +123,7 @@ public class ExtensionsTable
   }
   
   /**
-   * Execute the element-available() function.
+   * Evaluate the element-available() function.
    * @param ns       the URI of namespace in which the function is needed
    * @param elemName name of element being tested
    *

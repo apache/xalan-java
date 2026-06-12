@@ -359,15 +359,16 @@ public class ElemValueOf extends ElemTemplateElement {
   }
 
   /**
-   * Execute the string expression and copy the text to the
-   * result tree.
-   * The required select attribute is an expression; this expression
-   * is evaluated and the resulting object is converted to a string
+   * Evaluate an XSL stylesheet xsl:value-of instruction and copy the text to
+   * XSL stylesheet result tree.
+   * 
+   * xsl:value-of instruction's required 'select' attribute is an XPath expression, 
+   * which is evaluated and the resulting object is converted to a string
    * as if by a call to the string function. The string specifies
    * the string-value of the created text node. If the string is
    * empty, no text node will be created. The created text node will
    * be merged with any adjacent text nodes.
-   * @see <a href="http://www.w3.org/TR/xslt#value-of">value-of in XSLT Specification</a>
+   * @see <a href="https://www.w3.org/TR/xslt-30/#value-of">value-of within XSLT specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

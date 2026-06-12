@@ -184,7 +184,7 @@ public class ElemParam extends ElemVariable
   }
   
   /**
-   * Execute a variable declaration and push it onto the variable stack.
+   * Evaluate a variable declaration and push it onto the variable stack.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *

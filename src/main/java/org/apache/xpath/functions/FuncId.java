@@ -32,7 +32,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Execute the Id() function.
+ * Evaluate the Id() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncId extends FunctionOneArg

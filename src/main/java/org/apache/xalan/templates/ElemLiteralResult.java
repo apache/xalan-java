@@ -1361,7 +1361,7 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Copy a Literal Result Element into the Result tree, copy the
    * non-excluded namespace attributes, copy the attributes not
-   * of the XSLT namespace, and execute the children of the LRE.
+   * of the XSLT namespace, and evaluate the children of the LRE.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.

@@ -26,7 +26,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 
 /**
- * Implement an unknown element
+ * Implement an unknown element within an XSL stylesheet.
+ * 
  * @xsl.usage advanced
  */
 public class ElemUnknown extends ElemLiteralResult
@@ -45,7 +46,7 @@ public class ElemUnknown extends ElemLiteralResult
   }
   
   /**
-   * Execute the fallbacks when an extension is not available.
+   * Evaluate the fallbacks when an extension is not available.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -93,7 +94,8 @@ public class ElemUnknown extends ElemLiteralResult
 
 
   /**
-   * Execute an unknown element.
+   * Evaluate an unknown element within an XSL stylesheet.
+   * 
    * Execute fallback if fallback child exists or do nothing
    *
    * @param transformer non-null reference to the the current transform-time state.
@@ -103,7 +105,6 @@ public class ElemUnknown extends ElemLiteralResult
   public void execute(TransformerImpl transformer)
             throws TransformerException
   {
-
 
     if (transformer.getDebug())
 		transformer.getTraceManager().emitTraceEvent(this);

@@ -72,7 +72,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XSLT 3.0 xsl:sequence instruction.
+ * Implementation of XSLT 3.0 instruction xsl:sequence.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *
@@ -280,6 +280,8 @@ public class ElemSequence extends ElemTemplateElement
   }
 
   /**
+   * Evaluate an XSL instruction xsl:sequence.
+   * 
    * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException

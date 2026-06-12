@@ -33,7 +33,7 @@ import org.apache.xpath.objects.XObject;
  * this is easy to detect statically in this case, in other cases static 
  * detection would be very hard or impossible.  So, this class does a dynamic check 
  * to make sure the document context of the referenced variable is the same as 
- * the current document context, and, if it is not, execute the referenced variable's 
+ * the current document context, and, if it is not, evaluate the referenced variable's 
  * expression with the current context instead.
  */
 public class VariableSafeAbsRef extends Variable

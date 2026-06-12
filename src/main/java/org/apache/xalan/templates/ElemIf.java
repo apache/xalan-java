@@ -210,7 +210,8 @@ public class ElemIf extends ElemTemplateElement
   }
 
   /**
-   * Conditionally execute a sub-template.
+   * Conditionally evaluate a sub-template.
+   * 
    * The expression is evaluated and the resulting object is converted
    * to a boolean as if by a call to the boolean function. If the result
    * is true, then the content template is instantiated; otherwise, nothing

@@ -142,7 +142,7 @@ public class Compiler extends OpMap
   }
 
   /**
-   * Execute the XPath object from a given opcode position.
+   * Evaluate the XPath object from a given opcode position.
    * @param opPos The current position in the xpath.m_opMap array.
    * @return The result of the XPath.
    *

@@ -88,7 +88,7 @@ public class FuncReplace extends Function4Args {
         
         if (m_arg3 != null) {
            flagStr = XslTransformEvaluationHelper.getStrVal(m_arg3.execute(xctxt));
-           if (!RegexEvaluationSupport.isFlagStrValid(flagStr)) {
+           if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {
                throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
                                                                                                                 ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), 
             		   																						    srcLocator);     
@@ -99,7 +99,7 @@ public class FuncReplace extends Function4Args {
         	Matcher regexMatcher = null;
         	
         	try {
-                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(patternStr), flagStr, inputStr);
+                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(patternStr), flagStr, inputStr);
         	}
         	catch (Exception ex) {
                 String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
@@ -119,7 +119,16 @@ public class FuncReplace extends Function4Args {
                                                                                                                 srcLocator);   
         }
         catch (Exception ex) {
-            throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 
+        	String errMesg = ex.getMessage();        	
+        	
+        	String errCode = "FORX0004";
+        	if (errMesg.startsWith("No group")) {
+        	   errCode = "FORX0003";
+        	}
+        	
+        	errMesg = errCode + " : " + errMesg;  
+        	
+            throw new javax.xml.transform.TransformerException(errMesg, srcLocator); 
         }
     
         return result;

@@ -133,7 +133,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
 
 		  // The setRoot operation can take place with a reset operation, 
 		  // and so we may not be in the context of LocPathIterator#nextNode, 
-		  // so we have to set up the variable context, execute the expression, 
+		  // so we have to set up the variable context, evaluate the expression, 
 		  // and then restore the variable context.
 
 		  if (isTopLevel)

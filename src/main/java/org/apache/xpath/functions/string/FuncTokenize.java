@@ -104,7 +104,16 @@ public class FuncTokenize extends Function3Args {
                                                           									ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator);   
             }
             catch (Exception ex) {
-                throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 
+            	String errMesg = ex.getMessage();        	
+            	
+            	String errCode = "FORX0004";
+            	if (errMesg.startsWith("No group")) {
+            	   errCode = "FORX0003";
+            	}
+            	
+            	errMesg = errCode + " : " + errMesg;  
+            	
+                throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
             }
             
             for (int idx = 0; idx < tokenList.size(); idx++) {
@@ -122,7 +131,7 @@ public class FuncTokenize extends Function3Args {
 
         	if (m_arg2 != null) {
         		flagsStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
-        		if (!RegexEvaluationSupport.isFlagStrValid(flagsStr)) {               
+        		if (!RegexEvaluationSupport.isRegexFlagStrValid(flagsStr)) {               
         			throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
         																						ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), srcLocator); 
         		}
@@ -186,7 +195,7 @@ public class FuncTokenize extends Function3Args {
       Matcher regexMatcher = null;
 
       try {
-          regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
+          regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(
                                                                                             pattern.toString()), flags != null ? 
                                                                                             flags.toString() : null, inputStr.toString());
       }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:21:36Z" fail="13" name="op-time-equal" pass="39" run="52" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:56:02Z" fail="1" name="op-time-equal" pass="51" run="52" statusUnknown="0">
    <testResult status="pass" testName="op-time-equal2args-1"/>
    <testResult status="pass" testName="op-time-equal2args-2"/>
    <testResult status="pass" testName="op-time-equal2args-3"/>
@@ -27,18 +27,18 @@
    <testResult status="pass" testName="K-TimeEQ-6"/>
    <testResult status="pass" testName="K-TimeEQ-7"/>
    <testResult status="pass" testName="K-TimeEQ-8"/>
-   <testResult status="fail" testName="K-TimeEQ-9"/>
-   <testResult status="fail" testName="K-TimeEQ-10"/>
-   <testResult status="fail" testName="K-TimeEQ-11"/>
-   <testResult status="fail" testName="K-TimeEQ-12"/>
-   <testResult status="fail" testName="K-TimeEQ-13"/>
-   <testResult status="fail" testName="K-TimeEQ-14"/>
-   <testResult status="fail" testName="K-TimeEQ-15"/>
-   <testResult status="fail" testName="K-TimeEQ-16"/>
-   <testResult status="fail" testName="K-TimeEQ-17"/>
-   <testResult status="fail" testName="K-TimeEQ-18"/>
-   <testResult status="fail" testName="K-TimeEQ-19"/>
-   <testResult status="fail" testName="K-TimeEQ-20"/>
+   <testResult status="pass" testName="K-TimeEQ-9"/>
+   <testResult status="pass" testName="K-TimeEQ-10"/>
+   <testResult status="pass" testName="K-TimeEQ-11"/>
+   <testResult status="pass" testName="K-TimeEQ-12"/>
+   <testResult status="pass" testName="K-TimeEQ-13"/>
+   <testResult status="pass" testName="K-TimeEQ-14"/>
+   <testResult status="pass" testName="K-TimeEQ-15"/>
+   <testResult status="pass" testName="K-TimeEQ-16"/>
+   <testResult status="pass" testName="K-TimeEQ-17"/>
+   <testResult status="pass" testName="K-TimeEQ-18"/>
+   <testResult status="pass" testName="K-TimeEQ-19"/>
+   <testResult status="pass" testName="K-TimeEQ-20"/>
    <testResult status="pass" testName="K2-TimeEQ-1"/>
    <testResult status="pass" testName="cbcl-time-equal-002"/>
    <testResult status="pass" testName="cbcl-time-equal-003"/>
