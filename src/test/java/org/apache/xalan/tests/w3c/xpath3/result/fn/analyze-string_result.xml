@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-13T09:50:11Z" fail="8" name="fn-analyze-string" pass="14" run="26" statusUnknown="4">
+   <testResult status="pass" testName="analyzeString-001"/>
+   <testResult status="pass" testName="analyzeString-002"/>
+   <testResult status="pass" testName="analyzeString-002a"/>
+   <testResult status="pass" testName="analyzeString-003"/>
+   <testResult status="pass" testName="analyzeString-004"/>
+   <testResult status="pass" testName="analyzeString-005"/>
+   <testResult status="pass" testName="analyzeString-006"/>
+   <testResult status="pass" testName="analyzeString-007"/>
+   <testResult status="pass" testName="analyzeString-008"/>
+   <testResult testName="analyzeString-009"/>
+   <testResult testName="analyzeString-010"/>
+   <testResult testName="analyzeString-011"/>
+   <testResult status="pass" testName="analyzeString-012"/>
+   <testResult testName="analyzeString-013"/>
+   <testResult status="fail" testName="analyzeString-014"/>
+   <testResult status="fail" testName="analyzeString-015"/>
+   <testResult status="fail" testName="analyzeString-016"/>
+   <testResult status="fail" testName="analyzeString-017"/>
+   <testResult status="pass" testName="analyzeString-017a"/>
+   <testResult status="fail" testName="analyzeString-018"/>
+   <testResult status="pass" testName="analyzeString-019"/>
+   <testResult status="pass" testName="analyzeString-022"/>
+   <testResult status="fail" testName="analyzeString-023"/>
+   <testResult status="pass" testName="analyzeString-901"/>
+   <testResult status="fail" testName="analyzeString-902"/>
+   <testResult status="fail" testName="analyzeString-903"/>
+</testrun>

@@ -38,13 +38,13 @@ public class XPath3FnFunction1Tests extends W3CXPath3TestsUtil {
     	
         m_test_set_fileArr = new String[] { "compare.xml", "concat.xml", "contains.xml", "contains-token.xml", 
         		                            "current-date.xml", "current-dateTime.xml", "current-time.xml",
-        		                            "translate.xml" };
+        		                            "translate.xml", "analyze-string.xml" };
         
         m_resultSubFolderName = "fn";
         
         m_test_set_result_fileArr = new String[] { "compare_result.xml", "concat_result.xml", "contains_result.xml", "contains-token_result.xml", 
         		                                   "current-date_result.xml", "current-dateTime_result.xml", "current-time_result.xml",
-        		                                   "translate_result.xml" };
+        		                                   "translate_result.xml", "analyze-string_result.xml" };
     }
 
     @AfterClass

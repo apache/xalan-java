@@ -42,6 +42,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
@@ -165,6 +166,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     public static final String URI = "uri";
     
     public static final String SUCCESS = "success";
+    
+    public static final String TRUE = "true";
+    
+    public static final String IGNORE_PREFIXES = "ignore-prefixes";
     
     public static final String DESC = "desc";
     
@@ -624,7 +629,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								String nodeName2 = resultElem1.getNodeName();
 								String expectedResultStr = null;
 								if (ASSERT_XML.equals(nodeName2)) {
-								   String fileName = resultElem1.getAttribute("file");
+								   String fileName = resultElem1.getAttribute(FILE);
 								   if (!"".equals(fileName)) {
 									   URI fileUri = new URI(fileName);
 									   URL resolvedUrl = null;
@@ -890,6 +895,16 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 				
                                 				expectedResultStr = expectedResultStr.trim();                                				
                                 				String resultXmlStr = null;
+                                				
+                                				if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                					String ignorePrefixesStr = resultElem1.getAttribute(IGNORE_PREFIXES);
+                                					if (TRUE.equals(ignorePrefixesStr)) {
+                                					   expectedResultStr = expectedResultStr.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
+                                					   expectedResultStr = expectedResultStr.replace("fn:", "");
+                                					}
+                                					
+                                					expectedResultStr = expectedResultStr.replaceAll(">\\s*<", "><");
+                                				}
                                 				                                				
                                 				try {                                					                                				                                					                                					
                                     				byte[] byteArr = expectedResultStr.getBytes(StandardCharsets.UTF_8);
@@ -900,6 +915,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 					Node nodeA = document1.getDocumentElement();
                                 					
                                 					resultXmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
+                                					
+                                					if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                					   resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
+                                					}                                					
+                                					
                                 					byte[] byteArr1 = resultXmlStr.getBytes(StandardCharsets.UTF_8);
                                     				InputStream inpStream2 = new ByteArrayInputStream(byteArr1);                                    				
                                 					Document document2 = m_xmlDocumentBuilder.parse(inpStream2);
@@ -1206,7 +1226,19 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         				  DTM dtm = xctxt.getDTM(nodeHandle);
                                         				  Node node3 = dtm.getNode(nodeHandle);
 
-                                        				  String resultXmlStr = null;                                        				  
+                                        				  String resultXmlStr = null;
+                                        				  
+                                        				  if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                        					  String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
+                                        					  if (TRUE.equals(ignorePrefixesStr)) {
+                                        						  expectedResultStr2 = expectedResultStr2.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
+                                        						  expectedResultStr2 = expectedResultStr2.replace("fn:", "");
+                                        					  }
+                                        					  
+                                        					  if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                        						  expectedResultStr2 = expectedResultStr2.replaceAll(">\\s*<", "><");
+                                        					  }
+                                        				  }
 
                                         				  try {                                					                                				                                					                                					
                                         					  byte[] byteArr = expectedResultStr2.getBytes(StandardCharsets.UTF_8);
@@ -1217,6 +1249,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         					  Node nodeA = document1.getDocumentElement();
 
                                         					  resultXmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
+                                        					  
+                                        					  if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                           					     resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
+                                           					  }
+                                        					  
                                         					  byte[] byteArr1 = resultXmlStr.getBytes(StandardCharsets.UTF_8);
                                         					  InputStream inpStream2 = new ByteArrayInputStream(byteArr1);                                    				
                                         					  Document document2 = m_xmlDocumentBuilder.parse(inpStream2);
@@ -1532,7 +1569,19 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         				  DTM dtm = xctxt.getDTM(nodeHandle);
                                         				  Node node3 = dtm.getNode(nodeHandle);
 
-                                        				  String resultXmlStr = null;                                        				  
+                                        				  String resultXmlStr = null;                                        				                                          				  
+                                        				  
+                                        				  if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                        					  String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
+                                        					  if (TRUE.equals(ignorePrefixesStr)) {
+                                        						  expectedResultStr2 = expectedResultStr2.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
+                                        						  expectedResultStr2 = expectedResultStr2.replace("fn:", "");
+                                        					  }
+                                        					  
+                                        					  if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                        						  expectedResultStr2 = expectedResultStr2.replaceAll(">\\s*<", "><");
+                                             				  }
+                                        				  }
 
                                         				  try {                                					                                				                                					                                					
                                         					  byte[] byteArr = expectedResultStr2.getBytes(StandardCharsets.UTF_8);
@@ -1543,6 +1592,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         					  Node nodeA = document1.getDocumentElement();
 
                                         					  resultXmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
+                                        					  
+                                        					  if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
+                                            					 resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
+                                            				  }
+                                        					  
                                         					  byte[] byteArr1 = resultXmlStr.getBytes(StandardCharsets.UTF_8);
                                         					  InputStream inpStream2 = new ByteArrayInputStream(byteArr1);                                    				
                                         					  Document document2 = m_xmlDocumentBuilder.parse(inpStream2);

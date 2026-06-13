@@ -38,7 +38,6 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
-import org.apache.xpath.regex.Pattern;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -162,15 +161,14 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         		RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
         		int startIdx1 = firstRegexMatchInfo.getStartIdx();
         		if (startIdx1 == 0) {
-        			// Regex has matched a substring, which is prefix of an input string 
-        			
+        			// Regex has matched a substring, which is prefix of an input string         			
         			for (int idx = 0; idx < size1; idx++) {
         				RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
         				int idx1 = matchInfo.getStartIdx();
         				int idx2 = matchInfo.getEndIdx();
         				String matchStr = strToBeAnalyzed.substring(idx1, idx2);
         				
-        				createXslMatchNodeToResult(document, analyzeStrResultElem, matchStr, regexStr); 
+        				appendXslMatchNodeToResult(document, analyzeStrResultElem, matchStr, regexStr, flagsStr);
 
         				if (isXslNonMatchStringAvailable(strToBeAnalyzed, idx2)) {
         					String nonMatchStr = null;
@@ -182,17 +180,20 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         						nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
         					}
         					
-        					createXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+        					if ((nonMatchStr != null) && (nonMatchStr.length() > 0)) {
+        					   appendXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+        					}
         				}        		
         			}	
         		}
         		else if (startIdx1 > 0) {
-        			// An input string's prefix has not been matched by regex
-        			
+        			// An input string's prefix has not been matched by regex        			
         			RegexMatchInfo pof1 = regexMatchInfoList.get(0);
         			String nonMatchStr = strToBeAnalyzed.substring(0, pof1.getStartIdx());
         			
-        			createXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+        			if ((nonMatchStr != null) && (nonMatchStr.length() > 0)) {
+ 					   appendXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+ 					}
 
         			for (int idx = 0; idx < size1; idx++) {
         				RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
@@ -200,7 +201,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         				int idx2 = matchInfo.getEndIdx();
         				String matchStr = strToBeAnalyzed.substring(idx1, idx2);
         				
-        				createXslMatchNodeToResult(document, analyzeStrResultElem, matchStr, regexStr);
+        				appendXslMatchNodeToResult(document, analyzeStrResultElem, matchStr, regexStr, flagsStr);
 
         				if (isXslNonMatchStringAvailable(strToBeAnalyzed, idx2)) {
         					if ((idx + 1) == size1) {
@@ -211,13 +212,15 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         						nonMatchStr = strToBeAnalyzed.substring(idx2, matchInfoNext.getStartIdx());   
         					}
         					
-        					createXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+        					if ((nonMatchStr != null) && (nonMatchStr.length() > 0)) {
+         					   appendXslNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
+         					}
         				}        			
         			}
         		}
             }
         	else {
-        		createXslNonMatchNodeToResult(document, analyzeStrResultElem, strToBeAnalyzed);
+        		appendXslNonMatchNodeToResult(document, analyzeStrResultElem, strToBeAnalyzed);
         	}
         }
         
@@ -324,7 +327,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 *                                    child of XML element named {http://www.w3.org/2005/xpath-functions}non-match.
 	 * @param regexStr					  Regex string value  
 	 */
-	private void createXslNonMatchNodeToResult(Document document, Element analyzeStrResultElem, String nonMatchStr) {
+	private void appendXslNonMatchNodeToResult(Document document, Element analyzeStrResultElem, String nonMatchStr) {
 		
 		Element nonMatchElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_NON_MATCH_STRING);
 		Text txtNode2 = document.createTextNode(nonMatchStr);
@@ -341,30 +344,97 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 * @param subsequenceStr              An XML DOM text node's string value that is appended as 
 	 *                                    child of XML element named {http://www.w3.org/2005/xpath-functions}match.
 	 * @param regexStr					  Regex string value 
+	 * @param flagsStr                    An optional, regex flags string
 	 */
-	private void createXslMatchNodeToResult(Document document, Element analyzeStrResultElem, 
-			                                                                            String subsequenceStr, String regexStr) {
+	private void appendXslMatchNodeToResult(Document document, Element analyzeStrResultElem, 
+			                                                                  String subsequenceStr, 
+			                                                                  String regexStr, String flagsStr) {		
 		
 		Element xslMatchElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_MATCH_STRING);
 		
-		Pattern pattern = Pattern.compile(regexStr);
-		Matcher matcher = pattern.matcher(subsequenceStr);
+		Matcher matcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtrOp(regexStr), 
+				                                                                                                              flagsStr, subsequenceStr);
 		
 		int grpCount = matcher.groupCount();
 		
 		if (grpCount > 0) {
 		   if (matcher.matches()) {
+			   Element grpElemPrev = null;
+			   int grpPrevStart = -1;
+			   int grpPrevEnd = -1;
+			   
 			   for (int idx = 0; idx < grpCount; idx++) {			  
-				  Element grpElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_GROUP_STRING);
-				  grpElem.setAttribute(Constants.ELEMNAME_ANALYZESTRING_NR_STRING, String.valueOf(idx + 1));
-				  String grpStrValue = matcher.group(idx + 1);
-				  Text grpTxtNode = document.createTextNode(grpStrValue);
-				  grpElem.appendChild(grpTxtNode);
-				  xslMatchElem.appendChild(grpElem);
-				  if (idx < (grpCount - 1)) {
-					 Text hyphenTxtNode = document.createTextNode("-");
-					 xslMatchElem.appendChild(hyphenTxtNode);
-				  }
+				   // The regex current, captured group element reference
+				   Element grpElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, Constants.ELEMNAME_ANALYZESTRING_GROUP_STRING);
+				   grpElem.setAttribute(Constants.ELEMNAME_ANALYZESTRING_NR_STRING, String.valueOf(idx + 1));
+				   
+				   // The regex current, captured group matched text
+				   String grpStrValue = matcher.group(idx + 1);
+				   
+				   // The regex current, captured group boundary indices
+				   int grpStart = matcher.start(idx + 1);
+				   int grpEnd = matcher.end(idx + 1);
+
+				   if (idx == 0) {
+					   grpElemPrev = grpElem;
+					   grpPrevStart = grpStart;
+					   grpPrevEnd = grpEnd; 
+					   if (grpStart > 0) {
+						   String prefix = subsequenceStr.substring(0, grpStart);
+						   Text txtNode = document.createTextNode(prefix);
+						   xslMatchElem.appendChild(txtNode);
+					   }
+					   
+					   boolean prefix1 = false;
+					   if ((idx + 2) <= grpCount) {
+						  if (isRegexGroupNested(matcher, idx + 2)) {
+							 int a1 = matcher.start(idx + 2);
+							 if (a1 > 0) {
+							    String prefix = subsequenceStr.substring(0, a1);
+							    Text txtNode = document.createTextNode(prefix);
+							    grpElem.appendChild(txtNode);
+							    
+							    prefix1 = true;
+							 }
+						  }
+					   }
+					       
+					   if (!prefix1) {
+					      Text txtNode = document.createTextNode(grpStrValue);				  
+					      grpElem.appendChild(txtNode);
+				       }
+					   
+					   xslMatchElem.appendChild(grpElem);
+				   }
+				   else if (isRegexGroupNested(matcher, idx + 1)) {
+					   String grpText = subsequenceStr.substring(grpStart, grpEnd);
+					   Text txtNode = document.createTextNode(grpText);
+					   grpElem.appendChild(txtNode);
+
+					   grpElemPrev.appendChild(grpElem);
+
+					   grpElemPrev = grpElem;
+					   grpPrevStart = grpStart;
+					   grpPrevEnd = grpEnd;
+				   }
+				   else {
+					   if (grpPrevEnd < grpStart) {
+						   String prefix = subsequenceStr.substring(grpPrevEnd, grpStart);
+						   Text txtNode = document.createTextNode(prefix);
+						   xslMatchElem.appendChild(txtNode);
+					   }
+					   
+					   if (grpStrValue != null) {
+						   Text txtNode = document.createTextNode(grpStrValue);				  
+						   grpElem.appendChild(txtNode);
+					   }
+					   
+					   xslMatchElem.appendChild(grpElem);
+					   
+					   grpElemPrev = grpElem;
+					   grpPrevStart = grpStart;
+					   grpPrevEnd = grpEnd;
+				   }			   				  				  
 			   }
 			   
 			   analyzeStrResultElem.appendChild(xslMatchElem);
@@ -376,7 +446,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 		   Text txtNode1 = document.createTextNode(subsequenceStr);
 		   xslMatchElem.appendChild(txtNode1);
 		   analyzeStrResultElem.appendChild(xslMatchElem);
-		}				
+		}
+		
 	}
 
     /**
@@ -408,5 +479,64 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         
 		return result;
 	}
+	
+	/**
+	 * Method definition, to check whether a regex captured group
+	 * is nested within another regex captured group.
+	 * 
+	 * @param matcher                   The regex matcher object instance
+	 * @param grpId                     The regex group number to check, whether
+	 *                                  its nested within another regex group.
+	 * @return
+	 */
+	public boolean isRegexGroupNested(Matcher matcher, int grpId) {
+		
+        boolean result = false;
+        
+		// If regex group to be checked didn't match anything, the 
+        // regex group cannot be nested.
+        if (matcher.start(grpId) == -1) {
+            return false;
+        }
+
+        int grpStart = matcher.start(grpId);
+        int grpEnd = matcher.end(grpId);
+
+        // Loop through all other regex groups, to see if any enclose 
+        // the regex group to be checked.
+        int grpCount = matcher.groupCount();
+        for (int idx = 1; idx <= grpCount; idx++) {
+            if (idx == grpId) {
+               // Skip comparing regex group to itself
+            	
+               continue; 
+            }
+
+            int regexParentGrpStart = matcher.start(idx);
+            int regexParentGrpEnd = matcher.end(idx);
+            
+            if (regexParentGrpStart == -1) {
+               // Skip regex groups that did'nt participate within regex match
+            	
+               continue;
+            }
+
+            /**
+             * Check, whether for the regex group to be checked,
+             * its boundary indices, occur within regex parent
+             * group indices.
+             */
+            boolean regexGrpEnclosed = ((grpStart >= regexParentGrpStart) && (grpEnd <= regexParentGrpEnd));
+            boolean regexGrpIdentical = ((grpStart == regexParentGrpStart) && (grpEnd == regexParentGrpEnd));
+
+            if (regexGrpEnclosed && !regexGrpIdentical) {
+               result = true;
+               
+               break;
+            }
+        }
+        
+        return result;
+    }
 
 }
