@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:55:38Z" fail="60" name="prod-InstanceofExpr" pass="213" run="273" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:10:46Z" fail="58" name="prod-InstanceofExpr" pass="215" run="273" statusUnknown="0">
    <testResult status="pass" testName="instanceof1"/>
    <testResult status="pass" testName="instanceof2"/>
    <testResult status="pass" testName="instanceof3"/>
@@ -52,7 +52,7 @@
    <testResult status="pass" testName="instanceof51"/>
    <testResult status="pass" testName="instanceof52"/>
    <testResult status="fail" testName="instanceof53"/>
-   <testResult status="fail" testName="instanceof54"/>
+   <testResult status="pass" testName="instanceof54"/>
    <testResult status="pass" testName="instanceof55"/>
    <testResult status="pass" testName="instanceof56"/>
    <testResult status="pass" testName="instanceof57"/>
@@ -63,7 +63,7 @@
    <testResult status="pass" testName="instanceof62"/>
    <testResult status="pass" testName="instanceof63"/>
    <testResult status="fail" testName="instanceof64"/>
-   <testResult status="fail" testName="instanceof65"/>
+   <testResult status="pass" testName="instanceof65"/>
    <testResult status="pass" testName="instanceof66"/>
    <testResult status="pass" testName="instanceof67"/>
    <testResult status="pass" testName="instanceof68"/>

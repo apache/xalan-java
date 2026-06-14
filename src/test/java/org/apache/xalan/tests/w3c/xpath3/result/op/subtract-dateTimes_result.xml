@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:56:01Z" fail="11" name="op-subtract-dateTimes" pass="19" run="30" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:06Z" fail="10" name="op-subtract-dateTimes" pass="20" run="30" statusUnknown="0">
    <testResult status="fail" testName="op-subtract-dateTimes-yielding-DTD-1"/>
    <testResult status="pass" testName="op-subtract-dateTimes-yielding-DTD-2"/>
    <testResult status="pass" testName="op-subtract-dateTimes-yielding-DTD-3"/>
    <testResult status="pass" testName="op-subtract-dateTimes-yielding-DTD-4"/>
    <testResult status="pass" testName="op-subtract-dateTimes-yielding-DTD-5"/>
-   <testResult status="fail" testName="op-subtract-dateTimes-yielding-DTD-6"/>
+   <testResult status="pass" testName="op-subtract-dateTimes-yielding-DTD-6"/>
    <testResult status="pass" testName="op-subtract-dateTimes-yielding-DTD-7"/>
    <testResult status="fail" testName="op-subtract-dateTimes-yielding-DTD-8"/>
    <testResult status="fail" testName="op-subtract-dateTimes-yielding-DTD-9"/>

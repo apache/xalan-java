@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:58:12Z" fail="5" name="fn-hours-from-time" pass="22" run="27" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:12:32Z" fail="5" name="fn-hours-from-time" pass="22" run="27" statusUnknown="0">
    <testResult status="pass" testName="fn-hours-from-time1args-1"/>
    <testResult status="pass" testName="fn-hours-from-time1args-2"/>
    <testResult status="pass" testName="fn-hours-from-time1args-3"/>

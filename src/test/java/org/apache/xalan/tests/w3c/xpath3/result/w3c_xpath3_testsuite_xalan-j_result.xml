@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-13T09:51:56Z" desc="W3C XPath 3.1 test suite results" fail="1818" pass="6342" run="8171" skipped="9" success="77.62%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-14T17:12:59Z" desc="W3C XPath 3.1 test suite results" fail="1800" pass="6427" run="8238" skipped="9" success="78.02%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
   </array>
   <fn>
-    <fn-abs fail="7" pass="165" run="172" success="95.93%"/>
+    <fn-abs fail="3" pass="171" run="174" success="98.28%"/>
     <fn-adjust-date-to-timezone fail="15" pass="26" run="41" success="63.41%"/>
     <fn-adjust-dateTime-to-timezone fail="14" pass="34" run="48" success="70.83%"/>
     <fn-adjust-time-to-timezone fail="13" pass="29" run="42" success="69.05%"/>
     <fn-analyze-string fail="8" pass="14" run="26" success="53.85%"/>
     <fn-boolean fail="29" pass="109" run="138" success="78.99%"/>
-    <fn-ceiling fail="8" pass="73" run="81" success="90.12%"/>
+    <fn-ceiling fail="5" pass="76" run="81" success="93.83%"/>
     <fn-codepoint-equal fail="0" pass="30" run="30" success="100.0%"/>
     <fn-compare fail="15" pass="51" run="66" success="77.27%"/>
     <fn-concat fail="2" pass="89" run="91" success="97.8%"/>
@@ -40,6 +40,7 @@
     <fn-in-scope-prefixes fail="1" pass="4" run="5" skipped="3" success="80.0%"/>
     <fn-index-of fail="12" pass="41" run="53" success="77.36%"/>
     <fn-matches fail="35" pass="125" run="160" success="78.12%"/>
+    <fn-number fail="12" pass="53" run="65" success="81.54%"/>
     <fn-one-or-more fail="6" pass="47" run="53" success="88.68%"/>
     <fn-replace fail="19" pass="69" run="88" skipped="1" success="78.41%"/>
     <fn-tokenize fail="15" pass="50" run="65" success="76.92%"/>
@@ -70,13 +71,13 @@
     <math-tan fail="1" pass="10" run="11" success="90.91%"/>
   </math>
   <op>
-    <op-add-dayTimeDuration-to-dateTime fail="7" pass="16" run="23" success="69.57%"/>
-    <op-add-dayTimeDuration-to-date fail="3" pass="18" run="21" success="85.71%"/>
-    <op-add-dayTimeDuration-to-time fail="5" pass="19" run="24" success="79.17%"/>
-    <op-add-dayTimeDurations fail="4" pass="20" run="24" success="83.33%"/>
-    <op-add-yearMonthDuration-to-dateTime fail="7" pass="18" run="25" success="72.0%"/>
-    <op-add-yearMonthDuration-to-date fail="5" pass="18" run="23" success="78.26%"/>
-    <op-add-yearMonthDurations fail="3" pass="21" run="24" success="87.5%"/>
+    <op-add-dayTimeDuration-to-dateTime fail="6" pass="17" run="23" success="73.91%"/>
+    <op-add-dayTimeDuration-to-date fail="2" pass="19" run="21" success="90.48%"/>
+    <op-add-dayTimeDuration-to-time fail="4" pass="20" run="24" success="83.33%"/>
+    <op-add-dayTimeDurations fail="3" pass="21" run="24" success="87.5%"/>
+    <op-add-yearMonthDuration-to-dateTime fail="6" pass="19" run="25" success="76.0%"/>
+    <op-add-yearMonthDuration-to-date fail="4" pass="19" run="23" success="82.61%"/>
+    <op-add-yearMonthDurations fail="2" pass="22" run="24" success="91.67%"/>
     <op-anyURI-equal fail="4" pass="18" run="22" success="81.82%"/>
     <op-anyURI-greater-than fail="0" pass="10" run="10" success="100.0%"/>
     <op-anyURI-less-than fail="0" pass="8" run="8" success="100.0%"/>
@@ -93,9 +94,9 @@
     <op-dayTimeDuration-greater-than fail="4" pass="24" run="28" success="85.71%"/>
     <op-dayTimeDuration-less-than fail="4" pass="24" run="28" success="85.71%"/>
     <op-divide-dayTimeDuration-by-dayTimeDuration fail="15" pass="10" run="25" success="40.0%"/>
-    <op-divide-dayTimeDuration fail="10" pass="27" run="37" success="72.97%"/>
+    <op-divide-dayTimeDuration fail="9" pass="28" run="37" success="75.68%"/>
     <op-divide-yearMonthDuration-by-yearMonthDuration fail="4" pass="19" run="23" success="82.61%"/>
-    <op-divide-yearMonthDuration fail="6" pass="22" run="28" success="78.57%"/>
+    <op-divide-yearMonthDuration fail="5" pass="23" run="28" success="82.14%"/>
     <op-duration-equal fail="24" pass="120" run="144" success="83.33%"/>
     <op-gDay-equal fail="9" pass="36" run="45" success="80.0%"/>
     <op-gMonth-equal fail="5" pass="34" run="39" success="87.18%"/>
@@ -104,8 +105,8 @@
     <op-gYearMonth-equal fail="7" pass="33" run="40" success="82.5%"/>
     <op-intersect fail="20" pass="10" run="30" success="33.33%"/>
     <op-is-same-node fail="14" pass="8" run="22" success="36.36%"/>
-    <op-multiply-dayTimeDuration fail="7" pass="26" run="33" success="78.79%"/>
-    <op-multiply-yearMonthDuration fail="12" pass="28" run="40" success="70.0%"/>
+    <op-multiply-dayTimeDuration fail="6" pass="27" run="33" success="81.82%"/>
+    <op-multiply-yearMonthDuration fail="11" pass="29" run="40" success="72.5%"/>
     <op-node-after fail="12" pass="14" run="26" success="53.85%"/>
     <op-node-before fail="12" pass="14" run="26" success="53.85%"/>
     <op-numeric-add fail="33" pass="98" run="131" success="74.81%"/>
@@ -122,16 +123,16 @@
     <op-string-equal fail="1" pass="8" run="9" success="88.89%"/>
     <op-string-greater-than fail="1" pass="8" run="9" success="88.89%"/>
     <op-string-less-than fail="1" pass="9" run="10" success="90.0%"/>
-    <op-subtract-dates fail="11" pass="19" run="30" success="63.33%"/>
-    <op-subtract-dateTimes fail="11" pass="19" run="30" success="63.33%"/>
-    <op-subtract-dayTimeDuration-from-dateTime fail="3" pass="17" run="20" success="85.0%"/>
-    <op-subtract-dayTimeDuration-from-date fail="3" pass="17" run="20" success="85.0%"/>
-    <op-subtract-dayTimeDuration-from-time fail="7" pass="19" run="26" success="73.08%"/>
-    <op-subtract-dayTimeDurations fail="7" pass="25" run="32" success="78.12%"/>
-    <op-subtract-times fail="13" pass="20" run="33" success="60.61%"/>
-    <op-subtract-yearMonthDuration-from-dateTime fail="3" pass="17" run="20" success="85.0%"/>
-    <op-subtract-yearMonthDuration-from-date fail="3" pass="19" run="22" success="86.36%"/>
-    <op-subtract-yearMonthDurations fail="7" pass="23" run="30" success="76.67%"/>
+    <op-subtract-dates fail="10" pass="20" run="30" success="66.67%"/>
+    <op-subtract-dateTimes fail="10" pass="20" run="30" success="66.67%"/>
+    <op-subtract-dayTimeDuration-from-dateTime fail="2" pass="18" run="20" success="90.0%"/>
+    <op-subtract-dayTimeDuration-from-date fail="2" pass="18" run="20" success="90.0%"/>
+    <op-subtract-dayTimeDuration-from-time fail="6" pass="20" run="26" success="76.92%"/>
+    <op-subtract-dayTimeDurations fail="6" pass="26" run="32" success="81.25%"/>
+    <op-subtract-times fail="12" pass="21" run="33" success="63.64%"/>
+    <op-subtract-yearMonthDuration-from-dateTime fail="2" pass="18" run="20" success="90.0%"/>
+    <op-subtract-yearMonthDuration-from-date fail="2" pass="20" run="22" success="90.91%"/>
+    <op-subtract-yearMonthDurations fail="6" pass="24" run="30" success="80.0%"/>
     <op-time-equal fail="1" pass="51" run="52" success="98.08%"/>
     <op-time-greater-than fail="4" pass="34" run="38" success="89.47%"/>
     <op-time-less-than fail="8" pass="30" run="38" success="78.95%"/>
@@ -159,7 +160,7 @@
     <prod-GeneralComp.ne fail="35" pass="54" run="89" success="60.67%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
     <prod-InlineFunctionExpr fail="16" pass="10" run="26" success="38.46%"/>
-    <prod-InstanceofExpr fail="60" pass="213" run="273" success="78.02%"/>
+    <prod-InstanceofExpr fail="58" pass="215" run="273" success="78.75%"/>
     <prod-LetClause fail="8" pass="15" run="23" success="65.22%"/>
     <prod-Literal fail="46" pass="68" run="114" success="59.65%"/>
     <prod-OrExpr fail="125" pass="204" run="329" success="62.01%"/>

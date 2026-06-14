@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:56:02Z" fail="13" name="op-subtract-times" pass="20" run="33" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:06Z" fail="12" name="op-subtract-times" pass="21" run="33" statusUnknown="0">
    <testResult status="pass" testName="op-subtract-times2args-1"/>
    <testResult status="pass" testName="op-subtract-times2args-2"/>
    <testResult status="pass" testName="op-subtract-times2args-3"/>
@@ -9,7 +9,7 @@
    <testResult status="fail" testName="op-subtract-times-3"/>
    <testResult status="pass" testName="op-subtract-times-4"/>
    <testResult status="pass" testName="op-subtract-times-5"/>
-   <testResult status="fail" testName="op-subtract-times-6"/>
+   <testResult status="pass" testName="op-subtract-times-6"/>
    <testResult status="pass" testName="op-subtract-times-7"/>
    <testResult status="pass" testName="op-subtract-times-8"/>
    <testResult status="fail" testName="op-subtract-times-9"/>

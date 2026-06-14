@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:55:54Z" fail="2" name="op-boolean-equal" pass="47" run="49" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:02Z" fail="2" name="op-boolean-equal" pass="47" run="49" statusUnknown="0">
    <testResult status="pass" testName="op-boolean-equal2args-1"/>
    <testResult status="pass" testName="op-boolean-equal2args-2"/>
    <testResult status="pass" testName="op-boolean-equal2args-3"/>

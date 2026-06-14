@@ -29,12 +29,12 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
-import org.apache.xpath.types.XSPositiveInteger;
 import org.apache.xpath.types.XSShort;
 
 import xml.xpath31.processor.types.XSDecimal;
@@ -43,6 +43,7 @@ import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of an XPath 3.1 function fn:abs.
@@ -77,8 +78,11 @@ public class FuncAbs extends FunctionDef1Arg
 		XObject result = null;
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-
-		if (m_arg0 instanceof NodeTest) {
+		
+		if (m_arg0 == null) {
+		   throw new TransformerException("XPST0017 : An XPath 3.1 function call 'abs' has been called with no argument.", srcLocator);
+		}
+		else if (m_arg0 instanceof NodeTest) {
 			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
 				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function 'abs', but the "
 						                                                                                                       + "supplied type is a function type, "
@@ -97,7 +101,7 @@ public class FuncAbs extends FunctionDef1Arg
 		   arg0Obj = m_arg0.execute(xctxt);
 		}
 		catch (Exception ex) {		   
-		   throw new TransformerException("FORG0001 : The argument provided to XPath 3.1 function call 'abs' cannot be evaluated to a number.", srcLocator);
+		   throw new TransformerException("FORG0001 : An XPath 3.1 function call 'abs' argument is not numeric.", srcLocator);
 		}
 		
 		if (arg0Obj instanceof XSFloat) {
@@ -163,7 +167,7 @@ public class FuncAbs extends FunctionDef1Arg
 			XSNonPositiveInteger xsNonPositiveIntegerArg = (XSNonPositiveInteger)arg0Obj;
 			BigDecimal bigDecimal1 = xsNonPositiveIntegerArg.getValue();
 			
-			result = new XSPositiveInteger((bigDecimal1.abs()).toBigInteger());
+			result = new XSNonNegativeInteger((bigDecimal1.abs()).toBigInteger());
 		}		
 		else if (arg0Obj instanceof XSInteger) {
 			XSInteger xsIntegerArg = (XSInteger)arg0Obj;			
@@ -205,13 +209,17 @@ public class FuncAbs extends FunctionDef1Arg
 			result = new ResultSequence(); 
 		}
 		else {
+			if ((arg0Obj instanceof XSString) || (arg0Obj instanceof XString)) {
+			   throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'abs' argument is not numeric.", srcLocator);
+			}
+			
 			String strValueOfArg = (getArg0AsString(xctxt)).toString();
 			
 			try {
 			   result = new XSDouble(Math.abs(Double.valueOf(strValueOfArg)));
 			}
 			catch (NumberFormatException nfe) {
-			   throw new TransformerException("XPTY0004 : The argument provided to XPath 3.1 function call 'abs' cannot be evaluated to a number.", srcLocator);
+			   throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'abs' argument is not numeric.", srcLocator);
 			}
 		}
 

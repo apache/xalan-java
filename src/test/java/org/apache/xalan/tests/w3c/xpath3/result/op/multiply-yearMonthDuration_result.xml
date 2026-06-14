@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:56:01Z" fail="12" name="op-multiply-yearMonthDuration" pass="28" run="40" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:05Z" fail="11" name="op-multiply-yearMonthDuration" pass="29" run="40" statusUnknown="0">
    <testResult status="pass" testName="op-multiply-yearMonthDuration2args-1"/>
    <testResult status="pass" testName="op-multiply-yearMonthDuration2args-2"/>
    <testResult status="pass" testName="op-multiply-yearMonthDuration2args-3"/>
@@ -9,7 +9,7 @@
    <testResult status="pass" testName="op-multiply-yearMonthDuration-3"/>
    <testResult status="pass" testName="op-multiply-yearMonthDuration-4"/>
    <testResult status="pass" testName="op-multiply-yearMonthDuration-5"/>
-   <testResult status="fail" testName="op-multiply-yearMonthDuration-6"/>
+   <testResult status="pass" testName="op-multiply-yearMonthDuration-6"/>
    <testResult status="pass" testName="op-multiply-yearMonthDuration-7"/>
    <testResult status="pass" testName="op-multiply-yearMonthDuration-8"/>
    <testResult status="fail" testName="op-multiply-yearMonthDuration-9"/>

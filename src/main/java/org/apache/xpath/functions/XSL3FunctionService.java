@@ -76,10 +76,10 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.composite.XPathSequenceTypeData;
-import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
@@ -140,9 +140,10 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * This class definition, provides support to evaluate XPath schema 
- * constructor function calls, evaluating XPath named function references, 
- * and evaluating XSL stylesheet xsl:function calls.
+ * Class definition, that provides implementation support to evaluate 
+ * XPath 3.1 built-in schema type constructor function calls, evaluating 
+ * XPath 3.1 named function references, and evaluating XSL stylesheet 
+ * xsl:function call.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

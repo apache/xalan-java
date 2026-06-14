@@ -761,7 +761,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										   expectedResultStr = expectedResultStr.substring(1, expectedResultStr.length() - 1);
 										}
 										
-										java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+										java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
 										if ((pattern.matcher(expectedResultStr)).matches()) {
 											expectedResultStr = "xs:decimal('" + expectedResultStr + "')";
 											
@@ -1103,7 +1103,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                         			 expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
                                         		  }
 
-                                        		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+                                        		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
                                         		  if ((pattern.matcher(expectedResultStr2)).matches()) {
                                         			  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
                                         		  }
@@ -1450,7 +1450,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                          			 expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
                                          		  }
 
-                                         		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("([0-9]{0,})(\\.)?([0-9]{0,})");
+                                         		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
                                          		  if ((pattern.matcher(expectedResultStr2)).matches()) {
                                          			  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
                                          		  }

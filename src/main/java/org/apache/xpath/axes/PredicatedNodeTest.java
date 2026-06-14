@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.axes;
 
 import org.apache.xml.dtm.DTM;
@@ -32,6 +29,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
 
 public abstract class PredicatedNodeTest extends NodeTest implements SubContextList
@@ -345,9 +343,11 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
         XObject pred = m_predicates[i].execute(xctxt);
         
         if (pred instanceof XSInteger) {
-           // added for XPath 3.1
            String strValue = ((XSInteger)pred).stringValue();
            pred = new XNumber((Double.valueOf(strValue)).doubleValue());
+        }
+        else if (pred instanceof XSDouble) {
+           pred = new XNumber(((XSDouble)pred).doubleValue()); 
         }
         
         // System.out.println("\nBack from executing predicate expression - waiting count: "+m_lpi.getWaitingCount());

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-12T11:55:36Z" fail="7" name="fn-abs" pass="165" run="172" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:10:44Z" fail="3" name="fn-abs" pass="171" run="174" statusUnknown="0">
    <testResult status="pass" testName="fn-absint1args-1"/>
    <testResult status="pass" testName="fn-absint1args-2"/>
    <testResult status="pass" testName="fn-absint1args-3"/>
@@ -31,6 +31,7 @@
    <testResult status="pass" testName="fn-absulng1args-3"/>
    <testResult status="pass" testName="fn-absnpi1args-1"/>
    <testResult status="pass" testName="fn-absnpi1args-2"/>
+   <testResult status="pass" testName="fn-absnpi1args-3"/>
    <testResult status="pass" testName="fn-absnni1args-1"/>
    <testResult status="pass" testName="fn-absnni1args-2"/>
    <testResult status="pass" testName="fn-absnni1args-3"/>
@@ -47,6 +48,7 @@
    <testResult status="pass" testName="fn-abs-more-args-017"/>
    <testResult status="pass" testName="fn-abs-more-args-018"/>
    <testResult status="pass" testName="fn-abs-more-args-019"/>
+   <testResult status="pass" testName="fn-abs-more-args-020"/>
    <testResult status="pass" testName="fn-abs-more-args-021"/>
    <testResult status="pass" testName="fn-abs-more-args-022"/>
    <testResult status="pass" testName="fn-abs-more-args-023"/>
@@ -103,7 +105,7 @@
    <testResult status="pass" testName="fn-abs-more-args-074"/>
    <testResult status="pass" testName="fn-abs-more-args-075"/>
    <testResult status="pass" testName="fn-abs-more-args-076"/>
-   <testResult status="fail" testName="fn-abs-more-args-077"/>
+   <testResult status="pass" testName="fn-abs-more-args-077"/>
    <testResult status="pass" testName="fn-abs-more-args-078"/>
    <testResult status="pass" testName="fn-abs-more-args-079"/>
    <testResult status="pass" testName="fn-abs-more-args-080"/>
@@ -113,7 +115,7 @@
    <testResult status="pass" testName="fn-abs-more-args-084"/>
    <testResult status="pass" testName="fn-abs-more-args-085"/>
    <testResult status="pass" testName="fn-abs-more-args-086"/>
-   <testResult status="fail" testName="K-ABSFunc-1"/>
+   <testResult status="pass" testName="K-ABSFunc-1"/>
    <testResult status="pass" testName="K-ABSFunc-2"/>
    <testResult status="pass" testName="K-ABSFunc-3"/>
    <testResult status="pass" testName="K-ABSFunc-4"/>
@@ -146,7 +148,7 @@
    <testResult status="pass" testName="K2-ABSFunc-25"/>
    <testResult status="pass" testName="K2-ABSFunc-26"/>
    <testResult status="pass" testName="K2-ABSFunc-27"/>
-   <testResult status="fail" testName="K2-ABSFunc-28"/>
+   <testResult status="pass" testName="K2-ABSFunc-28"/>
    <testResult status="pass" testName="K2-ABSFunc-29"/>
    <testResult status="pass" testName="K2-ABSFunc-30"/>
    <testResult status="fail" testName="K2-ABSFunc-31"/>
@@ -158,7 +160,7 @@
    <testResult status="pass" testName="K2-ABSFunc-37"/>
    <testResult status="pass" testName="K2-ABSFunc-38"/>
    <testResult status="pass" testName="K2-ABSFunc-39"/>
-   <testResult status="fail" testName="K2-ABSFunc-40"/>
+   <testResult status="pass" testName="K2-ABSFunc-40"/>
    <testResult status="pass" testName="K2-ABSFunc-41"/>
    <testResult status="pass" testName="K2-ABSFunc-42"/>
    <testResult status="pass" testName="K2-ABSFunc-43"/>

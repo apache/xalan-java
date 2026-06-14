@@ -181,39 +181,57 @@ public class InstanceOf extends Operation
       int seqTypeOccurenceIndicator = seqTypedData.getItemTypeOccurrenceIndicator();
       
       int xsBuiltInType = seqTypedData.getBuiltInSequenceType();
+      
       if (xsBuiltInType == XPathSequenceTypeSupport.XS_INTEGER) {
     	  if (left instanceof XNumber) {
     		  XNumber xNumber = (XNumber)left;
+    		      		      		      		      		  
+    		  XSInteger xsInteger = xNumber.getXsInteger();
+    		  if (xsInteger != null) {
+    			 return XBoolean.S_TRUE; 
+    		  }
+    		  
+    		  XSDouble xsDouble = xNumber.getXsDouble();
+    		  if (xsDouble != null) {
+    			 return XBoolean.S_FALSE; 
+    		  }
+    		  
+    		  XSDecimal xsDecimal = xNumber.getXsDecimal();
+    		  if (xsDecimal != null) {
+    			  double dbl = xsDecimal.doubleValue();
+    			  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
+    				  return XBoolean.S_TRUE; 
+    			  }
+    			  else {
+    				  return XBoolean.S_FALSE; 
+    			  } 
+    		  }
+    		  
     		  double dbl = xNumber.num();
     		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
     			  return XBoolean.S_TRUE; 
     		  }
-    	  }
-    	  
-    	  if (left instanceof XSDouble) {
-    		  XSDouble xsDouble = (XSDouble)left;
-    		  double dbl = xsDouble.doubleValue();
-    		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
-    			  return XBoolean.S_TRUE; 
+    		  else {
+    			  return XBoolean.S_FALSE; 
     		  }
-    	  }
-    	  
-    	  if (left instanceof XSFloat) {
-    		  XSFloat xsFloat = (XSFloat)left;
-    		  double fl1 = xsFloat.floatValue();
-    		  if ((fl1 == (int)fl1) || (fl1 == (long)fl1)) {
-    			  return XBoolean.S_TRUE; 
-    		  }
-    	  }
-    	  
-    	  if (left instanceof XSDecimal) {
+    	  }    	  
+    	  else if (left instanceof XSDouble) {    		  
+    		  return XBoolean.S_FALSE;
+    	  }    	  
+    	  else if (left instanceof XSFloat) {    		  
+    		  return XBoolean.S_FALSE;
+    	  }    	  
+    	  else if (left instanceof XSDecimal) {
     		  XSDecimal xsDecimal = (XSDecimal)left;
     		  double dbl = xsDecimal.doubleValue();
     		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
     			  return XBoolean.S_TRUE; 
     		  }
+    		  else {
+    			  return XBoolean.S_FALSE; 
+    		  }
     	  }
-      }
+      }      
       
       if (left instanceof ElemFunctionItem) {
     	  /**
