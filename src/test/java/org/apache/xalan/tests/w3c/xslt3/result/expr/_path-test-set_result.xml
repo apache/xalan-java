@@ -1,16 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:16:01Z" fail="2" name="path" pass="8" run="10" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:58:13Z" fail="0" name="path" pass="10" run="10" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="path-001"/>
    <testResult status="pass" testName="path-002"/>
    <testResult status="pass" testName="path-003"/>
    <testResult status="pass" testName="path-004"/>
    <testResult status="pass" testName="path-005"/>
    <testResult status="pass" testName="path-006"/>
-   <testResult status="fail" testName="path-007"/>
+   <testResult status="pass" testName="path-007"/>
    <testResult status="pass" testName="path-008"/>
    <testResult status="pass" testName="path-009"/>
-   <testResult status="fail" testName="path-010">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="path-010"/>
 </testrun>

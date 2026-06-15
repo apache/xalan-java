@@ -182,23 +182,35 @@ public class FunctionOneArg extends Function implements ExpressionOwner
   /**
    * Get the effective value of function argument.
    */
-  protected XObject getEffectiveFuncArgValue(Expression argExpr, XPathContext xctxt) throws TransformerException {
-	  XObject argValue = null;
+  
+  /**
+   * Method definition, to get function call effective
+   * argument value.
+   *  
+   * @param argExpr                          An XPath compiled expression
+   *                                         object.
+   * @param xctxt                            An XPath context object
+   * @return                                 Run-time value of function argument
+   * @throws TransformerException
+   */
+  protected XObject getFunctionEffectiveArgValue(Expression argExpr, XPathContext xctxt) throws TransformerException {
+	  
+	  XObject result = null;
 
 	  if (argExpr instanceof SelfIteratorNoPredicate) {
 		  XObject contextItem = xctxt.getXPath3ContextItem();
 		  if (contextItem != null) {
-			  argValue = contextItem;  
+			  result = contextItem;  
 		  }
 		  else {
-			  argValue = argExpr.execute(xctxt); 
+			  result = argExpr.execute(xctxt); 
 		  }
 	  }
 	  else {  
-		  argValue = argExpr.execute(xctxt);
+		  result = argExpr.execute(xctxt);
 	  }
 	  
-	  return argValue;
+	  return result;
   }
 
 }

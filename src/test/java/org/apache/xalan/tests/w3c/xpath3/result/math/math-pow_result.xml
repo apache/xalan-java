@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:00Z" fail="12" name="math-pow" pass="20" run="32" statusUnknown="0">
-   <testResult status="fail" testName="math-pow-001"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:53:04Z" fail="0" name="math-pow" pass="32" run="32" statusUnknown="0">
+   <testResult status="pass" testName="math-pow-001"/>
    <testResult status="pass" testName="math-pow-002"/>
    <testResult status="pass" testName="math-pow-003"/>
    <testResult status="pass" testName="math-pow-004"/>
@@ -12,23 +12,23 @@
    <testResult status="pass" testName="math-pow-011"/>
    <testResult status="pass" testName="math-pow-012"/>
    <testResult status="pass" testName="math-pow-013"/>
-   <testResult status="fail" testName="math-pow-014"/>
-   <testResult status="fail" testName="math-pow-015"/>
-   <testResult status="fail" testName="math-pow-017"/>
+   <testResult status="pass" testName="math-pow-014"/>
+   <testResult status="pass" testName="math-pow-015"/>
+   <testResult status="pass" testName="math-pow-017"/>
    <testResult status="pass" testName="math-pow-018"/>
    <testResult status="pass" testName="math-pow-019"/>
-   <testResult status="fail" testName="math-pow-020"/>
-   <testResult status="fail" testName="math-pow-022"/>
-   <testResult status="fail" testName="math-pow-023"/>
+   <testResult status="pass" testName="math-pow-020"/>
+   <testResult status="pass" testName="math-pow-022"/>
+   <testResult status="pass" testName="math-pow-023"/>
    <testResult status="pass" testName="math-pow-024"/>
    <testResult status="pass" testName="math-pow-025"/>
    <testResult status="pass" testName="math-pow-026"/>
    <testResult status="pass" testName="math-pow-027"/>
-   <testResult status="fail" testName="math-pow-028"/>
-   <testResult status="fail" testName="math-pow-029"/>
-   <testResult status="fail" testName="math-pow-030"/>
-   <testResult status="fail" testName="math-pow-031"/>
-   <testResult status="fail" testName="math-pow-032"/>
+   <testResult status="pass" testName="math-pow-028"/>
+   <testResult status="pass" testName="math-pow-029"/>
+   <testResult status="pass" testName="math-pow-030"/>
+   <testResult status="pass" testName="math-pow-031"/>
+   <testResult status="pass" testName="math-pow-032"/>
    <testResult status="pass" testName="math-pow-033"/>
    <testResult status="pass" testName="math-pow-034"/>
 </testrun>

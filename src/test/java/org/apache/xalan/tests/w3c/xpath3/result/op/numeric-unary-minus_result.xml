@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:07Z" fail="10" name="op-numeric-unary-minus" pass="52" run="62" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:53:17Z" fail="8" name="op-numeric-unary-minus" pass="54" run="62" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-unary-minusint1args-1"/>
    <testResult status="pass" testName="op-numeric-unary-minusint1args-2"/>
    <testResult status="pass" testName="op-numeric-unary-minusint1args-3"/>
@@ -11,9 +11,9 @@
    <testResult status="pass" testName="op-numeric-unary-minusdbl1args-1"/>
    <testResult status="pass" testName="op-numeric-unary-minusdbl1args-2"/>
    <testResult status="pass" testName="op-numeric-unary-minusdbl1args-3"/>
-   <testResult status="fail" testName="op-numeric-unary-minusflt1args-1"/>
+   <testResult status="pass" testName="op-numeric-unary-minusflt1args-1"/>
    <testResult status="pass" testName="op-numeric-unary-minusflt1args-2"/>
-   <testResult status="fail" testName="op-numeric-unary-minusflt1args-3"/>
+   <testResult status="pass" testName="op-numeric-unary-minusflt1args-3"/>
    <testResult status="pass" testName="op-numeric-unary-minuslng1args-1"/>
    <testResult status="pass" testName="op-numeric-unary-minuslng1args-2"/>
    <testResult status="pass" testName="op-numeric-unary-minuslng1args-3"/>

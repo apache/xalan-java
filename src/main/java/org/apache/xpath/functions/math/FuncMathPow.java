@@ -17,10 +17,10 @@
 package org.apache.xpath.functions.math;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncArgPlaceholder;
@@ -33,10 +33,11 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the math:pow() function.
+ * Implementation of XPath 3.1 function math:pow.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -54,152 +55,281 @@ public class FuncMathPow extends Function2Args {
 	}
     
 	/**
-	 * Evaluate the function. The function must return a valid object.
-	 * 
-	 * @param xctxt The current execution context
-	 * @return A valid XObject
-	 *
-	 * @throws javax.xml.transform.TransformerException
-	*/
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
-        XObject result = null;
+        
+    	XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();                                
         
-        XObject arg0Result = null;
-        XObject arg1Result = null;
+        if ((m_arg0 == null) || (m_arg1 == null)) {
+           throw new TransformerException("XPST0017 : An XPath 3.1 function call math 'log10' requires two arguments.", srcLocator);
+        }        
         
-        Expression arg0Expr = getArg0();
-        Expression arg1Expr = getArg1();
-        
-        if (arg0Expr instanceof NodeTest) {
-     	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0Expr)) {
-     		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function pow(), "
-     				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        if (m_arg0 instanceof NodeTest) {
+     	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+     		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function math 'pow', "
+     				                                                                                                                         + "but the supplied type is a "
+     				                                                                                                                         + "function type, which cannot be atomized.", srcLocator); 
      	   }
         }
-        else if (arg0Expr instanceof XPathInlineFunction) {
-      	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0Expr)) {
-      		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function pow(), "
-      				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        else if (m_arg0 instanceof XPathInlineFunction) {
+      	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+      		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function math 'pow', "
+      				                                                                                                                         + "but the supplied type is a "
+      				                                                                                                                         + "function type, which cannot be atomized.", srcLocator); 
       	   }
         }
         
-        if (arg1Expr instanceof NodeTest) {
-        	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
-        		throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second argument of XPath function pow(), "
-        				                                                                + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        if (m_arg1 instanceof NodeTest) {
+        	if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg1)) {
+        		throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second argument of XPath 3.1 function math 'pow', "
+        				                                                                                                                     + "but the supplied type is a "
+        				                                                                                                                     + "function type, which cannot be atomized.", srcLocator); 
         	}
         }
-        else if (arg1Expr instanceof XPathInlineFunction) {
-       	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg1Expr)) {
-       		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second argument of XPath function pow(), "
-       				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+        else if (m_arg1 instanceof XPathInlineFunction) {
+       	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg1)) {
+       		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second argument of XPath 3.1 function math 'pow', "
+       				                                                                                                                         + "but the supplied type is a "
+       				                                                                                                                         + "function type, which cannot be atomized.", srcLocator); 
        	   }
         }
         
-        if ((arg0Expr instanceof FuncArgPlaceholder) && (arg1Expr instanceof FuncArgPlaceholder)) {
+        if ((m_arg0 instanceof FuncArgPlaceholder) && (m_arg1 instanceof FuncArgPlaceholder)) {
         	String xpathInlineFuncExprStr = "function($arg0, $arg1) { math:pow($arg0, $arg1) }";
     	    
     	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	    	
 	    	result = xpathObj.execute(xctxt, DTM.NULL, null);
         }
-        else if ((arg0Expr instanceof FuncArgPlaceholder) && !(arg1Expr instanceof FuncArgPlaceholder)) {
-        	arg1Result = getEffectiveFuncArgValue(arg1Expr, xctxt);
-        	double rDouble = getDoubleValue(arg1Result, srcLocator, "second");
-            String xpathInlineFuncExprStr = "function($arg0) { math:pow($arg0, " + rDouble + ") }";
+        else if ((m_arg0 instanceof FuncArgPlaceholder) && !(m_arg1 instanceof FuncArgPlaceholder)) {        	
+        	XObject arg1Obj = null;
+
+            try {
+            	arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            }
+            catch (Exception ex) {		   
+            	throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument is not numeric.", srcLocator);
+            }
+            
+            if (arg1Obj instanceof XMLNodeCursorImpl) {
+               XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg1Obj;
+               
+               if (xmlNodeCursorImpl.getLength() == 0) {
+            	  throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument cannot be an empty sequence.", srcLocator); 
+               }
+            }
+            else if (arg1Obj instanceof ResultSequence) {                
+            	if (((ResultSequence)arg1Obj).size() == 0) {
+            		throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument cannot be an empty sequence.", srcLocator); 
+            	}
+            }
+        	
+        	double rDbl = getDoubleValue(arg1Obj, srcLocator, "second");
+        	
+            String xpathInlineFuncExprStr = "function($arg0) { math:pow($arg0, " + rDbl + ") }";
     	    
     	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	    	
 	    	result = xpathObj.execute(xctxt, DTM.NULL, null);
         }
-        else if (!(arg0Expr instanceof FuncArgPlaceholder) && (arg1Expr instanceof FuncArgPlaceholder)) {
-        	arg0Result = getEffectiveFuncArgValue(arg0Expr, xctxt);
-        	double lDouble = getDoubleValue(arg0Result, srcLocator, "first");
-            String xpathInlineFuncExprStr = "function($arg1) { math:pow(" + lDouble + ", $arg1) }";
+        else if (!(m_arg0 instanceof FuncArgPlaceholder) && (m_arg1 instanceof FuncArgPlaceholder)) {
+        	XObject arg0Obj = null;
+
+        	try {
+        		arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        	}
+        	catch (Exception ex) {		   
+        		throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' first argument is not an XML Schema type double, or not an empty sequence.", srcLocator);
+        	}
+
+        	if (arg0Obj instanceof XMLNodeCursorImpl) {
+        		XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;
+        		
+        		if (xmlNodeCursorImpl.getLength() == 0) {
+        			result = new ResultSequence();
+        			
+        			return result;
+        		}
+        	}
+        	else if (arg0Obj instanceof ResultSequence) {                
+        		if (((ResultSequence)arg0Obj).size() == 0) {
+        			result = new ResultSequence();
+        			
+        			return result;
+        		}
+        	}
+        	
+        	double lDbl = getDoubleValue(arg0Obj, srcLocator, "first");
+        	
+            String xpathInlineFuncExprStr = "function($arg1) { math:pow(" + lDbl + ", $arg1) }";
     	    
     	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	    	
 	    	result = xpathObj.execute(xctxt, DTM.NULL, null);
         }
-        else {        	
-            arg0Result = getEffectiveFuncArgValue(arg0Expr, xctxt);            
-            arg1Result = getEffectiveFuncArgValue(arg1Expr, xctxt);            
+        else {        	                    	
+        	XObject arg0Obj = null;
+
+        	try {
+        		arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        	}
+        	catch (Exception ex) {		   
+        		throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' first argument is not an XML Schema type double, or not an empty sequence.", srcLocator);
+        	}
+
+        	if (arg0Obj instanceof XMLNodeCursorImpl) {
+        		XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;
+        		
+        		if (xmlNodeCursorImpl.getLength() == 0) {
+        			result = new ResultSequence();
+        			
+        			return result;
+        		}
+        	}
+        	else if (arg0Obj instanceof ResultSequence) {                
+        		if (((ResultSequence)arg0Obj).size() == 0) {
+        			result = new ResultSequence();
+        			
+        			return result;
+        		}
+        	}
+        	
+        	double lDbl = getDoubleValue(arg0Obj, srcLocator, "first");
+        	
+        	XObject arg1Obj = null;
+
+            try {
+            	arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            }
+            catch (Exception ex) {		   
+            	throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument is not numeric.", srcLocator);
+            }
             
-            double lDouble = getDoubleValue(arg0Result, srcLocator, "first");        
-            double rDouble = getDoubleValue(arg1Result, srcLocator, "second");
-            
-            result = new XSDouble(Math.pow(lDouble, rDouble));
-            
-            return result;
+            if (arg1Obj instanceof XMLNodeCursorImpl) {
+               XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg1Obj;
+               
+               if (xmlNodeCursorImpl.getLength() == 0) {
+            	  throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument cannot be an empty sequence.", srcLocator); 
+               }
+            }
+            else if (arg1Obj instanceof ResultSequence) {                
+            	if (((ResultSequence)arg1Obj).size() == 0) {
+            		throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument cannot be an empty sequence.", srcLocator); 
+            	}
+            }
+        	
+        	double rDbl = getDoubleValue(arg1Obj, srcLocator, "second");
+        	
+        	if (((lDbl == -1) || (lDbl == 1)) && Double.isInfinite(rDbl)) {
+        	   result = new XSDouble(1); 	
+        	}
+        	else if ((lDbl == 1) && Double.isNaN(rDbl)) {
+        	   result = new XSDouble(1);
+        	}
+        	else {
+        	   result = new XSDouble(Math.pow(lDbl, rDbl));
+        	}
         }                
         
         return result;
     }
     
-    /*
+    /**
      * Method definition, to get a primitive double value, from 
-     * an XObject object instance. 
+     * an XObject object instance.
+     * 
+     * @param xObject                        The supplied XObject, object instance 
+     * @param srcLocator                     An XSL transformation source locator object
+     * @param argNumStr                      An function argument number description
+     * @return                               A primitive double, value
+     * @throws javax.xml.transform.TransformerException
      */
     private double getDoubleValue(XObject xObject, SourceLocator srcLocator, String argNumStr) 
                                                                                  throws javax.xml.transform.TransformerException {
         
         double result = 0.0;
         
-        if (xObject instanceof XNumber) {
-           result = ((XNumber)xObject).num();
+        if (xObject instanceof XNumber) {        	
+           XNumber xNumber = (XNumber)xObject;
+           
+           if (xNumber.getXsDecimal() != null) {
+        	   String strVal = (xNumber.getXsDecimal()).stringValue();
+        	   
+        	   result = Double.valueOf(strVal);
+           }
+           else if (xNumber.getXsInteger() != null) {
+        	   String strVal = (xNumber.getXsInteger()).stringValue();
+        	   
+        	   result = Double.valueOf(strVal);
+           }
+           else if (xNumber.getXsDouble() != null) {
+        	   result = (xNumber.getXsDouble()).doubleValue(); 
+           }
+           else {
+        	   result = xNumber.num(); 
+           }
+        }
+        else if (xObject instanceof XSDouble) {
+           XSDouble xsDouble = (XSDouble)xObject;
+           
+           result = xsDouble.doubleValue();  
+        }
+        else if (xObject instanceof XSFloat) {
+           XSFloat xsFloat = (XSFloat)xObject;
+           
+           result = xsFloat.floatValue(); 
         }
         else if (xObject instanceof XSNumericType) {
            String strVal = ((XSNumericType)xObject).stringValue();
-           result = (new XSDouble(strVal)).doubleValue();
+                                 
+           result = Double.valueOf(strVal);
         }
         else if (xObject instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObject;
-           if (xNodeSet.getLength() != 1) {
-        	  throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + "argument to XPath function call pow() must be a sequence of length one.", srcLocator);    
-           }
-           else {
-              String strVal = xNodeSet.str();
-               
-              double arg = 0.0;             
-              try {
-                 arg = (new XSDouble(strVal)).doubleValue();
-              }
-              catch (Exception ex) {
-            	 throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call pow(). Cannot convert "
-																									                         + "string valued argument \"" + strVal + "\" to "
-																									                         + "a double value.", srcLocator);
-              }
-               
-              result = arg;
-           }
+        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObject;
+
+        	if (xmlNodeCursorImpl.getLength() > 0) {
+        		String strVal = xmlNodeCursorImpl.str();                          
+        		
+        		try {
+        			result = Double.valueOf(strVal);
+        		}
+        		catch (NumberFormatException ex) {
+        			throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' " + argNumStr + " argument is not an XML Schema type double.", srcLocator);
+        		} 
+        	}          
         }
         else if (xObject instanceof ResultSequence) {
-            ResultSequence resultSeq = (ResultSequence)xObject;
-            if (resultSeq.size() != 1) {
-               throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + "argument to XPath function call pow() must be a sequence of length one.", srcLocator);    
-            }
-            else {
-               XObject val = resultSeq.item(0);
-               String strVal = XslTransformEvaluationHelper.getStrVal(val);
-                
-               double arg = 0.0;             
+            ResultSequence rSeq = (ResultSequence)xObject;
+            
+            if (rSeq.size() == 1) {
+               XObject xObj = rSeq.item(0); 
+               
+               String strVal = XslTransformEvaluationHelper.getStrVal(xObj);              
+               
                try {
-                  arg = (new XSDouble(strVal)).doubleValue();
+             	  result = Double.valueOf(strVal);
                }
-               catch (Exception ex) {
-            	   throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call pow(). Cannot convert "
-																								                           + "string valued argument \"" + strVal + "\" to "
-																								                           + "a double value.", srcLocator);
+               catch (NumberFormatException ex) {
+            	  throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' " + argNumStr + " argument is not an XML Schema type double.", srcLocator);
                }
-                
-               result = arg;
+            }
+            else if (rSeq.size() > 1) {
+         	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function math 'pow', requires xdm sequence arguments of "
+         	   		                                                                                               + "size one. An XPath 3.1 function math 'pow' " + argNumStr 
+         	   		                                                                                               + " argument is a sequence of size " + rSeq.size() + ".", srcLocator); 
             }
         }
         else {
-        	throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm item type of " + argNumStr + " argument to XPath function call pow() is not "
+        	throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm item type of " + argNumStr + " argument to XPath 3.1 function call math 'pow' is not "
 																														  + "an XML Schema type double.", srcLocator); 
         }
         

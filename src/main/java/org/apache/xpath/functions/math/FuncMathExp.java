@@ -18,9 +18,9 @@
 package org.apache.xpath.functions.math;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
@@ -34,7 +34,7 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the math:exp() function.
+ * Implementation of XPath 3.1 function math:exp.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,94 +55,106 @@ public class FuncMathExp extends FunctionOneArg
     /**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context
-     * @return A valid XObject
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
+       
        XObject result = null;
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
-       Expression arg0 = getArg0();
-       
-       if (arg0 instanceof NodeTest) {
-    	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
-    		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function exp(), "
-    				                                                                   + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+       if (m_arg0 == null) {
+			throw new TransformerException("XPST0017 : An XPath 3.1 function call math 'exp' has been called with no argument.", srcLocator);
+	   }
+       else if (m_arg0 instanceof NodeTest) {
+    	   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+    		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function math 'exp', "
+    				                                                                                                     + "but the supplied type is a "
+    				                                                                                                     + "function type, which cannot be atomized.", srcLocator); 
     	   }
        }
-       else if (arg0 instanceof XPathInlineFunction) {
-     	   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function exp(), but the "
-                    																   + "supplied type is a function type, which cannot be atomized.", srcLocator); 
-       }
-       
-       if (arg0 == null || isArgCountErr()) {
-          ResultSequence resultSeq = new ResultSequence();
-          return resultSeq;
+       else if (m_arg0 instanceof XPathInlineFunction) {
+     	   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function math 'exp', but the "
+                    																                                     + "supplied type is a function type, "
+                    																                                     + "which cannot be atomized.", srcLocator); 
        }
           
-       XObject arg0Result = getEffectiveFuncArgValue(arg0, xctxt);
+       XObject arg0Obj = null;
+
+       try {
+    	   arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+       }
+       catch (Exception ex) {		   
+    	   throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'exp' argument is not an XML Schema type double.", srcLocator);
+       }
        
-       if (arg0Result instanceof XNumber) {
-          double resultVal = Math.exp(((XNumber)arg0Result).num());
-          result = new XSDouble(resultVal);
+       if (arg0Obj instanceof XNumber) {
+          double dbl = Math.exp(((XNumber)arg0Obj).num());
+          
+          result = new XSDouble(dbl);
        }
-       else if (arg0Result instanceof XSNumericType) {
-          String strVal = ((XSNumericType)arg0Result).stringValue();
-          double resultVal = Math.exp((new XSDouble(strVal)).doubleValue());
-          result = new XSDouble(resultVal);
+       else if (arg0Obj instanceof XSNumericType) {
+          String strVal = ((XSNumericType)arg0Obj).stringValue();
+          
+          double dbl = Math.exp((new XSDouble(strVal)).doubleValue());
+          
+          result = new XSDouble(dbl);
        }
-       else if (arg0Result instanceof XMLNodeCursorImpl) {
-          XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Result;
-          if (xNodeSet.getLength() != 1) {
-        	 throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to XPath function call exp() must be a sequence of length one.", srcLocator);     
-          }
+       else if (arg0Obj instanceof XMLNodeCursorImpl) {
+          XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;
+          
+          if (xmlNodeCursorImpl.getLength() == 0) {
+        	 result = new ResultSequence(); 
+          }          
           else {
-             String strVal = xNodeSet.str();
+             String strVal = xmlNodeCursorImpl.str();                          
+             double dbl = 0.0;
              
-             double arg = 0.0;             
              try {
-                arg = (new XSDouble(strVal)).doubleValue();
+                dbl = Double.valueOf(strVal);
              }
-             catch (Exception ex) {
-            	throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call exp(). Cannot convert "
-																									                         + "string valued argument \"" + strVal + "\" to "
-																									                         + "a double value.", srcLocator);
+             catch (NumberFormatException ex) {
+            	 throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'exp' argument is not an XML Schema type double.", srcLocator);
              }
              
-             result = new XSDouble(Math.exp(arg));
+             result = new XSDouble(Math.exp(dbl));
           }
        }
-       else if (arg0Result instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)arg0Result;
-           if (resultSeq.size() != 1) {
-        	  throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to XPath function call exp() must be a sequence of length one.", srcLocator);     
+       else if (arg0Obj instanceof ResultSequence) {
+           ResultSequence rSeq = (ResultSequence)arg0Obj;
+           
+           if (rSeq.size() == 0) {
+        	  result = new ResultSequence();  
+           }           
+           else if (rSeq.size() == 1) {
+              XObject xObj = rSeq.item(0); 
+              
+              String strVal = XslTransformEvaluationHelper.getStrVal(xObj);              
+              double dbl = 0.0;
+              
+              try {
+            	  dbl = Double.valueOf(strVal);
+              }
+              catch (NumberFormatException ex) {
+            	  throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'exp' argument is not an XML Schema type double.", srcLocator);
+              }
+              
+              result = new XSDouble(Math.exp(dbl));
            }
            else {
-              XObject val = resultSeq.item(0);
-              String strVal = XslTransformEvaluationHelper.getStrVal(val);
-              
-              double arg = 0.0;             
-              try {
-                 arg = (new XSDouble(strVal)).doubleValue();
-              }
-              catch (Exception ex) {
-            	 throw new javax.xml.transform.TransformerException("FORG0001 : Error occured during XPath function call exp(). Cannot convert "
-																								                          + "string valued argument \"" + strVal + "\" to "
-																								                          + "a double value.", srcLocator);
-              }
-              
-              result = new XSDouble(Math.exp(arg));
+        	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function math 'exp', requires an argument which "
+        	   		                                                                                             + "should be a sequence of size one.", srcLocator); 
            }
        }
        else {
-    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm item type of first argument to XPath function call exp() is not "
-					  																									 + "an XML Schema type double.", srcLocator); 
+    	   throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'exp' argument is not an XML Schema type double.", srcLocator); 
        }
        
        return result;
+       
     }
 }

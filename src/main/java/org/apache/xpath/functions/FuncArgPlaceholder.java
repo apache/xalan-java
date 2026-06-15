@@ -39,9 +39,9 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * A class definition, to help implement XPath partial function 
- * application using placeholder function argument expression ?,
- * and also XPath map and array unary lookup expressions.
+ * A class definition, to support implementation of, XPath 3.1 partial 
+ * function application using placeholder function argument expression ?,
+ * and also XPath 3.1 'map' and 'array' unary lookup expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

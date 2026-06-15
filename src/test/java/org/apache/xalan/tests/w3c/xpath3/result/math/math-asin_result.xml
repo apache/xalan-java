@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:00Z" fail="1" name="math-asin" pass="8" run="9" statusUnknown="0">
-   <testResult status="fail" testName="math-asin-001"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:53:04Z" fail="0" name="math-asin" pass="9" run="9" statusUnknown="0">
+   <testResult status="pass" testName="math-asin-001"/>
    <testResult status="pass" testName="math-asin-002"/>
    <testResult status="pass" testName="math-asin-003"/>
    <testResult status="pass" testName="math-asin-004"/>

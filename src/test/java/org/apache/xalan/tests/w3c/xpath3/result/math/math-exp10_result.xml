@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:00Z" fail="2" name="math-exp10" pass="6" run="8" statusUnknown="0">
-   <testResult status="fail" testName="math-exp10-001"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:53:04Z" fail="0" name="math-exp10" pass="8" run="8" statusUnknown="0">
+   <testResult status="pass" testName="math-exp10-001"/>
    <testResult status="pass" testName="math-exp10-002"/>
    <testResult status="pass" testName="math-exp10-003"/>
    <testResult status="pass" testName="math-exp10-004"/>
    <testResult status="pass" testName="math-exp10-005"/>
    <testResult status="pass" testName="math-exp10-006"/>
-   <testResult status="fail" testName="math-exp10-007"/>
+   <testResult status="pass" testName="math-exp10-007"/>
    <testResult status="pass" testName="math-exp10-008"/>
 </testrun>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:16:01Z" fail="3" name="predicate" pass="49" run="52" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:58:13Z" fail="2" name="predicate" pass="50" run="52" skipped="5" statusUnknown="0">
    <testResult feature="backwards_compatibility" status="skipped" testName="predicate-001"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="predicate-002"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="predicate-003"/>
@@ -36,7 +36,7 @@
    <testResult status="pass" testName="predicate-035"/>
    <testResult status="pass" testName="predicate-036"/>
    <testResult status="pass" testName="predicate-037"/>
-   <testResult status="fail" testName="predicate-038"/>
+   <testResult status="pass" testName="predicate-038"/>
    <testResult status="pass" testName="predicate-039"/>
    <testResult status="pass" testName="predicate-040"/>
    <testResult status="pass" testName="predicate-041"/>

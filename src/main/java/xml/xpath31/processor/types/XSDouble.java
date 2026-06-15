@@ -18,7 +18,7 @@ public class XSDouble extends XSNumericType {
 	private Double _value;
 	
 	private XPath3DecimalFormat xpath3DecimalFormat = new XPath3DecimalFormat(
-	                                                              "0.################E0");
+	                                                              "0.#################E0");
 
 	/*
 	 * Class constructor.

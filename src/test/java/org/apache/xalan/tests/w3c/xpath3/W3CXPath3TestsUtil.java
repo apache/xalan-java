@@ -91,8 +91,6 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String NAME = "name";
     
-    public static final String DATETIME = "dateTime";
-    
     public static final String TESTCASE = "test-case";
     
     public static final String ENVIRONMENT = "environment";
@@ -106,6 +104,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     public static final String FILE = "file";
     
     public static final String DEPENDENCY = "dependency";
+    
+    public static final String DATETIME = "dateTime";
     
     public static final String TYPE = "type";
     
@@ -277,7 +277,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					String runTimeErrCode = null;
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);						
+						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);
 												
 						XPathContext xctxt = new XPathContext(true);
 						xctxt.setIncremental(false);
@@ -768,6 +768,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
                                   		    xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 										}
+										else if (expectedResultStr.startsWith("xs:")) {
+											XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                                  		    xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+										}
 									}
 									
 									if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
@@ -1082,32 +1086,34 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_EQ.equals(nodeName3)) {                                        	                                          	  
                                         	  if (xpathResultObj instanceof ResultSequence) {
-           									     ResultSequence rSeq = (ResultSequence)xpathResultObj;
-           									     if (rSeq.size() == 1) {
-           										    xpathResultObj = rSeq.item(0);  
-           									     }
+                                        		  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                        		  if (rSeq.size() == 1) {
+                                        			  xpathResultObj = rSeq.item(0);  
+                                        		  }
            									  }
                                         	  
-                                        	  if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
-                                        		  int size3 = expectedResultStr2.length();
-                                        		  expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
-                                        		  expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
-                                        	  }
-                                        	  else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
-                                        		  expectedResultStr2 = "'" + expectedResultStr2 + "'";										
-                                        		  expectedResultStrUnquoted = true;
-                                        	  }
-                                        	  
-                                        	  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
-                                        		  if (expectedResultStrUnquoted) {
-                                        			 expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
+                                        	  if (!expectedResultStr2.startsWith("xs:")) {      											                                        	  
+                                        		  if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
+                                        			  int size3 = expectedResultStr2.length();
+                                        			  expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
+                                        			  expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
+                                        		  }
+                                        		  else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
+                                        			  expectedResultStr2 = "'" + expectedResultStr2 + "'";										
+                                        			  expectedResultStrUnquoted = true;
                                         		  }
 
-                                        		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
-                                        		  if ((pattern.matcher(expectedResultStr2)).matches()) {
-                                        			  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
+                                        		  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        			  if (expectedResultStrUnquoted) {
+                                        				  expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
+                                        			  }
+
+                                        			  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
+                                        			  if ((pattern.matcher(expectedResultStr2)).matches()) {
+                                        				  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
+                                        			  }
                                         		  }
-          									  }
+                                        	  }
                                         	  
                                         	  if (xpathResultObj != null) {                                        		                                          		                                         		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1429,32 +1435,34 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_EQ.equals(nodeName3)) {
                                         	  if (xpathResultObj instanceof ResultSequence) {
-            									     ResultSequence rSeq = (ResultSequence)xpathResultObj;
-            									     if (rSeq.size() == 1) {
-            										    xpathResultObj = rSeq.item(0);  
-            									     }
-            									  }
+                                        		  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                        		  if (rSeq.size() == 1) {
+                                        			  xpathResultObj = rSeq.item(0);  
+                                        		  }
+                                        	  }
                                          	  
-                                         	  if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
-                                         		  int size3 = expectedResultStr2.length();
-                                         		  expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
-                                         		  expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
-                                         	  }
-                                         	  else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
-                                         		  expectedResultStr2 = "'" + expectedResultStr2 + "'";										
-                                         		  expectedResultStrUnquoted = true;
-                                         	  }
-                                         	  
-                                         	  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
-                                         		  if (expectedResultStrUnquoted) {
-                                         			 expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
-                                         		  }
+                                        	  if (!expectedResultStr2.startsWith("xs:")) { 
+                                        		  if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
+                                        			  int size3 = expectedResultStr2.length();
+                                        			  expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
+                                        			  expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
+                                        		  }
+                                        		  else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
+                                        			  expectedResultStr2 = "'" + expectedResultStr2 + "'";										
+                                        			  expectedResultStrUnquoted = true;
+                                        		  }
 
-                                         		  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
-                                         		  if ((pattern.matcher(expectedResultStr2)).matches()) {
-                                         			  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
-                                         		  }
-           									  }
+                                        		  if ((xpathResultObj instanceof XNumber) || (xpathResultObj instanceof XSNumericType)) {
+                                        			  if (expectedResultStrUnquoted) {
+                                        				  expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr2.length() - 1);
+                                        			  }
+
+                                        			  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("[\\-]?([0-9]{0,})(\\.)?([0-9]{0,})");
+                                        			  if ((pattern.matcher(expectedResultStr2)).matches()) {
+                                        				  expectedResultStr2 = "xs:decimal('" + expectedResultStr2 + "')";
+                                        			  }
+                                        		  }
+                                        	  }
                                          	  
                                         	  if (xpathResultObj != null) {                                        		                                          		  
                                         		  XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);

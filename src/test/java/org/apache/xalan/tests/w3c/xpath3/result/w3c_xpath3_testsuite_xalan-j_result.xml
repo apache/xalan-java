@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-14T17:12:59Z" desc="W3C XPath 3.1 test suite results" fail="1800" pass="6427" run="8238" skipped="9" success="78.02%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-15T11:55:49Z" desc="W3C XPath 3.1 test suite results" fail="1767" pass="6460" run="8238" skipped="9" success="78.42%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
@@ -55,20 +55,20 @@
     <map-remove fail="7" pass="7" run="14" success="50.0%"/>
   </map>
   <math>
-    <math-acos fail="1" pass="8" run="9" success="88.89%"/>
-    <math-asin fail="1" pass="8" run="9" success="88.89%"/>
+    <math-acos fail="0" pass="9" run="9" success="100.0%"/>
+    <math-asin fail="0" pass="9" run="9" success="100.0%"/>
     <math-atan2 fail="0" pass="10" run="10" success="100.0%"/>
-    <math-atan fail="1" pass="8" run="9" success="88.89%"/>
-    <math-cos fail="1" pass="8" run="9" success="88.89%"/>
-    <math-exp10 fail="2" pass="6" run="8" success="75.0%"/>
-    <math-exp fail="3" pass="6" run="9" success="66.67%"/>
-    <math-log10 fail="2" pass="6" run="8" success="75.0%"/>
-    <math-log fail="2" pass="6" run="8" success="75.0%"/>
+    <math-atan fail="0" pass="9" run="9" success="100.0%"/>
+    <math-cos fail="0" pass="9" run="9" success="100.0%"/>
+    <math-exp10 fail="0" pass="8" run="8" success="100.0%"/>
+    <math-exp fail="0" pass="9" run="9" success="100.0%"/>
+    <math-log10 fail="0" pass="8" run="8" success="100.0%"/>
+    <math-log fail="0" pass="8" run="8" success="100.0%"/>
     <math-pi fail="0" pass="3" run="3" success="100.0%"/>
-    <math-pow fail="12" pass="20" run="32" success="62.5%"/>
-    <math-sin fail="1" pass="8" run="9" success="88.89%"/>
-    <math-sqrt fail="2" pass="7" run="9" success="77.78%"/>
-    <math-tan fail="1" pass="10" run="11" success="90.91%"/>
+    <math-pow fail="0" pass="32" run="32" success="100.0%"/>
+    <math-sin fail="0" pass="9" run="9" success="100.0%"/>
+    <math-sqrt fail="0" pass="9" run="9" success="100.0%"/>
+    <math-tan fail="0" pass="11" run="11" success="100.0%"/>
   </math>
   <op>
     <op-add-dayTimeDuration-to-dateTime fail="6" pass="17" run="23" success="73.91%"/>
@@ -117,8 +117,8 @@
     <op-numeric-mod fail="54" pass="59" run="113" success="52.21%"/>
     <op-numeric-multiply fail="21" pass="52" run="73" success="71.23%"/>
     <op-numeric-subtract fail="26" pass="80" run="106" success="75.47%"/>
-    <op-numeric-unary-minus fail="10" pass="52" run="62" success="83.87%"/>
-    <op-numeric-unary-plus fail="9" pass="43" run="52" success="82.69%"/>
+    <op-numeric-unary-minus fail="8" pass="54" run="62" success="87.1%"/>
+    <op-numeric-unary-plus fail="7" pass="45" run="52" success="86.54%"/>
     <op-QName-equal fail="0" pass="36" run="36" success="100.0%"/>
     <op-string-equal fail="1" pass="8" run="9" success="88.89%"/>
     <op-string-greater-than fail="1" pass="8" run="9" success="88.89%"/>
