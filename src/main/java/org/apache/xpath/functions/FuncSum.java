@@ -32,27 +32,27 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncSum extends FunctionOneArg
 {
-    static final long serialVersionUID = -2719049259574677519L;
-    
-    /**
-     * Class constructor.
-     */
-    public FuncSum() {
-  	   m_defined_arity = new Short[] { 1, 2 };  
-    }
+	static final long serialVersionUID = -2719049259574677519L;
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {    
-     XNumber result = XslTransformEvaluationHelper.getSumOfValues(m_arg0, xctxt);
-     
-     return result;    
-  }
+	/**
+	 * Class constructor.
+	 */
+	public FuncSum() {
+		m_defined_arity = new Short[] { 1, 2 };  
+	}
+
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{    
+		XNumber result = XslTransformEvaluationHelper.getSumOfValues(m_arg0, xctxt);
+
+		return result;    
+	}
 }

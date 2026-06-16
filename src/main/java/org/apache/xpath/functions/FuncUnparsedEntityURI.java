@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import org.apache.xml.dtm.DTM;
@@ -30,33 +27,34 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncUnparsedEntityURI extends FunctionOneArg
 {
-    static final long serialVersionUID = 845309759097448178L;
-    
-    /**
-     * Class constructor.
-     */
-    public FuncUnparsedEntityURI() {
-  	   m_defined_arity = new Short[] { 1, 2 };  
-    }
+	static final long serialVersionUID = 845309759097448178L;
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+	/**
+	 * Class constructor.
+	 */
+	public FuncUnparsedEntityURI() {
+		m_defined_arity = new Short[] { 1, 2 };  
+	}
 
-    String name = m_arg0.execute(xctxt).str();
-    int context = xctxt.getCurrentNode();
-    DTM dtm = xctxt.getDTM(context);
-    int doc = dtm.getDocument();
-    
-    String uri = dtm.getUnparsedEntityURI(name);
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
 
-    return new XString(uri);
-  }
+		String name = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+
+		int context = xctxt.getCurrentNode();
+		DTM dtm = xctxt.getDTM(context);
+		int doc = dtm.getDocument();
+
+		String uri = dtm.getUnparsedEntityURI(name);
+
+		return new XString(uri);
+	}
 }

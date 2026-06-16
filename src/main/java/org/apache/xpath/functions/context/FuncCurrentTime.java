@@ -40,60 +40,59 @@ import xml.xpath31.processor.types.XSTime;
  */
 public class FuncCurrentTime extends Function {
 
-   private static final long serialVersionUID = -8672902204838660435L;
-   
-   /**
-    * Default constructor.
-    */
-   public FuncCurrentTime() {
-	   m_defined_arity = new Short[] { 0 };	
-   }
+	private static final long serialVersionUID = -8672902204838660435L;
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {    
-    
-    XSTime xsCurrentTime = new XSTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
-    xsCurrentTime.setPopulatedFromFnCurrentTime(true);
-    
-    return xsCurrentTime;
-  }
+	/**
+	 * Default constructor.
+	 */
+	public FuncCurrentTime() {
+		m_defined_arity = new Short[] { 0 };	
+	}
 
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (argNum > 0) {
-        reportWrongNumberArgs();
-     }
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {    
 
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                                XPATHErrorResources.ER_ZERO, null)); //"0"
-  }
+		XSTime xsCurrentTime = new XSTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+		xsCurrentTime.setPopulatedFromFnCurrentTime(true);
 
-  @Override
-  public void fixupVariables(Vector vars, int globalsSize) {
-     // no op    
-  }
+		return xsCurrentTime;
+	}
+
+	/**
+	 * Check that the number of arguments passed to this function is correct.
+	 *
+	 * @param argNum The number of arguments that is being passed to the function.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+	{
+		if (argNum > 0) {
+			reportWrongNumberArgs();
+		}
+	}
+
+	/**
+	 * Constructs and throws a WrongNumberArgException with the appropriate
+	 * message for this function object.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+		throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
+				XPATHErrorResources.ER_ZERO, null)); //"0"
+	}
+
+	@Override
+	public void fixupVariables(Vector vars, int globalsSize) {
+		// no op    
+	}
   
 }

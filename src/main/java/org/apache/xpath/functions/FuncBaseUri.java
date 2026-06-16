@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSAnyURI;
 
 /**
- * Implementation of the base-uri() function.
+ * Implementation of an XPath 3.1 function fn:base-uri.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -50,13 +50,13 @@ public class FuncBaseUri extends FunctionDef1Arg
 	}
 
 	/**
-      * Evaluate the function. The function must return a valid object.
-      * 
-      * @param xctxt The current execution context.
-      * @return A valid XObject.
-      *
-      * @throws javax.xml.transform.TransformerException
-      */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
     	XObject result = null;
@@ -68,7 +68,8 @@ public class FuncBaseUri extends FunctionDef1Arg
     	String baseUriStr = null;
     	
     	if (m_arg0 != null) {
-    	   XObject argValue = m_arg0.execute(xctxt);
+    	   XObject argValue = getFunctionEffectiveArgValue(m_arg0, xctxt);
+    	   
     	   if ((argValue != null) && (argValue.getType() == XObject.CLASS_NODESET)) {
     		  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)argValue;
     		  if (nodeSet.getLength() == 1) {

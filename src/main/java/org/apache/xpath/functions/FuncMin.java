@@ -30,7 +30,6 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSDate;
@@ -69,10 +68,10 @@ public class FuncMin extends FunctionMultiArgs
   private int numOfArgs = 0;
 
   /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * Evaluate the function. The function must return a valid object.
+   * 
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -80,18 +79,11 @@ public class FuncMin extends FunctionMultiArgs
   {          
       XObject result = null;
       
-      SourceLocator srcLocator = xctxt.getSAXLocator();
+      SourceLocator srcLocator = xctxt.getSAXLocator();            
       
-      XObject xObjArg0 = null;
+      ResultSequence convetedInpSequence = new ResultSequence();
       
-      ResultSequence convetedInpSequence = new ResultSequence(); 
-      
-      if (m_arg0 instanceof Variable) {
-         xObjArg0 = ((Variable)m_arg0).execute(xctxt);           
-      }
-      else {
-         xObjArg0 = m_arg0.execute(xctxt); 
-      }
+      XObject xObjArg0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
       
       int doubleItemCount = 0;
       int strItemCount = 0;
@@ -126,7 +118,9 @@ public class FuncMin extends FunctionMultiArgs
       else if (xObjArg0 instanceof ResultSequence) {
          ResultSequence resultSeq = (ResultSequence)xObjArg0;
          
-         for (int idx = 0; idx < resultSeq.size(); idx++) {
+         int size1 = resultSeq.size();
+         
+         for (int idx = 0; idx < size1; idx++) {
             XObject seqObj = resultSeq.item(idx);
             if (seqObj instanceof XSUntypedAtomic) {
                convetedInpSequence.add(new XSDouble(((XSUntypedAtomic)seqObj).
@@ -257,7 +251,9 @@ public class FuncMin extends FunctionMultiArgs
      
      double minValue = ((XSDouble)(inpSeq.item(0))).doubleValue();
          
-     for (int idx = 1; idx < inpSeq.size(); idx++) {
+     int size1 = inpSeq.size();
+     
+     for (int idx = 1; idx < size1; idx++) {
         double nextVal = ((XSDouble)(inpSeq.item(idx))).doubleValue();
         if (nextVal < minValue) {
            minValue = nextVal;   
@@ -280,7 +276,9 @@ public class FuncMin extends FunctionMultiArgs
      
      XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
      
-     for (int idx = 1; idx < inpSeq.size(); idx++) {
+     int size1 = inpSeq.size();
+     
+     for (int idx = 1; idx < size1; idx++) {
         XSString nextVal = (XSString)(inpSeq.item(idx));
         if (xpathCollationSupport.compareStringsUsingCollation(nextVal.stringValue(), result.stringValue(), collationUri) == -1) {
            result = nextVal;  
@@ -298,7 +296,9 @@ public class FuncMin extends FunctionMultiArgs
   private XSDate getMinValueFromXSDateSequence(ResultSequence inpSeq) {
      XSDate result = (XSDate)(inpSeq.item(0));
          
-     for (int idx = 1; idx < inpSeq.size(); idx++) {
+     int size1 = inpSeq.size();
+     
+     for (int idx = 1; idx < size1; idx++) {
         XSDate nextVal = (XSDate)(inpSeq.item(idx));
         if (nextVal.lt(result)) {
            result = nextVal;   
@@ -316,7 +316,9 @@ public class FuncMin extends FunctionMultiArgs
   private XSYearMonthDuration getMinValueFromXSYearMonthDurationSequence(ResultSequence inpSeq) {
      XSYearMonthDuration result = (XSYearMonthDuration)(inpSeq.item(0));
          
-     for (int idx = 1; idx < inpSeq.size(); idx++) {
+     int size1 = inpSeq.size();
+     
+     for (int idx = 1; idx < size1; idx++) {
         XSYearMonthDuration nextVal = (XSYearMonthDuration)(inpSeq.item(idx));
         if (nextVal.lt(result)) {
            result = nextVal;   
@@ -334,7 +336,9 @@ public class FuncMin extends FunctionMultiArgs
   private XSDayTimeDuration getMinValueFromXSDayTimeDurationSequence(ResultSequence inpSeq) {
      XSDayTimeDuration result = (XSDayTimeDuration)(inpSeq.item(0));
          
-     for (int idx = 1; idx < inpSeq.size(); idx++) {
+     int size1 = inpSeq.size();
+     
+     for (int idx = 1; idx < size1; idx++) {
         XSDayTimeDuration nextVal = (XSDayTimeDuration)(inpSeq.item(idx));
         if (nextVal.lt(result)) {
            result = nextVal;   
@@ -350,9 +354,11 @@ public class FuncMin extends FunctionMultiArgs
    * amongst the items of the provided sequence.  
    */
   private XSDateTime getMinValueFromXSDateTimeSequence(ResultSequence inpSeq) {
-	  XSDateTime result = (XSDateTime)(inpSeq.item(0));
+	 XSDateTime result = (XSDateTime)(inpSeq.item(0));
          
-     for (int idx = 1; idx < inpSeq.size(); idx++) {
+	 int size1 = inpSeq.size();
+	  
+	 for (int idx = 1; idx < size1; idx++) {
     	XSDateTime nextVal = (XSDateTime)(inpSeq.item(idx));
         if (nextVal.lt(result)) {
            result = nextVal;   
@@ -371,7 +377,7 @@ public class FuncMin extends FunctionMultiArgs
       String collationUri = xctxt.getDefaultCollation();
       
       if (m_arg1 != null) {
-          XObject XObjArg1 = m_arg1.execute(xctxt);
+          XObject XObjArg1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
                
           if ((XObjArg1 instanceof ResultSequence) && 
                                                     (((ResultSequence)XObjArg1).size() == 0)) {

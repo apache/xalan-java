@@ -37,59 +37,58 @@ import xml.xpath31.processor.types.XSDuration;
  */
 public class FuncImplicitTimezone extends Function {
 
-   private static final long serialVersionUID = -429445379499398972L;
-   
-   /**
-    * Class constructor.
-    */
-   public FuncImplicitTimezone() {
-	   m_defined_arity = new Short[] { 0 };
-   }
+	private static final long serialVersionUID = -429445379499398972L;
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context
-   * 
-   * @return A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-    
-      XSDuration timezoneDurationVal = xctxt.getTimezone();
-      
-      return timezoneDurationVal;
-  }
+	/**
+	 * Class constructor.
+	 */
+	public FuncImplicitTimezone() {
+		m_defined_arity = new Short[] { 0 };
+	}
 
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (argNum > 0) {
-        reportWrongNumberArgs();
-     }
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                                					XPATHErrorResources.ER_ZERO, null)); //"0"
-  }
+		XSDuration timezoneDurationVal = xctxt.getTimezone();
 
-  @Override
-  public void fixupVariables(Vector vars, int globalsSize) {
-	  // no op
-  }
+		return timezoneDurationVal;
+	}
+
+	/**
+	 * Check that the number of arguments passed to this function is correct.
+	 *
+	 * @param argNum The number of arguments that is being passed to the function.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+	{
+		if (argNum > 0) {
+			reportWrongNumberArgs();
+		}
+	}
+
+	/**
+	 * Constructs and throws a WrongNumberArgException with the appropriate
+	 * message for this function object.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+		throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
+				XPATHErrorResources.ER_ZERO, null)); //"0"
+	}
+
+	@Override
+	public void fixupVariables(Vector vars, int globalsSize) {
+		// no op
+	}
   
 }

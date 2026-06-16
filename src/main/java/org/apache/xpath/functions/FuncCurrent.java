@@ -37,82 +37,81 @@ import org.apache.xpath.patterns.StepPattern;
  */
 public class FuncCurrent extends Function
 {
-    static final long serialVersionUID = 5715316804877715008L;
-    
-    /**
-     * Default constructor.
-     */
-    public FuncCurrent() {
-    	m_defined_arity = new Short[] { 0 };	
-    }
+	static final long serialVersionUID = 5715316804877715008L;
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-   
-	  SubContextList subContextList = xctxt.getCurrentNodeList();
-	  int currentNode = DTM.NULL;	  
+	/**
+	 * Default constructor.
+	 */
+	public FuncCurrent() {
+		m_defined_arity = new Short[] { 0 };	
+	}
 
-	  if (null != subContextList) {
-		  if (subContextList instanceof PredicatedNodeTest) {
-			  LocPathIterator iter = ((PredicatedNodeTest)subContextList).getLocPathIterator();
-			  currentNode = iter.getCurrentContextNode();
-		  }
-		  else if (getExpressionOwner() instanceof ElemTemplate) {
-			  /**
-			   * An XPath fn:current function call, occurs within
-			   * xsl:template instruction 'match' attribute's value.
-			   */
-			  
-			  currentNode = xctxt.getCurrentNode();
-			  
-			  ExpressionNode parentNode = exprGetParent();
-			  while (parentNode != null) {
-				 if ((parentNode instanceof PredicatedNodeTest) 
-						                                     || (parentNode instanceof StepPattern)) {					
-					break; 
-				 }
-				 
-				 parentNode = parentNode.exprGetParent();
-			  }
-			  
-			  if (parentNode instanceof PredicatedNodeTest) {				  
-				  ExpressionNode exprNode = parentNode.exprGetParent();
-				  if ((exprNode instanceof StepPattern) && (((StepPattern)exprNode).getPredicateCount() > 0)) {
-					  // XPath fn:current function call, is there within 
-					  // nested predicate.					  
-					  DTM dtm = xctxt.getDTM(currentNode);
-					  currentNode = dtm.getParent(currentNode); 
-				  }
-			  }
-		  }
-		  else if (subContextList instanceof StepPattern) {        	         	 
-			  throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSOR_ERROR, null));
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
 
-		  }
-	  } 
-	  else {
-		  // not predicate => ContextNode == CurrentNode
-		  currentNode = xctxt.getContextNode();
-	  }
+		SubContextList subContextList = xctxt.getCurrentNodeList();
+		int currentNode = DTM.NULL;	  
 
-	  return new XMLNodeCursorImpl(currentNode, xctxt.getDTMManager());
-  }
+		if (null != subContextList) {
+			if (subContextList instanceof PredicatedNodeTest) {
+				LocPathIterator iter = ((PredicatedNodeTest)subContextList).getLocPathIterator();
+				currentNode = iter.getCurrentContextNode();
+			}
+			else if (getExpressionOwner() instanceof ElemTemplate) {
+				/**
+				 * An XPath fn:current function call, occurs within
+				 * xsl:template instruction 'match' attribute's value.
+				 */
 
-/**
-   * No arguments to process, so this does nothing.
-   */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-    // no-op
-  }
+				currentNode = xctxt.getCurrentNode();
+
+				ExpressionNode parentNode = exprGetParent();
+				while (parentNode != null) {
+					if ((parentNode instanceof PredicatedNodeTest) 
+							|| (parentNode instanceof StepPattern)) {					
+						break; 
+					}
+
+					parentNode = parentNode.exprGetParent();
+				}
+
+				if (parentNode instanceof PredicatedNodeTest) {				  
+					ExpressionNode exprNode = parentNode.exprGetParent();
+					if ((exprNode instanceof StepPattern) && (((StepPattern)exprNode).getPredicateCount() > 0)) {
+						// XPath fn:current function call, is there within 
+						// nested predicate.					  
+						DTM dtm = xctxt.getDTM(currentNode);
+						currentNode = dtm.getParent(currentNode); 
+					}
+				}
+			}
+			else if (subContextList instanceof StepPattern) {        	         	 
+				throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSOR_ERROR, null));
+
+			}
+		} 
+		else {
+			// not predicate => ContextNode == CurrentNode
+			currentNode = xctxt.getContextNode();
+		}
+
+		return new XMLNodeCursorImpl(currentNode, xctxt.getDTMManager());
+	}
+
+	/**
+	 * No arguments to process, so this does nothing.
+	 */
+	public void fixupVariables(java.util.Vector vars, int globalsSize)
+	{
+		// no-op
+	}
 
 }

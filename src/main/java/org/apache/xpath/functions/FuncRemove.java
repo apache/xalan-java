@@ -29,7 +29,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XPath 3.1 function fn:remove.
+ * Implementation of an XPath 3.1 function fn:remove.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -47,13 +47,13 @@ public class FuncRemove extends Function2Args {
     }
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         
@@ -62,20 +62,23 @@ public class FuncRemove extends Function2Args {
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         try {
-            XObject xObject0 = m_arg0.execute(xctxt);
-            XObject xObject1 = m_arg1.execute(xctxt);
+            XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+            
+            XObject xObject1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
             
             ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject0, xctxt);
             
             int seqRemovePos = getSequenceRemovePosition(xObject1);
             
-            if (seqRemovePos < 1 || (seqRemovePos > rsArg0.size())) {
-               for (int idx = 0; idx < rsArg0.size(); idx++) {
+            int size1 = rsArg0.size();
+            
+            if (seqRemovePos < 1 || (seqRemovePos > size1)) {
+               for (int idx = 0; idx < size1; idx++) {
                   result.add(rsArg0.item(idx));  
                }
             }
-            else if (rsArg0.size() == 0) {
+            else if (size1 == 0) {
                return result;    
             }
             else {
@@ -83,7 +86,7 @@ public class FuncRemove extends Function2Args {
                   result.add(rsArg0.item(idx));    
                }
                
-               for (int idx = seqRemovePos; idx < rsArg0.size(); idx++) {
+               for (int idx = seqRemovePos; idx < size1; idx++) {
                   result.add(rsArg0.item(idx));    
                }
             }

@@ -33,45 +33,47 @@ import org.apache.xpath.patterns.NodeTest;
  */
 public class FuncFloor extends FunctionDef1Arg
 {
-    static final long serialVersionUID = 2326752233236309265L;
-    
-    /**
+	static final long serialVersionUID = 2326752233236309265L;
+
+	/**
 	 * Class constructor.
 	 */
 	public FuncFloor() {
 		m_defined_arity = new Short[] { 1 };
 	}
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-	  
-	  XObject result = null;
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
 
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
+		XObject result = null;
 
-	  if (m_arg0 instanceof NodeTest) {
-		  if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function floor(), but the "
-					  																  + "supplied type is a function type, which cannot be atomized.", srcLocator); 
-		  }
-	  }
-	  else if (m_arg0 instanceof XPathInlineFunction) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function floor(), but the "
-                                                                                      + "supplied type is a function type, which cannot be atomized.", srcLocator);
-	  }
+		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	  String strValueOfArg = (getArg0AsString(xctxt)).toString();
+		if (m_arg0 instanceof NodeTest) {
+			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function floor(), but the "
+						                                                                                              + "supplied type is a function type, which "
+						                                                                                              + "cannot be atomized.", srcLocator); 
+			}
+		}
+		else if (m_arg0 instanceof XPathInlineFunction) {
+			throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function floor(), but the "
+					                                                                                                  + "supplied type is a function type, which "
+					                                                                                                  + "cannot be atomized.", srcLocator);
+		}
 
-	  result = new XNumber(Math.floor(Double.valueOf(strValueOfArg))); 
+		String strValueOfArg = (getArg0AsString(xctxt)).toString();
 
-	  return result;
-  }
+		result = new XNumber(Math.floor(Double.valueOf(strValueOfArg))); 
+
+		return result;
+	}
 }

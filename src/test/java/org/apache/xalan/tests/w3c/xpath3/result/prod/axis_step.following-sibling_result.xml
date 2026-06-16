@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:10:45Z" fail="1" name="prod-AxisStep.following-sibling" pass="18" run="20" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-16T10:30:30Z" fail="1" name="prod-AxisStep.following-sibling" pass="19" run="20" statusUnknown="0">
    <testResult status="fail" testName="followingsibling-1"/>
    <testResult status="pass" testName="followingsibling-2"/>
    <testResult status="pass" testName="followingsibling-3"/>
@@ -18,5 +18,5 @@
    <testResult status="pass" testName="followingsibling-18"/>
    <testResult status="pass" testName="followingsibling-19"/>
    <testResult status="pass" testName="followingsibling-20"/>
-   <testResult testName="unabbreviatedSyntax-24"/>
+   <testResult status="pass" testName="unabbreviatedSyntax-24"/>
 </testrun>

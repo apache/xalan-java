@@ -42,122 +42,122 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncNumber extends FunctionDef1Arg
 {
-    static final long serialVersionUID = 7266745342264153076L;
-    
-    /**
-     * Class constructor.
-     */
-    public FuncNumber() {
-  	   m_defined_arity = new Short[] {0, 1};  
-    }
+	static final long serialVersionUID = 7266745342264153076L;
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt                             An XPath context object
-   * @return                                  A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-      
-	  XObject result = null;
-      
-      SourceLocator srcLocator = xctxt.getSAXLocator();
-      
-      if (m_arg0 instanceof NodeTest) {
-    	  if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-    		 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
-    		 		                                                                 + "supplied type is a function type, which cannot be atomized.", srcLocator); 
-    	  }
-      }
-      else if (m_arg0 instanceof XPathInlineFunction) {
-    	  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
-                   																     + "supplied type is a function type, which cannot be atomized.", srcLocator); 
-      }
-      
-      if (m_arg0 != null) {     	  
-    	  XObject xObj0 = m_arg0.execute(xctxt);
+	/**
+	 * Class constructor.
+	 */
+	public FuncNumber() {
+		m_defined_arity = new Short[] {0, 1};  
+	}
 
-    	  if (xObj0 instanceof XSNumericType) {
-    		  String str1 = ((XSNumericType)xObj0).stringValue();
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
 
-    		  result = new XSDouble(Double.valueOf(str1));
-    	  }
-    	  else if (xObj0 instanceof XNumber) {
-    		  XNumber xNumber = (XNumber)xObj0;
+		XObject result = null;
 
-    		  if (xNumber.getXsDecimal() != null) {
-    			  String str1 = XslTransformEvaluationHelper.getStrVal(xNumber.getXsDecimal());
+		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    			  result = new XSDouble(str1);
-    		  }
-    		  else if (xNumber.getXsInteger() != null) {
-    			  String str1 = XslTransformEvaluationHelper.getStrVal(xNumber.getXsInteger());
+		if (m_arg0 instanceof NodeTest) {
+			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
+																																+ "supplied type is a function type, which cannot be atomized.", srcLocator); 
+			}
+		}
+		else if (m_arg0 instanceof XPathInlineFunction) {
+			throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
+																																+ "supplied type is a function type, which cannot be atomized.", srcLocator); 
+		}
 
-    			  result = new XSDouble(str1);
-    		  }
-    		  else if (xNumber.getXsDouble() != null) {
-    			  result = xNumber.getXsDouble(); 
-    		  }
-    		  else {
-    			  result = new XSDouble(xNumber.num());
-    		  }
-    	  }
-    	  else if (xObj0 instanceof ResultSequence) {
-    		  if ((((ResultSequence)xObj0).size() == 0) || (((ResultSequence)xObj0).size() > 1)) {
-    			  result = new XSDouble(Double.NaN);
-    		  }
-    		  else if (((ResultSequence)xObj0).size() == 1) {    		   
-    			  FuncNumber funcNumber = new FuncNumber();
-    			  funcNumber.setArg0(((ResultSequence)xObj0).item(0));
+		if (m_arg0 != null) {     	  
+			XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
 
-    			  try {
-    				  result = funcNumber.execute(xctxt);
-    			  }
-    			  catch (TransformerException ex) {
-    				  result = new XSDouble(Double.NaN); 
-    			  }
-    		  }
-    	  }
-    	  else if (xObj0 instanceof XMLNodeCursorImpl) {    		    		
-    		  try {
-    			  result = new XNumber(getArg0AsNumber(xctxt));
-    		  }
-    		  catch (TransformerException ex) {
-    			  result = new XSDouble(Double.NaN); 
-    		  }
-    	  }
-    	  else if ((xObj0 instanceof XSString) || (xObj0 instanceof XString)) {
-    		  try {
-    			  result = new XSDouble(getArg0AsNumber(xctxt));
-    		  }
-    		  catch (TransformerException ex) {
-    			  result = new XSDouble(Double.NaN); 
-    		  }
-    	  }
-    	  else {
-    		  result = new XSDouble(Double.NaN); 
-    	  }
-      }           
-      else {
-    	  if (!((xctxt.getXPath3ContextItem() == null) && (xctxt.getContextNode() == DTM.NULL))) {    		  
-    		  try {
-    			  result = new XNumber(getArg0AsNumber(xctxt));
-    		  }
-    		  catch (TransformerException ex) {
-    			  result = new XSDouble(Double.NaN); 
-    		  }
-    	  }
-    	  else {
-    		  throw new TransformerException("XPDY0002 : An XPath 3.1 function 'number' is called without "
-																				    				  + "an argument, and XPath context "
-																				    				  + "item is absent.", srcLocator);
-    	  }
-      }
-	  
-	  return result;
-  }
+			if (xObj0 instanceof XSNumericType) {
+				String str1 = ((XSNumericType)xObj0).stringValue();
+
+				result = new XSDouble(Double.valueOf(str1));
+			}
+			else if (xObj0 instanceof XNumber) {
+				XNumber xNumber = (XNumber)xObj0;
+
+				if (xNumber.getXsDecimal() != null) {
+					String str1 = XslTransformEvaluationHelper.getStrVal(xNumber.getXsDecimal());
+
+					result = new XSDouble(str1);
+				}
+				else if (xNumber.getXsInteger() != null) {
+					String str1 = XslTransformEvaluationHelper.getStrVal(xNumber.getXsInteger());
+
+					result = new XSDouble(str1);
+				}
+				else if (xNumber.getXsDouble() != null) {
+					result = xNumber.getXsDouble(); 
+				}
+				else {
+					result = new XSDouble(xNumber.num());
+				}
+			}
+			else if (xObj0 instanceof ResultSequence) {
+				if ((((ResultSequence)xObj0).size() == 0) || (((ResultSequence)xObj0).size() > 1)) {
+					result = new XSDouble(Double.NaN);
+				}
+				else if (((ResultSequence)xObj0).size() == 1) {    		   
+					FuncNumber funcNumber = new FuncNumber();
+					funcNumber.setArg0(((ResultSequence)xObj0).item(0));
+
+					try {
+						result = funcNumber.execute(xctxt);
+					}
+					catch (TransformerException ex) {
+						result = new XSDouble(Double.NaN); 
+					}
+				}
+			}
+			else if (xObj0 instanceof XMLNodeCursorImpl) {    		    		
+				try {
+					result = new XNumber(getArg0AsNumber(xctxt));
+				}
+				catch (TransformerException ex) {
+					result = new XSDouble(Double.NaN); 
+				}
+			}
+			else if ((xObj0 instanceof XSString) || (xObj0 instanceof XString)) {
+				try {
+					result = new XSDouble(getArg0AsNumber(xctxt));
+				}
+				catch (TransformerException ex) {
+					result = new XSDouble(Double.NaN); 
+				}
+			}
+			else {
+				result = new XSDouble(Double.NaN); 
+			}
+		}           
+		else {
+			if (!((xctxt.getXPath3ContextItem() == null) && (xctxt.getContextNode() == DTM.NULL))) {    		  
+				try {
+					result = new XNumber(getArg0AsNumber(xctxt));
+				}
+				catch (TransformerException ex) {
+					result = new XSDouble(Double.NaN); 
+				}
+			}
+			else {
+				throw new TransformerException("XPDY0002 : An XPath 3.1 function 'number' is called without "
+																									+ "an argument, and XPath context "
+																									+ "item is absent.", srcLocator);
+			}
+		}
+
+		return result;
+	}
   
 }

@@ -27,7 +27,7 @@ import org.apache.xpath.types.XSNCName;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of XPath 3.1 fn:prefix-from-QName function.
+ * Implementation of XPath 3.1 function fn:prefix-from-QName.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -35,44 +35,43 @@ import xml.xpath31.processor.types.XSQName;
  */
 public class FuncPrefixFromQName extends FunctionDef1Arg {
 
-   private static final long serialVersionUID = -543831700974347652L;
-   
-   /**
-    * Class constructor.
-    */
-   public FuncPrefixFromQName() {
- 	  m_defined_arity = new Short[] { 1 };
-   }
+	private static final long serialVersionUID = -543831700974347652L;
 
-   /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
+	/**
+	 * Class constructor.
+	 */
+	public FuncPrefixFromQName() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
-	  XObject result = null;
-    
-      SourceLocator srcLocator = xctxt.getSAXLocator();
-	  
-	  Expression arg0 = getArg0();
-	  XObject arg0Value = arg0.execute(xctxt);
-	  
-	  if (arg0Value instanceof XSQName) {		 
-		 XSQName xsQname = (XSQName)arg0Value;
-		 String prefix = xsQname.getPrefix();
-		 XSNCName xsNCName = new XSNCName(prefix);
-		 result = xsNCName; 
-	  }
-	  else {
-		 throw new javax.xml.transform.TransformerException("FOAP0001: The first argument within fn:prefix-from-QName "
-		 		                                                         + "function call is not of type xs:QName", srcLocator);  
-	  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 
-      return result;
-  }
+		XObject result = null;
+
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		Expression arg0 = getArg0();
+		XObject arg0Value = arg0.execute(xctxt);
+
+		if (arg0Value instanceof XSQName) {		 
+			XSQName xsQname = (XSQName)arg0Value;
+			String prefix = xsQname.getPrefix();
+			XSNCName xsNCName = new XSNCName(prefix);
+			result = xsNCName; 
+		}
+		else {
+			throw new javax.xml.transform.TransformerException("FOAP0001: The first argument within fn:prefix-from-QName "
+																										+ "function call is not of type xs:QName", srcLocator);  
+		}
+
+		return result;
+	}
 }

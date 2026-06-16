@@ -23,7 +23,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the exists() function.
+ * Implementation of an XPath 3.1 function fn:exists.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -40,11 +40,11 @@ public class FuncExists extends FunctionOneArg {
 		m_defined_arity = new Short[] { 1 }; 
 	}
 
-    /**
+	/**
      * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */
@@ -53,7 +53,7 @@ public class FuncExists extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject xObject0 = m_arg0.execute(xctxt);
+        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
         
         if (xObject0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;

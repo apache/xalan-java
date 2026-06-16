@@ -64,7 +64,6 @@ public class FuncStringJoin extends Function2Args {
    * Evaluate the function. The function must return a valid object.
    * 
    * @param xctxt                           An XPath context object
-   * 
    * @return                                A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
@@ -81,7 +80,9 @@ public class FuncStringJoin extends Function2Args {
 	    if ((m_arg0 instanceof Function) || (m_arg0 instanceof Variable) || 
 	    		                            (m_arg0 instanceof Range) || 
 	    		                            (m_arg0 instanceof Operation)) {
-	        XObject evalResult = m_arg0.execute(xctxt);
+	        
+	    	XObject evalResult = getFunctionEffectiveArgValue(m_arg0, xctxt);
+	        
 	        if (evalResult instanceof ResultSequence) {
 	           arg0ResultSeq = (ResultSequence)evalResult;   
 	        }
@@ -123,11 +124,13 @@ public class FuncStringJoin extends Function2Args {
 	    	arg0ResultSeq = (ResultSequence)m_arg0;
 	    }
 	    else {
-	    	XObject evalResult = m_arg0.execute(xctxt);
+	    	XObject evalResult = getFunctionEffectiveArgValue(m_arg0, xctxt);
+	    	
 	    	if (evalResult instanceof ResultSequence) {
 	    		arg0ResultSeq = new ResultSequence();
 	    		ResultSequence resultSeq = (ResultSequence)evalResult;
-	    		for (int idx = 0; idx < resultSeq.size(); idx++) {
+	    		int size1 = resultSeq.size();
+	    		for (int idx = 0; idx < size1; idx++) {
 	    			arg0ResultSeq.add(resultSeq.item(idx));  
 	    		}
 	    	}
@@ -157,7 +160,8 @@ public class FuncStringJoin extends Function2Args {
 	    
 	    StringBuffer strBuffer = new StringBuffer();
 	    
-	    for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {       
+	    int size1 = arg0ResultSeq.size();
+	    for (int idx = 0; idx < size1; idx++) {       
 	       XObject xObject = arg0ResultSeq.item(idx);       
 	       String strValue = XslTransformEvaluationHelper.getStrVal(xObject);       
 	       if (idx < (arg0ResultSeq.size() - 1)) {

@@ -69,6 +69,14 @@ public class FuncMapMerge extends FunctionMultiArgs {
 		m_defined_arity = new Short[] { 1, 2 };	
 	}
 
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 		XObject result = null;

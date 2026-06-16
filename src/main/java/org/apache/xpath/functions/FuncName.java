@@ -21,7 +21,6 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ElemFunctionItem;
@@ -42,7 +41,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function fn:name.
+ * Implementation of an XPath 3.1 function fn:name.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -60,11 +59,10 @@ public class FuncName extends FunctionMultiArgs {
   }
 
   /**
-   * Evaluate the function. The function must return
-   * a valid object.
+   * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -72,8 +70,6 @@ public class FuncName extends FunctionMultiArgs {
   {
 
 	  XSString result = null;    
-      	  
-	  Expression arg0 = getArg0();
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
@@ -81,7 +77,7 @@ public class FuncName extends FunctionMultiArgs {
 	  
 	  String nodeNameStr = null;
 	  
-	  if (arg0 == null) {
+	  if (m_arg0 == null) {
 		 XObject contextItem = xctxt.getXPath3ContextItem();
 		 if (contextItem != null) {
 			if ((contextItem instanceof XSAnyAtomicType) || (contextItem instanceof XBoolean) 
@@ -124,7 +120,7 @@ public class FuncName extends FunctionMultiArgs {
 		 
 		 nodeHandle = xctxt.getCurrentNode();		 
 	  }
-	  else if (arg0 instanceof SelfIteratorNoPredicate) {
+	  else if (m_arg0 instanceof SelfIteratorNoPredicate) {
 		  XObject contextItem = xctxt.getXPath3ContextItem();
 		  
 		  if ((contextItem != null) && (contextItem instanceof XMLNodeCursorImpl)) {
@@ -132,7 +128,8 @@ public class FuncName extends FunctionMultiArgs {
 			  nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem, xctxt);
 		  }
 		  else {
-			  XObject xObject = m_arg0.execute(xctxt);
+			  XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			  
 			  if (xObject instanceof XMLNodeCursorImpl) {
 				  xObject = xObject.getFresh();
 				  nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject, xctxt);
@@ -140,7 +137,8 @@ public class FuncName extends FunctionMultiArgs {
 		  }
 	  }
 	  else {
-		 XObject xObject = arg0.execute(xctxt);		 
+		 XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);	
+		 
 		 if (xObject instanceof XMLNodeCursorImpl) {
 			xObject = xObject.getFresh();			
 			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObject;			

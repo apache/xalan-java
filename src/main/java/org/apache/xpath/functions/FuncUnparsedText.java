@@ -35,7 +35,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Implementation of XPath 3.1 function fn:unparsed-text.
+ * Implementation of an XPath 3.1 function fn:unparsed-text.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,8 +55,8 @@ public class FuncUnparsedText extends Function2Args {
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -66,14 +66,15 @@ public class FuncUnparsedText extends Function2Args {
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
-      XObject arg0Result = m_arg0.execute(xctxt);
+      XObject arg0Result = getFunctionEffectiveArgValue(m_arg0, xctxt);
         
       String hrefStrVal = XslTransformEvaluationHelper.getStrVal(arg0Result);
       
       String encodingStr = null;
         
       if (m_arg1 != null) {
-         XObject arg1Result = m_arg1.execute(xctxt);
+         XObject arg1Result = getFunctionEffectiveArgValue(m_arg1, xctxt);
+         
          encodingStr = XslTransformEvaluationHelper.getStrVal(arg1Result);
          if (!("utf-8".equalsIgnoreCase(encodingStr) || "utf-16".equalsIgnoreCase(encodingStr))) {
              throw new javax.xml.transform.TransformerException("FOUT1190 : The value of the 'encoding' argument "
@@ -146,9 +147,7 @@ public class FuncUnparsedText extends Function2Args {
         
       return result;
       
-  }
-  
-  
+  }    
 
   /**
    * Check that the number of arguments passed to this function is correct.

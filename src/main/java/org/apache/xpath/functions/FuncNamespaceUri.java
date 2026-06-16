@@ -29,73 +29,73 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSAnyURI;
 
 /**
- * Implementation of XPath 3.1 fn:namespace-uri function.
+ * Implementation of XPath 3.1 function fn:namespace-uri.
  * 
  * @xsl.usage advanced
  */
 public class FuncNamespaceUri extends FunctionDef1Arg
 {
 
-   private static final long serialVersionUID = 6358386272825912243L;
-   
-   /**
-    * Class constructor.
-    */
-   public FuncNamespaceUri() {
- 	  m_defined_arity = new Short[] { 0, 1 };
-   }
+	private static final long serialVersionUID = 6358386272825912243L;
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-	 
-	 int context = DTM.NULL;
-	 
-	 SourceLocator srcLocator = xctxt.getSAXLocator();
-	 
-	 try {
-	    context = getArg0AsNode(xctxt);
-	 }
-	 catch (javax.xml.transform.TransformerException ex) {
-		throw new javax.xml.transform.TransformerException("XPTY0004: Type error occured while evaluating function "
-				                                                  + "fn:namespace-uri. Please ensute that, context item is a node.", srcLocator); 
-	 }	 	 
-	    
-	 String uriStrVal;
-	    
-	 if (context != DTM.NULL) {
-		DTM dtm = xctxt.getDTM(context);
-		int nodeType = dtm.getNodeType(context);
-		if (nodeType == DTM.ELEMENT_NODE) {
-		   uriStrVal = dtm.getNamespaceURI(context);
+	/**
+	 * Class constructor.
+	 */
+	public FuncNamespaceUri() {
+		m_defined_arity = new Short[] { 0, 1 };
+	}
+
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
+
+		int context = DTM.NULL;
+
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		try {
+			context = getArg0AsNode(xctxt);
 		}
-		else if (nodeType == DTM.ATTRIBUTE_NODE) {
-		   // This function always returns an empty string for namespace nodes.
-		   // We check for those here. Fix inspired by Davanum Srinivas.
-			
-		   uriStrVal = dtm.getNodeName(context);
-		   if (uriStrVal.startsWith("xmlns:") || uriStrVal.equals("xmlns")) {
-			  return new XSAnyURI("");
-		   }
-			
-		   uriStrVal = dtm.getNamespaceURI(context);
+		catch (javax.xml.transform.TransformerException ex) {
+			throw new javax.xml.transform.TransformerException("XPTY0004: Type error occured while evaluating function "
+																										+ "fn:namespace-uri. An XPath context "
+																										+ "item is not available.", srcLocator); 
+		}	 	 
+
+		String uriStrVal;
+
+		if (context != DTM.NULL) {
+			DTM dtm = xctxt.getDTM(context);
+			int nodeType = dtm.getNodeType(context);
+			if (nodeType == DTM.ELEMENT_NODE) {
+				uriStrVal = dtm.getNamespaceURI(context);
+			}
+			else if (nodeType == DTM.ATTRIBUTE_NODE) {
+				// This function always returns an empty string for namespace nodes.
+				// We check for those here. Fix inspired by Davanum Srinivas.
+
+				uriStrVal = dtm.getNodeName(context);
+				if (uriStrVal.startsWith("xmlns:") || uriStrVal.equals("xmlns")) {
+					return new XSAnyURI("");
+				}
+
+				uriStrVal = dtm.getNamespaceURI(context);
+			}
+			else {
+				return new XSAnyURI("");
+			}
 		}
 		else {
-		   return new XSAnyURI("");
+			throw new javax.xml.transform.TransformerException("XPDY0002: While evaluating function call fn:namespace-uri, "
+																										+ "context item cannot be absent.", srcLocator); 
 		}
-	 }
-	 else {
-	    throw new javax.xml.transform.TransformerException("XPDY0002: While evaluating function call fn:namespace-uri, "
-	    		                                                  + "context item cannot be absent.", srcLocator); 
-	 }
-	    
-	 return ((uriStrVal == null) ? new XSAnyURI("") : new XSAnyURI(uriStrVal));
-  }
+
+		return ((uriStrVal == null) ? new XSAnyURI("") : new XSAnyURI(uriStrVal));
+	}
 }

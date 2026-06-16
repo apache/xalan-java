@@ -42,8 +42,7 @@ import org.apache.xpath.objects.XPathMap;
 
 /**
  * Implementation of an XPath 3.1 function call .(arg),
- * where the function item is available as an XPath 3.1
- * context item.
+ * where an XPath 3.1 context item supplies, the function item.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -67,11 +66,10 @@ public class FuncPeriod extends FunctionMultiArgs {
 	}
 	
 	/**
-	 * Evaluate the function. The function must return
-	 * a valid object.
+	 * Evaluate the function. The function must return a valid object.
 	 * 
-	 * @param xctxt The current execution context
-	 * @return A valid XObject
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
 	 *
 	 * @throws javax.xml.transform.TransformerException
 	 */
@@ -88,7 +86,7 @@ public class FuncPeriod extends FunctionMultiArgs {
 		if (xpath3CtxtItem != null) {
 			if (xpath3CtxtItem instanceof XPathMap) {
 			   if ((m_arg0 != null) && (m_arg1 == null)) {
-				  XObject xObj0 = m_arg0.execute(xctxt);
+				  XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
 				  
 			      result = ((XPathMap)xpath3CtxtItem).get(xObj0);
 			   }
@@ -282,16 +280,16 @@ public class FuncPeriod extends FunctionMultiArgs {
 		XObject result = null;
 		
 		if (idx == 0) {
-			result = m_arg0.execute(xctxt);	
+			result = getFunctionEffectiveArgValue(m_arg0, xctxt);
 		}
 		else if (idx == 1) {
-			result = m_arg1.execute(xctxt);	
+			result = getFunctionEffectiveArgValue(m_arg1, xctxt);	
 		}
 		else if (idx == 2) {
-			result = m_arg2.execute(xctxt);	
+			result = getFunctionEffectiveArgValue(m_arg2, xctxt);
 		}
-		else {
-			result = (m_args[idx]).execute(xctxt); 
+		else {			
+			result = getFunctionEffectiveArgValue(m_args[idx], xctxt); 
 		}
 		
 		return result;

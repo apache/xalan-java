@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-15T11:55:49Z" desc="W3C XPath 3.1 test suite results" fail="1767" pass="6460" run="8238" skipped="9" success="78.42%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-16T10:33:00Z" desc="W3C XPath 3.1 test suite results" fail="1742" pass="6492" run="8238" skipped="9" success="78.81%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="1" pass="3" run="4" success="75.0%"/>
     <array-fold-right fail="1" pass="3" run="4" success="75.0%"/>
@@ -136,7 +136,7 @@
     <op-time-equal fail="1" pass="51" run="52" success="98.08%"/>
     <op-time-greater-than fail="4" pass="34" run="38" success="89.47%"/>
     <op-time-less-than fail="8" pass="30" run="38" success="78.95%"/>
-    <op-to fail="88" pass="78" run="166" success="46.99%"/>
+    <op-to fail="81" pass="85" run="166" success="51.2%"/>
     <op-yearMonthDuration-greater-than fail="4" pass="24" run="28" success="85.71%"/>
     <op-yearMonthDuration-less-than fail="4" pass="24" run="28" success="85.71%"/>
   </op>
@@ -144,14 +144,14 @@
     <prod-ArrowPostfix fail="29" pass="8" run="37" skipped="4" success="21.62%"/>
     <prod-AxisStep.abbr fail="2" pass="13" run="15" success="86.67%"/>
     <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
-    <prod-AxisStep.ancestor fail="1" pass="19" run="21" success="90.48%"/>
-    <prod-AxisStep.following-sibling fail="1" pass="18" run="20" success="90.0%"/>
+    <prod-AxisStep.ancestor fail="1" pass="20" run="21" success="95.24%"/>
+    <prod-AxisStep.following-sibling fail="1" pass="19" run="20" success="95.0%"/>
     <prod-AxisStep.following fail="1" pass="19" run="20" success="95.0%"/>
-    <prod-AxisStep.preceding-sibling fail="1" pass="15" run="17" success="88.24%"/>
+    <prod-AxisStep.preceding-sibling fail="1" pass="16" run="17" success="94.12%"/>
     <prod-AxisStep.preceding fail="1" pass="15" run="16" success="93.75%"/>
     <prod-AxisStep fail="53" pass="180" run="233" skipped="1" success="77.25%"/>
     <prod-CastableExpr fail="147" pass="695" run="842" success="82.54%"/>
-    <prod-ForClause fail="47" pass="23" run="74" success="31.08%"/>
+    <prod-ForClause fail="29" pass="45" run="74" success="60.81%"/>
     <prod-GeneralComp.eq fail="39" pass="80" run="119" success="67.23%"/>
     <prod-GeneralComp.ge fail="18" pass="40" run="58" success="68.97%"/>
     <prod-GeneralComp.gt fail="17" pass="50" run="67" success="74.63%"/>

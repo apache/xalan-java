@@ -78,13 +78,13 @@ public class FuncSort extends FunctionMultiArgs
     private int numOfArgs = 0;
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
     	
@@ -95,7 +95,7 @@ public class FuncSort extends FunctionMultiArgs
         String collationUri = xctxt.getDefaultCollation();
         
         if ((numOfArgs == 2) || (numOfArgs == 3)) {           
-           XObject XObjArg1 = m_arg1.execute(xctxt);
+           XObject XObjArg1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
             
            if ((XObjArg1 instanceof ResultSequence) && 
                                                 (((ResultSequence)XObjArg1).size() == 0)) {
@@ -107,7 +107,7 @@ public class FuncSort extends FunctionMultiArgs
            }
         }
         
-        XObject arg0Obj = m_arg0.execute(xctxt);              
+        XObject arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);              
         
         List<InpSeqItemWithSortKeyValue> inpSeqItemWithSortKeyValueList = new ArrayList<InpSeqItemWithSortKeyValue>();
         
@@ -134,7 +134,7 @@ public class FuncSort extends FunctionMultiArgs
               
               if (numOfArgs == 3) {
             	  if (m_arg2 instanceof Variable) {
-            		  XObject arg2obj = ((Variable)m_arg2).execute(xctxt);
+            		  XObject arg2obj = getFunctionEffectiveArgValue(m_arg2, xctxt);
             		  
             		  if (arg2obj instanceof XPathInlineFunction) {
             			  XPathInlineFunction arg2InlineFunc = (XPathInlineFunction)arg2obj;
@@ -266,7 +266,8 @@ public class FuncSort extends FunctionMultiArgs
               throw new javax.xml.transform.TransformerException(fnSortComparator.getErrMessage(), srcLocator); 
            }
            
-           for (int idx = 0; idx < inpSeqItemWithSortKeyValueList.size(); idx++) {
+           int size1 = inpSeqItemWithSortKeyValueList.size();
+           for (int idx = 0; idx < size1; idx++) {
               InpSeqItemWithSortKeyValue inpSeqItemWithSortKeyValue = inpSeqItemWithSortKeyValueList.get(idx);
               sortedResultSeq.add(inpSeqItemWithSortKeyValue.getInpSeqItem()); 
            }
@@ -279,7 +280,8 @@ public class FuncSort extends FunctionMultiArgs
            
            List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
            
-           for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {
+           int size1 = arg0ResultSeq.size();
+           for (int idx = 0; idx < size1; idx++) {
               XObject inputSeqItem = arg0ResultSeq.item(idx);
               if (numOfArgs == 3) {
             	  if (m_arg2 instanceof XPathInlineFunction) {
@@ -373,7 +375,8 @@ public class FuncSort extends FunctionMultiArgs
               throw new javax.xml.transform.TransformerException(fnSortComparator.getErrMessage(), srcLocator); 
            }
                
-           for (int idx = 0; idx < inpSeqItemWithSortKeyValueList.size(); idx++) {
+           int size2 = inpSeqItemWithSortKeyValueList.size();
+           for (int idx = 0; idx < size2; idx++) {
               InpSeqItemWithSortKeyValue inpSeqItemWithSortKeyValue = inpSeqItemWithSortKeyValueList.get(idx);
               sortedResultSeq.add(inpSeqItemWithSortKeyValue.getInpSeqItem()); 
            }           

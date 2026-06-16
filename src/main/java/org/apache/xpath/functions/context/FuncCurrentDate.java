@@ -40,60 +40,59 @@ import xml.xpath31.processor.types.XSDate;
  */
 public class FuncCurrentDate extends Function {
 
-   private static final long serialVersionUID = -8672902204838660435L;
-   
-   /**
-    * Default constructor.
-    */
-   public FuncCurrentDate() {
-	   m_defined_arity = new Short[] { 0 };	
-   }
+	private static final long serialVersionUID = -8672902204838660435L;
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-    
-    XSDate xsDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());    
-    xsDate.setPopulatedFromFnCurrentDate(true);
+	/**
+	 * Default constructor.
+	 */
+	public FuncCurrentDate() {
+		m_defined_arity = new Short[] { 0 };	
+	}
 
-    return xsDate;
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (argNum > 0) {
-        reportWrongNumberArgs();
-     }
-  }
+		XSDate xsDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());    
+		xsDate.setPopulatedFromFnCurrentDate(true);
 
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                                XPATHErrorResources.ER_ZERO, null)); //"0"
-  }
+		return xsDate;
+	}
 
-  @Override
-  public void fixupVariables(Vector vars, int globalsSize) {
-     // no op    
-  }
+	/**
+	 * Check that the number of arguments passed to this function is correct.
+	 *
+	 * @param argNum The number of arguments that is being passed to the function.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+	{
+		if (argNum > 0) {
+			reportWrongNumberArgs();
+		}
+	}
+
+	/**
+	 * Constructs and throws a WrongNumberArgException with the appropriate
+	 * message for this function object.
+	 *
+	 * @throws WrongNumberArgsException
+	 */
+	protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+		throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
+				XPATHErrorResources.ER_ZERO, null)); //"0"
+	}
+
+	@Override
+	public void fixupVariables(Vector vars, int globalsSize) {
+		// no op    
+	}
   
 }

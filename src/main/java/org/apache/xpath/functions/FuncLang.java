@@ -31,13 +31,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of fn:lang function (available in both 
- * XPath 1.0 and 3.1 versions).
- * 
- * XPath 3.1 has introduced an optional second argument 
- * for this function, representing an explicit XPath node. The
- * meaning of first argument of this function is same, within
- * both XPath 1.0 and 3.1 versions.
+ * Implementation of an XPath 3.1 function fn:lang.
  * 
  * @xsl.usage advanced
  */
@@ -53,14 +47,13 @@ public class FuncLang extends FunctionMultiArgs {
 	   }
 
 	   /**
-	   * Evaluate the function. The function must return
-	   * a valid object.
-	   * 
-	   * @param xctxt 	            the current evaluation context
-	   * @return                    a valid XObject
-	   *
-	   * @throws javax.xml.transform.TransformerException
-	   */
+	    * Evaluate the function. The function must return a valid object.
+	    * 
+	    * @param xctxt                        An XPath context object
+	    * @return                             A valid XObject
+	    *
+	    * @throws javax.xml.transform.TransformerException
+	    */
 	   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 	    
 			SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -75,12 +68,13 @@ public class FuncLang extends FunctionMultiArgs {
 			    		                                                                 + "than two arguments.", srcLocator);
 			}
 			
-		    String langStrToBeTested = m_arg0.execute(xctxt).str();
+		    String langStrToBeTested = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
 		    
 		    int nodeHandle = DTM.NULL;
 		    
 		    if (m_arg1 != null) {
-		       XObject secondArgEvalResult = m_arg1.execute(xctxt);
+		       XObject secondArgEvalResult = getFunctionEffectiveArgValue(m_arg1, xctxt);
+		       
 		       if (secondArgEvalResult instanceof XMLNodeCursorImpl) {
 		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)secondArgEvalResult;
 		    	   if (xObject.getLength() == 1) {

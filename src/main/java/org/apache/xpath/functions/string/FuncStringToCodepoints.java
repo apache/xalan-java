@@ -49,31 +49,31 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
    /**
     * Evaluate the function. The function must return a valid object.
     * 
-    * @param xctxt 							The current execution context
-    * @return 								A valid XObject
+    * @param xctxt                        An XPath context object
+    * @return                             A valid XObject
     *
     * @throws javax.xml.transform.TransformerException
     */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-     
-     XObject result = null;
-     
-     String inpStr = (getArg0AsString(xctxt)).toString();
-     
-     XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
-     
-     int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
-     
-     ResultSequence resultSeq = new ResultSequence();
-     
-     for (int idx=0; idx < codePointsArr.length; idx++) {
-        long codepointVal = codePointsArr[idx]; 
-        resultSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
-     }
-     
-     result = resultSeq; 
-     
-     return result;
-  }
+   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+   {
+
+	   XObject result = null;
+
+	   String inpStr = (getArg0AsString(xctxt)).toString();
+
+	   XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+
+	   int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
+
+	   ResultSequence resultSeq = new ResultSequence();
+
+	   for (int idx=0; idx < codePointsArr.length; idx++) {
+		   long codepointVal = codePointsArr[idx]; 
+		   resultSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
+	   }
+
+	   result = resultSeq; 
+
+	   return result;
+    }
 }

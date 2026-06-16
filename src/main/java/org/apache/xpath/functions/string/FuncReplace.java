@@ -37,7 +37,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of the fn:replace function.
+ * Implementation of an XPath 3.1 function fn:replace.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -56,83 +56,84 @@ public class FuncReplace extends Function4Args {
  	  m_defined_arity = new Short[] { 3, 4 };
    }
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-        XObject result = null;
-        
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	    
-	    XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-	    
-	    String inputStr = null;
-	    if ((m_arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
-	       inputStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem); 
-	    }
-	    else {
-           inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
-	    }
-	    
-        String patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));        
-        
-        String replacementStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
-        
-        String flagStr = null;
-        
-        if (m_arg3 != null) {
-           flagStr = XslTransformEvaluationHelper.getStrVal(m_arg3.execute(xctxt));
-           if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {
-               throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                                                                ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), 
-            		   																						    srcLocator);     
-           }
-        }
-        
-        try {
-        	Matcher regexMatcher = null;
-        	
-        	try {
-                regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(patternStr), flagStr, inputStr);
-        	}
-        	catch (Exception ex) {
-                String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
-        		
-        		String mesg1 = ex.getMessage();
-        		errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
-        		
-        		throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
-        	}
-        	
-            String resultStr = regexMatcher.replaceAll(replacementStr);
-            result = new XSString(resultStr);
-        }
-        catch (PatternSyntaxException ex) {
-            throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                                                                ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
-                                                                                                                srcLocator);   
-        }
-        catch (Exception ex) {
-        	String errMesg = ex.getMessage();        	
-        	
-        	String errCode = "FORX0004";
-        	if (errMesg.startsWith("No group")) {
-        	   errCode = "FORX0003";
-        	}
-        	
-        	errMesg = errCode + " : " + errMesg;  
-        	
-            throw new javax.xml.transform.TransformerException(errMesg, srcLocator); 
-        }
-    
-        return result;
-  }
+   /**
+    * Evaluate the function. The function must return a valid object.
+    * 
+    * @param xctxt                        An XPath context object
+    * @return                             A valid XObject
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
+   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+   {
+	   XObject result = null;
+
+	   SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	   XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+
+	   String inputStr = null;
+	   if ((m_arg0 instanceof SelfIteratorNoPredicate) && (xpath3ContextItem != null)) {
+		   inputStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem); 
+	   }
+	   else {
+		   inputStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg0, xctxt));
+	   }
+
+	   String patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg1, xctxt));        
+
+	   String replacementStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg2, xctxt));
+
+	   String flagStr = null;
+
+	   if (m_arg3 != null) {
+		   flagStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg3, xctxt));
+
+		   if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {
+			   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+																											   ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), 
+																											   srcLocator);     
+		   }
+	   }
+
+	   try {
+		   Matcher regexMatcher = null;
+
+		   try {
+			   regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(patternStr), flagStr, inputStr);
+		   }
+		   catch (Exception ex) {
+			   String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
+
+			   String mesg1 = ex.getMessage();
+			   errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
+
+			   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
+		   }
+
+		   String resultStr = regexMatcher.replaceAll(replacementStr);
+		   result = new XSString(resultStr);
+	   }
+	   catch (PatternSyntaxException ex) {
+		   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
+																										   ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
+																										   srcLocator);   
+	   }
+	   catch (Exception ex) {
+		   String errMesg = ex.getMessage();        	
+
+		   String errCode = "FORX0004";
+		   if (errMesg.startsWith("No group")) {
+			   errCode = "FORX0003";
+		   }
+
+		   errMesg = errCode + " : " + errMesg;  
+
+		   throw new javax.xml.transform.TransformerException(errMesg, srcLocator); 
+	   }
+
+	   return result;
+   }
 
   /**
    * Check that the number of arguments passed to this function is correct.

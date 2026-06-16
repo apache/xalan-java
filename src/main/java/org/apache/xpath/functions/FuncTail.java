@@ -24,7 +24,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the tail() function.
+ * Implementation of an XPath 3.1 function fn:tail.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -42,19 +42,19 @@ public class FuncTail extends FunctionOneArg {
     }
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         
         ResultSequence result = new ResultSequence();
         
-        XObject xObject0 = m_arg0.execute(xctxt);
+        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
         
         if (xObject0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
@@ -68,7 +68,8 @@ public class FuncTail extends FunctionOneArg {
         }
         else if (xObject0 instanceof ResultSequence) {
            ResultSequence resultSeq = (ResultSequence)xObject0;
-           for (int idx = 1; idx < resultSeq.size(); idx++) {
+           int size1 = resultSeq.size();
+           for (int idx = 1; idx < size1; idx++) {
               result.add(resultSeq.item(idx)); 
            }
         }

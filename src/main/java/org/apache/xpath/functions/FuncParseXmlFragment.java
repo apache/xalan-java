@@ -54,13 +54,13 @@ public class FuncParseXmlFragment extends FunctionOneArg {
     }
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context
-     * @return A valid XObject
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws 
                                                    javax.xml.transform.TransformerException {        
         XObject result = null;
@@ -68,7 +68,7 @@ public class FuncParseXmlFragment extends FunctionOneArg {
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
         try {
-            XObject xObject0 = m_arg0.execute(xctxt);            
+            XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);            
             
             String argStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             

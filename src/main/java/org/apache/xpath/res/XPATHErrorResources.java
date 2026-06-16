@@ -138,7 +138,7 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_UNCLOSED_XPATH_COMMENT ="ER_UNCLOSED_XPATH_COMMENT";
   public static final String ER_NS_BINDING = "ER_NS_BINDING";
   public static final String ER_EXPECTED_CLOSING_SQUARE_BRACKET = "ER_EXPECTED_CLOSING_SQUARE_BRACKET";
-  public static final String ER_CANNOT_APPLY_FUNC = "ER_CANNOT_APPLY_FUNC";
+  public static final String ER_CANNOT_APPLY_FUNC = "ER_CANNOT_APPLY_FUNC";  
   public static final String ER_MAP_DUPLICATE_KEY = "ER_MAP_DUPLICATE_KEY";
   public static final String ER_IF_EXPR = "ER_IF_EXPR";
   public static final String ER_IF_EXPR_WELL_FORMED = "ER_IF_EXPR_WELL_FORMED";
@@ -148,6 +148,10 @@ public class XPATHErrorResources extends ListResourceBundle
 	 "ER_EXPECTED_SINGLE_QUOTE";
   public static final String ER_EMPTY_EXPRESSION = "ER_EMPTY_EXPRESSION";
   public static final String ER_EXPECTED_BUT_FOUND = "ER_EXPECTED_BUT_FOUND";
+  public static final String ER_FOR_EXPR_1 = "ER_FOR_EXPR_IN";
+  public static final String ER_FOR_EXPR_2 = "ER_FOR_EXPR_2";
+  public static final String ER_FOR_EXPR_3 = "ER_FOR_EXPR_3";
+  public static final String ER_FOR_EXPR_4 = "ER_FOR_EXPR_4";
   public static final String ER_INCORRECT_PROGRAMMER_ASSERTION = 
 	 "ER_INCORRECT_PROGRAMMER_ASSERTION";
   public static final String ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL = 
@@ -512,7 +516,19 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "Empty expression!"},
 
   { ER_EXPECTED_BUT_FOUND,
-     "Expected {0}, but found: {1}"},
+     "XPST0003 : Expected {0}, but found: {1}"},  
+  
+  { ER_FOR_EXPR_1,
+     "XPST0003 : An XPath ''for'' expression has multiple ''in'' statements for single variable binding."},
+  
+  { ER_FOR_EXPR_2,
+     "XPST0003 : An illegal token ''for'' is there after a token ''for''."},
+  
+  { ER_FOR_EXPR_3,
+     "XPST0003 : An XPath ''for'' expression after variable bindings has a trailing ','."},
+  
+  { ER_FOR_EXPR_4,
+     "XPST0003 : An XPath ''for'' expression has no variable bindings, within ''for'' expression."},
 
   { ER_INCORRECT_PROGRAMMER_ASSERTION,
       "Programmer assertion is incorrect! - {0}"},

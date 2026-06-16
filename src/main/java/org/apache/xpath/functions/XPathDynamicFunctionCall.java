@@ -120,9 +120,14 @@ public class XPathDynamicFunctionCall extends Expression {
     private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
     
     /**
-     * Evaluate an XPath dynamic function call expression.
-     */
-    @Override
+	 * Evaluate an XPath 3.1 dynamic function call. The function must 
+	 * return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
        XObject evalResult = null;

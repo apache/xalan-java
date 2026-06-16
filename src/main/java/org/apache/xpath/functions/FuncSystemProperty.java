@@ -54,17 +54,18 @@ public class FuncSystemProperty extends FunctionOneArg
             "org/apache/xalan/res/XSLTInfo.properties";
 
   /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * Evaluate the function. The function must return a valid object.
+   * 
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    String fullName = m_arg0.execute(xctxt).str();
+    String fullName = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+    
     int indexOfNSSep = fullName.indexOf(':');
     String result = null;
     String propName = "";

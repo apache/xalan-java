@@ -954,12 +954,12 @@ public class XPathParser
 	  }
 	  else
 	  {      
-		  throw new javax.xml.transform.TransformerException("XPST0003: Expected " + expected + ", but found: " + m_token, m_sourceLocator);
-
 		  // Patch for Christina's gripe. She wants her errorHandler to return from
 		  // this error and continue trying to parse, rather than throwing an exception.
 		  // Without the patch, that put us into an endless loop.
 		  // throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
+		  
+		  error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND, new Object[] { expected, m_token });
 	  }
   }
 
@@ -2948,6 +2948,10 @@ public class XPathParser
       
       nextToken();
       
+      if (tokenIs("for")) {
+    	 error(XPATHErrorResources.ER_FOR_EXPR_2, new Object[]{});
+      }
+      
       insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_FOR_EXPR);
       
       XPathForExpr forExpr = new XPathForExpr();
@@ -2972,6 +2976,10 @@ public class XPathParser
              bindingVarName = m_token;              
              nextToken();              
              consumeExpected("in");
+          }
+          
+          if (tokenIs("in")) {
+        	 error(XPATHErrorResources.ER_FOR_EXPR_1, new Object[]{});  
           }
           
           List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
@@ -3000,7 +3008,16 @@ public class XPathParser
           if (tokenIs("return")) {
              break; 
           }
-      }      
+      }
+      
+      if (",".equals(getTokenRelative(-2))) {
+    	 // Previous token is ','
+    	 error(XPATHErrorResources.ER_FOR_EXPR_3, new Object[]{}); 
+      }
+      
+      if (forExprVarBindingList.size() == 0) {
+    	 error(XPATHErrorResources.ER_FOR_EXPR_4, new Object[]{});
+      }
       
       consumeExpected("return");
       

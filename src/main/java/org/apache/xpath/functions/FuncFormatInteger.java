@@ -63,8 +63,8 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 	/**
 	 * Evaluate the function. The function must return a valid object.
 	 * 
-	 * @param xctxt                           An XPath expression context, object
-	 * @return                                A valid XObject
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
 	 *
 	 * @throws javax.xml.transform.TransformerException
 	 */

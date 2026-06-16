@@ -98,7 +98,7 @@ public class FuncAbs extends FunctionDef1Arg
 		XObject arg0Obj = null;
 		
 		try {
-		   arg0Obj = m_arg0.execute(xctxt);
+		   arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
 		}
 		catch (Exception ex) {		   
 		   throw new TransformerException("FORG0001 : An XPath 3.1 function call 'abs' argument is not numeric.", srcLocator);

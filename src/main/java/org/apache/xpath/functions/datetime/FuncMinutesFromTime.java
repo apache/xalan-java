@@ -37,44 +37,44 @@ import xml.xpath31.processor.types.XSTime;
 public class FuncMinutesFromTime extends FunctionOneArg
 {
 
-  private static final long serialVersionUID = -5464517533030928416L;
-  
-  /**
-   * Class constructor.
-   */
-  public FuncMinutesFromTime() {
-  	 m_defined_arity = new Short[] { 1 };	
-  }
+	private static final long serialVersionUID = -5464517533030928416L;
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-	  XObject result = null;
-	  
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
-	  
-	  Expression arg0 = getArg0();
-	  
-	  XObject arg0Val = arg0.execute(xctxt);
-	  
-	  if (!(arg0Val instanceof XSTime)) {
-		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
-		 		                                                   + "fn:minutes-from-time() is xs:time, whereas the supplied "
-		 		                                                   + "argument is not conformant.", srcLocator);   
-	  }
-	  else {
-		 XSTime xsTimeVal = (XSTime)arg0Val;
-		 result = new XSInteger(xsTimeVal.minute() + "");
-	  }
-	  
-	  return result;
-  }
+	/**
+	 * Class constructor.
+	 */
+	public FuncMinutesFromTime() {
+		m_defined_arity = new Short[] { 1 };	
+	}
+
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		XObject result = null;
+
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		Expression arg0 = getArg0();
+
+		XObject arg0Val = arg0.execute(xctxt);
+
+		if (!(arg0Val instanceof XSTime)) {
+			throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
+																										+ "fn:minutes-from-time() is xs:time, whereas the supplied "
+																										+ "argument is not conformant.", srcLocator);   
+		}
+		else {
+			XSTime xsTimeVal = (XSTime)arg0Val;
+			result = new XSInteger(xsTimeVal.minute() + "");
+		}
+
+		return result;
+	}
   
 }

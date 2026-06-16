@@ -28,7 +28,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the insert-before() function.
+ * Implementation of an XPath 3.1 function fn:insert-before.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -46,13 +46,13 @@ public class FuncInsertBefore extends Function3Args {
     }
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         
@@ -61,9 +61,11 @@ public class FuncInsertBefore extends Function3Args {
         SourceLocator srcLocator = xctxt.getSAXLocator(); 
         
         try {
-            XObject xObject0 = m_arg0.execute(xctxt);        
-            XObject xObject1 = m_arg1.execute(xctxt);        
-            XObject xObject2 = m_arg2.execute(xctxt);
+            XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+            
+            XObject xObject1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            
+            XObject xObject2 = getFunctionEffectiveArgValue(m_arg2, xctxt);
             
             ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject0, xctxt);

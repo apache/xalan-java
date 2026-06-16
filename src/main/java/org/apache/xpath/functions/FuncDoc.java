@@ -33,7 +33,7 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.ErrorHandler;
 
 /**
- * Implementation of XPath 3.1 function fn:doc.
+ * Implementation of an XPath 3.1 function fn:doc.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -60,18 +60,18 @@ public class FuncDoc extends FunctionOneArg {
     }
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {        
         
         XObject result = null;
 
-        XObject xObject0 = m_arg0.execute(xctxt);
+        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
             
         String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             

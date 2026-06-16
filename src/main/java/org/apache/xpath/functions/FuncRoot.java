@@ -30,7 +30,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of an XPath 3.1 fn:root function.
+ * Implementation of an XPath 3.1 function fn:root.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,14 +48,13 @@ public class FuncRoot extends FunctionMultiArgs {
 	   }
 
 	   /**
-	   * Evaluate the function. The function must return
-	   * a valid object.
-	   * 
-	   * @param xctxt 	            the current evaluation context
-	   * @return                    a valid XObject
-	   *
-	   * @throws javax.xml.transform.TransformerException
-	   */
+		 * Evaluate the function. The function must return a valid object.
+		 * 
+		 * @param xctxt                        An XPath context object
+		 * @return                             A valid XObject
+		 *
+		 * @throws javax.xml.transform.TransformerException
+		 */
 	   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 	    
 		   XObject result = null;
@@ -70,7 +69,8 @@ public class FuncRoot extends FunctionMultiArgs {
 		   int nodeHandle = DTM.NULL;
 		   
 		   if (m_arg0 != null) {
-		       XObject firstArgEvalResult = m_arg0.execute(xctxt);
+		       XObject firstArgEvalResult = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		       
 		       if (firstArgEvalResult instanceof XMLNodeCursorImpl) {
 		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)firstArgEvalResult;
 		    	   if (xObject.getLength() == 1) {

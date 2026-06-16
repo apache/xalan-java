@@ -23,7 +23,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An XPath 3.1 function fn:head implementation.
+ * Implementation of an XPath 3.1 function fn:head.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -53,7 +53,7 @@ public class FuncHead extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject xObj0 = m_arg0.execute(xctxt);
+        XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
         
         if (xObj0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;

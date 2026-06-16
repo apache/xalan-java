@@ -81,86 +81,86 @@ public class FuncFilter extends Function2Args {
    private int m_globals_size;
 
    /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-      
-        XObject funcEvaluationResult = null;
-        
-        SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        final int contextNode = xctxt.getCurrentNode();                               
-        
-        XObject xObjectArg = null;
-        
-        DTMCursorIterator dtmIterArg = null;
-                  
-        if (m_arg0 instanceof LocPathIterator) {
-            dtmIterArg = m_arg0.asIterator(xctxt, contextNode);               
-        }
-        else {
-            xObjectArg = m_arg0.execute(xctxt, contextNode);
-        }
-        
-        ResultSequence resultSeq = new ResultSequence();
-                    
-        if (m_arg1 instanceof XPathInlineFunction) {
-            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
-            
-            validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-            
-            if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
-            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
-            }
-            
-            resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, inlineFuncArg); 
-        }                
-        else if (m_arg1 instanceof NodeTest) {
-        	TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
-            
-        	ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, transformerImpl, srcLocator);
-            
-        	if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
-            	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
-            }
-        	
-        	resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, elemFunction, transformerImpl);            
-        }
-        else if (m_arg1 instanceof Variable) {
-            XObject arg1VarValue = m_arg1.execute(xctxt);
-            
-            if (arg1VarValue instanceof XPathInlineFunction) {
-                XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
-                
-                validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
-                
-                if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
-                	xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
-                }
-                
-                resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, inlineFuncArg);   
-            }
-            else {
-                throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
-                                                                                               + "is not a function item.", srcLocator);    
-            }
-        }
-        else {
-            throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
-                                                                                               + "is not a function item.", srcLocator);               
-        }            
-        
-        funcEvaluationResult = resultSeq;
-        
-        return funcEvaluationResult;
-  }
+    * Evaluate the function. The function must return a valid object.
+    * 
+    * @param xctxt                        An XPath context object
+    * @return                             A valid XObject
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
+   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+   {
+
+	   XObject funcEvaluationResult = null;
+
+	   SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	   final int contextNode = xctxt.getCurrentNode();                               
+
+	   XObject xObjectArg = null;
+
+	   DTMCursorIterator dtmIterArg = null;
+
+	   if (m_arg0 instanceof LocPathIterator) {
+		   dtmIterArg = m_arg0.asIterator(xctxt, contextNode);               
+	   }
+	   else {
+		   xObjectArg = getFunctionEffectiveArgValue(m_arg0, xctxt);
+	   }
+
+	   ResultSequence resultSeq = new ResultSequence();
+
+	   if (m_arg1 instanceof XPathInlineFunction) {
+		   XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
+
+		   validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+
+		   if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+			   xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+		   }
+
+		   resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, inlineFuncArg); 
+	   }                
+	   else if (m_arg1 instanceof NodeTest) {
+		   TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
+
+		   ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg1, 
+				                                                                                             transformerImpl, srcLocator);
+
+		   if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+			   xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+		   }
+
+		   resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, elemFunction, transformerImpl);            
+	   }
+	   else if (m_arg1 instanceof Variable) {
+		   XObject arg1VarValue = getFunctionEffectiveArgValue(m_arg1, xctxt);
+
+		   if (arg1VarValue instanceof XPathInlineFunction) {
+			   XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
+
+			   validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+
+			   if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
+				   xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
+			   }
+
+			   resultSeq = evaluateFnFilter(xctxt, xObjectArg, dtmIterArg, inlineFuncArg);   
+		   }
+		   else {
+			   throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
+					   																						+ "is not a function item.", srcLocator);    
+		   }
+	   }
+	   else {
+		   throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call fn:filter, "
+				   																							+ "is not a function item.", srcLocator);               
+	   }            
+
+	   funcEvaluationResult = resultSeq;
+
+	   return funcEvaluationResult;
+   }
 
   /**
    * Check that the number of arguments passed to this function is correct.
@@ -320,7 +320,8 @@ public class FuncFilter extends Function2Args {
 	  
 	  if (xsObject instanceof ResultSequence) {
 		  ResultSequence inpResultSeq = (ResultSequence)xsObject;
-          for (int idx = 0; idx < inpResultSeq.size(); idx++) {
+		  int size1 = inpResultSeq.size();
+          for (int idx = 0; idx < size1; idx++) {
         	  XObject inpSeqItem = inpResultSeq.item(idx);
         	  ResultSequence argSeq = new ResultSequence();
         	  argSeq.add(inpSeqItem);

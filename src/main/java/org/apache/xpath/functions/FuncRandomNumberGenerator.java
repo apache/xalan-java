@@ -23,6 +23,7 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
@@ -33,9 +34,6 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
-
-import org.apache.xml.dtm.DTM;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDateTime;
@@ -62,8 +60,13 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 	}
 	
 	/**
-	 * Evaluate the function.
-	 */
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{          
 		XObject result = null;
@@ -78,13 +81,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 					                                                                                            + "have arity zero or one.", srcLocator); 
 		}
 		else if (m_arg0 != null) {
-			XObject arg0Obj = null;
-			if (m_arg0 instanceof Variable) {
-			   arg0Obj = ((Variable)m_arg0).execute(xctxt);
-			}
-			else {
-		       arg0Obj = m_arg0.execute(xctxt);
-			}
+			XObject arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);			
 		    
 		    double rndNumberGeneratorSeed = 0.0;
 		    

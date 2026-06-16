@@ -68,10 +68,10 @@ public class FuncArraySort extends FunctionMultiArgs
     private int numOfArgs = 0;
 
     /**
-     * Evaluate array:sort function call. The function must return a valid object.
+     * Evaluate the function. The function must return a valid object.
      * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
      *
      * @throws javax.xml.transform.TransformerException
      */

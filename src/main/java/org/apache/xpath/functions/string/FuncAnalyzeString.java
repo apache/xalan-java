@@ -83,8 +83,9 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XObject arg0XObj = m_arg0.execute(xctxt);        
-        XObject arg1XObj = m_arg1.execute(xctxt);                                
+        XObject arg0XObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        
+        XObject arg1XObj = getFunctionEffectiveArgValue(m_arg1, xctxt);                                
         
         // Get 'string value' of string to be analyzed by fn:analyze-string 
         // function call.
@@ -109,7 +110,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         if (m_arg2 != null) {
            // Get 'string value' for flags argument of fn:analyze-string 
            // function call.
-           XObject arg2XObj = m_arg2.execute(xctxt);
+           XObject arg2XObj = getFunctionEffectiveArgValue(m_arg2, xctxt);
 
            flagsStr = XslTransformEvaluationHelper.getStrVal(arg2XObj);           
            
@@ -156,7 +157,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         	regexMatcher.reset();
         	
         	int size1 = regexMatchInfoList.size();
-
+        	
         	if (size1 > 0) {
         		RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
         		int startIdx1 = firstRegexMatchInfo.getStartIdx();

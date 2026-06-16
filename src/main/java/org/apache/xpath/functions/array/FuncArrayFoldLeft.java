@@ -53,6 +53,14 @@ public class FuncArrayFoldLeft extends Function3Args {
 		m_defined_arity = new Short[] { 3 };
 	}
 
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         XObject evalResult = new ResultSequence();

@@ -33,64 +33,62 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncNormalizeSpace extends FunctionDef1Arg
 {
-    static final long serialVersionUID = -3377956872032190880L;
-    
-    /**
-     * Class constructor.
-     */
-    public FuncNormalizeSpace() {
-  	   m_defined_arity = new Short[] { 0, 1 };
-    }    
+	static final long serialVersionUID = -3377956872032190880L;
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-      XMLString s1 = getArg0AsString(xctxt);
-    
-      XMLString xmlStr = s1.fixWhiteSpace(true, true, false);
+	/**
+	 * Class constructor.
+	 */
+	public FuncNormalizeSpace() {
+		m_defined_arity = new Short[] { 0, 1 };
+	}    
 
-      return new XSString(xmlStr.toString());
-  }
-  
-  /**
-   * Execute an expression in the XPath runtime context, and return the 
-   * result of the expression.
-   *
-   *
-   * @param xctxt The XPath runtime context.
-   *
-   * @return The result of the expression in the form of a <code>XObject</code>.
-   *
-   * @throws javax.xml.transform.TransformerException if a runtime exception 
-   *         occurs.
-   */
-  public void executeCharsToContentHandler(XPathContext xctxt, 
-                                              ContentHandler handler)
-    throws javax.xml.transform.TransformerException,
-           org.xml.sax.SAXException
-  {
-    if (Arg0IsNodesetExpr())
-    {
-      int node = getArg0AsNode(xctxt);
-      if (DTM.NULL != node)
-      {
-        DTM dtm = xctxt.getDTM(node);
-        dtm.dispatchCharactersEvents(node, handler, true);
-      }
-    }
-    else
-    {
-      XObject obj = execute(xctxt);
-      obj.dispatchCharactersEvents(handler);
-    }
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		XMLString s1 = getArg0AsString(xctxt);
+
+		XMLString xmlStr = s1.fixWhiteSpace(true, true, false);
+
+		return new XSString(xmlStr.toString());
+	}
+
+	/**
+	 * Evaluate an expression in the XPath runtime context, and return the 
+	 * result of the expression.
+	 *
+	 * @param xctxt The XPath runtime context.
+	 *
+	 * @return The result of the expression in the form of a <code>XObject</code>.
+	 *
+	 * @throws javax.xml.transform.TransformerException if a runtime exception 
+	 *         occurs.
+	 */
+	public void executeCharsToContentHandler(XPathContext xctxt, 
+			                                      ContentHandler handler)
+																		throws javax.xml.transform.TransformerException,
+																		org.xml.sax.SAXException
+	{
+		if (Arg0IsNodesetExpr())
+		{
+			int node = getArg0AsNode(xctxt);
+			if (DTM.NULL != node)
+			{
+				DTM dtm = xctxt.getDTM(node);
+				dtm.dispatchCharactersEvents(node, handler, true);
+			}
+		}
+		else
+		{
+			XObject obj = execute(xctxt);
+			obj.dispatchCharactersEvents(handler);
+		}
+	}
 
 }

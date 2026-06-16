@@ -19,8 +19,6 @@ package org.apache.xpath.functions;
 import java.util.Collections;
 import java.util.List;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -45,21 +43,19 @@ public class FuncUnordered extends FunctionOneArg {
     }
 
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         
         ResultSequence result = new ResultSequence();
-        
-        SourceLocator srcLocator = xctxt.getSAXLocator();
 
-        XObject xObject0 = m_arg0.execute(xctxt);
+        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
             
         ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                       xObject0, xctxt);
@@ -68,7 +64,9 @@ public class FuncUnordered extends FunctionOneArg {
         // Randomly permute the list of input sequence items
         Collections.shuffle(sequenceAsList);
         
-        for (int idx = 0; idx < sequenceAsList.size(); idx++) {
+        int size1 = sequenceAsList.size();
+        
+        for (int idx = 0; idx < size1; idx++) {
            result.add(sequenceAsList.get(idx));  
         }
         

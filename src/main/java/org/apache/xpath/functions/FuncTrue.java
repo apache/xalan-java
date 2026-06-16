@@ -31,34 +31,34 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncTrue extends Function
 {
-    static final long serialVersionUID = 5663314547346339447L;
-    
-    /**
+	static final long serialVersionUID = 5663314547346339447L;
+
+	/**
 	 * Class constructor;
 	 */
 	public FuncTrue() {
-	   m_defined_arity = new Short[] { 0 };
+		m_defined_arity = new Short[] { 0 };
 	}
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-    return XBoolean.S_TRUE;
-  }
-  
-  /**
-   * No arguments to process, so this does nothing.
-   */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-    // no-op
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		return XBoolean.S_TRUE;
+	}
+
+	/**
+	 * No arguments to process, so this does nothing.
+	 */
+	public void fixupVariables(java.util.Vector vars, int globalsSize)
+	{
+		// no-op
+	}
 
 }

@@ -39,7 +39,7 @@ import org.apache.xpath.regex.PatternSyntaxException;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Implementation of the fn:tokenize function.
+ * Implementation of an XPath 3.1 function fn:tokenize.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -61,9 +61,8 @@ public class FuncTokenize extends Function3Args {
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -74,7 +73,7 @@ public class FuncTokenize extends Function3Args {
       
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        String arg0Str = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+        String arg0Str = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg0, xctxt));
         
         XMLString inputStr = new XString(arg0Str);
         
@@ -116,7 +115,8 @@ public class FuncTokenize extends Function3Args {
                 throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
             }
             
-            for (int idx = 0; idx < tokenList.size(); idx++) {
+            int size1 = tokenList.size();
+            for (int idx = 0; idx < size1; idx++) {
                 resultSeq.add(new XString(tokenList.get(idx)));    
             }
         }
@@ -124,13 +124,14 @@ public class FuncTokenize extends Function3Args {
         	String patternStr = null;
 
         	if (m_arg1 != null) {
-        	    patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+        	    patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg1, xctxt));
         	}
 
         	String flagsStr = null;
 
         	if (m_arg2 != null) {
-        		flagsStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
+        		flagsStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg2, xctxt));
+        		
         		if (!RegexEvaluationSupport.isRegexFlagStrValid(flagsStr)) {               
         			throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
         																						ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), srcLocator); 
@@ -150,8 +151,8 @@ public class FuncTokenize extends Function3Args {
         		throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
         	}
 
-        	int count1 = tokenList.size();
-        	for (int idx = 0; idx < count1; idx++) {
+        	int size1 = tokenList.size();
+        	for (int idx = 0; idx < size1; idx++) {
         		resultSeq.add(new XString(tokenList.get(idx)));    
         	}
         }

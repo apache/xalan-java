@@ -39,7 +39,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of XPath 3.1 function fn:unparsed-text-available.
+ * Implementation of an XPath 3.1 function fn:unparsed-text-available.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -71,8 +71,8 @@ public class FuncUnparsedTextAvailable extends Function2Args {
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -82,7 +82,7 @@ public class FuncUnparsedTextAvailable extends Function2Args {
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
-      XObject arg0Result = m_arg0.execute(xctxt);
+      XObject arg0Result = getFunctionEffectiveArgValue(m_arg0, xctxt);
       
       if ((arg0Result instanceof ResultSequence) && (((ResultSequence)arg0Result).size() == 0)) {
     	 // fn:unparsed-text-available function call's first argument is an empty sequence     	  
@@ -94,7 +94,8 @@ public class FuncUnparsedTextAvailable extends Function2Args {
       String encodingStr = null;
         
       if (m_arg1 != null) {
-         XObject arg1Result = m_arg1.execute(xctxt);
+         XObject arg1Result = getFunctionEffectiveArgValue(m_arg1, xctxt);
+         
          encodingStr = XslTransformEvaluationHelper.getStrVal(arg1Result);
          if (!("utf-8".equalsIgnoreCase(encodingStr) || "utf-16".equalsIgnoreCase(encodingStr))) {
         	return new XSBoolean(false);    

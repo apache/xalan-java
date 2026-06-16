@@ -43,6 +43,14 @@ public class FuncArrayAppend extends Function2Args {
 		m_defined_arity = new Short[] { 2 };
 	}
 
+	/**
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 	    XObject result = null;
 	       
@@ -52,8 +60,9 @@ public class FuncArrayAppend extends Function2Args {
 	    Expression arg1Expr = getArg1();
 
 	    XPathArray xpathArr = null;
-	    if (arg0Expr instanceof Variable) {
-	       XObject xdmInputArr = ((Variable)arg0Expr).execute(xctxt);
+	    if (arg0Expr instanceof Variable) {	       
+	       XObject xdmInputArr = getFunctionEffectiveArgValue(m_arg0, xctxt);
+	       
 	       if (xdmInputArr instanceof XPathArray) {
 	    	  xpathArr = (XPathArray)xdmInputArr;
 	       }

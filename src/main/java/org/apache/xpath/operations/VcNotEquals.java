@@ -86,6 +86,14 @@ public class VcNotEquals extends XPathRelationalOp
 	  
       XPathContext xctxt = null;
       
+      if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1)) {
+ 		 left = ((ResultSequence)left).item(0);   
+ 	  }
+ 	  
+ 	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 1)) {
+ 		 right = ((ResultSequence)right).item(0);   
+ 	  }
+      
       if (left instanceof XNumber) {
     	  XNumber lXNumber = (XNumber)left;
     	  if (lXNumber.getXsDecimal() != null) {

@@ -37,133 +37,133 @@ import xml.xpath31.processor.types.XSInteger;
  */
 public class FuncPosition extends Function
 {
-  static final long serialVersionUID = -9092846348197271582L;
-  
-  private boolean m_isTopLevel;
-  
-  public static int m_forEachGroupGroupByPos = 0;
-  
-  /**
-   * Class constructor.
-   */
-  public FuncPosition() {
-	  m_defined_arity = new Short[] { 0 };
-  }
-  
-  /**
-   * Figure out if we're executing a toplevel expression.
-   * If so, we can't be inside of a predicate. 
-   */
-  public void postCompileStep(Compiler compiler)
-  {
-    m_isTopLevel = compiler.getLocationPathDepth() == -1;
-  }
+	static final long serialVersionUID = -9092846348197271582L;
 
-  /**
-   * Get the position in the current context node list.
-   *
-   * @param xctxt Runtime XPath context.
-   *
-   * @return The current position of the iteration in the context node list, 
-   *         or -1 if there is no active context node list.
- * @throws TransformerException 
-   */
-  public int getPositionInContextNodeList(XPathContext xctxt) throws TransformerException
-  {
-    
-    if (xctxt.getXPath3ContextPosition() != -1) {
-       int pos = xctxt.getXPath3ContextPosition();
-       
-       return pos;
-    }
-    
-    if (xctxt.getContextNode() == DTM.NULL) {
-        throw new javax.xml.transform.TransformerException("XPDY0002 : The context item is absent "
-                                                                  + "at this point, and therefore position() function "
-                                                                  + "cannot be called.", xctxt.getSAXLocator());       
-    }
-    
-    // If we're in a predicate, then this will return non-null.
-    SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();
+	private boolean m_isTopLevel;
 
-    if (null != iter)
-    {
-      int prox = iter.getProximityPosition(xctxt);
- 
-      return prox;
-    }
+	public static int m_forEachGroupGroupByPos = 0;
 
-    DTMCursorIterator cnl = xctxt.getContextNodeList();
+	/**
+	 * Class constructor.
+	 */
+	public FuncPosition() {
+		m_defined_arity = new Short[] { 0 };
+	}
 
-    if (null != cnl)
-    {
-      int n = cnl.getCurrentNode();
-      if (n == DTM.NULL)
-      {
-        if (cnl.getCurrentPos() == 0)
-          return 0;
-          
-        // Then I think we're in a sort.  See sort21.xsl. So the iterator has 
-        // already been spent, and is not on the node we're processing. 
-        // It's highly possible that this is an issue for other context-list 
-        // functions.  Shouldn't be a problem for last(), and it shouldn't be 
-        // a problem for current().
-        try 
-        { 
-          cnl = cnl.cloneWithReset(); 
-        }
-        catch(CloneNotSupportedException cnse)
-        {
-          throw new org.apache.xml.utils.WrappedRuntimeException(cnse);
-        }
-        
-        int currentNode = xctxt.getContextNode();
-        while (DTM.NULL != (n = cnl.nextNode()))
-        {
-          if (n == currentNode)
-            break;
-        }
-      }
-      
-      return cnl.getCurrentPos();
-    }
+	/**
+	 * Figure out if we're executing a toplevel expression.
+	 * If so, we can't be inside of a predicate. 
+	 */
+	public void postCompileStep(Compiler compiler)
+	{
+		m_isTopLevel = compiler.getLocationPathDepth() == -1;
+	}
 
-    return -1;
-  }
+	/**
+	 * Get the position in the current context node list.
+	 *
+	 * @param xctxt Runtime XPath context.
+	 *
+	 * @return The current position of the iteration in the context node list, 
+	 *         or -1 if there is no active context node list.
+	 * @throws TransformerException 
+	 */
+	public int getPositionInContextNodeList(XPathContext xctxt) throws TransformerException
+	{
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  { 
-	  
-	  XObject result = null;
-	  
-	  if (ElemForEachGroup.m_group_adjacent_pos != -1) {
-		 result = new XSInteger(ElemForEachGroup.m_group_adjacent_pos + "");    
-	  }
-	  else {
-		  int pos = (xctxt.getPos() > 0) ? xctxt.getPos() : getPositionInContextNodeList(xctxt);
-		  pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
+		if (xctxt.getXPath3ContextPosition() != -1) {
+			int pos = xctxt.getXPath3ContextPosition();
 
-		  String str1 = String.valueOf(pos);
-		  
-		  result = new XSInteger(str1);
-	  }
+			return pos;
+		}
 
-	  return result;
-  }
-  
-  /**
-   * No arguments to process, so this does nothing.
-   */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-    // no-op
-  }
+		if (xctxt.getContextNode() == DTM.NULL) {
+			throw new javax.xml.transform.TransformerException("XPDY0002 : The context item is absent "
+																								+ "at this point, and therefore position() function "
+																								+ "cannot be called.", xctxt.getSAXLocator());       
+		}
+
+		// If we're in a predicate, then this will return non-null.
+		SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();
+
+		if (null != iter)
+		{
+			int prox = iter.getProximityPosition(xctxt);
+
+			return prox;
+		}
+
+		DTMCursorIterator cnl = xctxt.getContextNodeList();
+
+		if (null != cnl)
+		{
+			int n = cnl.getCurrentNode();
+			if (n == DTM.NULL)
+			{
+				if (cnl.getCurrentPos() == 0)
+					return 0;
+
+				// Then I think we're in a sort.  See sort21.xsl. So the iterator has 
+				// already been spent, and is not on the node we're processing. 
+				// It's highly possible that this is an issue for other context-list 
+				// functions.  Shouldn't be a problem for last(), and it shouldn't be 
+				// a problem for current().
+				try 
+				{ 
+					cnl = cnl.cloneWithReset(); 
+				}
+				catch(CloneNotSupportedException cnse)
+				{
+					throw new org.apache.xml.utils.WrappedRuntimeException(cnse);
+				}
+
+				int currentNode = xctxt.getContextNode();
+				while (DTM.NULL != (n = cnl.nextNode()))
+				{
+					if (n == currentNode)
+						break;
+				}
+			}
+
+			return cnl.getCurrentPos();
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{ 
+
+		XObject result = null;
+
+		if (ElemForEachGroup.m_group_adjacent_pos != -1) {
+			result = new XSInteger(ElemForEachGroup.m_group_adjacent_pos + "");    
+		}
+		else {
+			int pos = (xctxt.getPos() > 0) ? xctxt.getPos() : getPositionInContextNodeList(xctxt);
+			pos = (pos > 0) ? pos : m_forEachGroupGroupByPos;
+
+			String str1 = String.valueOf(pos);
+
+			result = new XSInteger(str1);
+		}
+
+		return result;
+	}
+
+	/**
+	 * No arguments to process, so this does nothing.
+	 */
+	public void fixupVariables(java.util.Vector vars, int globalsSize)
+	{
+		// no-op
+	}
 }

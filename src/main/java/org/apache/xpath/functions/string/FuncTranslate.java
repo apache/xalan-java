@@ -33,7 +33,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of XPath 3.1 function fn:translate.
+ * Implementation of an XPath 3.1 function fn:translate.
  * 
  * @xsl.usage advanced
  */
@@ -68,7 +68,7 @@ public class FuncTranslate extends Function3Args
 	  XObject xObj1 = null;
 	  XObject xObj2 = null;
 
-	  xObj0 = m_arg0.execute(xctxt);
+	  xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
 	  
 	  if (xObj0 instanceof ResultSequence) {
 		  if (((ResultSequence)xObj0).size() > 1) {
@@ -91,7 +91,7 @@ public class FuncTranslate extends Function3Args
 		  		                                                                                                   + "cannot be converted to a string.", srcLocator); 
 	  }	  	  
 
-	  xObj1 = m_arg1.execute(xctxt);
+	  xObj1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
 
 	  if (xObj1 instanceof ResultSequence) {
 		  if (((ResultSequence)xObj1).size() > 1) {
@@ -121,7 +121,7 @@ public class FuncTranslate extends Function3Args
 		  throw new TransformerException("XPTY0004 : An XPath function 'translate' second argument cannot be an empty sequence.", srcLocator); 
 	  }
 
-	  xObj2 = m_arg2.execute(xctxt);
+	  xObj2 = getFunctionEffectiveArgValue(m_arg2, xctxt);
 	  
 	  if (xObj2 instanceof ResultSequence) {
 		  if (((ResultSequence)xObj2).size() > 1) {

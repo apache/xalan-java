@@ -34,34 +34,33 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncDefaultCollation extends Function {
 
-  private static final long serialVersionUID = 2310223969416091883L;
-  
-  /**
-   * Default constructor.
-   */
-  public FuncDefaultCollation() {
-	  m_defined_arity = new Short[] { 0 }; 
-  }
+	private static final long serialVersionUID = 2310223969416091883L;
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-    
-     XSString defaultCollation = new XSString(xctxt.getDefaultCollation());
+	/**
+	 * Default constructor.
+	 */
+	public FuncDefaultCollation() {
+		m_defined_arity = new Short[] { 0 }; 
+	}
 
-     return defaultCollation;
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 
-  @Override
-  public void fixupVariables(Vector vars, int globalsSize) {
-     // no op    
-  }
+		XSString defaultCollation = new XSString(xctxt.getDefaultCollation());
+
+		return defaultCollation;
+	}
+
+	@Override
+	public void fixupVariables(Vector vars, int globalsSize) {
+		// no op    
+	}
   
 }

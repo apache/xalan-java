@@ -59,8 +59,9 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * An object of this class represents an XPath constructor function, 
- * XSL stylesheet function or Xalan-J's extension function.
+ * An object of this class, evaluates an XPath 3.1 schema 
+ * constructor function, XSL stylesheet function, or Xalan-J extension 
+ * function.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Christine Li <jycli@apache.org>, Morris Kwan <mkwan@apache.org>
@@ -201,15 +202,14 @@ public class XSL3ConstructorOrExtensionFunction extends Function
   }
 
   /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * Evaluate the function. The function must return a valid object.
+   * 
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
     if (xctxt.isSecureProcessing())
       throw new javax.xml.transform.TransformerException(

@@ -35,102 +35,102 @@ import xml.xpath31.processor.types.XSInteger;
  */
 public class FuncLast extends Function
 {
-  static final long serialVersionUID = 9205812403085432943L;
-  
-  private boolean m_isTopLevel;
-  
-  /**
-   * Class constructor.
-   */
-  public FuncLast() {
-	  m_defined_arity = new Short[] { 0 };
-  }
-  
-  /**
-   * Figure out if we're executing a toplevel expression.
-   * If so, we can't be inside of a predicate. 
-   */
-  public void postCompileStep(Compiler compiler)
-  {
-    m_isTopLevel = compiler.getLocationPathDepth() == -1;
-  }
+	static final long serialVersionUID = 9205812403085432943L;
 
-  /**
-   * Get the position in the current context node list.
-   *
-   * @param xctxt non-null reference to XPath runtime context.
-   *
-   * @return The number of nodes in the list.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public int getCountOfContextNodeList(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
-  {
-      
-    if (xctxt.getXPath3ContextSize() != -1) {
-    	int contextSize = xctxt.getXPath3ContextSize();
-    	
-        return contextSize;
-    }
-    
-    if (xctxt.getContextNode() == DTM.NULL) {
-        throw new javax.xml.transform.TransformerException("XPDY0002 : The context item is absent "
-                                                                 + "at this point, and therefore last() function "
-                                                                 + "cannot be called.", xctxt.getSAXLocator());       
-    }
+	private boolean m_isTopLevel;
 
-    // assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
-    // If we're in a predicate, then this will return non-null.
-    SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();
+	/**
+	 * Class constructor.
+	 */
+	public FuncLast() {
+		m_defined_arity = new Short[] { 0 };
+	}
 
-    if (null != iter)
-      return iter.getLastPos(xctxt);
+	/**
+	 * Figure out if we're executing a toplevel expression.
+	 * If so, we can't be inside of a predicate. 
+	 */
+	public void postCompileStep(Compiler compiler)
+	{
+		m_isTopLevel = compiler.getLocationPathDepth() == -1;
+	}
 
-    DTMCursorIterator cnl = xctxt.getContextNodeList();
-    int count;
-    if (null != cnl)
-    {
-      count = cnl.getLength();
-    }
-    else
-      count = 0;   
-    return count;
-  }
+	/**
+	 * Get the position in the current context node list.
+	 *
+	 * @param xctxt non-null reference to XPath runtime context.
+	 *
+	 * @return The number of nodes in the list.
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public int getCountOfContextNodeList(XPathContext xctxt)
+			throws javax.xml.transform.TransformerException
+	{
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-	  
-	  XObject result = null;
-	  
-	  if (ElemForEachGroup.m_group_adjacent_size != -1) {
-		  result = new XSInteger(ElemForEachGroup.m_group_adjacent_size + "");    
-	  }
-	  else {
-		  int pos = (xctxt.getLast() > 0) ? xctxt.getLast() : getCountOfContextNodeList(xctxt);
+		if (xctxt.getXPath3ContextSize() != -1) {
+			int contextSize = xctxt.getXPath3ContextSize();
 
-		  String str1 = String.valueOf(pos);
+			return contextSize;
+		}
 
-		  result = new XSInteger(str1);
-	  }
+		if (xctxt.getContextNode() == DTM.NULL) {
+			throw new javax.xml.transform.TransformerException("XPDY0002 : The context item is absent "
+																							+ "at this point, and therefore last() function "
+																							+ "cannot be called.", xctxt.getSAXLocator());       
+		}
 
-	  return result;
-  }
-  
-  /**
-   * No arguments to process, so this does nothing.
-   */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-    // no-op
-  }
+		// assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
+		// If we're in a predicate, then this will return non-null.
+		SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();
+
+		if (null != iter)
+			return iter.getLastPos(xctxt);
+
+		DTMCursorIterator cnl = xctxt.getContextNodeList();
+		int count;
+		if (null != cnl)
+		{
+			count = cnl.getLength();
+		}
+		else
+			count = 0;   
+		return count;
+	}
+
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+
+		XObject result = null;
+
+		if (ElemForEachGroup.m_group_adjacent_size != -1) {
+			result = new XSInteger(ElemForEachGroup.m_group_adjacent_size + "");    
+		}
+		else {
+			int pos = (xctxt.getLast() > 0) ? xctxt.getLast() : getCountOfContextNodeList(xctxt);
+
+			String str1 = String.valueOf(pos);
+
+			result = new XSInteger(str1);
+		}
+
+		return result;
+	}
+
+	/**
+	 * No arguments to process, so this does nothing.
+	 */
+	public void fixupVariables(java.util.Vector vars, int globalsSize)
+	{
+		// no-op
+	}
 
 }

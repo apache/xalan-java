@@ -86,14 +86,14 @@ public class FuncCollection extends JsonFunction
     	m_defined_arity = new Short[] { 0, 1 };	
     }
 
-	/**
-	 * Evaluate the function. The function must return a valid object.
-	 * 
-	 * @param xctxt The current execution context.
-	 * @return A valid XObject.
-	 *
-	 * @throws javax.xml.transform.TransformerException
-	 */
+    /**
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{          
 		XObject result = null;
@@ -110,7 +110,8 @@ public class FuncCollection extends JsonFunction
 		XObject arg0XObj = null;
 		
         if (m_arg0 != null) {
-           arg0XObj = m_arg0.execute(xctxt);           
+           arg0XObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+           
            if (arg0XObj != null) {
         	  String uriStr1 = XslTransformEvaluationHelper.getStrVal(arg0XObj);
         	  

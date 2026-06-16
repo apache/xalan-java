@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 fn:local-name function.
+ * Implementation of an XPath 3.1 function fn:local-name.
  * 
  * @xsl.usage advanced
  */
@@ -47,14 +47,13 @@ public class FuncLocalName extends FunctionDef1Arg {
 	}
 
 	/**
-	  * Evaluate the function. The function must return
-	  * a valid object.
-	  * 
-	  * @param xctxt The current execution context.
-	  * @return A valid XObject.
-	  *
-	  * @throws javax.xml.transform.TransformerException
-	*/
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
 	 public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		 
 		 XSString result = null;
@@ -72,14 +71,16 @@ public class FuncLocalName extends FunctionDef1Arg {
 				 nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem); 
 			 }
 			 else {
-				 XObject xObject = m_arg0.execute(xctxt);
+				 XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+				 
 			     if (xObject instanceof XMLNodeCursorImpl) {
 			        nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);
 			     }
 			 }
 		 }
 		 else {			 
-			 XObject xObject = m_arg0.execute(xctxt);
+			 XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			 
 		     if (xObject instanceof XMLNodeCursorImpl) {
 		        nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);
 		     }

@@ -62,8 +62,8 @@ public class FuncNormalizeUnicode extends XSL3StringCollationAwareFunction
   /**
    * Evaluate the function. The function must return a valid object.
    * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
+   * @param xctxt                        An XPath context object
+   * @return                             A valid XObject
    *
    * @throws javax.xml.transform.TransformerException
    */

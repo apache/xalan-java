@@ -28,7 +28,6 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSNumericType;
 
@@ -53,25 +52,18 @@ public class FuncCodePointsToString extends FunctionOneArg {
 	/**
 	 * Evaluate the function. The function must return a valid object.
 	 * 
-	 * @param xctxt 							The current execution context
+	 * @param xctxt 					    An XPath context object
 	 * @return 								A valid XObject
 	 *
 	 * @throws javax.xml.transform.TransformerException
 	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
-        XObject result = null;                                
+        XObject result = null;
         
-        String resultStr = "";
+        XObject xObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
         
-        if (m_arg0 instanceof Variable) {
-           XObject xObj = ((Variable)m_arg0).execute(xctxt);           
-           resultStr = getStringFromXObject(xObj, xctxt);           
-        }
-        else {
-           XObject xObj = m_arg0.execute(xctxt);
-           resultStr = getStringFromXObject(xObj, xctxt);
-        }
+        String resultStr = getStringFromXObject(xObj, xctxt);
         
         result = new XString(resultStr);
         
@@ -93,7 +85,10 @@ public class FuncCodePointsToString extends FunctionOneArg {
        
        if (xObj instanceof ResultSequence) {
            inpSeq = (ResultSequence)xObj;
-           for (int idx = 0; idx < inpSeq.size(); idx++) {
+           
+           int size1 = inpSeq.size();
+           
+           for (int idx = 0; idx < size1; idx++) {
               XObject inpSeqObj = inpSeq.item(idx);
               if (inpSeqObj instanceof XNumber) {
                  XNumber xNum = (XNumber)inpSeqObj;

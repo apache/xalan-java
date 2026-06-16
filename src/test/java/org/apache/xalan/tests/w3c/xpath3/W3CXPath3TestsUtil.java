@@ -277,7 +277,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					String runTimeErrCode = null;
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);
+						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);												
 												
 						XPathContext xctxt = new XPathContext(true);
 						xctxt.setIncremental(false);
@@ -890,8 +890,54 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 	}
 								}
                                 else if (ASSERT_XML.equals(nodeName2)) {
-                                	if (xpathResultObj != null) {                                 		
-                                		if (xpathResultObj instanceof XMLNodeCursorImpl) {
+                                	if (xpathResultObj != null) {                                		                                		
+                                		if (xpathResultObj instanceof ResultSequence) {
+                                		   ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                		   if (rSeq.size() == 1) {
+                                			  xpathResultObj = rSeq.item(0);   
+                                		   }
+                                		}
+                                		
+                                		StringBuffer strBuff = new StringBuffer();                                		
+                                		boolean isXmlCmpSupported = false;                                		
+                                		if (xpathResultObj instanceof ResultSequence) {
+                                		   ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                		   int size2 = rSeq.size();
+                                		   for (int idx = 0; idx < size2; idx++) {
+                                			   XObject xObj = rSeq.item(idx);
+                                			   if (xObj instanceof XMLNodeCursorImpl) {
+                                				   isXmlCmpSupported = true;
+                                				   
+                                				   int nodeHandle = ((XMLNodeCursorImpl)xObj).asNode(xctxt);
+                                				   DTM dtm = xctxt.getDTM(nodeHandle);
+                                				   Node node2 = dtm.getNode(nodeHandle);
+                                				   String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
+                                				   int idx1 = xmlStr.indexOf("?>");
+                                				   xmlStr = (xmlStr.substring(idx1 + 2)).trim();
+                                				   strBuff.append(xmlStr);
+                                			   }
+                                			   else {
+                                				   // xpathResultObj, which is a sequence not having 
+                                				   // all its items as nodes, isn't supported here.                                				  
+                                				   isXmlCmpSupported = false;
+
+                                				   break; 
+                                			   }
+                                		   }                                		                                   		   
+                                		}
+                                		
+                                		if (isXmlCmpSupported) {
+                                			String resultXmlFragStr = strBuff.toString();
+                                			expectedResultStr = expectedResultStr.trim();
+
+                                			if (resultXmlFragStr.equals(expectedResultStr)) {
+                                				elemTestResult.setAttribute(STATUS, PASS);
+                                			}
+                                			else {
+                                				elemTestResult.setAttribute(STATUS, FAIL);
+                                			}
+                                		}                                		
+                                		else if (xpathResultObj instanceof XMLNodeCursorImpl) {
                                 			int nodeHandle = ((XMLNodeCursorImpl)xpathResultObj).asNode(xctxt);
                                 			if (nodeHandle != DTM.NULL) {
                                 				DTM dtm = xctxt.getDTM(nodeHandle);
@@ -1220,13 +1266,52 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_XML.equals(nodeName3)) {
                                         	  if (xpathResultObj != null) {
-                                        		  if ((xpathResultObj instanceof ResultSequence) && (((ResultSequence)xpathResultObj).size() == 1)) {
-                                        			  if (((ResultSequence)xpathResultObj).item(0) instanceof XMLNodeCursorImpl) {
-                                        				 xpathResultObj = ((ResultSequence)xpathResultObj).item(0);  
+                                        		  if (xpathResultObj instanceof ResultSequence) {
+                                        			  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                        			  if (rSeq.size() == 1) {
+                                        				  xpathResultObj = rSeq.item(0);   
                                         			  }
                                         		  }
                                         		  
-                                        		  if (xpathResultObj instanceof XMLNodeCursorImpl) {
+                                        		  StringBuffer strBuff = new StringBuffer();                                		
+                                        		  boolean isXmlCmpSupported = false;                                		
+                                        		  if (xpathResultObj instanceof ResultSequence) {
+                                        			  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                        			  int size3 = rSeq.size();
+                                        			  for (int idx2 = 0; idx2 < size3; idx2++) {
+                                        				  XObject xObj = rSeq.item(idx2);
+                                        				  if (xObj instanceof XMLNodeCursorImpl) {
+                                        					  isXmlCmpSupported = true;
+
+                                        					  int nodeHandle = ((XMLNodeCursorImpl)xObj).asNode(xctxt);
+                                        					  DTM dtm = xctxt.getDTM(nodeHandle);
+                                        					  Node node3 = dtm.getNode(nodeHandle);
+                                        					  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
+                                        					  int idx1 = xmlStr.indexOf("?>");
+                                        					  xmlStr = (xmlStr.substring(idx1 + 2)).trim();
+                                        					  strBuff.append(xmlStr);
+                                        				  }
+                                        				  else {
+                                        					  // xpathResultObj, which is a sequence not having 
+                                        					  // all its items as nodes, isn't supported here.                                				  
+                                        					  isXmlCmpSupported = false;
+
+                                        					  break; 
+                                        				  }
+                                        			  }                                		                                   		   
+                                        		  }
+                                        		  
+                                        		  if (isXmlCmpSupported) {
+                                        			  String resultXmlFragStr = strBuff.toString();
+                                        			  expectedResultStr2 = expectedResultStr2.trim();
+
+                                        			  if (!resultXmlFragStr.equals(expectedResultStr2)) {
+                                        				  isXslTestPass = false;
+
+                                						  break;
+                                        			  }                                        			  
+                                          		  }                                        		  
+                                        		  else if (xpathResultObj instanceof XMLNodeCursorImpl) {
                                         			  int nodeHandle = ((XMLNodeCursorImpl)xpathResultObj).asNode(xctxt);
                                         			  if (nodeHandle != DTM.NULL) {
                                         				  DTM dtm = xctxt.getDTM(nodeHandle);
@@ -1565,13 +1650,52 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
                                 		  }
                                           else if (ASSERT_XML.equals(nodeName3)) {
                                         	  if (xpathResultObj != null) {
-                                        		  if ((xpathResultObj instanceof ResultSequence) && (((ResultSequence)xpathResultObj).size() == 1)) {
-                                        			  if (((ResultSequence)xpathResultObj).item(0) instanceof XMLNodeCursorImpl) {
-                                        				 xpathResultObj = ((ResultSequence)xpathResultObj).item(0);  
+                                        		  if (xpathResultObj instanceof ResultSequence) {
+                                        			  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                        			  if (rSeq.size() == 1) {
+                                        				  xpathResultObj = rSeq.item(0);   
                                         			  }
                                         		  }
                                         		  
-                                        		  if (xpathResultObj instanceof XMLNodeCursorImpl) {
+                                        		  StringBuffer strBuff = new StringBuffer();                                		
+                                        		  boolean isXmlCmpSupported = false;                                		
+                                        		  if (xpathResultObj instanceof ResultSequence) {
+                                        			  ResultSequence rSeq = (ResultSequence)xpathResultObj;
+                                        			  int size3 = rSeq.size();
+                                        			  for (int idx2 = 0; idx2 < size3; idx2++) {
+                                        				  XObject xObj = rSeq.item(idx2);
+                                        				  if (xObj instanceof XMLNodeCursorImpl) {
+                                        					  isXmlCmpSupported = true;
+
+                                        					  int nodeHandle = ((XMLNodeCursorImpl)xObj).asNode(xctxt);
+                                        					  DTM dtm = xctxt.getDTM(nodeHandle);
+                                        					  Node node3 = dtm.getNode(nodeHandle);
+                                        					  String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
+                                        					  int idx1 = xmlStr.indexOf("?>");
+                                        					  xmlStr = (xmlStr.substring(idx1 + 2)).trim();
+                                        					  strBuff.append(xmlStr);
+                                        				  }
+                                        				  else {
+                                        					  // xpathResultObj, which is a sequence not having 
+                                        					  // all its items as nodes, isn't supported here.                                				  
+                                        					  isXmlCmpSupported = false;
+
+                                        					  break; 
+                                        				  }
+                                        			  }                                		                                   		   
+                                        		  }
+                                        		  
+                                        		  if (isXmlCmpSupported) {
+                                        			  String resultXmlFragStr = strBuff.toString();
+                                        			  expectedResultStr2 = expectedResultStr2.trim();
+
+                                        			  if (resultXmlFragStr.equals(expectedResultStr2)) {
+                                        				  isXslTestPass = true;
+
+                                						  break;
+                                        			  }                                        			  
+                                          		  }                                        		  
+                                        		  else if (xpathResultObj instanceof XMLNodeCursorImpl) {
                                         			  int nodeHandle = ((XMLNodeCursorImpl)xpathResultObj).asNode(xctxt);
                                         			  if (nodeHandle != DTM.NULL) {
                                         				  DTM dtm = xctxt.getDTM(nodeHandle);

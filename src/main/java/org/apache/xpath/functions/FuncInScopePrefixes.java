@@ -44,85 +44,84 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncInScopePrefixes extends FunctionOneArg {
 
-   private static final long serialVersionUID = 2372823852330912332L;
-   
-   /**
-    * Class constructor.
-    */
-   public FuncInScopePrefixes() {
-	   m_defined_arity = new Short[] { 1 };
-   }
+	private static final long serialVersionUID = 2372823852330912332L;
 
-   /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+	/**
+	 * Class constructor.
+	 */
+	public FuncInScopePrefixes() {
+		m_defined_arity = new Short[] { 1 };
+	}
 
-	  ResultSequence result = null;
-    
-      SourceLocator srcLocator = xctxt.getSAXLocator();
-	  
-	  Expression arg0 = getArg0();
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
 
-	  XObject nodeArg = arg0.execute(xctxt);
-	  
-	  if (nodeArg instanceof XMLNodeCursorImpl) {
-		 XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;
-		 DTMCursorIterator dtmIter = nodeSet.iterRaw();
-		 int nodeHandle = dtmIter.nextNode();
-		 DTM dtm = xctxt.getDTM(nodeHandle);
-		 Node node = dtm.getNode(nodeHandle);
-		 if (node.getNodeType() == Node.ELEMENT_NODE) {
-			 Set<String> inScopePrefixesSet = new HashSet<String>();
-			 getInScopePrefixes(node, inScopePrefixesSet);
-			 Iterator<String> inscopePrefixesIterator = inScopePrefixesSet.iterator();
-			 ResultSequence resultSequence = new ResultSequence(); 
-			 while (inscopePrefixesIterator.hasNext()) {
-				resultSequence.add(new XSString(inscopePrefixesIterator.next())); 
-			 }			 
-			 result = resultSequence;
-		 }
-		 else {
-			throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath function 'in-scope-prefixes' "
-					                                                                                                  + "is not an element node", srcLocator);	 
-		 }
-      }
-	  else {
-		 throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath function 'in-scope-prefixes' "
-                                                                                                                     + "is not an element node", srcLocator); 
-	  }
+		ResultSequence result = null;
 
-      return result;
-  }
+		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-  /**
-   * Get the in-scope-prefixes of an element node.
-   */
-  private void getInScopePrefixes(Node node, Set<String> inScopePrefixesSet) {	  
-	  NamedNodeMap attrMap = node.getAttributes();
-	  int attrCount = attrMap.getLength();
-	  for (int idx = 0; idx < attrCount; idx++) {
-		 Node attrNode = attrMap.item(idx);
-		 String attrName = attrNode.getNodeName();
-		 if ("xmlns".equals(attrName)) {
-			inScopePrefixesSet.add("");
-		 }
-		 else if (attrName.startsWith("xmlns:")) {
-		    String prefixStr = attrName.substring(6);
-		    inScopePrefixesSet.add(prefixStr);
-		 }
-	  }
-	  
-	  Node parentNode = node.getParentNode();	  
-	  if (parentNode.getNodeType() == Node.ELEMENT_NODE) {
-		 getInScopePrefixes(node.getParentNode(), inScopePrefixesSet); 
-	  }
-  }
+		Expression arg0 = getArg0();
+
+		XObject nodeArg = arg0.execute(xctxt);
+
+		if (nodeArg instanceof XMLNodeCursorImpl) {
+			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;
+			DTMCursorIterator dtmIter = nodeSet.iterRaw();
+			int nodeHandle = dtmIter.nextNode();
+			DTM dtm = xctxt.getDTM(nodeHandle);
+			Node node = dtm.getNode(nodeHandle);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				Set<String> inScopePrefixesSet = new HashSet<String>();
+				getInScopePrefixes(node, inScopePrefixesSet);
+				Iterator<String> inscopePrefixesIterator = inScopePrefixesSet.iterator();
+				ResultSequence resultSequence = new ResultSequence(); 
+				while (inscopePrefixesIterator.hasNext()) {
+					resultSequence.add(new XSString(inscopePrefixesIterator.next())); 
+				}			 
+				result = resultSequence;
+			}
+			else {
+				throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath 3.1 function 'in-scope-prefixes' "
+																											+ "is not an element node", srcLocator);	 
+			}
+		}
+		else {
+			throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath 3.1 function 'in-scope-prefixes' "
+																											+ "is not an element node", srcLocator); 
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get the in-scope-prefixes of an element node.
+	 */
+	private void getInScopePrefixes(Node node, Set<String> inScopePrefixesSet) {	  
+		NamedNodeMap attrMap = node.getAttributes();
+		int attrCount = attrMap.getLength();
+		for (int idx = 0; idx < attrCount; idx++) {
+			Node attrNode = attrMap.item(idx);
+			String attrName = attrNode.getNodeName();
+			if ("xmlns".equals(attrName)) {
+				inScopePrefixesSet.add("");
+			}
+			else if (attrName.startsWith("xmlns:")) {
+				String prefixStr = attrName.substring(6);
+				inScopePrefixesSet.add(prefixStr);
+			}
+		}
+
+		Node parentNode = node.getParentNode();	  
+		if (parentNode.getNodeType() == Node.ELEMENT_NODE) {
+			getInScopePrefixes(node.getParentNode(), inScopePrefixesSet); 
+		}
+	}
 }

@@ -35,63 +35,62 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncGenerateId extends FunctionDef1Arg
 {
-    static final long serialVersionUID = 973544842091724273L;
-    
-    /**
+	static final long serialVersionUID = 973544842091724273L;
+
+	/**
 	 * Class constructor.
 	 */
 	public FuncGenerateId() {
-	   m_defined_arity = new Short[] { 0, 1 };
+		m_defined_arity = new Short[] { 0, 1 };
 	}
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt                     The current XPath evaluation context
-   * @return                          A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-	  XObject result = null;
-	  
-	  if ((m_arg0 == null) || (m_arg0 instanceof SelfIteratorNoPredicate)) {
-		 XObject contextItem = xctxt.getXPath3ContextItem();
-		 
-		 if (contextItem != null) {
-			 if (contextItem instanceof XdmAttributeItem) {
-				 result = new XSString(((XdmAttributeItem)contextItem).getIdValue()); 
-			 }
-			 else if (contextItem instanceof XdmCommentItem) {
-				 result = new XSString(((XdmCommentItem)contextItem).getIdValue());
-			 }
-			 else if (contextItem instanceof XdmProcessingInstructionItem) {
-				 result = new XSString(((XdmProcessingInstructionItem)contextItem).getIdValue());
-			 }
-			 
-			 if (result != null) {
-				 return result;
-			 }
-		 }		 		 
-	  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		XObject result = null;
 
-	  int which = getArg0AsNode(xctxt);
+		if ((m_arg0 == null) || (m_arg0 instanceof SelfIteratorNoPredicate)) {
+			XObject contextItem = xctxt.getXPath3ContextItem();
 
-	  if (DTM.NULL != which)
-	  {
-		  // Note that this is a different value than in previous releases
-		  // of Xalan. It's sensitive to the exact encoding of the node
-		  // handle anyway, so fighting to maintain backward compatability
-		  // really didn't make sense; it may change again as we continue
-		  // to experiment with balancing document and node numbers within
-		  // that value.
-		  result = new XSString("N" + Integer.toHexString(which).toUpperCase());
-	  }
-	  else
-		  result = new XSString((XString.EMPTYSTRING).str());
-	  
-	  return result;
-  }
+			if (contextItem != null) {
+				if (contextItem instanceof XdmAttributeItem) {
+					result = new XSString(((XdmAttributeItem)contextItem).getIdValue()); 
+				}
+				else if (contextItem instanceof XdmCommentItem) {
+					result = new XSString(((XdmCommentItem)contextItem).getIdValue());
+				}
+				else if (contextItem instanceof XdmProcessingInstructionItem) {
+					result = new XSString(((XdmProcessingInstructionItem)contextItem).getIdValue());
+				}
+
+				if (result != null) {
+					return result;
+				}
+			}		 		 
+		}
+
+		int which = getArg0AsNode(xctxt);
+
+		if (DTM.NULL != which)
+		{
+			// Note that this is a different value than in previous releases
+			// of Xalan. It's sensitive to the exact encoding of the node
+			// handle anyway, so fighting to maintain backward compatability
+			// really didn't make sense; it may change again as we continue
+			// to experiment with balancing document and node numbers within
+			// that value.
+			result = new XSString("N" + Integer.toHexString(which).toUpperCase());
+		}
+		else
+			result = new XSString((XString.EMPTYSTRING).str());
+
+		return result;
+	}
 }

@@ -42,7 +42,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of XPath 3.1 fn:boolean function.
+ * Implementation of an XPath 3.1 function fn:boolean.
  */
 public class FuncBoolean extends FunctionOneArg
 {
@@ -62,159 +62,159 @@ public class FuncBoolean extends FunctionOneArg
        m_arg0 = arg; 
     }
 
-  /**
-   * Evaluate the function. The function must return
-   * a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-   {
-	  XObject result = null;
+    /**
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt                        An XPath context object
+     * @return                             A valid XObject
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
+    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+    {
+    	XObject result = null;
 
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	  XObject xObj = null;
-	  
-	  try {	     	     
-	     xObj = m_arg0.execute(xctxt);	     
-	     if ((xObj == null) || ((xObj instanceof XSDouble) && ((XSDouble)xObj).nan())) {
-	    	result = new XSBoolean(false); 
-	     }
-	     else if (xObj instanceof XString) {
-	        XString xString = (XString)xObj;
-	        if ("".equals(xString.str()) && xString.isXrTreeFragSelectWrapperResult()) {
-	        	result = new XSBoolean(true);
-	        }
-	     }
-	  }
-	  catch (TransformerException ex) {
-		 String mesg1 = ex.getMessage();
-		 if ((mesg1 != null) && mesg1.startsWith("FOAR0001")) {
-			// Numeric division by zero error
-			result = new XSBoolean(true); 
-		 }
-		 else {
-			result = new XSBoolean(false); 
-		 }
-	  }
-	  
-	  if (result != null) {
-		 return result; 
-	  }
+    	XObject xObj = null;
 
-	  if (xObj instanceof ResultSequence) {
-		  ResultSequence rSeq = (ResultSequence)xObj;
-		  if (rSeq.size() == 0) {
-			  result = new XSBoolean(false); 
-		  }
-		  else if (rSeq.item(0) instanceof XMLNodeCursorImpl) {
-			  result = new XSBoolean(true); 
-		  }
-		  else {
-			  throw new javax.xml.transform.TransformerException("FORG0006 : An invalid argument provided to function fn:boolean.", srcLocator);  
-		  }
-	  }
-	  else if (xObj instanceof XMLNodeCursorImpl) {
-		  if (((XMLNodeCursorImpl)xObj).getLength() == 0) {
-			  result = new XSBoolean(false);
-		  }
-		  else if (((XMLNodeCursorImpl)xObj).getLength() == 1) {
-			  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-			  if (xmlNodeCursorImpl.isTransformedAtomicValue()) {
-				  String strValue = xmlNodeCursorImpl.str();
-				  if ("".equals(strValue)) {
-					  result = new XSBoolean(false); 
-				  }
-				  else {
-					  result = new XSBoolean(true); 
-				  }
-				  
-				  xmlNodeCursorImpl.setIsTransformedAtomicValue(false);
-			  }
-			  else {
-				 result = new XSBoolean(true);  
-			  }
-		  }
-		  else {
-			  result = new XSBoolean(true); 
-		  }
-	  }
-	  else if (xObj instanceof XSBoolean) {
-		  result = xObj;
-	  }
-	  else if (xObj instanceof XBoolean) {
-		  XBoolean xBool = (XBoolean)xObj;
-		  result = new XSBoolean(xBool.bool());
-	  }
-	  else if ((xObj instanceof XSString) || (xObj instanceof XString) || 
-			  (xObj instanceof XSAnyURI) || (xObj instanceof XSUntypedAtomic)) {
-		  String argStrVal = XslTransformEvaluationHelper.getStrVal(xObj);
-		  if ((argStrVal == null) || (argStrVal.length() == 0)) {
-			  result = new XSBoolean(false); 
-		  }
-		  else {
-			  result = new XSBoolean(true);
-		  }
-	  }
-	  else if (xObj instanceof XSNumericType) {
-		  XSNumericType xsNumericType = (XSNumericType)xObj;
-		  String argStrVal = xsNumericType.stringValue();
-		  BigDecimal argBigDecimal = new BigDecimal(argStrVal);	   
-		  if ("NaN".equals(argStrVal) || (argBigDecimal.compareTo(BigDecimal.valueOf(0)) == 0)) {
-			  result = new XSBoolean(false);  
-		  }
-		  else {
-			  result = new XSBoolean(true); 
-		  }
-	  }
-	  else if (xObj instanceof XNumber) {	  
-		  if (((XNumber)xObj).isXsInteger()) {
-			  XSInteger xsInteger = ((XNumber)xObj).getXsInteger();
-			  if ((xsInteger.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
-				  result = new XSBoolean(false); 
-			  }
-			  else {
-				  result = new XSBoolean(true); 
-			  }
-		  }
-		  else if (((XNumber)xObj).isXsDecimal()) {
-			  XSDecimal xsDecimal = ((XNumber)xObj).getXsDecimal();
-			  if ((xsDecimal.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
-				  result = new XSBoolean(false); 
-			  }
-			  else {
-				  result = new XSBoolean(true); 
-			  }
-		  }
-		  else if (((XNumber)xObj).isXsDouble()) {
-			  XSDouble xsDouble = ((XNumber)xObj).getXsDouble();
-			  if (xsDouble.nan() || (xsDouble.doubleValue() == 0d)) {
-				  result = new XSBoolean(false); 
-			  }
-			  else {
-				  result = new XSBoolean(true); 
-			  }
-		  }
-		  else {
-			  XNumber xNumber = (XNumber)xObj;
-			  double dbl1 = xNumber.num();
-			  if (dbl1 == 0d) {
-				 result = new XSBoolean(false);  
-			  }
-			  else {
-				 result = new XSBoolean(true);  
-			  }			  
-		  }
-	  }
-	  else {
-		  throw new javax.xml.transform.TransformerException("FORG0006 : An invalid argument provided to function fn:boolean.", srcLocator); 
-	  } 
+    	try {	     	     
+    		xObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
 
-	  return result;
-   }
+    		if ((xObj == null) || ((xObj instanceof XSDouble) && ((XSDouble)xObj).nan())) {
+    			result = new XSBoolean(false); 
+    		}
+    		else if (xObj instanceof XString) {
+    			XString xString = (XString)xObj;
+    			if ("".equals(xString.str()) && xString.isXrTreeFragSelectWrapperResult()) {
+    				result = new XSBoolean(true);
+    			}
+    		}
+    	}
+    	catch (TransformerException ex) {
+    		String mesg1 = ex.getMessage();
+    		if ((mesg1 != null) && mesg1.startsWith("FOAR0001")) {
+    			// Numeric division by zero error
+    			result = new XSBoolean(true); 
+    		}
+    		else {
+    			result = new XSBoolean(false); 
+    		}
+    	}
+
+    	if (result != null) {
+    		return result; 
+    	}
+
+    	if (xObj instanceof ResultSequence) {
+    		ResultSequence rSeq = (ResultSequence)xObj;
+    		if (rSeq.size() == 0) {
+    			result = new XSBoolean(false); 
+    		}
+    		else if (rSeq.item(0) instanceof XMLNodeCursorImpl) {
+    			result = new XSBoolean(true); 
+    		}
+    		else {
+    			throw new javax.xml.transform.TransformerException("FORG0006 : An invalid argument provided to function fn:boolean.", srcLocator);  
+    		}
+    	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+    		if (((XMLNodeCursorImpl)xObj).getLength() == 0) {
+    			result = new XSBoolean(false);
+    		}
+    		else if (((XMLNodeCursorImpl)xObj).getLength() == 1) {
+    			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+    			if (xmlNodeCursorImpl.isTransformedAtomicValue()) {
+    				String strValue = xmlNodeCursorImpl.str();
+    				if ("".equals(strValue)) {
+    					result = new XSBoolean(false); 
+    				}
+    				else {
+    					result = new XSBoolean(true); 
+    				}
+
+    				xmlNodeCursorImpl.setIsTransformedAtomicValue(false);
+    			}
+    			else {
+    				result = new XSBoolean(true);  
+    			}
+    		}
+    		else {
+    			result = new XSBoolean(true); 
+    		}
+    	}
+    	else if (xObj instanceof XSBoolean) {
+    		result = xObj;
+    	}
+    	else if (xObj instanceof XBoolean) {
+    		XBoolean xBool = (XBoolean)xObj;
+    		result = new XSBoolean(xBool.bool());
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || 
+    			 (xObj instanceof XSAnyURI) || (xObj instanceof XSUntypedAtomic)) {
+    		String argStrVal = XslTransformEvaluationHelper.getStrVal(xObj);
+    		if ((argStrVal == null) || (argStrVal.length() == 0)) {
+    			result = new XSBoolean(false); 
+    		}
+    		else {
+    			result = new XSBoolean(true);
+    		}
+    	}
+    	else if (xObj instanceof XSNumericType) {
+    		XSNumericType xsNumericType = (XSNumericType)xObj;
+    		String argStrVal = xsNumericType.stringValue();
+    		BigDecimal argBigDecimal = new BigDecimal(argStrVal);	   
+    		if ("NaN".equals(argStrVal) || (argBigDecimal.compareTo(BigDecimal.valueOf(0)) == 0)) {
+    			result = new XSBoolean(false);  
+    		}
+    		else {
+    			result = new XSBoolean(true); 
+    		}
+    	}
+    	else if (xObj instanceof XNumber) {	  
+    		if (((XNumber)xObj).isXsInteger()) {
+    			XSInteger xsInteger = ((XNumber)xObj).getXsInteger();
+    			if ((xsInteger.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
+    				result = new XSBoolean(false); 
+    			}
+    			else {
+    				result = new XSBoolean(true); 
+    			}
+    		}
+    		else if (((XNumber)xObj).isXsDecimal()) {
+    			XSDecimal xsDecimal = ((XNumber)xObj).getXsDecimal();
+    			if ((xsDecimal.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
+    				result = new XSBoolean(false); 
+    			}
+    			else {
+    				result = new XSBoolean(true); 
+    			}
+    		}
+    		else if (((XNumber)xObj).isXsDouble()) {
+    			XSDouble xsDouble = ((XNumber)xObj).getXsDouble();
+    			if (xsDouble.nan() || (xsDouble.doubleValue() == 0d)) {
+    				result = new XSBoolean(false); 
+    			}
+    			else {
+    				result = new XSBoolean(true); 
+    			}
+    		}
+    		else {
+    			XNumber xNumber = (XNumber)xObj;
+    			double dbl1 = xNumber.num();
+    			if (dbl1 == 0d) {
+    				result = new XSBoolean(false);  
+    			}
+    			else {
+    				result = new XSBoolean(true);  
+    			}			  
+    		}
+    	}
+    	else {
+    		throw new javax.xml.transform.TransformerException("FORG0006 : An invalid argument provided to function fn:boolean.", srcLocator); 
+    	} 
+
+    	return result;
+    }
   
 }

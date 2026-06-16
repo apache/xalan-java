@@ -38,45 +38,47 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncString extends FunctionDef1Arg
 {
-   static final long serialVersionUID = -2206677149497712883L;
-   
-   /**
-    * Class constructor.
-    */
-   public FuncString() {
-	  m_defined_arity = new Short[] {0, 1}; 
-   }
+	static final long serialVersionUID = -2206677149497712883L;
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-	  XObject result = null;
-	  
-	  SourceLocator srcLocator = xctxt.getSAXLocator();
-	  
-	  if (m_arg0 instanceof NodeTest) {
-		 if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-	    	throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
-	    			                                                                                  + "function, whose string value cannot be determined.", srcLocator);  
-	     } 
-	  }
-	  else if (m_arg0 instanceof XPathInlineFunction) {
-		  throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
-                                                                                                      + "function, whose string value cannot be determined.", srcLocator); 
-	  }
-	  
-	  XMLString xmlStr = getArg0AsString(xctxt);
-	  
-	  result = new XSString(xmlStr.toString()); 
-	  
-	  return result;
-  }
+	/**
+	 * Class constructor.
+	 */
+	public FuncString() {
+		m_defined_arity = new Short[] {0, 1}; 
+	}
+
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		XObject result = null;
+
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		if (m_arg0 instanceof NodeTest) {
+			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+				throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
+																											+ "function, whose string value "
+																											+ "cannot be determined.", srcLocator);  
+			} 
+		}
+		else if (m_arg0 instanceof XPathInlineFunction) {
+			throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
+																											+ "function, whose string value "
+																											+ "cannot be determined.", srcLocator); 
+		}
+
+		XMLString xmlStr = getArg0AsString(xctxt);
+
+		result = new XSString(xmlStr.toString()); 
+
+		return result;
+	}
   
 }

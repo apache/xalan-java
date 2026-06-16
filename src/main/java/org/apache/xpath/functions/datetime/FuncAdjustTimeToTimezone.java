@@ -70,7 +70,7 @@ public class FuncAdjustTimeToTimezone extends FunctionMultiArgs {
 		   return result;
 		}
 		else {
-			XObject xObj0 = m_arg0.execute(xctxt);
+			XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
 
 			if (xObj0 instanceof XSTime) {
 				arg0XsTime = (XSTime)xObj0; 
@@ -93,7 +93,7 @@ public class FuncAdjustTimeToTimezone extends FunctionMultiArgs {
 			arg1Timezone = xctxt.getTimezone();
 		}
 		else {
-			XObject xObj1 = m_arg1.execute(xctxt);
+			XObject xObj1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
 
 			if (xObj1 instanceof XSDuration) {
 				arg1Timezone = (XSDuration)xObj1; 

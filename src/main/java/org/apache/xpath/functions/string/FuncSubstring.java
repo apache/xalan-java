@@ -34,7 +34,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function fn:substring.
+ * Implementation of an XPath 3.1 function fn:substring.
  * 
  * @xsl.usage advanced
  */
@@ -52,215 +52,215 @@ public class FuncSubstring extends Function3Args
    /**
     * Evaluate the function. The function must return a valid object.
     * 
-    * @param xctxt 							The current execution context
-    * @return 								A valid XObject
+    * @param xctxt                        An XPath context object
+    * @return                             A valid XObject
     *
     * @throws javax.xml.transform.TransformerException
     */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-	  XObject result = null;
-	  
-	  // An XPath 3.1 function fn:substring index within the 
-	  // string starts at position 1 and not 0.
+   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+   {
+	   XObject result = null;
 
-	  try {
-		  XObject arg0Obj = m_arg0.execute(xctxt);
+	   // An XPath 3.1 function fn:substring index within the 
+	   // string starts at position 1 and not 0.
 
-		  if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
-			  result = new XSString("");
-		  }
-		  else {
-			  String inpStr = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+	   try {
+		   XObject arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
 
-			  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+		   if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
+			   result = new XSString("");
+		   }
+		   else {
+			   String inpStr = XslTransformEvaluationHelper.getStrVal(arg0Obj);
 
-			  int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
+			   XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
 
-			  int start = 0;
+			   int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
 
-			  XObject arg1Obj = m_arg1.execute(xctxt);
+			   int start = 0;
 
-			  boolean is2ndArgNegInf = false;
-			  boolean isStartComputed = false;
+			   XObject arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
 
-			  if (arg1Obj instanceof XNumber) {
-				  double dbl = arg1Obj.num();
-				  Double dblObj = Double.valueOf(dbl);
-				  if (dblObj.isNaN()) {
-					  result = new XSString("");
+			   boolean is2ndArgNegInf = false;
+			   boolean isStartComputed = false;
 
-					  return result; 
-				  }
+			   if (arg1Obj instanceof XNumber) {
+				   double dbl = arg1Obj.num();
+				   Double dblObj = Double.valueOf(dbl);
+				   if (dblObj.isNaN()) {
+					   result = new XSString("");
 
-				  if (dblObj == dblObj.NEGATIVE_INFINITY) {
-					  is2ndArgNegInf = true;  
-				  }
-				  else {
-					  start = getNormalizedInt(dbl);			     
-					  isStartComputed = true;
-				  }
-			  }
-			  else if (arg1Obj instanceof XSNumericType) {
-				  String arg1StrVal = ((XSNumericType)arg1Obj).stringValue();
-				  double dbl = Double.valueOf(arg1StrVal);
-				  Double dblObj = Double.valueOf(dbl);
-				  if (dblObj.isNaN()) {
-					  result = new XSString("");
+					   return result; 
+				   }
 
-					  return result; 
-				  }
+				   if (dblObj == Double.NEGATIVE_INFINITY) {
+					   is2ndArgNegInf = true;  
+				   }
+				   else {
+					   start = getNormalizedInt(dbl);			     
+					   isStartComputed = true;
+				   }
+			   }
+			   else if (arg1Obj instanceof XSNumericType) {
+				   String arg1StrVal = ((XSNumericType)arg1Obj).stringValue();
+				   double dbl = Double.valueOf(arg1StrVal);
+				   Double dblObj = Double.valueOf(dbl);
+				   if (dblObj.isNaN()) {
+					   result = new XSString("");
 
-				  if (dblObj == dblObj.NEGATIVE_INFINITY) {
-					  is2ndArgNegInf = true;  
-				  }
-				  else {
-					  start = getNormalizedInt(dbl);
-					  isStartComputed = true;
-				  }
-			  }
-			  else {
-				  double dbl = arg1Obj.num();
-				  Double dblObj = Double.valueOf(dbl);
-				  if (dblObj.isNaN()) {
-					  result = new XSString("");
+					   return result; 
+				   }
 
-					  return result; 
-				  }
+				   if (dblObj == Double.NEGATIVE_INFINITY) {
+					   is2ndArgNegInf = true;  
+				   }
+				   else {
+					   start = getNormalizedInt(dbl);
+					   isStartComputed = true;
+				   }
+			   }
+			   else {
+				   double dbl = arg1Obj.num();
+				   Double dblObj = Double.valueOf(dbl);
+				   if (dblObj.isNaN()) {
+					   result = new XSString("");
 
-				  if (dblObj == dblObj.NEGATIVE_INFINITY) {
-					  is2ndArgNegInf = true;  
-				  }
-				  else {
-					  start = getNormalizedInt(dbl);
-					  isStartComputed = true;
-				  }
-			  }
+					   return result; 
+				   }
 
-			  int length = 0;
+				   if (dblObj == Double.NEGATIVE_INFINITY) {
+					   is2ndArgNegInf = true;  
+				   }
+				   else {
+					   start = getNormalizedInt(dbl);
+					   isStartComputed = true;
+				   }
+			   }
 
-			  boolean is3rdArgPosInf = false;
-			  boolean isLengthComputed = false;
+			   int length = 0;
 
-			  if (m_arg2 != null) {			  
-				  XObject arg2Obj = m_arg2.execute(xctxt);			  
+			   boolean is3rdArgPosInf = false;
+			   boolean isLengthComputed = false;
 
-				  if (arg2Obj instanceof XNumber) {
-					  double dbl = arg2Obj.num();
-					  Double dblObj = Double.valueOf(dbl);
-					  if (dblObj.isNaN()) {
-						  result = new XSString("");
+			   if (m_arg2 != null) {			  
+				   XObject arg2Obj = getFunctionEffectiveArgValue(m_arg2, xctxt);			  
 
-						  return result; 
-					  }
+				   if (arg2Obj instanceof XNumber) {
+					   double dbl = arg2Obj.num();
+					   Double dblObj = Double.valueOf(dbl);
+					   if (dblObj.isNaN()) {
+						   result = new XSString("");
 
-					  if (dblObj == dblObj.POSITIVE_INFINITY) {
-						  is3rdArgPosInf = true;  
-					  }
-					  else {
-						  length = getNormalizedInt(dbl);
-						  isLengthComputed = true;
-					  }
-				  }
-				  else if (arg2Obj instanceof XSNumericType) {					  
-					  String arg2StrVal = ((XSNumericType)arg2Obj).stringValue();
-					  double dbl = Double.valueOf(arg2StrVal);
-					  Double dblObj = Double.valueOf(dbl);
-					  if (dblObj.isNaN()) {
-						  result = new XSString("");
+						   return result; 
+					   }
 
-						  return result; 
-					  }
+					   if (dblObj == Double.POSITIVE_INFINITY) {
+						   is3rdArgPosInf = true;  
+					   }
+					   else {
+						   length = getNormalizedInt(dbl);
+						   isLengthComputed = true;
+					   }
+				   }
+				   else if (arg2Obj instanceof XSNumericType) {					  
+					   String arg2StrVal = ((XSNumericType)arg2Obj).stringValue();
+					   double dbl = Double.valueOf(arg2StrVal);
+					   Double dblObj = Double.valueOf(dbl);
+					   if (dblObj.isNaN()) {
+						   result = new XSString("");
 
-					  if (dblObj == dblObj.POSITIVE_INFINITY) {
-						  is3rdArgPosInf = true;  
-					  }
-					  else {
-						  length = getNormalizedInt(dbl);
-						  isLengthComputed = true;
-					  }
-				  }
-				  else {
-					  double dbl = arg2Obj.num();
-					  Double dblObj = Double.valueOf(dbl);
-					  if (dblObj.isNaN()) {
-						  result = new XSString("");
+						   return result; 
+					   }
 
-						  return result; 
-					  }
+					   if (dblObj == Double.POSITIVE_INFINITY) {
+						   is3rdArgPosInf = true;  
+					   }
+					   else {
+						   length = getNormalizedInt(dbl);
+						   isLengthComputed = true;
+					   }
+				   }
+				   else {
+					   double dbl = arg2Obj.num();
+					   Double dblObj = Double.valueOf(dbl);
+					   if (dblObj.isNaN()) {
+						   result = new XSString("");
 
-					  if (dblObj == dblObj.POSITIVE_INFINITY) {
-						  is3rdArgPosInf = true;  
-					  }
-					  else {
-						  length = getNormalizedInt(dbl);
-						  isLengthComputed = true;
-					  }
-				  }
-			  }
-			  else {
-				  StringBuffer strBuff = new StringBuffer();
-				  int strtIndex = --start;
-				  for (int idx = strtIndex; idx < codePointsArr.length; idx++) {
-					  if ((idx >= 0) && (idx < codePointsArr.length)) {
-						  char[] charArr = Character.toChars(codePointsArr[idx]);
-						  strBuff.append(String.valueOf(charArr));
-					  }
-				  }
+						   return result; 
+					   }
 
-				  result = new XSString(strBuff.toString());
+					   if (dblObj == Double.POSITIVE_INFINITY) {
+						   is3rdArgPosInf = true;  
+					   }
+					   else {
+						   length = getNormalizedInt(dbl);
+						   isLengthComputed = true;
+					   }
+				   }
+			   }
+			   else {
+				   StringBuffer strBuff = new StringBuffer();
+				   int strtIndex = --start;
+				   for (int idx = strtIndex; idx < codePointsArr.length; idx++) {
+					   if ((idx >= 0) && (idx < codePointsArr.length)) {
+						   char[] charArr = Character.toChars(codePointsArr[idx]);
+						   strBuff.append(String.valueOf(charArr));
+					   }
+				   }
 
-				  return result;
-			  }
+				   result = new XSString(strBuff.toString());
 
-			  if (is2ndArgNegInf && is3rdArgPosInf) {
-				  // Since the value of -INF + INF is NaN, no characters are selected			  
-				  result = new XSString("");
+				   return result;
+			   }
 
-				  return result;  
-			  }
+			   if (is2ndArgNegInf && is3rdArgPosInf) {
+				   // Since the value of -INF + INF is NaN, no characters are selected			  
+				   result = new XSString("");
 
-			  if (isStartComputed && isLengthComputed) {
-				  StringBuffer strBuff = new StringBuffer();
-				  int strtIndex = --start;
-				  int count = 0;
-				  for (int idx = strtIndex; idx < codePointsArr.length; idx++) {
-					  count++;
-					  if ((idx >= 0) && (idx < codePointsArr.length) && (count <= length)) {
-						  char[] charArr = Character.toChars(codePointsArr[idx]);
-						  strBuff.append(String.valueOf(charArr));
-					  }
-				  }
+				   return result;  
+			   }
 
-				  result = new XSString(strBuff.toString());
+			   if (isStartComputed && isLengthComputed) {
+				   StringBuffer strBuff = new StringBuffer();
+				   int strtIndex = --start;
+				   int count = 0;
+				   for (int idx = strtIndex; idx < codePointsArr.length; idx++) {
+					   count++;
+					   if ((idx >= 0) && (idx < codePointsArr.length) && (count <= length)) {
+						   char[] charArr = Character.toChars(codePointsArr[idx]);
+						   strBuff.append(String.valueOf(charArr));
+					   }
+				   }
 
-				  return result;
-			  }
+				   result = new XSString(strBuff.toString());
 
-			  if (!is2ndArgNegInf && is3rdArgPosInf) {
-				  // Characters at positions greater than or equal to start and less than 
-				  // INF are selected.
-				  StringBuffer strBuff = new StringBuffer();
-				  int strtIndex = --start;
-				  for (int idx = strtIndex; idx < codePointsArr.length; idx++) {
-					  if ((idx >= 0) && (idx < codePointsArr.length)) {
-						  char[] charArr = Character.toChars(codePointsArr[idx]);
-						  strBuff.append(String.valueOf(charArr));
-					  }
-				  }
+				   return result;
+			   }
 
-				  result = new XSString(strBuff.toString());
+			   if (!is2ndArgNegInf && is3rdArgPosInf) {
+				   // Characters at positions greater than or equal to start and less than 
+				   // INF are selected.
+				   StringBuffer strBuff = new StringBuffer();
+				   int strtIndex = --start;
+				   for (int idx = strtIndex; idx < codePointsArr.length; idx++) {
+					   if ((idx >= 0) && (idx < codePointsArr.length)) {
+						   char[] charArr = Character.toChars(codePointsArr[idx]);
+						   strBuff.append(String.valueOf(charArr));
+					   }
+				   }
 
-				  return result;
-			  }		  		  
-		  }
-      }
-      catch (TransformerException ex) {
-          throw ex;
-      }
+				   result = new XSString(strBuff.toString());
 
-	  return result;
-  }
+				   return result;
+			   }		  		  
+		   }
+	   }
+	   catch (TransformerException ex) {
+		   throw ex;
+	   }
+
+	   return result;
+   }
 
   /**
    * Check that the number of arguments passed to this function is correct. 

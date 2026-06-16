@@ -97,6 +97,7 @@ public class XdmAttributeItem extends XObject {
 	}
 	
 	public String getIdValue() {
+		
 		String result = null;
 
 		if (m_id != null) {
@@ -105,7 +106,9 @@ public class XdmAttributeItem extends XObject {
 		else {
 			double dblValue = Math.random();
 			String dblStr1 = String.valueOf(dblValue);
-			result = "N" + dblStr1.substring(2, 7);
+			String str1 = dblStr1.substring(2, 7);
+			
+			result = "N" + Integer.toHexString(Integer.valueOf(str1)).toUpperCase();
 		}
 
 		return result;

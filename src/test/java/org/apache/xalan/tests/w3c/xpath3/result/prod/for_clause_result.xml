@@ -1,37 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:00Z" fail="47" name="prod-ForClause" pass="23" run="74" statusUnknown="4">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-16T10:30:43Z" fail="29" name="prod-ForClause" pass="45" run="74" statusUnknown="0">
    <testResult status="pass" testName="ForExpr001"/>
-   <testResult testName="ForExpr007"/>
+   <testResult status="pass" testName="ForExpr007"/>
    <testResult status="pass" testName="ForExpr009"/>
    <testResult status="fail" testName="ForExpr012"/>
-   <testResult testName="ForExpr013"/>
-   <testResult status="fail" testName="ForExpr014"/>
+   <testResult status="pass" testName="ForExpr013"/>
+   <testResult status="pass" testName="ForExpr014"/>
    <testResult status="pass" testName="ForExpr015"/>
-   <testResult testName="ForExpr016"/>
-   <testResult status="fail" testName="ForExpr017"/>
-   <testResult status="fail" testName="ForExpr018"/>
-   <testResult status="fail" testName="ForExpr019"/>
-   <testResult status="fail" testName="ForExpr020"/>
+   <testResult status="pass" testName="ForExpr016"/>
+   <testResult status="pass" testName="ForExpr017"/>
+   <testResult status="pass" testName="ForExpr018"/>
+   <testResult status="pass" testName="ForExpr019"/>
+   <testResult status="pass" testName="ForExpr020"/>
    <testResult status="pass" testName="ForExpr021"/>
-   <testResult testName="ForExpr025"/>
+   <testResult status="pass" testName="ForExpr025"/>
    <testResult status="pass" testName="ForExpr026"/>
    <testResult status="pass" testName="ForExpr030"/>
-   <testResult status="fail" testName="K-ForExprWithout-1"/>
-   <testResult status="fail" testName="K-ForExprWithout-2"/>
-   <testResult status="fail" testName="K-ForExprWithout-3"/>
+   <testResult status="pass" testName="K-ForExprWithout-1"/>
+   <testResult status="pass" testName="K-ForExprWithout-2"/>
+   <testResult status="pass" testName="K-ForExprWithout-3"/>
    <testResult status="pass" testName="K-ForExprWithout-4"/>
    <testResult status="fail" testName="K-ForExprWithout-5"/>
-   <testResult status="fail" testName="K-ForExprWithout-6"/>
-   <testResult status="fail" testName="K-ForExprWithout-7"/>
-   <testResult status="fail" testName="K-ForExprWithout-8"/>
-   <testResult status="fail" testName="K-ForExprWithout-9"/>
+   <testResult status="pass" testName="K-ForExprWithout-6"/>
+   <testResult status="pass" testName="K-ForExprWithout-7"/>
+   <testResult status="pass" testName="K-ForExprWithout-8"/>
+   <testResult status="pass" testName="K-ForExprWithout-9"/>
    <testResult status="fail" testName="K-ForExprWithout-10"/>
    <testResult status="fail" testName="K-ForExprWithout-11"/>
-   <testResult status="fail" testName="K-ForExprWithout-12"/>
-   <testResult status="fail" testName="K-ForExprWithout-13"/>
-   <testResult status="fail" testName="K-ForExprWithout-14"/>
-   <testResult status="fail" testName="K-ForExprWithout-15"/>
-   <testResult status="fail" testName="K-ForExprWithout-16"/>
-   <testResult status="fail" testName="K-ForExprWithout-17"/>
+   <testResult status="pass" testName="K-ForExprWithout-12"/>
+   <testResult status="pass" testName="K-ForExprWithout-13"/>
+   <testResult status="pass" testName="K-ForExprWithout-14"/>
+   <testResult status="pass" testName="K-ForExprWithout-15"/>
+   <testResult status="pass" testName="K-ForExprWithout-16"/>
+   <testResult status="pass" testName="K-ForExprWithout-17"/>
    <testResult status="pass" testName="K-ForExprWithout-18"/>
    <testResult status="pass" testName="K-ForExprWithout-19"/>
    <testResult status="fail" testName="K-ForExprWithout-20"/>

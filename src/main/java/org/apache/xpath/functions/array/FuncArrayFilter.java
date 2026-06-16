@@ -51,38 +51,37 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FuncArrayFilter extends Function2Args {
    
-   private static final long serialVersionUID = -7341393974878279742L;
-   
-   /**
-	* Class constructor.
-	*/
-   public FuncArrayFilter() {
-	  m_defined_arity = new Short[] { 2 };
-   }
-   
-   /**
-    * This class field is used during, XPath.fixupVariables(..) action 
-    * as performed within object of this class.  
-    */    
-   private Vector m_vars;
-   
-   /**
-    * This class field is used during, XPath.fixupVariables(..) action 
-    * as performed within object of this class.  
-    */
-   private int m_globals_size;
+	private static final long serialVersionUID = -7341393974878279742L;
+
+	/**
+	 * Class constructor.
+	 */
+	public FuncArrayFilter() {
+		m_defined_arity = new Short[] { 2 };
+	}
+
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) action 
+	 * as performed within object of this class.  
+	 */    
+	private Vector m_vars;
+
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) action 
+	 * as performed within object of this class.  
+	 */
+	private int m_globals_size;
 
    /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context.
-   * 
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+    * Evaluate the function. The function must return a valid object.
+    * 
+    * @param xctxt                        An XPath context object
+    * @return                             A valid XObject
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
+    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+    {
       
 	    XPathArray result = null;
         
@@ -127,27 +126,27 @@ public class FuncArrayFilter extends Function2Args {
         }
         
         return result;
-  }
+    }
 
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (argNum != 2) {
-        reportWrongNumberArgs();
-     }
-  }
-  
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-      m_vars = (Vector)(vars.clone());
-      m_globals_size = globalsSize; 
-  }
+    /**
+     * Check that the number of arguments passed to this function is correct.
+     *
+     * @param argNum The number of arguments that is being passed to the function.
+     *
+     * @throws WrongNumberArgsException
+     */
+    public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+    {
+    	if (argNum != 2) {
+    		reportWrongNumberArgs();
+    	}
+    }
+
+    public void fixupVariables(java.util.Vector vars, int globalsSize)
+    {
+    	m_vars = (Vector)(vars.clone());
+    	m_globals_size = globalsSize; 
+    }
   
   /**
    * Constructs and throws a WrongNumberArgException with the appropriate

@@ -33,36 +33,36 @@ import xml.xpath31.processor.types.XSDouble;
 public class FuncMathPi extends Function
 {
     
-   private static final long serialVersionUID = -5588383515962377796L;
-   
-   private final double PI = 3.141592653589793;
-   
-   /**
+	private static final long serialVersionUID = -5588383515962377796L;
+
+	private static final double PI = 3.141592653589793;
+
+	/**
 	 * Class constructor.
 	 */
 	public FuncMathPi() {
 		m_defined_arity = new Short[] { 0 };
 	}
 
-  /**
-   * Evaluate the function. The function must return a valid object.
-   * 
-   * @param xctxt The current execution context
-   * @return A valid XObject
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-      return new XSDouble(PI);
-  }
-  
-  /**
-   * No arguments to process, so this does nothing.
-   */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
-  {
-     // no op
-  }
+	/**
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+	{
+		return new XSDouble(PI);
+	}
+
+	/**
+	 * No arguments to process, so this does nothing.
+	 */
+	public void fixupVariables(java.util.Vector vars, int globalsSize)
+	{
+		// no op
+	}
 
 }

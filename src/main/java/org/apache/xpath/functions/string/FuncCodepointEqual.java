@@ -50,13 +50,13 @@ public class FuncCodepointEqual extends Function2Args {
     }
     
     /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return A valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-     */
+	 * Evaluate the function. The function must return a valid object.
+	 * 
+	 * @param xctxt                        An XPath context object
+	 * @return                             A valid XObject
+	 *
+	 * @throws javax.xml.transform.TransformerException
+	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
         
@@ -64,9 +64,9 @@ public class FuncCodepointEqual extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
-        XObject xObj0 = m_arg0.execute(xctxt); 
+        XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt); 
         
-        XObject xObj1 = m_arg1.execute(xctxt);
+        XObject xObj1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
         
         if ((xObj0 instanceof XSNumericType) || (xObj0 instanceof XNumber)) {
         	throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoint-equal' accepts string as its first "
