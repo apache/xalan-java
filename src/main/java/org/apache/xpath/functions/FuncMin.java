@@ -83,7 +83,7 @@ public class FuncMin extends FunctionMultiArgs
       
       ResultSequence convetedInpSequence = new ResultSequence();
       
-      XObject xObjArg0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+      XObject xObjArg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
       
       int doubleItemCount = 0;
       int strItemCount = 0;
@@ -377,7 +377,7 @@ public class FuncMin extends FunctionMultiArgs
       String collationUri = xctxt.getDefaultCollation();
       
       if (m_arg1 != null) {
-          XObject XObjArg1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+          XObject XObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
                
           if ((XObjArg1 instanceof ResultSequence) && 
                                                     (((ResultSequence)XObjArg1).size() == 0)) {

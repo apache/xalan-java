@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
@@ -61,80 +60,93 @@ public class FuncMapFind extends Function2Args {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
+		
 		XPathArray result = new XPathArray();
 	       
-	    Expression arg0 = getArg0();
-	    XObject arg0Obj = arg0.execute(xctxt);
+	    XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    
-	    Expression arg1 = getArg1();
-	    XObject arg1Obj = arg1.execute(xctxt);
+	    XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    
 	    if (!((arg1Obj instanceof XSAnyAtomicType) || (arg1Obj instanceof XString) || 
 	    		                            (arg1Obj instanceof XNumber) || (arg1Obj instanceof XBoolean))) {
-	        throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument of map:find function call is not of "
-	        		+                                                                                "type xs:anyAtomicType or it's subtype.");
+	        throw new javax.xml.transform.TransformerException("FORG0006 : The second argument of map:find function call is not of "
+	        		+                                                                                              "type xs:anyAtomicType or it's subtype.");
 	    }
 	    
-	    mapFind(arg0Obj, arg1Obj, result);	    
+	    searchXdmSequence(arg0Obj, arg1Obj, result);	    
 	    
 	    return result;
 	}
 	
 	/**
-	 * This method searches an input sequence recursively for map entries having 
-	 * specified key, and accumulates in an array the values of such map entries 
-	 * that're found.
+	 * Method definition, to search within an input sequence recursively for map 
+	 * entries having specified key, and accumulates within result array the values of 
+	 * the map entries that're found.
 	 * 
-	 * @param list         an input sequence to be searched
-	 * @param key          map's key, for which search is been done within 
+	 * @param seq1         An input sequence to be searched
+	 * @param key          An xdm map's key, for which search is been done within 
 	 *                     an input sequence.                    
-	 * @param result       result of this function call is accumulated into
+	 * @param result       Result of this function call is accumulated into
 	 *                     this array object.
 	 */
-	private void mapFind(XObject list, XObject key, XPathArray result) {
-       if (list instanceof ResultSequence) {
-    	  ResultSequence rSeq = (ResultSequence)list;
-    	  for (int idx = 0; idx < rSeq.size(); idx++) {
+	private void searchXdmSequence(XObject seq1, XObject key, XPathArray result) {
+       
+		if (seq1 instanceof ResultSequence) {
+    	  ResultSequence rSeq = (ResultSequence)seq1;
+    	  int size1 = rSeq.size();
+    	  for (int idx = 0; idx < size1; idx++) {
     		 XObject seqItem = rSeq.item(idx);
+    		 
     		 if (seqItem instanceof XPathMap) {
     			XObject mapEntryValue = ((XPathMap)seqItem).get(key);
+    			
     			if (mapEntryValue != null) {
     			   result.add(mapEntryValue);
-    			   mapFind(mapEntryValue, key, result);
+    			   
+    			   searchXdmSequence(mapEntryValue, key, result);
     			}
     		 }
     		 else if ((seqItem instanceof ResultSequence) || (seqItem instanceof XPathArray)) {
-    			mapFind(seqItem, key, result); 
+    			searchXdmSequence(seqItem, key, result); 
     		 }
     	  }
        }
-       else if (list instanceof XPathArray) {
-    	  XPathArray xpathArr = (XPathArray)list;
-    	  for (int idx = 0; idx < xpathArr.size(); idx++) {
+       else if (seq1 instanceof XPathArray) {
+    	  XPathArray xpathArr = (XPathArray)seq1;
+    	  int size1 = xpathArr.size();
+    	  for (int idx = 0; idx < size1; idx++) {
     		 XObject arrItem = xpathArr.get(idx);
-             if (arrItem instanceof XPathMap) {
+             
+    		 if (arrItem instanceof XPathMap) {
             	XObject mapEntryValue = ((XPathMap)arrItem).get(key);
-     			if (mapEntryValue != null) {
+     			
+            	if (mapEntryValue != null) {
      			   result.add(mapEntryValue);
-     			   mapFind(mapEntryValue, key, result);
+     			   
+     			   searchXdmSequence(mapEntryValue, key, result);
      			} 
     		 }
              else if ((arrItem instanceof ResultSequence) || (arrItem instanceof XPathArray)) {
-            	mapFind(arrItem, key, result); 
+            	searchXdmSequence(arrItem, key, result); 
     		 }
     	  }
        }
-       else if (list instanceof XPathMap) {
-    	  XPathMap xpathMap = (XPathMap)list;
+       else if (seq1 instanceof XPathMap) {
+    	  XPathMap xpathMap = (XPathMap)seq1;
     	  XObject val = xpathMap.get(key);
+    	  
     	  if (val != null) {
     		 result.add(val);  
     	  }
+    	  
     	  Map<XObject,XObject> nativeMap = xpathMap.getNativeMap();
     	  Collection<XObject> mapEntryValues = nativeMap.values();
     	  Iterator<XObject> iter = mapEntryValues.iterator();
+    	  
     	  while (iter.hasNext()) {
     		 XObject value = iter.next();
-    		 mapFind(value, key, result);
+    		 
+    		 searchXdmSequence(value, key, result);
     	  }
        }
 	}

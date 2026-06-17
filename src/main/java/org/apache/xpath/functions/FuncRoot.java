@@ -69,7 +69,7 @@ public class FuncRoot extends FunctionMultiArgs {
 		   int nodeHandle = DTM.NULL;
 		   
 		   if (m_arg0 != null) {
-		       XObject firstArgEvalResult = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		       XObject firstArgEvalResult = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		       
 		       if (firstArgEvalResult instanceof XMLNodeCursorImpl) {
 		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)firstArgEvalResult;

@@ -78,7 +78,7 @@ public class FuncNumber extends FunctionDef1Arg
 		}
 
 		if (m_arg0 != null) {     	  
-			XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 			if (xObj0 instanceof XSNumericType) {
 				String str1 = ((XSNumericType)xObj0).stringValue();

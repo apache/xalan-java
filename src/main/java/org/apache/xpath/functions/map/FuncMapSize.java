@@ -18,13 +18,11 @@ package org.apache.xpath.functions.map;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSInteger;
 
@@ -56,52 +54,35 @@ public class FuncMapSize extends FunctionOneArg {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
-	    XObject result = null;
-	       
-	    Expression arg0 = getArg0();
-	    
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);	       
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-	    	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'size' cannot have its first "
-	    	  		                                                                                               + "argument as an empty sequence.", srcLocator);  
-	       }
-	       
-	       XPathMap xpathMap = getNativeMap(xObject);
-	       result = new XSInteger(String.valueOf(xpathMap.size()));
-	    }
-	    else {
-	       XObject xObject = arg0.execute(xctxt);
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-		      throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'size' cannot have its first "
-		      		                                                                                               + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-	       XPathMap xpathMap = getNativeMap(xObject);
-		   result = new XSInteger(String.valueOf(xpathMap.size()));
-	    }
-	    
-	    return result;
-	}
+		XObject result = null;
 
-	/**
-     * Given an XPath map instance, get an underlying native map. --> 
-	 */
-	private XPathMap getNativeMap(XObject xObject) {
-	   XPathMap xpathMap = null;
-	   if (xObject instanceof ResultSequence) {
-		  ResultSequence rSeq = ((ResultSequence)xObject);
-		  if ((rSeq.size() == 1) && (rSeq.item(0) instanceof XPathMap)) {
-		     xpathMap = (XPathMap)(rSeq.item(0)); 
-		  }
-	   }
-	   else {
-	      xpathMap = (XPathMap)xObject;	
-	   }
-	    
-	   return xpathMap;
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+		if (xObj0 instanceof ResultSequence) {
+			ResultSequence rSeq = (ResultSequence)xObj0;
+			if ((rSeq.size() == 0) || (rSeq.size() > 1)) {
+			   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function map 'size' cannot have its first "
+					                                                                                     + "argument as an empty sequence, or "
+					                                                                                     + "a sequence with size greater than one.", srcLocator);
+			}
+		}
+		
+		if (xObj0 instanceof ResultSequence) {
+		   xObj0 = ((ResultSequence)xObj0).item(0); 
+		}
+		
+		if (!(xObj0 instanceof XPathMap)) {
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function map 'size' first argument "
+		   																								+ "is not an xdm map.", srcLocator);
+		}
+
+		XPathMap xpathMap = (XPathMap)xObj0;
+		
+		result = new XSInteger(String.valueOf(xpathMap.size()));	    
+
+		return result;
 	}
 
 }

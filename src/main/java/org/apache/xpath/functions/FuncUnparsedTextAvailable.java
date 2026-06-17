@@ -82,7 +82,7 @@ public class FuncUnparsedTextAvailable extends Function2Args {
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
-      XObject arg0Result = getFunctionEffectiveArgValue(m_arg0, xctxt);
+      XObject arg0Result = getFunctionArgEffectiveValue(m_arg0, xctxt);
       
       if ((arg0Result instanceof ResultSequence) && (((ResultSequence)arg0Result).size() == 0)) {
     	 // fn:unparsed-text-available function call's first argument is an empty sequence     	  
@@ -94,7 +94,7 @@ public class FuncUnparsedTextAvailable extends Function2Args {
       String encodingStr = null;
         
       if (m_arg1 != null) {
-         XObject arg1Result = getFunctionEffectiveArgValue(m_arg1, xctxt);
+         XObject arg1Result = getFunctionArgEffectiveValue(m_arg1, xctxt);
          
          encodingStr = XslTransformEvaluationHelper.getStrVal(arg1Result);
          if (!("utf-8".equalsIgnoreCase(encodingStr) || "utf-16".equalsIgnoreCase(encodingStr))) {

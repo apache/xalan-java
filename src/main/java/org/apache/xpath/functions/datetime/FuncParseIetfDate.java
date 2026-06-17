@@ -26,7 +26,6 @@ import java.time.temporal.ChronoField;
 import java.util.Locale;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
@@ -64,9 +63,7 @@ public class FuncParseIetfDate extends FunctionOneArg {
 	{
 		XObject result = null;
 
-		Expression arg0Expr = getArg0();
-
-		XObject xObj0 = arg0Expr.execute(xctxt);
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 		if (xObj0 instanceof ResultSequence) {
 			result = new ResultSequence();

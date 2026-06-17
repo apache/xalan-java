@@ -26,7 +26,6 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -71,30 +70,32 @@ public class FuncFormatNumber extends Function3Args
      {
 
     	 ElemTemplateElement templElem = (ElemTemplateElement) xctxt.getNamespaceContext();
-    	 StylesheetRoot ss = templElem.getStylesheetRoot();
+    	 
+    	 StylesheetRoot stylesheetRoot = templElem.getStylesheetRoot();
+    	 
     	 java.text.DecimalFormat formatter = null;
     	 java.text.DecimalFormatSymbols dfs = null;
 
     	 SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    	 Expression arg0 = getArg0();
-
-    	 if (arg0 instanceof NodeTest) {
-    		 if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+    	 if (m_arg0 instanceof NodeTest) {
+    		 if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
     			 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function format-number(), "
     					 																 + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
     		 }
     	 }
-    	 else if (arg0 instanceof XPathInlineFunction) {
+    	 else if (m_arg0 instanceof XPathInlineFunction) {
     		 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function format-number(), "
 						                                                                 + "but the supplied type is a function type, which cannot be atomized.", srcLocator);
     	 }
     	 
-    	 XObject xObjArg0 = arg0.execute(xctxt);
+    	 XObject xObjArg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+    	 
     	 String str1 = XslTransformEvaluationHelper.getStrVal(xObjArg0);
     	 double num = Double.valueOf(str1);
     	 
-    	 XObject xObjArg1 = (getArg1()).execute(xctxt);    	 
+    	 XObject xObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+    	 
     	 String patternStr = XslTransformEvaluationHelper.getStrVal(xObjArg1);
     	 
     	 boolean isSmallCaseExponentSymbol = false;
@@ -105,20 +106,19 @@ public class FuncFormatNumber extends Function3Args
 
     	 // TODO: what should be the behavior here??
     	 if (patternStr.indexOf(0x00A4) > 0)
-    		 ss.error(XSLTErrorResources.ER_CURRENCY_SIGN_ILLEGAL);  // currency sign not allowed
+    		 stylesheetRoot.error(XSLTErrorResources.ER_CURRENCY_SIGN_ILLEGAL);  // currency sign not allowed
 
     	 // An XPath function fn:format-number third argument is not a locale name.
     	 // This is name of decimal-format declared within an XSL stylesheet (i.e, xsl:decimal-format).    	 
     	 try
-    	 {
-    		 Expression arg2Expr = getArg2();
-
-    		 if (arg2Expr != null)
+    	 {    		 
+    		 if (m_arg2 != null)
     		 {
-    			 String dfName = arg2Expr.execute(xctxt).str();
+    			 String dfName = (getFunctionArgEffectiveValue(m_arg2, xctxt)).str();
+    			 
     			 QName qname = new QName(dfName, xctxt.getNamespaceContext());
 
-    			 dfs = ss.getDecimalFormatComposed(qname);
+    			 dfs = stylesheetRoot.getDecimalFormatComposed(qname);
 
     			 if (dfs == null)
     			 {
@@ -138,7 +138,7 @@ public class FuncFormatNumber extends Function3Args
     		 {    			    			     			 
     			 if (!m_fn_serialize_call) {
     				 // look for a possible default decimal-format
-    				 dfs = ss.getDecimalFormatComposed(new QName(""));
+    				 dfs = stylesheetRoot.getDecimalFormatComposed(new QName(""));
 
     				 if (dfs != null)
     				 {

@@ -79,7 +79,7 @@ public class FuncBoolean extends FunctionOneArg
     	XObject xObj = null;
 
     	try {	     	     
-    		xObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+    		xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
     		if ((xObj == null) || ((xObj instanceof XSDouble) && ((XSDouble)xObj).nan())) {
     			result = new XSBoolean(false); 

@@ -193,7 +193,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    * @return                                 Run-time value of function argument
    * @throws TransformerException
    */
-  protected XObject getFunctionEffectiveArgValue(Expression argExpr, XPathContext xctxt) throws TransformerException {
+  protected XObject getFunctionArgEffectiveValue(Expression argExpr, XPathContext xctxt) throws TransformerException {
 	  
 	  XObject result = null;
 

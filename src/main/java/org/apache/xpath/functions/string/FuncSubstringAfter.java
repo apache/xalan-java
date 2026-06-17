@@ -88,7 +88,7 @@ public class FuncSubstringAfter extends XSL3StringCollationAwareFunction
 	  String arg0StrValue = null;	        
 	  if ((m_arg0 != null) && !(m_arg0 instanceof FuncArgPlaceholder)) {
 		  if (m_arg0 instanceof Variable) {
-			  XObject obj1 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			  XObject obj1 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 			  
 			  arg0StrValue = XslTransformEvaluationHelper.getStrVal(obj1);
 		  }
@@ -100,7 +100,7 @@ public class FuncSubstringAfter extends XSL3StringCollationAwareFunction
 	  String arg1StrValue = null;	        
 	  if ((m_arg1 != null) && !(m_arg1 instanceof FuncArgPlaceholder)) {
 		  if (m_arg1 instanceof Variable) {
-			  XObject obj1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+			  XObject obj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 			  
 			  Object object1 = obj1.object();
 			  if (!(object1 instanceof FuncArgPlaceholder)) {
@@ -115,7 +115,7 @@ public class FuncSubstringAfter extends XSL3StringCollationAwareFunction
 	  String collationUri = null;	        
 	  if ((m_arg2 != null) && !(m_arg2 instanceof FuncArgPlaceholder)) {
 		  if (m_arg2 instanceof Variable) {
-			  XObject obj1 = getFunctionEffectiveArgValue(m_arg2, xctxt);
+			  XObject obj1 = getFunctionArgEffectiveValue(m_arg2, xctxt);
 			  
 			  Object object1 = obj1.object();
 			  if (!(object1 instanceof FuncArgPlaceholder)) {

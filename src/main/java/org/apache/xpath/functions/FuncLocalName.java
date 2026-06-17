@@ -71,7 +71,7 @@ public class FuncLocalName extends FunctionDef1Arg {
 				 nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem); 
 			 }
 			 else {
-				 XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+				 XObject xObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
 				 
 			     if (xObject instanceof XMLNodeCursorImpl) {
 			        nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);
@@ -79,7 +79,7 @@ public class FuncLocalName extends FunctionDef1Arg {
 			 }
 		 }
 		 else {			 
-			 XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			 XObject xObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
 			 
 		     if (xObject instanceof XMLNodeCursorImpl) {
 		        nodeHandle = getNodeHandle((XMLNodeCursorImpl)xObject);

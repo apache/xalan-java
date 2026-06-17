@@ -95,7 +95,7 @@ public class FuncCeiling extends FunctionDef1Arg
         XObject arg0Obj = null;
 		
 		try {
-		   arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		   arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		}
 		catch (Exception ex) {		   
 			throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'ceiling' argument is not numeric.", srcLocator);

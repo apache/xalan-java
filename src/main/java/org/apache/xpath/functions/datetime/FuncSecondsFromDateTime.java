@@ -21,7 +21,6 @@ import java.util.Calendar;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
@@ -62,9 +61,7 @@ public class FuncSecondsFromDateTime extends FunctionOneArg
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-	  Expression arg0 = getArg0();
-	  
-	  XObject arg0Val = arg0.execute(xctxt);
+	  XObject arg0Val = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	  
 	  if (!(arg0Val instanceof XSDateTime)) {
 		 throw new javax.xml.transform.TransformerException("FORG0006 : The required item type of the first argument of XPath function "

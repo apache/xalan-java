@@ -18,12 +18,10 @@ package org.apache.xpath.functions.array;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.operations.Variable;
 
 /**
  * Implementation of the array:head function.
@@ -56,17 +54,8 @@ public class FuncArrayHead extends FunctionOneArg {
 	    XObject result = null;
 	       
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0 = getArg0();
 	    
-	    XObject xObject = null;
-	    
-	    if (arg0 instanceof Variable) {
-	       xObject = ((Variable)arg0).execute(xctxt);
-	    }
-	    else {
-	       xObject = arg0.execute(xctxt);
-	    }	    
+	    XObject xObject = getFunctionArgEffectiveValue(m_arg0, xctxt);	    
 	    
 	    if (xObject instanceof XPathArray) {
 	       XPathArray xpathArr = (XPathArray)xObject;

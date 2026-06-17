@@ -109,7 +109,7 @@ public class FuncData extends FunctionDef1Arg
       else {
          // An explicit argument was provided, to the fn:data 
          // function call.
-         argObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+         argObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
          
          if (argObj instanceof ResultSequence) {
         	ResultSequence rSeq = (ResultSequence)argObj;

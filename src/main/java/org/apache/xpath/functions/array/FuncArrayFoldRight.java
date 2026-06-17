@@ -24,7 +24,6 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
@@ -66,64 +65,43 @@ public class FuncArrayFoldRight extends Function3Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();
-        Expression arg2 = getArg2();
-        
         int contextNode = xctxt.getContextNode();
         
         XPathArray foldRightArr = null;
-        if (arg0 instanceof Variable) {        		
-           XObject arg0Obj = ((Variable)arg0).execute(xctxt);
-           if (arg0Obj instanceof XPathArray) {
-        	   foldRightArr = (XPathArray)arg0Obj;
-           }
-           else {
-        	  throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st argument provided to function call "
-        	  		                                                    + "array:fold-right is not an xdm array, or cannot "
-        	  		                                                    + "be cast to an xdm array.", srcLocator); 
-           }
+        
+        XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        
+        if (arg0Obj instanceof XPathArray) {
+     	   foldRightArr = (XPathArray)arg0Obj;
         }
         else {
-           XObject arg0Obj = arg0.execute(xctxt);
-           if (arg0Obj instanceof XPathArray) {
-        	   foldRightArr = (XPathArray)arg0Obj;
-           }
-           else {
-         	  throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st argument provided to function call "
-         	  		                                                   + "array:fold-right is not an xdm array, or cannot "
-         	  		                                                   + "be cast to an xdm array.", srcLocator); 
-           }
-        }
+     	   throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st argument provided to function call "
+     	  		                                                    + "array:fold-right is not an xdm array, or cannot "
+     	  		                                                    + "be cast to an xdm array.", srcLocator); 
+        }       
         
-        XObject foldRightInitObj = null;
-        
-        if (arg1 instanceof Variable) {
-           foldRightInitObj = ((Variable)arg1).execute(xctxt);
-        }
-        else {
-           foldRightInitObj = arg1.execute(xctxt);	
-        }
+        XObject foldRightInitObj = getFunctionArgEffectiveValue(m_arg1, xctxt);
         
         XPathInlineFunction foldRightFunc = null;
         
-        if (arg2 instanceof Variable) {
-           XObject arg2XObj = arg2.execute(xctxt);
+        if (m_arg2 instanceof Variable) {
+           XObject arg2XObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
+           
            if (arg2XObj instanceof XPathInlineFunction) {
         	   foldRightFunc = (XPathInlineFunction)arg2XObj;
            }
            else {
-              QName varQname = (((Variable)arg2).getElemVariable()).getName();
+              QName varQname = (((Variable)m_arg2).getElemVariable()).getName();
               throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:fold-right is a variable reference '" + 
                                                                              varQname.getLocalName() + "', that doesn't "
                                                                              + "evaluate to a function item.", srcLocator);  
            }
         }        
-        else if (arg2 instanceof XPathInlineFunction) {
-        	foldRightFunc = (XPathInlineFunction)arg2;                                           
+        else if (m_arg2 instanceof XPathInlineFunction) {
+        	foldRightFunc = (XPathInlineFunction)m_arg2;                                           
         }
         else {
-           throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:fold-right is not a "
+            throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:fold-right is not a "
            		                                                          + "function item, or cannot be coerced to a function item.", srcLocator);
         }
                    
@@ -143,12 +121,14 @@ public class FuncArrayFoldRight extends Function3Args {
               
            XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                               XPath.SELECT, null);              
-           for (int idx = foldRightArr.size() - 1; idx >= 0; idx--) {
+           int size1 = foldRightArr.size();
+           
+           for (int idx = (size1 - 1); idx >= 0; idx--) {
               Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
                  
               inlineFunctionVarMap.put(new QName(funcItemParam1Name), foldRightArr.get(idx));
               
-              if (idx == (foldRightArr.size() - 1)) {                    
+              if (idx == (size1 - 1)) {                    
                   inlineFunctionVarMap.put(new QName(funcItemParam2Name), foldRightInitObj);
               }
               else {

@@ -29,7 +29,6 @@ import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -84,38 +83,36 @@ public class FuncArrayForEach extends Function2Args {
       
 	    XPathArray result = null;
         
-        SourceLocator srcLocator = xctxt.getSAXLocator();
-        
-        final int contextNode = xctxt.getCurrentNode();
-        
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();                
+        SourceLocator srcLocator = xctxt.getSAXLocator();                
         
         if (m_vars != null) {
-           arg0.fixupVariables(m_vars, m_globals_size);
+           m_arg0.fixupVariables(m_vars, m_globals_size);
         }
         
-        XObject arg0XsObject = arg0.execute(xctxt, contextNode);
+        XObject arg0XsObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
         if (!(arg0XsObject instanceof XPathArray)) {
            throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of function call array:for-each "
            		                                                            + "is not an array.", xctxt.getSAXLocator());
         }
                     
-        if (arg1 instanceof XPathInlineFunction) {
-            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
+        if (m_arg1 instanceof XPathInlineFunction) {
+            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
             verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+            
             result = evaluateArrayForEach(xctxt, (XPathArray)arg0XsObject, inlineFuncArg); 
         }
-        else if (arg1 instanceof Variable) {
+        else if (m_arg1 instanceof Variable) {
             if (m_vars != null) {
-               arg1.fixupVariables(m_vars, m_globals_size);
+            	m_arg1.fixupVariables(m_vars, m_globals_size);
             }
             
-            XObject arg1VarValue = arg1.execute(xctxt);
+            XObject arg1VarValue = getFunctionArgEffectiveValue(m_arg1, xctxt);
+            
             if (arg1VarValue instanceof XPathInlineFunction) {
                 XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
                 verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+                
                 result = evaluateArrayForEach(xctxt, (XPathArray)arg0XsObject, inlineFuncArg);   
             }
             else {
@@ -212,7 +209,9 @@ public class FuncArrayForEach extends Function2Args {
         XPathContext xpathContextNew = new XPathContext(false);
         Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getXPathVarMap();
         
-        for (int idx = 0; idx < xpathArr.size(); idx++) {
+        int size1 = xpathArr.size();
+        
+        for (int idx = 0; idx < size1; idx++) {
         	XObject funcItemParamValue = xpathArr.get(idx);
         	if (funcItemParamName != null) {
         	   inlineFunctionVarMap.put(funcItemParamName, funcItemParamValue);

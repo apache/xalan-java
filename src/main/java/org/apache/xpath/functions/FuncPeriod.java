@@ -86,7 +86,7 @@ public class FuncPeriod extends FunctionMultiArgs {
 		if (xpath3CtxtItem != null) {
 			if (xpath3CtxtItem instanceof XPathMap) {
 			   if ((m_arg0 != null) && (m_arg1 == null)) {
-				  XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+				  XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 				  
 			      result = ((XPathMap)xpath3CtxtItem).get(xObj0);
 			   }
@@ -280,16 +280,16 @@ public class FuncPeriod extends FunctionMultiArgs {
 		XObject result = null;
 		
 		if (idx == 0) {
-			result = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			result = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		}
 		else if (idx == 1) {
-			result = getFunctionEffectiveArgValue(m_arg1, xctxt);	
+			result = getFunctionArgEffectiveValue(m_arg1, xctxt);	
 		}
 		else if (idx == 2) {
-			result = getFunctionEffectiveArgValue(m_arg2, xctxt);
+			result = getFunctionArgEffectiveValue(m_arg2, xctxt);
 		}
 		else {			
-			result = getFunctionEffectiveArgValue(m_args[idx], xctxt); 
+			result = getFunctionArgEffectiveValue(m_args[idx], xctxt); 
 		}
 		
 		return result;

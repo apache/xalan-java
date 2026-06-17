@@ -81,7 +81,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 					                                                                                            + "have arity zero or one.", srcLocator); 
 		}
 		else if (m_arg0 != null) {
-			XObject arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);			
+			XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);			
 		    
 		    double rndNumberGeneratorSeed = 0.0;
 		    

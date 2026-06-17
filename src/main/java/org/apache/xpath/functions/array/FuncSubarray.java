@@ -19,13 +19,11 @@ package org.apache.xpath.functions.array;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSNumericType;
 
@@ -60,45 +58,25 @@ public class FuncSubarray extends FunctionMultiArgs {
 		XObject result = null;
 	       
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0Expr = getArg0();	    
-	    Expression arg1Expr = getArg1();
-	    Expression arg2Expr = getArg2();
 	    
-	    if ((arg0Expr == null) || (arg1Expr == null)) {
+	    if ((m_arg0 == null) || (m_arg1 == null)) {
 	        throw new javax.xml.transform.TransformerException("FORG0006 : An array:subarray function call must have "
-	        		                                                  + "first two arguments.", srcLocator); 
-	    }
-
-	    XPathArray arg0XPathArr = null;	    
-	    if (arg0Expr instanceof Variable) {
-	       XObject xdmInputArr = ((Variable)arg0Expr).execute(xctxt);
-	       if (xdmInputArr instanceof XPathArray) {
-	    	  arg0XPathArr = (XPathArray)xdmInputArr;
-	       }
-	       else {
-	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:subarray function call, "
-                                                                                              + "needs to be an xdm array.", srcLocator); 
-	       }
-	    }
-	    else {
-	       XObject xdmInputArr = arg0Expr.execute(xctxt);
-		   if (xdmInputArr instanceof XPathArray) {
-			   arg0XPathArr = (XPathArray)xdmInputArr;
-		   }
-		   else {
-			  throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:subarray function call, "
-                                                                                              + "needs to be an xdm array.", srcLocator);	   
-		   }
+	        		                                                                                         + "first two arguments.", srcLocator); 
 	    }
 	    
-	    XObject arg1XObj = null;
-	    if (arg1Expr instanceof Variable) {
-	       arg1XObj = ((Variable)arg1Expr).execute(xctxt);	       
+	    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+	    XPathArray arg0XPathArr = null;
+	    
+	    if (xObj0 instanceof XPathArray) {
+	    	arg0XPathArr = (XPathArray)xObj0;
 	    }
 	    else {
-	       arg1XObj = arg1Expr.execute(xctxt);	       
+	    	throw new javax.xml.transform.TransformerException("FORG0006 : The first argument of array:subarray function call, "
+	    			                                                                                        + "needs to be an xdm array.", srcLocator);	   
 	    }
+	    
+	    XObject arg1XObj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	    
 	    int arg1Int = -1;
 	    if ((arg1XObj instanceof XSNumericType) || (arg1XObj instanceof XNumber)) {
@@ -107,42 +85,46 @@ public class FuncSubarray extends FunctionMultiArgs {
 	          arg1Int = (Integer.valueOf(arg1StrVal)).intValue();
 	       }
 	       catch (NumberFormatException ex) {
-	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument of function call array:subarray is not "
+	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The second argument of function call array:subarray is not "
 	    	  		                                                           + "an xs:integer value.", srcLocator); 
 	       }
 	       
 	       if ((arg1Int < 1) || (arg1Int > arg0XPathArr.size())) {
-	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument of function call array:subarray must not "
+	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The second argument of function call array:subarray must not "
 	    	  		                                                           + "be less than 1 or greater than size of input array.", srcLocator); 
 	       }
 	    }
 	    else {
-	       throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument of function call array:subarray is not "
+	       throw new javax.xml.transform.TransformerException("FORG0006 : The second argument of function call array:subarray is not "
 	       		                                                                        + "numeric.", srcLocator);
 	    }
 	    
 	    XPathArray resultArray = new XPathArray();
 	    
 	    int arg2Int = -1;
-	    if (arg2Expr != null) {
-	       XObject arg2XObj = arg2Expr.execute(xctxt);
+	    if (m_arg2 != null) {
+	       XObject arg2XObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
+	       
 	       if ((arg2XObj instanceof XSNumericType) || (arg2XObj instanceof XNumber)) {
 		      String arg2StrVal = XslTransformEvaluationHelper.getStrVal(arg2XObj);
 		      try {
 		    	 arg2Int = (Integer.valueOf(arg2StrVal)).intValue();
 		      }
 		      catch (NumberFormatException ex) {
-		    	 throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument provided to function call array:subarray is not "
+		    	 throw new javax.xml.transform.TransformerException("FORG0006 : The third argument provided to function call array:subarray is not "
 		    	  		                                                                              + "an xs:integer value.", srcLocator); 
 		      }
 		   }
 	       else {
-		      throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument present on function call array:subarray "
+		      throw new javax.xml.transform.TransformerException("FORG0006 : The third argument present on function call array:subarray "
 		      		                                                                        + "is not numeric.", srcLocator);
 		   }
 	       
 	       int resultItemCount = 0;
-	       for (int idx = (arg1Int - 1); idx < arg0XPathArr.size(); idx++) {
+	       
+	       int size1 = arg0XPathArr.size();
+	       
+	       for (int idx = (arg1Int - 1); idx < size1; idx++) {
 	    	  if ((++resultItemCount) <= arg2Int) {
 		         resultArray.add(arg0XPathArr.get(idx));
 	    	  }
@@ -151,8 +133,10 @@ public class FuncSubarray extends FunctionMultiArgs {
 	    	  }
 		   }
 	    }
-	    else {	       
-	       for (int idx = (arg1Int - 1); idx < arg0XPathArr.size(); idx++) {
+	    else {
+	       int size1 = arg0XPathArr.size();
+	       
+	       for (int idx = (arg1Int - 1); idx < size1; idx++) {
 			  resultArray.add(arg0XPathArr.get(idx)); 
 		   }
 	    }

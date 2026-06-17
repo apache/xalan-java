@@ -78,7 +78,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         if (m_arg0 instanceof LocPathIterator) {
         	foldRightFirstArgSeq = new ResultSequence();         	
         	
-        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(getFunctionEffectiveArgValue(m_arg0, xctxt));
+        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(getFunctionArgEffectiveValue(m_arg0, xctxt));
         	
         	DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.asIterator(xctxt, contextNode);
         	int nextNode;
@@ -91,7 +91,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         	foldRightFirstArgSeq = constructSequenceFromXPathExpression(m_arg0, xctxt);
         }
         
-        XObject foldRightBaseVal = getFunctionEffectiveArgValue(m_arg1, xctxt);
+        XObject foldRightBaseVal = getFunctionArgEffectiveValue(m_arg1, xctxt);
         
         XPathInlineFunction foldRightInlineFuncArg = null;
         
@@ -99,7 +99,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         TransformerImpl transformerImpl = null;
         
         if (m_arg2 instanceof Variable) {
-           XObject arg2XObj = getFunctionEffectiveArgValue(m_arg2, xctxt);
+           XObject arg2XObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
            
            if (arg2XObj instanceof XPathInlineFunction) {
               foldRightInlineFuncArg = (XPathInlineFunction)arg2XObj;

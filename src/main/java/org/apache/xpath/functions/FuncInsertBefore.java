@@ -61,11 +61,11 @@ public class FuncInsertBefore extends Function3Args {
         SourceLocator srcLocator = xctxt.getSAXLocator(); 
         
         try {
-            XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+            XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
             
-            XObject xObject1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            XObject xObject1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
             
-            XObject xObject2 = getFunctionEffectiveArgValue(m_arg2, xctxt);
+            XObject xObject2 = getFunctionArgEffectiveValue(m_arg2, xctxt);
             
             ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject0, xctxt);

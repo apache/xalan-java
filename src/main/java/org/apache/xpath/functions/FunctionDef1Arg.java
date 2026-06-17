@@ -105,7 +105,7 @@ public class FunctionDef1Arg extends FunctionOneArg
           resultVal = new XString(XslTransformEvaluationHelper.getStrVal(xpath3ContextItem));
        }
        else {
-          XObject arg0XObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+          XObject arg0XObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
            
           resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
        }
@@ -115,7 +115,7 @@ public class FunctionDef1Arg extends FunctionOneArg
        resultVal = new XString(strVal);
     }
     else {
-       XObject arg0XObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+       XObject arg0XObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
        resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));  
     }
@@ -159,11 +159,11 @@ public class FunctionDef1Arg extends FunctionOneArg
     		return (Double.valueOf(argStrVal)).doubleValue();
     	}
     	else {
-    	   return (getFunctionEffectiveArgValue(m_arg0, xctxt)).num();
+    	   return (getFunctionArgEffectiveValue(m_arg0, xctxt)).num();
     	}
     }    	
     else {
-       XObject xObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+       XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
        
        if (xObj instanceof XSString) {
     	   XString xStr = new XString(((XSString)xObj).stringValue());
@@ -189,7 +189,7 @@ public class FunctionDef1Arg extends FunctionOneArg
     	   return xsDecimal.doubleValue();
        }
        else {
-    	   return (getFunctionEffectiveArgValue(m_arg0, xctxt)).num();   
+    	   return (getFunctionArgEffectiveValue(m_arg0, xctxt)).num();   
        }
     }
   }

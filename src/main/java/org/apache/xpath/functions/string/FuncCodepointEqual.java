@@ -64,9 +64,9 @@ public class FuncCodepointEqual extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
-        XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt); 
+        XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt); 
         
-        XObject xObj1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+        XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
         
         if ((xObj0 instanceof XSNumericType) || (xObj0 instanceof XNumber)) {
         	throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoint-equal' accepts string as its first "

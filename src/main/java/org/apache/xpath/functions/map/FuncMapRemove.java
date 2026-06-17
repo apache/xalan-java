@@ -24,7 +24,6 @@ import java.util.Set;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -63,67 +62,59 @@ public class FuncMapRemove extends Function2Args {
 		
 		XObject result = null;
 		
-		SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0 = getArg0();
-	    Expression arg1 = getArg1();
+		SourceLocator srcLocator = xctxt.getSAXLocator();	    	    
+	    
+	    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+       
+	    if (xObj0 instanceof ResultSequence) {
+	    	if ((((ResultSequence)xObj0).size() == 0) || (((ResultSequence)xObj0).size() > 1)) {
+	    	    throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'remove' cannot have its first "
+	    																							     + "argument as an empty sequence, or "
+	    																							     + "a sequence with size greater than one.", srcLocator);
+	    	}
+	    }
+	    
+	    if (xObj0 instanceof ResultSequence) {
+	        xObj0 = ((ResultSequence)xObj0).item(0); 
+	    }
 	    
 	    XPathMap arg0Map = null;
-	    
-	    if (arg0 instanceof Variable) {
-	       XObject arg0Obj = ((Variable)arg0).execute(xctxt);
-	       if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'remove' cannot have its first "
-					    	  		                                                                                           + "argument as an empty sequence.", srcLocator);  
-		   }	       
-	       
-	       if (arg0Obj instanceof XPathMap) {
-	    	  arg0Map = (XPathMap)arg0Obj;   
-	       }
-	       else {
-	    	  throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'remove' has been called with an argument "
-                                                                                                                              + "that is not an xdm map.", srcLocator);  
-	       }
+
+	    if (xObj0 instanceof XPathMap) {
+	    	arg0Map = (XPathMap)xObj0;   
 	    }
 	    else {
-	       XObject arg0Obj = arg0.execute(xctxt);
-	       if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'remove' cannot have its first "
-						    	  		                                                                                        + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-	       if (arg0Obj instanceof XPathMap) {
-		      arg0Map = (XPathMap)arg0Obj;   
-		   }
-		   else {
-			  throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'remove' has been called with an argument "
-                                                                                                                                + "that is not an xdm map.", srcLocator);    
-		   }
-	    }	    	    
+	    	throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'remove' has been called with an argument "
+	    																											+ "that is not an xdm map.", srcLocator);  
+	    }
+	    	    	    
 	    	    
 	    XObject arg1Obj = null;
 	    ResultSequence inpSeq1 = null;
-	    if (arg1 instanceof Variable) {
-	    	arg1Obj = ((Variable)arg1).execute(xctxt);
+	    if (m_arg1 instanceof Variable) {
+	    	arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    	
 	    	inpSeq1 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg1Obj, xctxt);
 	    } 
 	    else {
-	    	arg1Obj = arg1.execute(xctxt);
+	    	arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    	
 	    	inpSeq1 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg1Obj, xctxt);
 	    }
 	    
 	    Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();
 	    
-	    Map<XObject, XObject> nativeMap = arg0Map.getNativeMap();
-	    Set<XObject> keysInMap = nativeMap.keySet();
+	    Map<XObject, XObject> nativeMapArg0 = arg0Map.getNativeMap();
+	    
+	    Set<XObject> keysInMap = nativeMapArg0.keySet();
 	    Iterator<XObject> iter = keysInMap.iterator();	    
 	    String xpathDefaultCollation = xctxt.getDefaultCollation();
 	    XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
 	    while (iter.hasNext()) {
 	    	XObject key = iter.next();
 	    	if (!XslTransformEvaluationHelper.contains(inpSeq1, key, xpathDefaultCollation, xpathCollationSupport)) {
-	    	   XObject value = nativeMap.get(key);
-	    	   nativeResultMap.put(key, value);
+	    	   XObject xObj = nativeMapArg0.get(key);
+	    	   nativeResultMap.put(key, xObj);
 	    	}
 	    }
 	    

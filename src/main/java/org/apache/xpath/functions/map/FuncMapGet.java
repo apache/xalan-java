@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.Function2Args;
@@ -62,18 +61,8 @@ public class FuncMapGet extends Function2Args {
 		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0 = getArg0();
-	    XObject arg0Obj = null;
-	    if (arg0 instanceof SelfIteratorNoPredicate) {
-	       XObject xpathContextItem = xctxt.getXPath3ContextItem();
-	       if (xpathContextItem != null) {
-	    	  arg0Obj = xpathContextItem; 
-	       }
-	    }
-	    else {
-	       arg0Obj = arg0.execute(xctxt);
-	    }
+
+	    XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);	  
 	    
 	    if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
 		   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its first "
@@ -89,16 +78,16 @@ public class FuncMapGet extends Function2Args {
 	       		                                                                                                         + "that is not an xdm map.", srcLocator);
 	    }
 	    
-	    Expression arg1 = getArg1();
 	    XObject arg1Obj = null;
-	    if (arg1 instanceof SelfIteratorNoPredicate) {
+	    if (m_arg1 instanceof SelfIteratorNoPredicate) {
 	    	XObject xpathContextItem = xctxt.getXPath3ContextItem();
 	    	if (xpathContextItem != null) {
 	    		arg1Obj = xpathContextItem; 
 	    	}
 	    } 
 	    else {
-	       arg1Obj = arg1.execute(xctxt);
+	       arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	       
 	       if (arg1Obj instanceof XString) {
 	    	  arg1Obj = new XSString(((XString)arg1Obj).str());  
 	       }

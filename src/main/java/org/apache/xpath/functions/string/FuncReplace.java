@@ -77,17 +77,17 @@ public class FuncReplace extends Function4Args {
 		   inputStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem); 
 	   }
 	   else {
-		   inputStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg0, xctxt));
+		   inputStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg0, xctxt));
 	   }
 
-	   String patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg1, xctxt));        
+	   String patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg1, xctxt));        
 
-	   String replacementStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg2, xctxt));
+	   String replacementStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg2, xctxt));
 
 	   String flagStr = null;
 
 	   if (m_arg3 != null) {
-		   flagStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg3, xctxt));
+		   flagStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg3, xctxt));
 
 		   if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {
 			   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.

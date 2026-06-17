@@ -20,14 +20,12 @@ import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSString;
@@ -63,33 +61,21 @@ public class FuncMapContains extends Function2Args {
 		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0 = getArg0();
-	    XPathMap xpathMap = null;
 	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'contains' cannot have its first "
-			    	  		                                                                                                 + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-	       xpathMap = (XPathMap)xObject;
+	    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt); 
+	           
+	    if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
+	    	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'contains' cannot have its first "
+	    																											+ "argument as an empty "
+	    																											+ "sequence.", srcLocator);  
 	    }
-	    else {
-	       XObject xObject = arg0.execute(xctxt);
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-			   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'contains' cannot have its first "
-			    	  		                                                                                                  + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-		   xpathMap = (XPathMap)xObject;
-	    }
+
+	    XPathMap xpathMap = (XPathMap)xObj0;
 	    
 	    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 	    
-	    Expression arg1 = getArg1();
-	    XObject arg1Obj = arg1.execute(xctxt);
+	    XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    
 	    if (arg1Obj instanceof XString) {
 	       arg1Obj = new XSString(((XString)arg1Obj).str());
 	    }

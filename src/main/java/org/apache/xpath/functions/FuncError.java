@@ -64,17 +64,17 @@ public class FuncError extends FunctionMultiArgs
     	SourceLocator srcLocator = xctxt.getSAXLocator();
 
     	if (m_arg0 != null) {
-    		errCode = getFunctionEffectiveArgValue(m_arg0, xctxt); 
+    		errCode = getFunctionArgEffectiveValue(m_arg0, xctxt); 
     	}
 
     	if (m_arg1 != null) {
-    		errDesc = getFunctionEffectiveArgValue(m_arg1, xctxt); 
+    		errDesc = getFunctionArgEffectiveValue(m_arg1, xctxt); 
     	}
 
     	if (m_arg2 != null) {
     		// Presently, an errValue object instance is always an empty sequence,
     		// and this is ignored by an implementation of this class.
-    		XObject errValue = getFunctionEffectiveArgValue(m_arg2, xctxt);
+    		XObject errValue = getFunctionArgEffectiveValue(m_arg2, xctxt);
     	}
 
     	String errMesgStr = "";

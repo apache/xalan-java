@@ -55,7 +55,7 @@ public class FuncUnordered extends FunctionOneArg {
         
         ResultSequence result = new ResultSequence();
 
-        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
             
         ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                       xObject0, xctxt);

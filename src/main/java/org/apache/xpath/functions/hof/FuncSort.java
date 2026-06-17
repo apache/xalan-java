@@ -95,7 +95,7 @@ public class FuncSort extends FunctionMultiArgs
         String collationUri = xctxt.getDefaultCollation();
         
         if ((numOfArgs == 2) || (numOfArgs == 3)) {           
-           XObject XObjArg1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+           XObject XObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
             
            if ((XObjArg1 instanceof ResultSequence) && 
                                                 (((ResultSequence)XObjArg1).size() == 0)) {
@@ -107,7 +107,7 @@ public class FuncSort extends FunctionMultiArgs
            }
         }
         
-        XObject arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);              
+        XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);              
         
         List<InpSeqItemWithSortKeyValue> inpSeqItemWithSortKeyValueList = new ArrayList<InpSeqItemWithSortKeyValue>();
         
@@ -134,7 +134,7 @@ public class FuncSort extends FunctionMultiArgs
               
               if (numOfArgs == 3) {
             	  if (m_arg2 instanceof Variable) {
-            		  XObject arg2obj = getFunctionEffectiveArgValue(m_arg2, xctxt);
+            		  XObject arg2obj = getFunctionArgEffectiveValue(m_arg2, xctxt);
             		  
             		  if (arg2obj instanceof XPathInlineFunction) {
             			  XPathInlineFunction arg2InlineFunc = (XPathInlineFunction)arg2obj;

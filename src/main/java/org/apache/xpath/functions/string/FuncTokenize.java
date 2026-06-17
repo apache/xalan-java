@@ -73,7 +73,7 @@ public class FuncTokenize extends Function3Args {
       
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        String arg0Str = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg0, xctxt));
+        String arg0Str = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg0, xctxt));
         
         XMLString inputStr = new XString(arg0Str);
         
@@ -124,13 +124,13 @@ public class FuncTokenize extends Function3Args {
         	String patternStr = null;
 
         	if (m_arg1 != null) {
-        	    patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg1, xctxt));
+        	    patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg1, xctxt));
         	}
 
         	String flagsStr = null;
 
         	if (m_arg2 != null) {
-        		flagsStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg2, xctxt));
+        		flagsStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg2, xctxt));
         		
         		if (!RegexEvaluationSupport.isRegexFlagStrValid(flagsStr)) {               
         			throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.

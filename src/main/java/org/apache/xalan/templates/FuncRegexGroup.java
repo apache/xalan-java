@@ -19,7 +19,6 @@ package org.apache.xalan.templates;
 
 import java.util.Map;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
@@ -72,12 +71,11 @@ public class FuncRegexGroup extends FunctionOneArg
            }
         }
         
-        Expression arg0Expr = this.getArg0();
-        
         int regExGrpNumber;
         
-        if (arg0Expr != null) {
-            XObject arg0 = arg0Expr.execute(xctxt);
+        if (m_arg0 != null) {
+            XObject arg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+            
             if (arg0 instanceof XNumber) {
                XNumber argNum = (XNumber)arg0;
                double argValue = argNum.num();

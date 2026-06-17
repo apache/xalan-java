@@ -24,7 +24,6 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
@@ -66,12 +65,9 @@ public class FuncArrayForEachPair extends Function3Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();
-        Expression arg2 = getArg2();
+        XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
-        XObject arg0Obj = arg0.execute(xctxt);
-        XObject arg1Obj = arg1.execute(xctxt);
+        XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
         
         if (!((arg0Obj instanceof XPathArray) || (arg1Obj instanceof XPathArray))) {
            throw new javax.xml.transform.TransformerException("FORG0006 : The function call array:for-each-pair's 1st and 2nd "
@@ -80,20 +76,21 @@ public class FuncArrayForEachPair extends Function3Args {
         
         XPathInlineFunction funcItem3rdArg = null;
         
-        if (arg2 instanceof Variable) {
-           XObject arg2XObj = arg2.execute(xctxt);
+        if (m_arg2 instanceof Variable) {
+           XObject arg2XObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
+           
            if (arg2XObj instanceof XPathInlineFunction) {
               funcItem3rdArg = (XPathInlineFunction)arg2XObj;
            }
            else {
-              QName varQname = (((Variable)arg2).getElemVariable()).getName();
+              QName varQname = (((Variable)m_arg2).getElemVariable()).getName();
               throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:for-each-pair "
               		                                                    + "is a variable reference '" + varQname.getLocalName() + "', that doesn't "
               		                                                    + "evaluate to a function item.", srcLocator);  
            }
         }        
-        else if (arg2 instanceof XPathInlineFunction) {
-           funcItem3rdArg = (XPathInlineFunction)arg2;                                           
+        else if (m_arg2 instanceof XPathInlineFunction) {
+           funcItem3rdArg = (XPathInlineFunction)m_arg2;                                           
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:for-each-pair is not a function "

@@ -47,7 +47,7 @@ public class FuncUnparsedEntityURI extends FunctionOneArg
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 
-		String name = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+		String name = (getFunctionArgEffectiveValue(m_arg0, xctxt)).str();
 
 		int context = xctxt.getCurrentNode();
 		DTM dtm = xctxt.getDTM(context);

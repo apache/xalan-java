@@ -61,7 +61,7 @@ public class FuncEmpty extends FunctionOneArg {
         XObject arg0Obj = null;
         
         try {
-           arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+           arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
         }
         catch (Exception ex) {
            if (ex instanceof TransformerException) {

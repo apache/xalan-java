@@ -128,7 +128,7 @@ public class FuncName extends FunctionMultiArgs {
 			  nodeHandle = getNodeHandle((XMLNodeCursorImpl)contextItem, xctxt);
 		  }
 		  else {
-			  XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			  XObject xObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
 			  
 			  if (xObject instanceof XMLNodeCursorImpl) {
 				  xObject = xObject.getFresh();
@@ -137,7 +137,7 @@ public class FuncName extends FunctionMultiArgs {
 		  }
 	  }
 	  else {
-		 XObject xObject = getFunctionEffectiveArgValue(m_arg0, xctxt);	
+		 XObject xObject = getFunctionArgEffectiveValue(m_arg0, xctxt);	
 		 
 		 if (xObject instanceof XMLNodeCursorImpl) {
 			xObject = xObject.getFresh();			

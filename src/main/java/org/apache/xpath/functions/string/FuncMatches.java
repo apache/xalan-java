@@ -67,14 +67,14 @@ public class FuncMatches extends Function3Args {
 
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	   String inputStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg0, xctxt));
+	   String inputStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg0, xctxt));
 
-	   String patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg1, xctxt));
+	   String patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg1, xctxt));
 
 	   String flagStr = null;
 
 	   if (m_arg2 != null) {
-		   flagStr = XslTransformEvaluationHelper.getStrVal(getFunctionEffectiveArgValue(m_arg2, xctxt));
+		   flagStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg2, xctxt));
 
 		   if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {               
 			   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.

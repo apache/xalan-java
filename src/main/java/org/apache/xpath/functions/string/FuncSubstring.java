@@ -65,7 +65,7 @@ public class FuncSubstring extends Function3Args
 	   // string starts at position 1 and not 0.
 
 	   try {
-		   XObject arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		   XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 		   if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
 			   result = new XSString("");
@@ -79,7 +79,7 @@ public class FuncSubstring extends Function3Args
 
 			   int start = 0;
 
-			   XObject arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
+			   XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 
 			   boolean is2ndArgNegInf = false;
 			   boolean isStartComputed = false;
@@ -143,7 +143,7 @@ public class FuncSubstring extends Function3Args
 			   boolean isLengthComputed = false;
 
 			   if (m_arg2 != null) {			  
-				   XObject arg2Obj = getFunctionEffectiveArgValue(m_arg2, xctxt);			  
+				   XObject arg2Obj = getFunctionArgEffectiveValue(m_arg2, xctxt);			  
 
 				   if (arg2Obj instanceof XNumber) {
 					   double dbl = arg2Obj.num();

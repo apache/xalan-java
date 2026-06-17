@@ -66,14 +66,14 @@ public class FuncUnparsedText extends Function2Args {
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
-      XObject arg0Result = getFunctionEffectiveArgValue(m_arg0, xctxt);
+      XObject arg0Result = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
       String hrefStrVal = XslTransformEvaluationHelper.getStrVal(arg0Result);
       
       String encodingStr = null;
         
       if (m_arg1 != null) {
-         XObject arg1Result = getFunctionEffectiveArgValue(m_arg1, xctxt);
+         XObject arg1Result = getFunctionArgEffectiveValue(m_arg1, xctxt);
          
          encodingStr = XslTransformEvaluationHelper.getStrVal(arg1Result);
          if (!("utf-8".equalsIgnoreCase(encodingStr) || "utf-16".equalsIgnoreCase(encodingStr))) {

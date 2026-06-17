@@ -107,7 +107,7 @@ public class FuncApply extends Function2Args {
 		   result = getFnApplyResult(elemFunction, m_arg1, xctxt, transformerImpl);
 	   }
 	   else if (m_arg0 instanceof Variable) {           
-		   XObject arg0VarValue = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		   XObject arg0VarValue = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 		   if (arg0VarValue instanceof XPathNamedFunctionReference) {
 			   XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg0VarValue;
@@ -165,7 +165,7 @@ public class FuncApply extends Function2Args {
 		                           Expression arg1XpathExpr, XPathContext xctxt) throws TransformerException {
 	  XObject result = null;
 	  
-	  XObject arg1XObj = getFunctionEffectiveArgValue(arg1XpathExpr, xctxt);
+	  XObject arg1XObj = getFunctionArgEffectiveValue(arg1XpathExpr, xctxt);
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  

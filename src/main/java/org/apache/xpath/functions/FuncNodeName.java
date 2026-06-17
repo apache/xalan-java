@@ -80,7 +80,7 @@ public class FuncNodeName extends FunctionDef1Arg {
 	  }
 	  else {
 		  try {
-			 XObject xObj = getFunctionEffectiveArgValue(m_arg0, xctxt);			 
+			 XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);			 
 			 
 			 if (xObj instanceof XMLNodeCursorImpl) {
 				XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;				

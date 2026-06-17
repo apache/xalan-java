@@ -53,7 +53,7 @@ public class FuncHead extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject xObj0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
         if (xObj0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;

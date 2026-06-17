@@ -29,7 +29,6 @@ import org.apache.xalan.xslt.util.RegexUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.ResultSequence;
@@ -72,16 +71,12 @@ public class FuncFormatDate extends FunctionMultiArgs {
     	 SourceLocator srcLocator = xctxt.getSAXLocator();
     	 
     	 final int sourceNode = xctxt.getCurrentNode();
-    	 
-    	 Expression arg0 = getArg0();
-    	 
-    	 Expression arg1 = getArg1();
     	     	     	 
     	 String arg0Str = null;
     	 XSDate arg0Date = null;
     	     	 
-    	 if (arg0 != null) {    		     		 
-    		 XObject xObj0 = arg0.execute(xctxt);
+    	 if (m_arg0 != null) {    		     		 
+    		 XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
     		 
     		 if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
     			result = new ResultSequence();
@@ -134,8 +129,9 @@ public class FuncFormatDate extends FunctionMultiArgs {
     	     	     	 
     	 String arg1Str = null;
     	 
-    	 if (arg1 != null) {     		
-    		 XObject xObj1 = arg1.execute(xctxt);    	 
+    	 if (m_arg1 != null) {     		
+    		 XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt); 
+    		 
     		 arg1Str = XslTransformEvaluationHelper.getStrVal(xObj1);
     	 }
     	 else {    	 

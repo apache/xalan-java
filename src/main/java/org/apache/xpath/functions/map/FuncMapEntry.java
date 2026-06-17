@@ -16,13 +16,11 @@
  */
 package org.apache.xpath.functions.map;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSString;
 
@@ -54,31 +52,16 @@ public class FuncMapEntry extends Function2Args {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
+		
 		XObject result = null;	       
-	       
-	    Expression arg0 = getArg0();
-	    Expression arg1 = getArg1();
 	    
-	    XObject resultMapEntryKey = null;
-	    XObject resultMapEntryVal = null;
-	    
-	    if (arg0 instanceof Variable) {
-	       resultMapEntryKey = ((Variable)arg0).execute(xctxt);
-	    }
-	    else {
-	       resultMapEntryKey = arg0.execute(xctxt);
-	    }
+	    XObject resultMapEntryKey = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    
 	    if (resultMapEntryKey instanceof XString) {
 	    	resultMapEntryKey = new XSString(((XString)resultMapEntryKey).str());
 	    }
 	    
-	    if (arg1 instanceof Variable) {
-	       resultMapEntryVal = ((Variable)arg1).execute(xctxt);
-		}
-		else {
-		   resultMapEntryVal = arg1.execute(xctxt);
-		}
+	    XObject resultMapEntryVal = getFunctionArgEffectiveValue(m_arg1, xctxt);	    	   
 	    
 	    if (resultMapEntryVal instanceof XString) {
 	       resultMapEntryVal = new XSString(((XString)resultMapEntryVal).str());

@@ -135,7 +135,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 		TransformerImpl transformer = stylesheetRoot.getTransformerImpl();
 		
 		if (m_arg0 != null) {
-			XObject arg0XObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+			XObject arg0XObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 			
 			String itemSeparatorStr = null;
 			
@@ -165,7 +165,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 			else {
 				// An XPath 3.1 function call fn:serialize is called with two arguments
 				
-				XObject arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
+				XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 				
 				if (arg1Obj instanceof XPathMap) {
 					// XPath 3.1 function fn:serialization parameters are specified using an 

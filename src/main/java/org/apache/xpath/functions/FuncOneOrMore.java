@@ -58,7 +58,7 @@ public class FuncOneOrMore extends FunctionDef1Arg {
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
-		XObject arg0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		XObject arg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		
 		if (arg0 instanceof ResultSequence) {
 		   ResultSequence rSeq = (ResultSequence)arg0;

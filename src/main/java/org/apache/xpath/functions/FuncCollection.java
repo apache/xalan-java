@@ -110,7 +110,7 @@ public class FuncCollection extends JsonFunction
 		XObject arg0XObj = null;
 		
         if (m_arg0 != null) {
-           arg0XObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+           arg0XObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
            
            if (arg0XObj != null) {
         	  String uriStr1 = XslTransformEvaluationHelper.getStrVal(arg0XObj);

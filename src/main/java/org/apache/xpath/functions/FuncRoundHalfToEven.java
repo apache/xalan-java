@@ -107,7 +107,7 @@ public class FuncRoundHalfToEven extends Function2Args
           }
           
           if (!((m_arg0 instanceof XSNumericType) || (m_arg0 instanceof XNumber))) {
-        	  m_arg0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        	  m_arg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
           }
           
           if (m_arg0 instanceof XSFloat) {

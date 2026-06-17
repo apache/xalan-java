@@ -16,15 +16,12 @@
  */
 package org.apache.xpath.functions.array;
 
-import org.apache.xpath.Expression;
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FunctionOneArg;
-import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSInteger;
 
@@ -56,55 +53,22 @@ public class FuncArraySize extends FunctionOneArg {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
-	    XObject result = null;
-	       
-	    Expression arg0 = getArg0();
 	    
-	    XObject xObject = null;
-	    
-	    if (arg0 instanceof Variable) {
-	       xObject = ((Variable)arg0).execute(xctxt);
-	       if (xObject instanceof XPathArray) {
-	    	   result = new XSInteger(((XPathArray)xObject).size() + ""); 
-	       }
-	       else if (xObject instanceof XMLNodeCursorImpl) {
-	    	  result = new XSInteger(((XMLNodeCursorImpl)xObject).getLength() + "");  
-	       }
-	       else if (xObject instanceof ResultSequence) {
-	    	  result = new XSInteger(((ResultSequence)xObject).size() + "");  
-	       }
-	       else {
-	    	  result = new XSInteger("1");  
-	       }
-	    }
-	    else if ((arg0 instanceof SelfIteratorNoPredicate) && (xctxt.getXPath3ContextItem() != null)) {
-	       XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
-	       if (xpath3CtxtItem instanceof XPathArray) {
-	          XPathArray xpathArr = (XPathArray)xpath3CtxtItem;
-	          
-	          result = new XSInteger("" + xpathArr.size());
-	       }
-	       else {
-	    	  result = new XSInteger("0"); 
-	       }
-	    }
-	    else {
-	       xObject = arg0.execute(xctxt);
-	       if (xObject instanceof XPathArray) {
-	    	   result = new XSInteger(((XPathArray)xObject).size() + ""); 
-	       }
-	       else if (xObject instanceof XMLNodeCursorImpl) {
-		   	  result = new XSInteger(((XMLNodeCursorImpl)xObject).getLength() + "");  
-		   }
-		   else if (xObject instanceof ResultSequence) {
-		      result = new XSInteger(((ResultSequence)xObject).size() + "");  
-		   }
-		   else {
-		      result = new XSInteger("1");  
-		   }
-	    }
-	    
-	    return result;
+		XObject result = null;
+		
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+		if (xObj0 instanceof XPathArray) {
+			result = new XSInteger(((XPathArray)xObj0).size() + ""); 
+		}
+		else {
+			throw new javax.xml.transform.TransformerException("FORG0006 : The first argument of array:size function call, "
+						                                                                                   + "needs to be an xdm array", srcLocator);
+		}
+
+		return result;
 	}
 
 }

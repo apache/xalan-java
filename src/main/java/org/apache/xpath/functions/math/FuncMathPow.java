@@ -114,7 +114,7 @@ public class FuncMathPow extends Function2Args {
         	XObject arg1Obj = null;
 
             try {
-            	arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            	arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
             }
             catch (Exception ex) {		   
             	throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument is not numeric.", srcLocator);
@@ -145,7 +145,7 @@ public class FuncMathPow extends Function2Args {
         	XObject arg0Obj = null;
 
         	try {
-        		arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        		arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
         	}
         	catch (Exception ex) {		   
         		throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' first argument is not an XML Schema type double, or not an empty sequence.", srcLocator);
@@ -180,7 +180,7 @@ public class FuncMathPow extends Function2Args {
         	XObject arg0Obj = null;
 
         	try {
-        		arg0Obj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        		arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
         	}
         	catch (Exception ex) {		   
         		throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' first argument is not an XML Schema type double, or not an empty sequence.", srcLocator);
@@ -208,7 +208,7 @@ public class FuncMathPow extends Function2Args {
         	XObject arg1Obj = null;
 
             try {
-            	arg1Obj = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            	arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
             }
             catch (Exception ex) {		   
             	throw new TransformerException("XPTY0004 : An XPath 3.1 function call math 'pow' second argument is not numeric.", srcLocator);

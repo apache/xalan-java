@@ -53,7 +53,7 @@ public class FuncExtFunctionAvailable extends FunctionOneArg
 		String namespace;
 		String methName;
 
-		String fullName = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+		String fullName = (getFunctionArgEffectiveValue(m_arg0, xctxt)).str();
 		int indexOfNSSep = fullName.indexOf(':');
 
 		if (indexOfNSSep < 0)

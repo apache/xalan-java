@@ -19,7 +19,6 @@ package org.apache.xpath.functions.datetime;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.XObject;
@@ -60,17 +59,15 @@ public class FuncDayFromDateTime extends FunctionOneArg
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		Expression arg0 = getArg0();
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
-		XObject arg0Val = arg0.execute(xctxt);
-
-		if (!(arg0Val instanceof XSDateTime)) {
+		if (!(xObj0 instanceof XSDateTime)) {
 			throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of "
 																										+ "fn:day-from-dateTime() is xs:dateTime, whereas the supplied "
 																										+ "argument is not conformant.", srcLocator);   
 		}
 		else {
-			XSDateTime xsDateTimeVal = (XSDateTime)arg0Val;
+			XSDateTime xsDateTimeVal = (XSDateTime)xObj0;
 			XSInteger xsInteger = new XSInteger(xsDateTimeVal.day() + "");
 			result = xsInteger;
 		}

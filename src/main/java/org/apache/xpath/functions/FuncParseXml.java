@@ -66,7 +66,7 @@ public class FuncParseXml extends FunctionOneArg {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
-        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
             
         String argStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             

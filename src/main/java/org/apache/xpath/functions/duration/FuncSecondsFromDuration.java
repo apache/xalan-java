@@ -18,7 +18,6 @@ package org.apache.xpath.functions.duration;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FunctionOneArg;
@@ -63,26 +62,24 @@ public class FuncSecondsFromDuration extends FunctionOneArg {
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         try {
-           Expression arg0 = getArg0();
-           
-           if (arg0 == null || isArgCountErr()) {
+           if (m_arg0 == null || isArgCountErr()) {
               ResultSequence resultSeq = new ResultSequence();
               return resultSeq;
            }
             
            XSDuration xsDuration = null;
-           if (arg0 instanceof SelfIteratorNoPredicate) {
+           if (m_arg0 instanceof SelfIteratorNoPredicate) {
         	  if (xctxt.getXPath3ContextItem() != null) {
         		 xsDuration = (XSDuration)(xctxt.getXPath3ContextItem());   
         	  }
            }
            
            if (xsDuration == null) {
-         	  if (arg0 instanceof Variable) {
-         		  xsDuration = (XSDuration)(arg0.execute(xctxt));
+         	  if (m_arg0 instanceof Variable) {
+         		  xsDuration = (XSDuration)(getFunctionArgEffectiveValue(m_arg0, xctxt));
          	  }
          	  else {
-         		  xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)arg0).execute(xctxt));  
+         		  xsDuration = (XSDuration)(((XSL3ConstructorOrExtensionFunction)m_arg0).execute(xctxt));  
          	  }        	    
            }
             

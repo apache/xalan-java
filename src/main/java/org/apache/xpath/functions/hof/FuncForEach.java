@@ -109,7 +109,7 @@ public class FuncForEach extends Function2Args {
 		   dtmIterArg = m_arg0.asIterator(xctxt, contextNode);               
 	   }
 	   else {            
-		   xObjectArg = getFunctionEffectiveArgValue(m_arg0, xctxt);
+		   xObjectArg = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	   }
 
 	   if (m_arg1 instanceof XPathInlineFunction) {
@@ -149,7 +149,7 @@ public class FuncForEach extends Function2Args {
 			   m_arg1.fixupVariables(m_vars, m_globals_size);
 		   }            
 
-		   XObject arg1VarValue = getFunctionEffectiveArgValue(m_arg1, xctxt);
+		   XObject arg1VarValue = getFunctionArgEffectiveValue(m_arg1, xctxt);
 
 		   if (arg1VarValue instanceof XPathInlineFunction) {
 			   XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;

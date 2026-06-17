@@ -81,7 +81,7 @@ public class FuncStringJoin extends Function2Args {
 	    		                            (m_arg0 instanceof Range) || 
 	    		                            (m_arg0 instanceof Operation)) {
 	        
-	    	XObject evalResult = getFunctionEffectiveArgValue(m_arg0, xctxt);
+	    	XObject evalResult = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	        
 	        if (evalResult instanceof ResultSequence) {
 	           arg0ResultSeq = (ResultSequence)evalResult;   
@@ -124,7 +124,7 @@ public class FuncStringJoin extends Function2Args {
 	    	arg0ResultSeq = (ResultSequence)m_arg0;
 	    }
 	    else {
-	    	XObject evalResult = getFunctionEffectiveArgValue(m_arg0, xctxt);
+	    	XObject evalResult = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    	
 	    	if (evalResult instanceof ResultSequence) {
 	    		arg0ResultSeq = new ResultSequence();

@@ -20,13 +20,11 @@ import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
-import org.apache.xpath.operations.Variable;
 
 /**
  * Implementation of an XPath 3.1 function, map:put.
@@ -59,36 +57,35 @@ public class FuncMapPut extends Function3Args {
 		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0 = getArg0();
+
 	    XPathMap xpathMap = null;
 	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'put' cannot have its first "
-				    	  		                                                                                             + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-	       xpathMap = (XPathMap)xObject;
+	    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+	    
+	    if (xObj0 instanceof ResultSequence) {
+	    	ResultSequence rSeq = (ResultSequence)xObj0;
+	    	if ((rSeq.size() == 0) || (rSeq.size() > 1)) {
+	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function map 'put' cannot have its first "
+	    			                                                                                   + "argument as an empty sequence, or "
+	    			                                                                                   + "a sequence with size greater than one.", srcLocator);
+	    	}
+	    	else {
+	    	   xObj0 = rSeq.item(0); 
+	    	}
+	    }
+
+	    if (xObj0 instanceof XPathMap) {
+	       xpathMap = (XPathMap)xObj0;
 	    }
 	    else {
-	       XObject xObject = arg0.execute(xctxt);
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-			   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'put' cannot have its first "
-					    	  		                                                                                          + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-		   xpathMap = (XPathMap)xObject;
+	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function map 'put' first argument is not an xdm map.", srcLocator);
 	    }
 	    
 	    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 	    
-	    Expression arg1 = getArg1();
-	    XObject mapEntryKey = arg1.execute(xctxt);
+	    XObject mapEntryKey = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	    
-	    Expression arg2 = getArg2();
-	    XObject mapEntryValue = arg2.execute(xctxt);
+	    XObject mapEntryValue = getFunctionArgEffectiveValue(m_arg2, xctxt);
 	    
 	    nativeMap.put(mapEntryKey, mapEntryValue);
 	    

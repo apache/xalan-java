@@ -55,7 +55,7 @@ public class FuncElemAvailable extends FunctionOneArg
     String namespace = null;
     String methName = null;
 
-    String fullName = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+    String fullName = (getFunctionArgEffectiveValue(m_arg0, xctxt)).str();
     
     if (fullName.startsWith("Q{")) {
     	 // Support for XPath 3.1 URI qualified names 

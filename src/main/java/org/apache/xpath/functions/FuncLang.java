@@ -68,12 +68,12 @@ public class FuncLang extends FunctionMultiArgs {
 			    		                                                                 + "than two arguments.", srcLocator);
 			}
 			
-		    String langStrToBeTested = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+		    String langStrToBeTested = (getFunctionArgEffectiveValue(m_arg0, xctxt)).str();
 		    
 		    int nodeHandle = DTM.NULL;
 		    
 		    if (m_arg1 != null) {
-		       XObject secondArgEvalResult = getFunctionEffectiveArgValue(m_arg1, xctxt);
+		       XObject secondArgEvalResult = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		       
 		       if (secondArgEvalResult instanceof XMLNodeCursorImpl) {
 		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)secondArgEvalResult;

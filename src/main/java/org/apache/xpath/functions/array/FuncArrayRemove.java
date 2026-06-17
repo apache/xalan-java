@@ -18,14 +18,12 @@ package org.apache.xpath.functions.array;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
@@ -60,65 +58,36 @@ public class FuncArrayRemove extends Function2Args {
 		
 	    XObject result = null;
 	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0Expr = getArg0();	    
-	    Expression arg1Expr = getArg1();	    	    
+	    SourceLocator srcLocator = xctxt.getSAXLocator();	    	    
 	    
 	    XPathArray arg0Arr = null;
-	    if (arg0Expr instanceof Variable) {
-	       XObject arg0Value = ((Variable)arg0Expr).execute(xctxt);
-	       if (arg0Value instanceof XPathArray) {
-	    	  arg0Arr = (XPathArray)arg0Value;
-	       }
-	       else {
-	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:remove function call, "
-	    	  		                                                                       + "needs to be an xdm array.", srcLocator);  
-	       }
+	    
+	    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+	    
+	    if (xObj0 instanceof XPathArray) {
+	    	arg0Arr = (XPathArray)xObj0;
 	    }
 	    else {
-	    	XObject arg0Value = arg0Expr.execute(xctxt);
-	    	if (arg0Value instanceof XPathArray) {
-	    	   arg0Arr = (XPathArray)arg0Value;
-		    }
-		    else {
-		       throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:remove function call, "
-		       		                                                                      + "needs to be an xdm array.", srcLocator);   
-		    }
+	    	throw new javax.xml.transform.TransformerException("FORG0006 : The first argument of array:remove function call, "
+	    																									+ "needs to be an xdm array.", srcLocator);  
 	    }
 	    	    
 	    XPathArray resultArr = new XPathArray();
 	    
-	    XObject arg1 = null;
-	    if (arg1Expr instanceof Variable) {
-	       arg1 = ((Variable)arg1Expr).execute(xctxt);
-	       if (isXdmValueAnIntegerSeq(arg1)) {
-	    	  ResultSequence seqInt = getIntegerSeq(arg1); 
-	    	  for (int idx = 0; idx < arg0Arr.size(); idx++) {
-	    		 if (!isIntegerSeqContainsAnInteger(seqInt, idx + 1)) {
+	    XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    
+	    if (isXdmValueAnIntegerSeq(xObj1)) {
+	    	ResultSequence posSeq1 = getIntegerSeq(xObj1);
+	    	int size1 = arg0Arr.size();
+	    	for (int idx = 0; idx < size1; idx++) {
+	    		if (!isXdmSeqContainsAnInteger(posSeq1, idx + 1)) {
 	    			resultArr.add(arg0Arr.get(idx));  
-	    		 }
-	    	  }
-	       }
-	       else {
-	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:remove function "
-	    	  		                                                    + "call, needs to be an xs:integer sequence.", srcLocator); 
-	       }
+	    		}
+	    	}
 	    }
 	    else {
-	       arg1 = arg1Expr.execute(xctxt);
-	       if (isXdmValueAnIntegerSeq(arg1)) {
-	    	  ResultSequence seqInt = getIntegerSeq(arg1); 
-		      for (int idx = 0; idx < arg0Arr.size(); idx++) {
-		         if (!isIntegerSeqContainsAnInteger(seqInt, idx + 1)) {
-		    	    resultArr.add(arg0Arr.get(idx));  
-		    	 }
-		      }   
-		   }
-		   else {
-			  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:remove function "
-                                                                         + "call, needs to be an xs:integer sequence.", srcLocator);	   
-		   }
+	    	throw new javax.xml.transform.TransformerException("FOAY0001 : The second argument of array:remove function "
+	    																								    + "call, needs to be an xs:integer sequence.", srcLocator); 
 	    }
 	    
 	    result = resultArr;
@@ -127,120 +96,131 @@ public class FuncArrayRemove extends Function2Args {
 	}
 
 	/**
-	 * Get an integer sequence, for an xdm value which is known 
-	 * to be a sequence of integer (or, which is castable to an 
-	 * integer) values.
+	 * Method definition, to get sequence of integer values, for 
+	 * an xdm value that is known to be a sequence of integer 
+	 * values.
 	 */
 	private ResultSequence getIntegerSeq(XObject xdmVal) {
+		
 		ResultSequence result = new ResultSequence();
-		
+
 		if (xdmVal instanceof ResultSequence) {
-			   ResultSequence seq = (ResultSequence)xdmVal;
-			   for (int idx = 0; idx < seq.size(); idx++) {
-				  XObject item = seq.item(idx);
-				  if (item instanceof XSNumericType) {
-					 XSNumericType xsNumericVal = (XSNumericType)item;
-					 String strVal = xsNumericVal.stringValue();
-					 XSInteger xsInteger = new XSInteger(strVal);
-					 result.add(xsInteger);
-				  }
-				  else if (item instanceof XNumber) {
-					 XNumber xNumberVal = (XNumber)item;
-					 double dblVal = xNumberVal.num();
-					 String strVal = (Double.valueOf(dblVal)).toString();
-					 XSInteger xsInteger = new XSInteger(strVal);
-					 result.add(xsInteger);
-				  }
-			   }
-			} 
-			else if (xdmVal instanceof XSNumericType) {
-			   XSNumericType xsNumericVal = (XSNumericType)xdmVal;
-			   String strVal = xsNumericVal.stringValue();
-			   XSInteger xsInteger = new XSInteger(strVal);
-			   result.add(xsInteger);
+			ResultSequence seq = (ResultSequence)xdmVal;
+			int size1 = seq.size();
+			for (int idx = 0; idx < size1; idx++) {
+				XObject item = seq.item(idx);
+				if (item instanceof XSNumericType) {
+					XSNumericType xsNumericVal = (XSNumericType)item;
+					String strVal = xsNumericVal.stringValue();
+					XSInteger xsInteger = new XSInteger(strVal);
+					result.add(xsInteger);
+				}
+				else if (item instanceof XNumber) {
+					XNumber xNumberVal = (XNumber)item;
+					double dblVal = xNumberVal.num();
+					String strVal = (Double.valueOf(dblVal)).toString();
+					XSInteger xsInteger = new XSInteger(strVal);
+					result.add(xsInteger);
+				}
 			}
-			else if (xdmVal instanceof XNumber) {
-			   XNumber xNumberVal = (XNumber)xdmVal;
-			   double dblVal = xNumberVal.num();
-			   // String strVal = (Double.valueOf(dblVal)).toString();
-				 XSInteger xsInteger = new XSInteger();
-				 xsInteger.setDouble(dblVal);
-				 result.add(xsInteger);
-			}
-		
+		} 
+		else if (xdmVal instanceof XSNumericType) {
+			XSNumericType xsNumericVal = (XSNumericType)xdmVal;
+			String strVal = xsNumericVal.stringValue();
+			XSInteger xsInteger = new XSInteger(strVal);
+			result.add(xsInteger);
+		}
+		else if (xdmVal instanceof XNumber) {
+			XNumber xNumberVal = (XNumber)xdmVal;
+			double dblVal = xNumberVal.num();
+			XSInteger xsInteger = new XSInteger();
+			xsInteger.setDouble(dblVal);
+			result.add(xsInteger);
+		}
+
 		return result;
 	}
 
 	/**
-	 * Find whether an, xdm value is an integer sequence.
+	 * Method definition, to check whether an, xdm value is a 
+	 * sequence of integer values.
 	 */
 	private boolean isXdmValueAnIntegerSeq(XObject xdmVal) {		
-		boolean isIntegerSeq = true;
 		
+		boolean result = true;
+
 		if (xdmVal instanceof ResultSequence) {
-		   ResultSequence seq = (ResultSequence)xdmVal;
-		   for (int idx = 0; idx < seq.size(); idx++) {
-			  XObject item = seq.item(idx);
-			  if (item instanceof XSNumericType) {
-				 XSNumericType xsNumericVal = (XSNumericType)item;
-				 String strVal = xsNumericVal.stringValue();
-				 try {
-				    Integer integer = Integer.valueOf(strVal);
-				 }
-				 catch (NumberFormatException ex) {
-					isIntegerSeq = false;
+			ResultSequence seq = (ResultSequence)xdmVal;
+			int size1 = seq.size();
+			for (int idx = 0; idx < size1; idx++) {
+				XObject item = seq.item(idx);
+				if (item instanceof XSNumericType) {
+					XSNumericType xsNumericVal = (XSNumericType)item;
+					String strVal = xsNumericVal.stringValue();
+					try {
+						Integer.valueOf(strVal);
+					}
+					catch (NumberFormatException ex) {
+						result = false;
+
+						break;
+					}
+				}
+				else if (item instanceof XNumber) {
+					XNumber xNumberVal = (XNumber)item;
+					double dblVal = xNumberVal.num();
+					if (!((int)dblVal == dblVal)) {
+						result = false;
+
+						break; 
+					}
+				}
+				else {
+					result = false;
+
 					break;
-				 }
-			  }
-			  else if (item instanceof XNumber) {
-				 XNumber xNumberVal = (XNumber)item;
-				 double dblVal = xNumberVal.num();
-				 if (!((int)dblVal == dblVal)) {
-					isIntegerSeq = false;
-				    break; 
-				 }
-			  }
-			  else {
-				 isIntegerSeq = false;
-				 break;
-			  }
-		   }
+				}
+			}
 		} 
 		else if (xdmVal instanceof XSNumericType) {
-		   XSNumericType xsNumericVal = (XSNumericType)xdmVal;
-		   String strVal = xsNumericVal.stringValue();
-		   try {
-		      Integer integer = Integer.valueOf(strVal);
-		   }
-		   catch (NumberFormatException ex) {
-			  isIntegerSeq = false;
-		   }
+			XSNumericType xsNumericVal = (XSNumericType)xdmVal;
+			String strVal = xsNumericVal.stringValue();
+			try {
+				Integer.valueOf(strVal);
+			}
+			catch (NumberFormatException ex) {
+				result = false;
+			}
 		}
 		else if (xdmVal instanceof XNumber) {
-		   XNumber xNumberVal = (XNumber)xdmVal;
-		   double dblVal = xNumberVal.num();
-		   if (!((int)dblVal == dblVal)) {
-			  isIntegerSeq = false; 
-		   } 
+			XNumber xNumberVal = (XNumber)xdmVal;
+			double dblVal = xNumberVal.num();
+			if (!((int)dblVal == dblVal)) {
+				result = false; 
+			} 
 		}
 		else {
-		   isIntegerSeq = false; 
+			result = false; 
 		}
-		
-		return isIntegerSeq; 
+
+		return result; 
 	}
 	
 	/**
-	 * Find whether an, integer sequence contains a specific integer value.
+	 * Method definition, to check whether an, integer sequence 
+	 * contains a specific integer value.
 	 */
-	private boolean isIntegerSeqContainsAnInteger(ResultSequence seq, int value) {
+	private boolean isXdmSeqContainsAnInteger(ResultSequence posSeq1, int index) {
+		
 		boolean result = false;
 		
-		for (int idx = 0; idx < seq.size(); idx++) {
-		   XSInteger item = (XSInteger)(seq.item(idx));
+		int size1 = posSeq1.size();
+		for (int idx = 0; idx < size1; idx++) {
+		   XSInteger item = (XSInteger)(posSeq1.item(idx));
 		   double dblVal = item.doubleValue();
-		   if ((int)dblVal == value) {
+		   if ((int)dblVal == index) {
 			  result = true;
+			  
 			  break;
 		   }
 		}

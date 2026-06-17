@@ -29,7 +29,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -86,20 +85,18 @@ public class FuncMapForEach extends Function2Args {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		Expression arg0 = getArg0();
-		Expression arg1 = getArg1();
-
 		XObject arg0Obj = null;
 
 		if (m_vars != null) {
-		   arg0.fixupVariables(m_vars, m_globals_size);
+		   m_arg0.fixupVariables(m_vars, m_globals_size);
 		}
 
-		if (arg0 instanceof XPathMap) {
-		   arg0Obj = (XPathMap)arg0;              
+		if (m_arg0 instanceof XPathMap) {
+		   arg0Obj = (XPathMap)m_arg0;              
 		}
-		else if (arg0 instanceof Variable) {
-		   arg0Obj = ((Variable)arg0).execute(xctxt);
+		else if (m_arg0 instanceof Variable) {
+		   arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		   
 		   if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'for-each' cannot have its first "
 						    	  		                                                                                         + "argument as an empty sequence.", srcLocator);  
@@ -111,7 +108,8 @@ public class FuncMapForEach extends Function2Args {
 		   }
 		}
 		else {
-		   arg0Obj = arg0.execute(xctxt);
+		   arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		   
 		   if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'for-each' cannot have its first "
 							    	  		                                                                                         + "argument as an empty sequence.", srcLocator);  
@@ -123,27 +121,32 @@ public class FuncMapForEach extends Function2Args {
 		   }
 		}
 		
-		XPathMap xpathMap1 = (XPathMap)arg0Obj;
-		if (xpathMap1.size() == 0) {
+		XPathMap arg0Map = (XPathMap)arg0Obj;
+		
+		if (arg0Map.size() == 0) {
 		   result = new ResultSequence();
+		   
+		   return result;
 		}
-		else if (arg1 instanceof XPathInlineFunction) {
-			XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
+		
+		if (m_arg1 instanceof XPathInlineFunction) {
+			XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
 			verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
 			
-			result = evaluateFnMapforEach(xctxt, (XPathMap)arg0Obj, inlineFuncArg); 
+			result = evaluateFnMapforEach((XPathMap)arg0Obj, inlineFuncArg, xctxt); 
 		}
-		else if (arg1 instanceof Variable) {
+		else if (m_arg1 instanceof Variable) {
 			if (m_vars != null) {
-				arg1.fixupVariables(m_vars, m_globals_size);
+				m_arg1.fixupVariables(m_vars, m_globals_size);
 			}
 
-			XObject arg1VarValue = arg1.execute(xctxt);
+			XObject arg1VarValue = getFunctionArgEffectiveValue(m_arg1, xctxt);
+			
 			if (arg1VarValue instanceof XPathInlineFunction) {
 				XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
 				verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
 				
-				result = evaluateFnMapforEach(xctxt, (XPathMap)arg0Obj, inlineFuncArg);   
+				result = evaluateFnMapforEach((XPathMap)arg0Obj, inlineFuncArg, xctxt);   
 			}
 			else {
 				throw new javax.xml.transform.TransformerException("FORG0006: An XPath 3.1 map function 'for-each' has been called with its second argument "
@@ -189,7 +192,7 @@ public class FuncMapForEach extends Function2Args {
 		m_globals_size = globalsSize; 
 	}
 
-	/*
+	/**
 	 * Verify the number of function parameters, that the inline function is allowed to 
 	 * have for map:for-each function call.
 	 */
@@ -198,20 +201,21 @@ public class FuncMapForEach extends Function2Args {
 		List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
 		if (funcParamList.size() != 2) {
 			throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function map:for-each's function item has " + 
-																			 funcParamList.size() + " parameters. Expected 2.", srcLocator);   
+																			                                 funcParamList.size() 
+																												+ " parameters. Expected 2.", srcLocator);   
 		}
 	}
 
-	/*
-	 * Construct result of map:for-each function call.
+	/**
+	 * Evaluate map:for-each function and construct its result.
 	 */
-	private ResultSequence evaluateFnMapforEach(XPathContext xctxt, XPathMap xpathMap, XPathInlineFunction funcItem) 
+	private ResultSequence evaluateFnMapforEach(XPathMap xpathMap, XPathInlineFunction funcItem, XPathContext xctxt) 
 					                                                                                     throws TransformerException {
 		ResultSequence resultSeq = new ResultSequence();
 		
 		List<InlineFunctionParameter> funcParamList = funcItem.getFuncParamList();
-        QName fiParam0 = new QName((funcParamList.get(0)).getParamName());
-        QName fiParam1 = new QName((funcParamList.get(1)).getParamName());				
+        QName funcParam1 = new QName((funcParamList.get(0)).getParamName());
+        QName funcParam2 = new QName((funcParamList.get(1)).getParamName());				
         
         String funcBodyXPathExprStr = funcItem.getFuncBodyXPathExprStr();
         
@@ -227,26 +231,29 @@ public class FuncMapForEach extends Function2Args {
 		
 		Iterator<Entry<XObject, XObject>> iter = mapEntrySet.iterator();
 		
-		XPathContext xpathContextNew = new XPathContext(false);
-        Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getXPathVarMap();
+		XPathContext xpathContextNew = new XPathContext(true);
+        Map<QName, XObject> varDeclMap = xpathContextNew.getXPathVarMap();
         
-		while (iter.hasNext()) {
-		   Entry<XObject, XObject> mapEntry = iter.next();
-		   XObject key = mapEntry.getKey();
-		   XObject value = mapEntry.getValue();
+        try {
+        	while (iter.hasNext()) {
+        		Entry<XObject, XObject> mapEntry = iter.next();
+        		XObject key = mapEntry.getKey();
+        		XObject value = mapEntry.getValue();
 
-           if (fiParam0 != null) {
-              inlineFunctionVarMap.put(fiParam0, key);
-           }
-           if (fiParam1 != null) {
-              inlineFunctionVarMap.put(fiParam1, value);
-           }
-           
-           XObject resultObj = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
-           resultSeq.add(resultObj);
-		}
-		
-		inlineFunctionVarMap.clear();
+        		if (funcParam1 != null) {
+        			varDeclMap.put(funcParam1, key);
+        		}
+        		if (funcParam2 != null) {
+        			varDeclMap.put(funcParam2, value);
+        		}
+
+        		XObject xObj1 = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
+        		resultSeq.add(xObj1);
+        	}
+        }
+        finally {
+        	varDeclMap.clear();
+        }
 
 		return resultSeq;
 	}

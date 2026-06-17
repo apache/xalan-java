@@ -23,7 +23,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.Function2Args;
@@ -65,48 +64,36 @@ public class FuncArrayGet extends Function2Args {
 		
 	    XObject result = null;
 	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0Expr = getArg0();	    
-	    Expression arg1Expr = getArg1();	    	    
+	    SourceLocator srcLocator = xctxt.getSAXLocator();	    	    
 	    
 	    ResultSequence arg0Seq = null;
-	    if (arg0Expr instanceof Variable) {
-	       XObject arg0Value = ((Variable)arg0Expr).execute(xctxt);
-	       if (arg0Value instanceof XPathArray) {
-	          arg0Seq = getArg0Seq((XPathArray)arg0Value, srcLocator);
-	       }
-	       else {
-	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
-	    	  		                                                                      + "needs to be of type array", srcLocator);  
-	       }
+	    
+	    XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
+	    
+	    if (arg0Value instanceof XPathArray) {
+	    	arg0Seq = getArg0Seq((XPathArray)arg0Value, srcLocator);
 	    }
 	    else {
-	    	XObject arg0Value = arg0Expr.execute(xctxt);
-	    	if (arg0Value instanceof XPathArray) {
-		       arg0Seq = getArg0Seq((XPathArray)arg0Value, srcLocator);
-		    }
-		    else {
-		       throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
-		       		                                                                      + "needs to be of type array", srcLocator);   
-		    }
+	    	throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
+	    			                                                                                    + "needs to be of type array", srcLocator);  
 	    }
 	    
-	    XObject arg1 = null;
-	    if (arg1Expr instanceof SelfIteratorNoPredicate) {
-	       arg1 = xctxt.getXPath3ContextItem();
-	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
-		      result = getFuncResult(arg0Seq, arg1, srcLocator);   
+	    if (m_arg1 instanceof SelfIteratorNoPredicate) {
+	       XObject xObj1 = xctxt.getXPath3ContextItem();
+	       
+	       if ((xObj1 instanceof XSNumericType) || (xObj1 instanceof XNumber)) {
+		      result = getFuncResult(arg0Seq, xObj1, srcLocator);   
 		   }
 		   else {
 		      throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
 		    	  		                                                + "call, needs to be an xs:integer value", srcLocator); 
 		   }
 	    }
-	    else if (arg1Expr instanceof Variable) {
-	       arg1 = ((Variable)arg1Expr).execute(xctxt);
-	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
-	    	  result = getFuncResult(arg0Seq, arg1, srcLocator);   
+	    else if (m_arg1 instanceof Variable) {
+	       XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	       
+	       if ((xObj1 instanceof XSNumericType) || (xObj1 instanceof XNumber)) {
+	    	  result = getFuncResult(arg0Seq, xObj1, srcLocator);   
 	       }
 	       else {
 	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
@@ -114,9 +101,10 @@ public class FuncArrayGet extends Function2Args {
 	       }
 	    }
 	    else {
-	       arg1 = arg1Expr.execute(xctxt);
-	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
-		      result = getFuncResult(arg0Seq, arg1, srcLocator);   
+	       XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	       
+	       if ((xObj1 instanceof XSNumericType) || (xObj1 instanceof XNumber)) {
+		      result = getFuncResult(arg0Seq, xObj1, srcLocator);   
 		   }
 		   else {
 			  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "

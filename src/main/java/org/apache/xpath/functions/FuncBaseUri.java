@@ -68,7 +68,7 @@ public class FuncBaseUri extends FunctionDef1Arg
     	String baseUriStr = null;
     	
     	if (m_arg0 != null) {
-    	   XObject argValue = getFunctionEffectiveArgValue(m_arg0, xctxt);
+    	   XObject argValue = getFunctionArgEffectiveValue(m_arg0, xctxt);
     	   
     	   if ((argValue != null) && (argValue.getType() == XObject.CLASS_NODESET)) {
     		  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)argValue;

@@ -61,7 +61,7 @@ public class FuncCodePointsToString extends FunctionOneArg {
     {
         XObject result = null;
         
-        XObject xObj = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
         String resultStr = getStringFromXObject(xObj, xctxt);
         

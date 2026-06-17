@@ -21,7 +21,6 @@ import java.util.Calendar;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.XObject;
@@ -64,11 +63,9 @@ public class FuncDateTime extends Function2Args
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-	  Expression arg0 = getArg0();
-	  Expression arg1 = getArg1();
+	  XObject arg0Val = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	  
-	  XObject arg0Val = arg0.execute(xctxt);
-	  XObject arg1Val = arg1.execute(xctxt);
+	  XObject arg1Val = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	  
 	  if (!(arg0Val instanceof XSDate)) {
 		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of fn:dateTime() is xs:date, "

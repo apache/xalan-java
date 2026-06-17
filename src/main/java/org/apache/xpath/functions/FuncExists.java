@@ -53,7 +53,7 @@ public class FuncExists extends FunctionOneArg {
         
         XObject result = null;
         
-        XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+        XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
         if (xObject0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;

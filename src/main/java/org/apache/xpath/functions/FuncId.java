@@ -121,7 +121,7 @@ public class FuncId extends FunctionOneArg
     if (DTM.NULL == docContext)
       error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
 
-    XObject arg = getFunctionEffectiveArgValue(m_arg0, xctxt);
+    XObject arg = getFunctionArgEffectiveValue(m_arg0, xctxt);
     
     int argType = arg.getType();
     XMLNodeCursorImpl nodes = new XMLNodeCursorImpl(xctxt.getDTMManager());

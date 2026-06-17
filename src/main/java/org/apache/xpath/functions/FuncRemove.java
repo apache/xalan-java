@@ -62,9 +62,9 @@ public class FuncRemove extends Function2Args {
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         try {
-            XObject xObject0 = getFunctionEffectiveArgValue(m_arg0, xctxt);
+            XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
             
-            XObject xObject1 = getFunctionEffectiveArgValue(m_arg1, xctxt);
+            XObject xObject1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
             
             ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject0, xctxt);

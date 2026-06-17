@@ -64,7 +64,7 @@ public class FuncSystemProperty extends FunctionOneArg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    String fullName = (getFunctionEffectiveArgValue(m_arg0, xctxt)).str();
+    String fullName = (getFunctionArgEffectiveValue(m_arg0, xctxt)).str();
     
     int indexOfNSSep = fullName.indexOf(':');
     String result = null;

@@ -22,13 +22,11 @@ import java.util.Set;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
-import org.apache.xpath.operations.Variable;
 
 /**
  * Implementation of an XPath 3.1 function, map:keys.
@@ -58,58 +56,48 @@ public class FuncMapKeys extends FunctionOneArg {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
+		
 		ResultSequence resultSeq = new ResultSequence();
-	       
-	    Expression arg0 = getArg0();
-	    
-	    SourceLocator srcLocator = xctxt.getSAXLocator(); 
-	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-		      throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'keys' cannot have its first "
-		    	  		                                                                                                 + "argument as an empty sequence.", srcLocator);  
-		   }
-	       
-	       XPathMap xpathMap = null;
-	       if (xObject instanceof ResultSequence) {
-	    	  xpathMap = (XPathMap)(((ResultSequence)xObject).item(0)); 
-	       }
-	       else {
-	          xpathMap = (XPathMap)xObject;
-	       }
-	       Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
-	       Set<XObject> keySet = nativeMap.keySet();
-	       Iterator<XObject> iter = keySet.iterator();
-	       while (iter.hasNext()) {
-	    	  XObject keyVal = iter.next();
-	    	  resultSeq.add(keyVal);
-	       }
-	    }
-	    else {
-	    	XObject xObject = arg0.execute(xctxt);
-	    	if ((xObject instanceof ResultSequence) && (((ResultSequence)xObject).size() == 0)) {
-			   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'keys' cannot have its first "
-			    	  		                                                                                              + "argument as an empty sequence.", srcLocator);  
+
+		SourceLocator srcLocator = xctxt.getSAXLocator();
+
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+		if (xObj0 instanceof ResultSequence) { 
+			ResultSequence rSeq = (ResultSequence)xObj0; 			
+			if ((rSeq.size() == 0) || (rSeq.size() > 1)) {
+			   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'keys' cannot have "
+			   		                                                                                    + "its first argument as an empty sequence, "
+			   		                                                                                    + "or a sequence with size greater than one.", srcLocator);
 			}
-	    	
-	    	XPathMap xpathMap = null;
-		    if (xObject instanceof ResultSequence) {
-		       xpathMap = (XPathMap)(((ResultSequence)xObject).item(0)); 
-		    }
-		    else {
-		       xpathMap = (XPathMap)xObject;
-		    }
-		    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
-		    Set<XObject> keySet = nativeMap.keySet();
-		    Iterator<XObject> iter = keySet.iterator();
-		    while (iter.hasNext()) {
-		       XObject keyVal = iter.next();
-		       resultSeq.add(keyVal);  
-		    }
-	    }
-	    
-	    return resultSeq;
+		}
+
+		XObject xObj1 = null;
+		if (xObj0 instanceof ResultSequence) {
+			xObj1 = ((ResultSequence)xObj0).item(0); 
+		}
+		else {
+		    xObj1 = xObj0; 
+		}
+		
+		XPathMap xpathMap = null;
+		if (!(xObj1 instanceof XPathMap)) {
+			throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'keys' requires its first argument to be "
+																									    + "an xdm map.", srcLocator);
+		}
+		else {
+		    xpathMap = (XPathMap)xObj1;
+		}
+		
+		Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+		Set<XObject> keySet = nativeMap.keySet();
+		Iterator<XObject> iter = keySet.iterator();
+		while (iter.hasNext()) {
+			XObject keyVal = iter.next();
+			resultSeq.add(keyVal);
+		}
+
+		return resultSeq;
 	}
 
 }
