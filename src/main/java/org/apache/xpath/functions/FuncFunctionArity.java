@@ -79,12 +79,10 @@ public class FuncFunctionArity extends FunctionDef1Arg
 	{
 		XObject result = null;
 		
-		SourceLocator srcLocator = xctxt.getSAXLocator();
+		SourceLocator srcLocator = xctxt.getSAXLocator();		
 		
-		Expression arg0 = getArg0();		
-		
-		if (arg0 instanceof Variable) {
-		   Variable var1 = (Variable)arg0;
+		if (m_arg0 instanceof Variable) {
+		   Variable var1 = (Variable)m_arg0;
 		   Expression selectExpr = null;
 		   ElemVariable elemVariable = var1.getElemVariable();
 		   if (elemVariable != null) {
@@ -140,29 +138,31 @@ public class FuncFunctionArity extends FunctionDef1Arg
 			   result = new XSInteger(String.valueOf(funcParamList.size()));
 		   }
 		}
-		else if (arg0 instanceof XPathNamedFunctionReference) {
-		   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)arg0;
+		else if (m_arg0 instanceof XPathNamedFunctionReference) {
+		   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)m_arg0;
 		   
 		   result = getFunctionArityXPathNamedFuncReference(xpathNamedFunctionReference, xctxt);
 		}
-		else if (arg0 instanceof NodeTest) {
+		else if (m_arg0 instanceof NodeTest) {
 			TransformerImpl transformerImpl = getXSLTransformerImpl();			
-			ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)arg0, 
+			ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg0, 
 					                                                                                        transformerImpl, srcLocator);			
 			if (elemFunction != null) {
 			   short funcArity = elemFunction.getArity();
 			   result = new XSInteger(String.valueOf(funcArity));
 			}
 			else {
-			   NodeTest nodeTest = (NodeTest)arg0;
+			   NodeTest nodeTest = (NodeTest)m_arg0;
 			   String funcNameRefStr = getFunctionNameRefStrValue(nodeTest);  
 			   throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
 					                                                                                          + " not found.", srcLocator); 
 			}
 		}
-		else if (arg0 instanceof XSL3ConstructorOrExtensionFunction) {
-			XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)arg0;
+		else if (m_arg0 instanceof XSL3ConstructorOrExtensionFunction) {
+			XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)m_arg0;
+			
 			XObject xObj = xsl3ConstructorOrExtensionFunction.execute(xctxt);
+			
 			if (xObj instanceof XPathNamedFunctionReference) {
 				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
 				String localName = xpathNamedFunctionReference.getFuncName();
@@ -191,8 +191,8 @@ public class FuncFunctionArity extends FunctionDef1Arg
 				result = new XSInteger(String.valueOf(funcParamList.size()));
 			}
 		}
-		else if (arg0 instanceof XPathInlineFunction) {
-			XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0;
+		else if (m_arg0 instanceof XPathInlineFunction) {
+			XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)m_arg0;
 			List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
 			result = new XSInteger(String.valueOf(funcParamList.size()));
 		}

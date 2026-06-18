@@ -83,10 +83,6 @@ public class XPathForExpr extends Expression {
     		m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_returnExprXPathStr, 
     				                                                                                                  prefixTable);
     	}
-    	
-    	if (!m_returnExprXPathStr.contains("for") && m_returnExprXPathStr.contains("return")) {
-    	   throw new TransformerException("XPST0003 : An XPath 'for' expression contains multiple 'return' statements.", srcLocator); 
-    	}
 
     	XPath returnExprXPath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 

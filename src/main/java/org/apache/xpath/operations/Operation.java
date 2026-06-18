@@ -378,7 +378,7 @@ public class Operation extends Expression implements ExpressionOwner
    * if an XPath operand expression is a SelfIteratorNoPredicate iterator. 
    * 
    * @param opValue						        The supplied XPath expression operand value.
-   *                                            This could be value of either LHS or RHS 
+   *                                            This could be value of either lhs or rhs 
    *                                            operand of an XPath binary operator.
    * @param selfIteratorNoPredicate				SelfIteratorNoPredicate iterator
    * @return									The modified or an existing XPath expression 

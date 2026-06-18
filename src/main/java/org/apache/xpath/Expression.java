@@ -50,11 +50,11 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * This abstract class serves as the base for all expression objects.  An
+ * This abstract class serves as the base for all expression objects. An
  * Expression can be executed to return a {@link org.apache.xpath.objects.XObject},
  * normally has a location within a document or DOM, can send error and warning
  * events, and normally do not hold state and are meant to be immutable once
- * construction has completed.  An exception to the immutibility rule is iterators
+ * construction has completed. An exception to the immutibility rule is iterators
  * and walkers, which must be cloned in order to be used -- the original must
  * still be immutable.
  */
@@ -721,8 +721,8 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * Method definition, to compare two XPath sequences for a particular
    * XPath general comparison operator (i.e, =, !=, <, <=, >, >=).
    * 
-   * @param resultSeqLhs						The supplied LHS sequence
-   * @param resultSeqRhs                        The supplied RHS sequence
+   * @param resultSeqLhs						The supplied lhs sequence
+   * @param resultSeqRhs                        The supplied rhs sequence
    * @param cmpOpCode                           Xalan-J's XPath general comparison 
    *                                            operator's op code.
    * @return                                    Result of evaluation
@@ -734,15 +734,18 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 	  XObject result = null;
 
 	  if (cmpOpCode == OpCodes.OP_EQUALS) {
-		  Equals equals = new Equals();            
+		  Equals equals = new Equals();
+		  
 		  result = equals.operate(resultSeqLhs, resultSeqRhs);
 	  }        
 	  else if (cmpOpCode == OpCodes.OP_NOTEQUALS) {
-		  NotEquals notEquals = new NotEquals();                                    
+		  NotEquals notEquals = new NotEquals();
+		  
 		  result = notEquals.operate(resultSeqLhs, resultSeqRhs);
 	  }
 	  else if (cmpOpCode == OpCodes.OP_LT) {
-		  Lt lessThan = new Lt();                                    
+		  Lt lessThan = new Lt();
+		  
 		  result = lessThan.operate(resultSeqLhs, resultSeqRhs);
 	  }
 	  else if (cmpOpCode == OpCodes.OP_LTE) {
@@ -751,6 +754,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 		  XObject result1 = lessThan.operate(resultSeqLhs, resultSeqRhs);
 		  XObject result2 = result = equals.operate(resultSeqLhs, resultSeqRhs);
 		  boolean boolResult = (result1.bool() || result2.bool());
+		  
 		  result = (boolResult ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 	  }
 	  else if (cmpOpCode == OpCodes.OP_GTE) {

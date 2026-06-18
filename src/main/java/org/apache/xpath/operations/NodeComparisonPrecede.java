@@ -52,6 +52,22 @@ public class NodeComparisonPrecede extends Operation
 
 	   XMLNodeCursorImpl lNodeSet = null;
 	   XMLNodeCursorImpl rNodeSet = null;
+	   
+	   if (left instanceof ResultSequence) {
+		   if (((ResultSequence)left).size() == 0) {
+			   result = new ResultSequence();
+
+			   return result;
+		   }
+	   }
+
+	   if (right instanceof ResultSequence) {
+		   if (((ResultSequence)right).size() == 0) {
+			   result = new ResultSequence();
+
+			   return result;
+		   }
+	   }
 
 	   if (left instanceof XMLNodeCursorImpl) {
 		   lNodeSet = (XMLNodeCursorImpl)left;
@@ -91,11 +107,11 @@ public class NodeComparisonPrecede extends Operation
 		   }
 	   }
 	   else if (lNodeSet == null) {
-		   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of LHS operand of XPath "
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of lhs operand of XPath "
 				                                                                                               + "operator '<<' is not a singleton node."); 
 	   }
 	   else if (rNodeSet == null) {
-		   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of RHS operand of XPath "
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of rhs operand of XPath "
 				                                                                                               + "operator '<<' is not a singleton node.");
 	   }
 

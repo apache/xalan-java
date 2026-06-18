@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-05-30
+Document last modified : 2026-06-18
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -69,7 +69,7 @@ Run the following commands, to run Xalan-J XSLT 3.0 test suite:
 
 3.1) To run 'part 1' of Xalan-J XSLT 3.0 test suite
 
-mvn clean package test -Dtest=XalanXsl3TestSuite1
+mvn clean test -Dtest=XalanXsl3TestSuite1
 
 When this Maven build command is run, results like following shall be produced: 
 
@@ -91,7 +91,7 @@ When this Maven build command is run, results like following shall be produced:
 
 3.2) To run 'part 2' of Xalan-J XSLT 3.0 test suite
 
-mvn clean package test -Dtest=XalanXsl3TestSuite2
+mvn clean test -Dtest=XalanXsl3TestSuite2
 
 When this Maven build command is run, results like following shall be produced:
 

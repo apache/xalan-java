@@ -1,49 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:12:32Z" fail="26" name="fn-floor" pass="56" run="82" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-18T11:30:21Z" fail="6" name="fn-floor" pass="76" run="82" statusUnknown="0">
    <testResult status="pass" testName="fn-floorint1args-1"/>
    <testResult status="pass" testName="fn-floorint1args-2"/>
    <testResult status="pass" testName="fn-floorint1args-3"/>
-   <testResult status="fail" testName="fn-floorintg1args-1"/>
-   <testResult status="fail" testName="fn-floorintg1args-2"/>
-   <testResult status="fail" testName="fn-floorintg1args-3"/>
-   <testResult status="fail" testName="fn-floordec1args-1"/>
-   <testResult status="fail" testName="fn-floordec1args-2"/>
-   <testResult status="fail" testName="fn-floordec1args-3"/>
-   <testResult status="fail" testName="fn-floordbl1args-1"/>
+   <testResult status="pass" testName="fn-floorintg1args-1"/>
+   <testResult status="pass" testName="fn-floorintg1args-2"/>
+   <testResult status="pass" testName="fn-floorintg1args-3"/>
+   <testResult status="pass" testName="fn-floordec1args-1"/>
+   <testResult status="pass" testName="fn-floordec1args-2"/>
+   <testResult status="pass" testName="fn-floordec1args-3"/>
+   <testResult status="pass" testName="fn-floordbl1args-1"/>
    <testResult status="pass" testName="fn-floordbl1args-2"/>
-   <testResult status="fail" testName="fn-floordbl1args-3"/>
-   <testResult status="fail" testName="fn-floorflt1args-1"/>
+   <testResult status="pass" testName="fn-floordbl1args-3"/>
+   <testResult status="pass" testName="fn-floorflt1args-1"/>
    <testResult status="pass" testName="fn-floorflt1args-2"/>
-   <testResult status="fail" testName="fn-floorflt1args-3"/>
-   <testResult status="fail" testName="fn-floorlng1args-1"/>
-   <testResult status="fail" testName="fn-floorlng1args-2"/>
-   <testResult status="fail" testName="fn-floorlng1args-3"/>
+   <testResult status="pass" testName="fn-floorflt1args-3"/>
+   <testResult status="pass" testName="fn-floorlng1args-1"/>
+   <testResult status="pass" testName="fn-floorlng1args-2"/>
+   <testResult status="pass" testName="fn-floorlng1args-3"/>
    <testResult status="pass" testName="fn-floorusht1args-1"/>
    <testResult status="pass" testName="fn-floorusht1args-2"/>
    <testResult status="pass" testName="fn-floorusht1args-3"/>
-   <testResult status="fail" testName="fn-floornint1args-1"/>
-   <testResult status="fail" testName="fn-floornint1args-2"/>
+   <testResult status="pass" testName="fn-floornint1args-1"/>
+   <testResult status="pass" testName="fn-floornint1args-2"/>
    <testResult status="pass" testName="fn-floornint1args-3"/>
    <testResult status="pass" testName="fn-floorpint1args-1"/>
-   <testResult status="fail" testName="fn-floorpint1args-2"/>
-   <testResult status="fail" testName="fn-floorpint1args-3"/>
+   <testResult status="pass" testName="fn-floorpint1args-2"/>
+   <testResult status="pass" testName="fn-floorpint1args-3"/>
    <testResult status="pass" testName="fn-floorulng1args-1"/>
-   <testResult status="fail" testName="fn-floorulng1args-2"/>
-   <testResult status="fail" testName="fn-floorulng1args-3"/>
-   <testResult status="fail" testName="fn-floornpi1args-1"/>
-   <testResult status="fail" testName="fn-floornpi1args-2"/>
+   <testResult status="pass" testName="fn-floorulng1args-2"/>
+   <testResult status="pass" testName="fn-floorulng1args-3"/>
+   <testResult status="pass" testName="fn-floornpi1args-1"/>
+   <testResult status="pass" testName="fn-floornpi1args-2"/>
    <testResult status="pass" testName="fn-floornpi1args-3"/>
    <testResult status="pass" testName="fn-floornni1args-1"/>
-   <testResult status="fail" testName="fn-floornni1args-2"/>
-   <testResult status="fail" testName="fn-floornni1args-3"/>
+   <testResult status="pass" testName="fn-floornni1args-2"/>
+   <testResult status="pass" testName="fn-floornni1args-3"/>
    <testResult status="pass" testName="fn-floorsht1args-1"/>
    <testResult status="pass" testName="fn-floorsht1args-2"/>
    <testResult status="pass" testName="fn-floorsht1args-3"/>
-   <testResult status="fail" testName="K-FloorFunc-1"/>
+   <testResult status="pass" testName="K-FloorFunc-1"/>
    <testResult status="pass" testName="K-FloorFunc-2"/>
    <testResult status="pass" testName="K-FloorFunc-3"/>
    <testResult status="pass" testName="K-FloorFunc-4"/>
    <testResult status="pass" testName="K-FloorFunc-5"/>
-   <testResult status="fail" testName="K-FloorFunc-6"/>
+   <testResult status="pass" testName="K-FloorFunc-6"/>
    <testResult status="pass" testName="K2-FloorFunc-1"/>
    <testResult status="pass" testName="K2-FloorFunc-2"/>
    <testResult status="pass" testName="K2-FloorFunc-3"/>
@@ -69,10 +69,10 @@
    <testResult status="pass" testName="fn-floor-double-2"/>
    <testResult status="pass" testName="fn-floor-double-3"/>
    <testResult status="pass" testName="fn-floor-double-4"/>
-   <testResult status="pass" testName="fn-floor-double-5"/>
-   <testResult status="pass" testName="fn-floor-double-6"/>
-   <testResult status="pass" testName="fn-floor-double-7"/>
-   <testResult status="pass" testName="fn-floor-double-11"/>
+   <testResult status="fail" testName="fn-floor-double-5"/>
+   <testResult status="fail" testName="fn-floor-double-6"/>
+   <testResult status="fail" testName="fn-floor-double-7"/>
+   <testResult status="fail" testName="fn-floor-double-11"/>
    <testResult status="pass" testName="fn-floor-float-1"/>
    <testResult status="pass" testName="fn-floor-float-2"/>
    <testResult status="pass" testName="fn-floor-float-3"/>
@@ -80,5 +80,5 @@
    <testResult status="pass" testName="fn-floor-float-5"/>
    <testResult status="pass" testName="fn-floor-float-6"/>
    <testResult status="pass" testName="fn-floor-float-7"/>
-   <testResult status="pass" testName="fn-floor-float-11"/>
+   <testResult status="fail" testName="fn-floor-float-11"/>
 </testrun>

@@ -65,23 +65,22 @@ public class FuncResolveQName extends Function2Args
     {
     	XObject result = null;
 
-    	SourceLocator srcLocator = xctxt.getSAXLocator();
+    	SourceLocator srcLocator = xctxt.getSAXLocator();   	
 
-    	Expression arg0 = getArg0();    	
-
-    	if (isXdmEmptySequence(arg0, xctxt)) {
+    	if (isXdmEmptySequence(m_arg0, xctxt)) {
     		result = new ResultSequence();
     	}
-    	else if (isXdmSequenceOfLengthOne(arg0, xctxt)) {    	   
-    		Expression arg1 = getArg1();
-    		XObject arg1Value = arg1.execute(xctxt);
+    	else if (isXdmSeqSingleton(m_arg0, xctxt)) {    	   
+    		XObject arg1Value = getFunctionArgEffectiveValue(m_arg1, xctxt);
+    		
     		if (arg1Value instanceof XMLNodeCursorImpl) {
     			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg1Value;    		  
     			int nodeHandle = nodeSet.nextNode();
     			DTMManager dtmMgr = xctxt.getDTMManager();
     			DTM dtm = dtmMgr.getDTM(nodeHandle);
     			if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {
-    				XObject arg0Value = arg0.execute(xctxt);
+    				XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
+    				
     				String qnameLexicalStrVal = XslTransformEvaluationHelper.getStrVal(arg0Value);
     				String nsPrefix = null;
     				String localPart = null;
@@ -95,6 +94,7 @@ public class FuncResolveQName extends Function2Args
 
     				Node node = dtm.getNode(nodeHandle);
     				String nsUri = getNsuriFromInscopeNamespacesOfXMLElement(node, nsPrefix);
+    				
     				result = new XSQName(nsPrefix, localPart, nsUri);
     			}
     			else {
@@ -118,70 +118,75 @@ public class FuncResolveQName extends Function2Args
     }
 
 	/**
-     * Check whether, first argument of fn:resolve-QName method call 
-     * evaluates to an xdm empty sequence.
+     * Method definition, to check whether, the first argument of XPath 
+     * function call fn:resolve-QName evaluates to an xdm empty sequence.
      */
-	private boolean isXdmEmptySequence(Expression seqExpr, XPathContext xctxt) throws TransformerException {
-		boolean isEmptySequence = false;
+	private boolean isXdmEmptySequence(Expression expr1, XPathContext xctxt) throws TransformerException {
 		
-		if (seqExpr != null) {
-		   XObject seqExprValue = seqExpr.execute(xctxt);
+		boolean result = false;
+		
+		if (expr1 != null) {
+		   XObject seqExprValue = getFunctionArgEffectiveValue(expr1, xctxt);
+		   
 		   if (seqExprValue instanceof ResultSequence) {
 			  if (((ResultSequence)seqExprValue).size() == 0) {
-				 isEmptySequence = true;  
+				 result = true;  
 			  }
 		   }
 		   else if (seqExprValue instanceof XMLNodeCursorImpl) {
 			  if (((XMLNodeCursorImpl)seqExprValue).getLength() == 0) {
-				 isEmptySequence = true;  
+				 result = true;  
 			  }
 		   }
 		}
 		else {
-		   isEmptySequence = true;
+		   result = true;
 		}
 		
-		return isEmptySequence;
+		return result;
 	}
 	
 	/**
-     * Check whether, first argument of fn:resolve-QName method call 
-     * evaluates to an xdm sequence whose length is one.
+     * Method definition, to check whether, the first argument of XPath 
+     * function call fn:resolve-QName evaluates to an xdm sequence 
+     * with size one.
      */
-    private boolean isXdmSequenceOfLengthOne(Expression seqExpr, XPathContext xctxt) throws TransformerException {
-    	boolean isSequenceOfLengthOne = false;
+    private boolean isXdmSeqSingleton(Expression expr1, XPathContext xctxt) throws TransformerException {
     	
-		if (seqExpr != null) {
-		   XObject seqExprValue = seqExpr.execute(xctxt);
+    	boolean result = false;
+    	
+		if (expr1 != null) {
+		   XObject seqExprValue = getFunctionArgEffectiveValue(expr1, xctxt);
+		   
 		   if (seqExprValue instanceof ResultSequence) {
 		      if (((ResultSequence)seqExprValue).size() == 1) {
-			     isSequenceOfLengthOne = true;  
+			     result = true;  
 			  }
 		   }
 		   else if (seqExprValue instanceof XMLNodeCursorImpl) {
 			  if (((XMLNodeCursorImpl)seqExprValue).getLength() == 1) {
-			     isSequenceOfLengthOne = true;  
+			     result = true;  
 			  }
 		   }
 		   else if (seqExprValue instanceof XObject) {
-		      isSequenceOfLengthOne = true; 
+		      result = true; 
 		   }
 		}
     	
-    	return isSequenceOfLengthOne; 
+    	return result; 
 	}
     
     /**
-     * Given an XML element node and a namespace prefix, find an XML 
-     * namespace uri for the prefix, from within in-scope namespace bindings 
-     * of an element.
+     * Method definition, to do, using a supplied XML element node reference and 
+     * a namespace prefix, get an XML namespace uri for the prefix, from within in-scope 
+     * namespace bindings of an XML element node.
      * 
-     * @param node        an XML element node, whose in-scope namespaces bindings
-     *                    needs to be searched.
-     * @param nsPrefix    namespace prefix
+     * @param node        					An XML element node reference
+     * @param nsPrefix    					An XML namespace prefix
      */
 	private String getNsuriFromInscopeNamespacesOfXMLElement(Node node, String nsPrefix) {
-		String nsUri = null;
+		
+		String result = null;
 		
 		NamedNodeMap attrNodeMap = node.getAttributes();
 		Node attrNode = null;
@@ -194,13 +199,13 @@ public class FuncResolveQName extends Function2Args
 		}
 		
 		if (attrNode != null) {
-		   nsUri = attrNode.getNodeValue();
+		   result = attrNode.getNodeValue();
 		}
 		else {
-		   nsUri = getNsuriFromInscopeNamespacesOfXMLElement(node.getParentNode(), nsPrefix);
+		   result = getNsuriFromInscopeNamespacesOfXMLElement(node.getParentNode(), nsPrefix);
 		}
 		
-		return nsUri;
+		return result;
 	}
 
 }

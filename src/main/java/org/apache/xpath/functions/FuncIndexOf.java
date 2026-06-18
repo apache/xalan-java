@@ -73,13 +73,9 @@ public class FuncIndexOf extends FunctionMultiArgs {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		final int contextNode = xctxt.getCurrentNode();
+		final int contextNode = xctxt.getCurrentNode();                
 
-		Expression arg0 = getArg0();
-		Expression arg1 = getArg1();
-		Expression arg2 = getArg2();                
-
-		if ((arg0 == null) || (arg1 == null)) {
+		if ((m_arg0 == null) || (m_arg1 == null)) {
 			throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'index-of' has been called with wrong "
 																												+ "number of arguments. Expected function 'index-of' "
 																												+ "argument count is either two or three.", srcLocator);  
@@ -96,10 +92,10 @@ public class FuncIndexOf extends FunctionMultiArgs {
 
 		String collationUri = null;
 
-		if (arg2 != null) {
+		if (m_arg2 != null) {
 			// A collation uri was, explicitly provided during the function call fn:index-of
 
-			XObject collationXObj = arg2.execute(xctxt);
+			XObject collationXObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
 
 			if (!((collationXObj instanceof ResultSequence) && (((ResultSequence)collationXObj).size() == 0))) {			   
 				collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj);
@@ -117,10 +113,10 @@ public class FuncIndexOf extends FunctionMultiArgs {
 
 		ResultSequence arg0ResultSeq = null;
 
-		if (arg0 instanceof LocPathIterator) {
+		if (m_arg0 instanceof LocPathIterator) {
 			arg0ResultSeq = new ResultSequence();
 
-			DTMCursorIterator arg0DtmIterator = arg0.asIterator(xctxt, contextNode);        
+			DTMCursorIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
 
 			int nextNodeDtmHandle;
 
@@ -145,7 +141,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 			} 
 		}
 		else {
-			XObject arg0Obj = arg0.execute(xctxt);
+			XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 			if (arg0Obj instanceof ResultSequence) {
 				arg0ResultSeq = (ResultSequence)arg0Obj;     
@@ -156,7 +152,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 			}
 		}
 
-		XObject arg1Obj = arg1.execute(xctxt);
+		XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 
 		if (arg1Obj instanceof ResultSequence) {
 			ResultSequence rSeq = (ResultSequence)arg1Obj;
@@ -175,7 +171,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 			if (xNodeSet.getLength() == 1) {
 				String nodeStrValue = xNodeSet.str();
 
-				DTMCursorIterator sourceNodes = arg0.asIterator(xctxt, contextNode);
+				DTMCursorIterator sourceNodes = m_arg0.asIterator(xctxt, contextNode);
 				int dtmNodeHandle = sourceNodes.nextNode();
 
 				DTM dtm = dtmMgr.getDTM(dtmNodeHandle);

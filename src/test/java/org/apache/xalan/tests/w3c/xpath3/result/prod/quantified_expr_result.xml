@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:00Z" fail="41" name="prod-QuantifiedExpr" pass="120" run="161" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-18T11:28:26Z" fail="40" name="prod-QuantifiedExpr" pass="121" run="161" statusUnknown="0">
    <testResult status="pass" testName="quantExpr-1"/>
    <testResult status="pass" testName="quantExpr-2"/>
    <testResult status="pass" testName="quantExpr-3"/>
@@ -147,7 +147,7 @@
    <testResult status="pass" testName="K-QuantExprWithout-90"/>
    <testResult status="pass" testName="K-QuantExprWithout-91"/>
    <testResult status="pass" testName="K-QuantExprWithout-92"/>
-   <testResult status="fail" testName="K-QuantExprWithout-93"/>
+   <testResult status="pass" testName="K-QuantExprWithout-93"/>
    <testResult status="fail" testName="K-QuantExprWithout-94"/>
    <testResult status="fail" testName="K-QuantExprWithout-95"/>
    <testResult status="fail" testName="K-QuantExprWithout-96"/>

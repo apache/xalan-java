@@ -152,6 +152,8 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_FOR_EXPR_2 = "ER_FOR_EXPR_2";
   public static final String ER_FOR_EXPR_3 = "ER_FOR_EXPR_3";
   public static final String ER_FOR_EXPR_4 = "ER_FOR_EXPR_4";
+  public static final String ER_FOR_EXPR_5 = "ER_FOR_EXPR_5";
+  public static final String ER_FOR_EXPR_6 = "ER_FOR_EXPR_6";
   public static final String ER_INCORRECT_PROGRAMMER_ASSERTION = 
 	 "ER_INCORRECT_PROGRAMMER_ASSERTION";
   public static final String ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL = 
@@ -529,6 +531,12 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_FOR_EXPR_4,
      "XPST0003 : An XPath ''for'' expression has no variable bindings, within ''for'' expression."},
+  
+  { ER_FOR_EXPR_5,
+     "XPST0003 : An XPath ''for'' expression contains multiple ''return'' statements."},
+  
+  { ER_FOR_EXPR_6,
+     "XPST0003 : An XPath ''for'' expression within function argument, has syntax error."},
 
   { ER_INCORRECT_PROGRAMMER_ASSERTION,
       "Programmer assertion is incorrect! - {0}"},
@@ -588,10 +596,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "The count function should take one argument!"},
 
   { ER_COULDNOT_FIND_FUNCTION,
-     "Could not find function: {0}"},
+      "XPST0017 : Could not find function: {0}"},
 
   { ER_UNSUPPORTED_ENCODING,
-     "Unsupported encoding: {0}"},
+      "Unsupported encoding: {0}"},
 
   { ER_PROBLEM_IN_DTM_NEXTSIBLING,
       "Problem occured in DTM in getNextSibling... trying to recover"},
@@ -973,7 +981,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "function token not found."},
 
   { WG_COULDNOT_FIND_FUNCTION,
-      "Could not find function: {0}"},
+      "XPST0017 : Could not find function: {0}"},
 
   { WG_CANNOT_MAKE_URL_FROM,
       "Can not make URL from: {0}"},

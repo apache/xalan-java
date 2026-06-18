@@ -36,7 +36,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * This class definition, provides implementation of XPath general 
  * comparison operators (i.e, =, !=, <, <=, >, >=) for XPath array 
- * as LHS operand and another appropriate XPath operand as RHS.
+ * as lhs operand and another appropriate XPath operand as rhs.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,13 +48,13 @@ public class XPathArrayComparison extends Expression {
 
 	/**
 	 * An XPath expression list for general comparison operator's 
-	 * LHS operand.
+	 * rhs operand.
 	 */
 	private List<String> m_arrayConstructorXPathLhs = new ArrayList<String>();
 	
 	/**
 	 * An XPath expression list for general comparison operator's 
-	 * RHS operand.
+	 * rhs operand.
 	 */
 	private List<String> m_seqArrConstructorXPathRhs = new ArrayList<String>();
 	

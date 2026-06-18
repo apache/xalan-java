@@ -20,14 +20,11 @@ package org.apache.xpath.functions.string;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
@@ -40,7 +37,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of an XPath 3.1 function contains-token().
+ * Implementation of an XPath 3.1 function fn:contains-token.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -67,70 +64,63 @@ public class FuncContainsToken extends FunctionMultiArgs {
     */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {      
-        ResultSequence result = new ResultSequence();
         
-        SourceLocator srcLocator = xctxt.getSAXLocator();
+	    XObject result = null;
         
-        Expression arg0 = getArg0();
-        Expression arg1 = getArg1();
-        Expression arg2 = getArg2();
+        XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
-        if ((arg0 == null) || (arg1 == null)) {
-           // If first two mandatory arguments are not present within function 
-           // call fn:contains-token, return an empty sequence. 
-           return result; 
-        }
+        List<String> arg0List = new ArrayList<String>();
         
-        XObject arg0EvalResult = arg0.execute(xctxt);
-        
-        List<String> arg0StrList = new ArrayList<String>();
-        
-        if (arg0EvalResult instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg0EvalResult;
+        if (xObj0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;
            if (nodeSet.getLength() > 0) {
                DTMManager dtmMgr = (DTMManager)xctxt;                        
                DTMCursorIterator sourceNodes = nodeSet.iter();
                
                int nextNodeDtmHandle;
                while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                  XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
+                  XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);                  
                   String strVal = xNodeSetItem.str();
-                  arg0StrList.add(strVal);
+                  
+                  arg0List.add(strVal);
                }
            }
-           else {
-              result.add(new XSBoolean(false));
+           else {              
+              result = new XSBoolean(false); 
            }
         }
-        else if (arg0EvalResult instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)arg0EvalResult;
+        else if (xObj0 instanceof ResultSequence) {
+           ResultSequence resultSeq = (ResultSequence)xObj0;
            if (resultSeq.size() > 0) {
-              for (int idx = 0; idx < resultSeq.size(); idx++) {
-                 XObject xObject = resultSeq.item(idx); 
-                 String strVal = XslTransformEvaluationHelper.getStrVal(xObject);
-                 arg0StrList.add(strVal);
+        	  int size1 = resultSeq.size();        	   
+              for (int idx = 0; idx < size1; idx++) {
+                 XObject xObj = resultSeq.item(idx);                  
+                 String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
+                 
+                 arg0List.add(strVal);
               }
            }
            else {
-              result.add(new XSBoolean(false)); 
+        	  result = new XSBoolean(false); 
            }
         }
         else {
-           arg0StrList.add(arg0EvalResult.str()); 
+           arg0List.add(XslTransformEvaluationHelper.getStrVal(xObj0)); 
         }        
         
-        XObject arg1EvalResult = arg1.execute(xctxt);
+        XObject arg1EvalResult = getFunctionArgEffectiveValue(m_arg1, xctxt);
         
         String tokenStrVal = XslTransformEvaluationHelper.getStrVal(arg1EvalResult);
         tokenStrVal = tokenStrVal.trim();
         
         if (tokenStrVal.length() > 0) {
            String collationUri = null;
-           if (arg2 == null) {
+           if (m_arg2 == null) {
               collationUri = xctxt.getDefaultCollation();  
            }
            else {
-              XObject arg2EvalResult = arg2.execute(xctxt);
+              XObject arg2EvalResult = getFunctionArgEffectiveValue(m_arg2, xctxt);
+              
               collationUri = XslTransformEvaluationHelper.getStrVal(arg2EvalResult); 
            }
            
@@ -138,16 +128,18 @@ public class FuncContainsToken extends FunctionMultiArgs {
            
            boolean isTokenExists = false;
            
-           for (int idx1 = 0; idx1 < arg0StrList.size(); idx1++) {
-              String strVal = arg0StrList.get(idx1);
+           int size1 = arg0List.size();
+           for (int idx1 = 0; idx1 < size1; idx1++) {
+              String strVal = arg0List.get(idx1);
               // Split this string at whitespace boundaries
               String[] strPartsArr = strVal.split("\\s+");
               for (int idx2 = 0; idx2 < strPartsArr.length; idx2++) {
                  String strPart = strPartsArr[idx2];
-                 if (xpathCollationSupport.compareStringsUsingCollation(strPart, tokenStrVal, 
-                                                                                       collationUri) == 0) {
-                    result.add(new XSBoolean(true));
-                    isTokenExists = true;
+                 if (xpathCollationSupport.compareStringsUsingCollation(strPart, tokenStrVal, collationUri) == 0) {
+                	isTokenExists = true;
+                	
+                	result = new XSBoolean(true);                                        
+                    
                     break;
                  }
               }
@@ -158,11 +150,11 @@ public class FuncContainsToken extends FunctionMultiArgs {
            }
            
            if (!isTokenExists) {
-              result.add(new XSBoolean(false)); 
+        	  result = new XSBoolean(false);
            }
         }
         else {
-           result.add(new XSBoolean(false)); 
+           result = new XSBoolean(false); 
         }
                     
         return result;

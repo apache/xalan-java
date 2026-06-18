@@ -33,8 +33,8 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
-import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
@@ -74,16 +74,15 @@ public class FuncFunctionName extends FunctionDef1Arg
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
-		XObject result = null;
 		
-		Expression arg0 = getArg0();								
+		XObject result = null;							
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
 		FunctionTable funcTable = xctxt.getFunctionTable();
 		
-		if (arg0 instanceof Variable) {
-			Variable var1 = (Variable)arg0;
+		if (m_arg0 instanceof Variable) {
+			Variable var1 = (Variable)m_arg0;
 			Expression selectExpr = null;
 			ElemVariable elemVariable = var1.getElemVariable();
 			if (elemVariable != null) {
@@ -118,6 +117,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 			}
 			
 			XObject xObj = var1.execute(xctxt);
+			
 			if (xObj instanceof XPathNamedFunctionReference) {
 			   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
 			   
@@ -136,19 +136,21 @@ public class FuncFunctionName extends FunctionDef1Arg
 					   																					 + "reference not found.", srcLocator);
 			}
 		}
-		else if (arg0 instanceof XPathNamedFunctionReference) {
-			XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)arg0;
+		else if (m_arg0 instanceof XPathNamedFunctionReference) {
+			XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)m_arg0;
 			
 			result = getFunctionNameFromNamedFuncRef(xpathNamedFunctionReference, funcTable, srcLocator);			   			   
 		}
-		else if (arg0 instanceof NodeTest) {
-			NodeTest nodeTest = (NodeTest)arg0;
+		else if (m_arg0 instanceof NodeTest) {
+			NodeTest nodeTest = (NodeTest)m_arg0;
 
 			result = getFunctionNameFromNodeTestExpr(nodeTest, srcLocator);
 		}		
-		else if (arg0 instanceof XSL3ConstructorOrExtensionFunction) {
-			XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)arg0;
+		else if (m_arg0 instanceof XSL3ConstructorOrExtensionFunction) {
+			XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)m_arg0;
+			
 			XObject xObj = xsl3ConstructorOrExtensionFunction.execute(xctxt);
+			
 			if (xObj instanceof XPathNamedFunctionReference) {
 				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xObj;
 				
@@ -158,7 +160,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 			    result = new ResultSequence();
 			}
 		}
-		else if (arg0 instanceof XPathInlineFunction) {
+		else if (m_arg0 instanceof XPathInlineFunction) {
 			result = new XSQName(null, Constants.ANONYMOUS_FUNCTION, null);
 		}
 		else {

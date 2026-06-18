@@ -23,7 +23,6 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -63,15 +62,14 @@ public class FuncNamespaceUriForPrefix extends Function2Args {
 
 		XObject result = null;
 
-		SourceLocator srcLocator = xctxt.getSAXLocator();
+		SourceLocator srcLocator = xctxt.getSAXLocator();	  
 
-		Expression arg0 = getArg0();
-		Expression arg1 = getArg1();	  
-
-		XObject arg0Value = arg0.execute(xctxt);	  
+		XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		
 		String nsPrefixStr = XslTransformEvaluationHelper.getStrVal(arg0Value);
 
-		XObject arg1Value = arg1.execute(xctxt);
+		XObject arg1Value = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		
 		if (arg1Value instanceof XMLNodeCursorImpl) {
 			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg1Value;
 			if (nodeSet.getLength() == 1) {

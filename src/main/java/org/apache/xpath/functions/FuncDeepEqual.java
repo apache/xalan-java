@@ -29,7 +29,6 @@ import org.apache.xerces.dom.ElementImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.Constants;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -85,10 +84,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-	  Expression arg0 = getArg0();
-	  Expression arg1 = getArg1();
-	  
-	  if ((arg0 == null) || (arg1 == null)) {
+	  if ((m_arg0 == null) || (m_arg1 == null)) {
 		 throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
 		 		                                                   + "calling deep-equal() function is wrong. Expected "
 		 		                                                   + "number of arguments for deep-equal() function is two "
@@ -96,18 +92,18 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	  }
 	  
 	  try {	  
-		  XObject arg0Val = arg0.execute(xctxt);
-		  XObject arg1Val = arg1.execute(xctxt);
+		  XObject arg0Val = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		  
-	      Expression arg2 = getArg2();
+		  XObject arg1Val = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	      
 	      m_xpathCollationSupport = xctxt.getXPathCollationSupport();
 		  
 	      String collationUri = null;
 	      
-		  if (arg2 != null) {
+		  if (m_arg2 != null) {
 			 // A collation uri was, explicitly provided during the function call fn:deep-equal
-		     XObject collationXObj = arg2.execute(xctxt);
+		     XObject collationXObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
+		     
 		     collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
 		  }
 		  else {
@@ -116,9 +112,9 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  
 		  ResultSequence resultSeq0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg0Val, xctxt);
 		  
-		  int rSeqLength0 = resultSeq0.size();
-		  for (int i = 0; i < rSeqLength0; i++) {
-			 XObject xObj1 = resultSeq0.item(i);
+		  int size1 = resultSeq0.size();
+		  for (int idx = 0; idx < size1; idx++) {
+			 XObject xObj1 = resultSeq0.item(idx);
 			 if (xObj1 instanceof XPathNamedFunctionReference) {
 				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath function call deep-equal() has an argument with type function item.", srcLocator);   
 			 }
@@ -126,9 +122,9 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  
 		  ResultSequence resultSeq1 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg1Val, xctxt);
 		  
-		  int rSeqLength1 = resultSeq1.size();
-		  for (int i = 0; i < rSeqLength1; i++) {
-			 XObject xObj1 = resultSeq1.item(i);
+		  int size2 = resultSeq1.size();
+		  for (int idx = 0; idx < size2; idx++) {
+			 XObject xObj1 = resultSeq1.item(idx);
 			 if (xObj1 instanceof XPathNamedFunctionReference) {
 				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath function call deep-equal() has an argument with type function item.", srcLocator);   
 			 }
@@ -136,7 +132,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  
 		  boolean isDeepEqual = false;
 		  
-		  if (resultSeq0.size() == resultSeq1.size()) {		 
+		  if (size1 == size2) {		 
 			  isDeepEqual = isTwoSequenceDeepEqual(xctxt, collationUri, resultSeq0, resultSeq1);
 		  }
 
@@ -163,8 +159,10 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	
 	  boolean result = true;
 
-	  for (int idx1 = 0; idx1 < resultSeq0.size(); idx1++) {
-		  for (int idx2 = 0; idx2 < resultSeq1.size(); idx2++) {
+	  int size1 = resultSeq0.size();
+	  for (int idx1 = 0; idx1 < size1; idx1++) {
+		  int size2 = resultSeq1.size();
+		  for (int idx2 = 0; idx2 < size2; idx2++) {
 			  if (idx1 == idx2) {
 				  XObject item1 = resultSeq0.item(idx1);
 				  XObject item2 = resultSeq1.item(idx2);

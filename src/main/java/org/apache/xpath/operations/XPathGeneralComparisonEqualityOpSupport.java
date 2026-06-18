@@ -38,8 +38,8 @@ import xml.xpath31.processor.types.XSString;
 public class XPathGeneralComparisonEqualityOpSupport {
 	
 	/**
-     * Method to evaluate XPath operators =, !=, when LHS of these operators 
-     * is value of an XML Schema numeric type, and RHS is a sequence.
+     * Method to evaluate XPath operators =, !=, when lhs of these operators 
+     * is value of an XML Schema numeric type, and rhs is a sequence.
 	 */
 	public static boolean equals(XSNumericType obj1, ResultSequence rSeq, boolean notEquals) throws TransformerException {	   
 	   boolean result = false;
@@ -73,8 +73,8 @@ public class XPathGeneralComparisonEqualityOpSupport {
 	}
 	
 	/**
-     * Method to evaluate XPath operators =, !=, when LHS of these operators 
-     * is value of type XNumber, and RHS is a sequence.
+     * Method to evaluate XPath operators =, !=, when lhs of these operators 
+     * is value of type XNumber, and rhs is a sequence.
 	 */
 	public static boolean equals(XNumber xNum, ResultSequence rSeq, boolean notEquals) throws TransformerException {
 		boolean result = false; 
@@ -107,8 +107,8 @@ public class XPathGeneralComparisonEqualityOpSupport {
 	}
 	
 	/**
-     * Method to evaluate XPath operators =, !=, when LHS of these operators 
-     * is value of an XML Schema type xs:string, and RHS is a sequence.
+     * Method to evaluate XPath operators =, !=, when lhs of these operators 
+     * is value of an XML Schema type xs:string, and rhs is a sequence.
 	 */
 	public static boolean equals(XSString obj1, ResultSequence rSeq, boolean notEquals) throws TransformerException {
 		boolean result = false;
@@ -129,8 +129,8 @@ public class XPathGeneralComparisonEqualityOpSupport {
     }
 	
 	/**
-     * Method to evaluate XPath operators =, !=, when LHS of these operators 
-     * is value of type XString, and RHS is a sequence.
+     * Method to evaluate XPath operators =, !=, when lhs of these operators 
+     * is value of type XString, and rhs is a sequence.
 	 */
 	public static boolean equals(XString obj1, ResultSequence rSeq, boolean notEquals) throws TransformerException {
 		boolean result = false;

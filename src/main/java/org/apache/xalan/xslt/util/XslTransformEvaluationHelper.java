@@ -216,7 +216,7 @@ public class XslTransformEvaluationHelper {
     	  result = (((XSDecimal)xObj).getValue()).toPlainString();
     	  int i = result.indexOf('.');
     	  if (i > -1) {
-    		  // Delete trailing 0's to RHS of decimal point, for string value
+    		  // Delete trailing 0's to rhs of decimal point, for string value
     		  String prefix = result.substring(0, i);
     		  String suffix = result.substring(i + 1);
     		  int suffixLength = suffix.length();
@@ -537,7 +537,7 @@ public class XslTransformEvaluationHelper {
             	}
 
             	if (isLEmpty || isREmpty) {
-            		// If one or both of the LHS and RHS of an XPath binary 
+            		// If one or both of the lhs and rhs of an XPath binary 
             		// operation is empty, then count of result sequence is zero.            		
             		xdmSequenceSize = 0;
             	}

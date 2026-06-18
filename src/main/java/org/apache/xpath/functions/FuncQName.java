@@ -64,20 +64,20 @@ public class FuncQName extends Function2Args
     	String nsPrefix = null;
     	String nsUri = null;
     	String localPart = null;
-    	
-    	Expression arg0 = getArg0();    	
-    	if (!isXMLNullNamespace(arg0, xctxt)) {
-    	   XObject seqExprValue = arg0.execute(xctxt);
+    	 	
+    	if (!isXMLNullNamespace(m_arg0, xctxt)) {
+    	   XObject seqExprValue = getFunctionArgEffectiveValue(m_arg0, xctxt);
+    	   
      	   nsUri = XslTransformEvaluationHelper.getStrVal(seqExprValue);
     	}
     	
-    	Expression arg1 = getArg1();
-    	XObject arg1ExprValue = arg1.execute(xctxt);
+    	XObject arg1ExprValue = getFunctionArgEffectiveValue(m_arg1, xctxt);
+    	
     	String arg1Str = XslTransformEvaluationHelper.getStrVal(arg1ExprValue);
     	if (XMLChar.isValidName(arg1Str)) {
     	   // The string value 'arg1Str' is an XML valid name, according to XML 1.0 specification
     	   if (arg1Str.contains(":")) {
-    		  if (isXMLNullNamespace(arg0, xctxt)) {
+    		  if (isXMLNullNamespace(m_arg0, xctxt)) {
     			 throw new javax.xml.transform.TransformerException("FOCA0002 : The string value of second argument of XPath 3.1 function "
     			 		                                                   + "call 'QName' contains the character ':', and therefore the "
     			 		                                                   + "first argument cannot represent an XML null namespace.", srcLocator);  
@@ -100,21 +100,23 @@ public class FuncQName extends Function2Args
     }
     
     /**
-     * Check whether the first argument of method call fn:QName, represents
-     * an XML null namespace.
+     * Method definition, to check whether the first argument of method call fn:QName, 
+     * represents an XML null namespace.
      */
-    private boolean isXMLNullNamespace(Expression seqExpr, XPathContext xctxt) throws TransformerException {
-    	boolean isNullXMLNamespace = false;
+    private boolean isXMLNullNamespace(Expression expr1, XPathContext xctxt) throws TransformerException {
     	
-    	if (seqExpr != null) {
-    	   XObject seqExprValue = seqExpr.execute(xctxt);
-    	   String nsUri = XslTransformEvaluationHelper.getStrVal(seqExprValue);
+    	boolean result = false;
+    	
+    	if (expr1 != null) {
+    	   XObject xObj = getFunctionArgEffectiveValue(expr1, xctxt);
+    	   
+    	   String nsUri = XslTransformEvaluationHelper.getStrVal(xObj);
     	   if ((nsUri == null) || (nsUri.length() == 0)) {
-    		  isNullXMLNamespace = true; 
+    		  result = true; 
     	   }
     	}
     	
-    	return isNullXMLNamespace; 
+    	return result; 
     }
 
 

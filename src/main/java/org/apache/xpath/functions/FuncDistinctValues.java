@@ -23,7 +23,6 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -63,14 +62,12 @@ public class FuncDistinctValues extends FunctionMultiArgs {
     */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {      
+	   
+	   ResultSequence resultSeq = new ResultSequence();
+	   
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	   ResultSequence resultSeq = new ResultSequence();
-
-	   Expression arg0 = getArg0();        
-	   Expression arg1 = getArg1();
-
-	   if (arg0 == null) {
+	   if (m_arg0 == null) {
 		   throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
 																							   + "calling distinct-values() function is wrong. Expected "
 																							   + "number of arguments for distinct-values() function is one "
@@ -81,16 +78,17 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 
 	   String collationUri = null;
 
-	   if (arg1 != null) {
+	   if (m_arg1 != null) {
 		   // A collation uri was, explicitly provided during the function call fn:distinct-values
-		   XObject collationXObj = arg1.execute(xctxt);
+		   XObject collationXObj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		   
 		   collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
 	   }
 	   else {
 		   collationUri = xctxt.getDefaultCollation(); 
 	   }
 
-	   XObject arg0Obj = arg0.execute(xctxt);
+	   XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 	   if (arg0Obj instanceof XMLNodeCursorImpl) {
 		   DTMManager dtmMgr = (DTMManager)xctxt;
@@ -121,8 +119,9 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 		   }
 	   }
 	   else if (arg0Obj instanceof ResultSequence) {
-		   ResultSequence inpResultSeq = (ResultSequence)arg0Obj; 
-		   for (int idx = 0; idx < inpResultSeq.size(); idx++) {
+		   ResultSequence inpResultSeq = (ResultSequence)arg0Obj;
+		   int size1 = inpResultSeq.size();
+		   for (int idx = 0; idx < size1; idx++) {
 			   XObject xObj = inpResultSeq.item(idx);
 			   if (xObj instanceof XSAnyType) {
 				   XSAnyType xsAnyType = (XSAnyType)xObj;

@@ -134,7 +134,7 @@ public class FuncCeiling extends FunctionDef1Arg
 				result = new XSDouble(-0.0d);
 			}
 			else if ((xsDoubleArg.doubleValue() > -1) && (xsDoubleArg.doubleValue() < 0)) {
-			    result = new XSDouble(-0.0f); 
+			    result = new XSDouble(-0.0d); 
 			}
 			else {				
 				result = new XSDouble(Math.ceil(Double.valueOf(arg0Str)));
@@ -165,17 +165,27 @@ public class FuncCeiling extends FunctionDef1Arg
 			result = arg0Obj;
 		}
 		else if (arg0Obj instanceof XSDecimal) {
-			BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.ceil(Double.valueOf(arg0Str))));
-			
-			result = new XSDecimal(bigDecimal); 
+			if (!arg0Str.contains(".")) {
+				result = arg0Obj; 	
+			}
+			else {
+				BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.ceil(Double.valueOf(arg0Str))));
+
+				result = new XSDecimal(bigDecimal);
+			}
 		}
 		else if (arg0Obj instanceof XNumber) {						
 			XNumber xNumber = (XNumber)arg0Obj;
 			
 			if (xNumber.getXsDecimal() != null) {
-				BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.ceil(Double.valueOf(arg0Str))));
-				
-				result = new XSDecimal(bigDecimal);  
+				if (!arg0Str.contains(".")) {
+					result = xNumber.getXsDecimal(); 	
+				}
+				else {
+					BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.ceil(Double.valueOf(arg0Str))));
+
+					result = new XSDecimal(bigDecimal);
+				} 
 			}
 			else if (xNumber.getXsDouble() != null) {
 				XSDouble xsDoubleArg = xNumber.getXsDouble();
@@ -186,7 +196,7 @@ public class FuncCeiling extends FunctionDef1Arg
 					result = new XSDouble(-0.0d);
 				}
 				else if ((xsDoubleArg.doubleValue() > -1) && (xsDoubleArg.doubleValue() < 0)) {
-					result = new XSDouble(-0.0f); 
+					result = new XSDouble(-0.0d); 
 				}
 				else {				
 					result = new XSDouble(Math.ceil(Double.valueOf(arg0Str)));
@@ -204,7 +214,7 @@ public class FuncCeiling extends FunctionDef1Arg
 					result = new XSDouble(-0.0d);
 				}
 				else if ((xsDoubleArg.doubleValue() > -1) && (xsDoubleArg.doubleValue() < 0)) {
-					result = new XSDouble(-0.0f); 
+					result = new XSDouble(-0.0d); 
 				}
 				else {									
 					double dbl = Math.ceil(Double.valueOf(arg0Str));

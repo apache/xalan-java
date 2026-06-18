@@ -346,7 +346,7 @@ public class Equals extends Operation
 			  dbl1 = (Double.valueOf(strVal1)).doubleValue();
 		  }
 		  catch (NumberFormatException ex) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has LHS operand value as non-numeric.");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has lhs operand value as non-numeric.");
 		  }
 
 		  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(right);
@@ -362,7 +362,7 @@ public class Equals extends Operation
 			  dbl1 = (Double.valueOf(strVal1)).doubleValue();
 		  }
 		  catch (NumberFormatException ex) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has RHS operand value as non-numeric.");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath numeric comparison with = operator, has rhs operand value as non-numeric.");
 		  }
 
 		  java.lang.String strVal2 = XslTransformEvaluationHelper.getStrVal(left);

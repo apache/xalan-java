@@ -188,7 +188,7 @@ public class StringUtil {
     
     /**
      * Method definition, to trim whitespace characters from  
-     * RHS of an input string, and returning resulting string.
+     * rhs of an input string, and returning resulting string.
      */
     public static String strRtrim(String str) {
  	 

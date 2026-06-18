@@ -25,7 +25,6 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -68,9 +67,7 @@ public class FuncInScopePrefixes extends FunctionOneArg {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		Expression arg0 = getArg0();
-
-		XObject nodeArg = arg0.execute(xctxt);
+		XObject nodeArg = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 		if (nodeArg instanceof XMLNodeCursorImpl) {
 			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;

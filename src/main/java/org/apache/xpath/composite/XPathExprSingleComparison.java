@@ -50,13 +50,13 @@ public class XPathExprSingleComparison extends Expression {
 	
 	/**
 	 * An XPath expression string for general comparison operator's 
-	 * LHS operand.
+	 * lhs operand.
 	 */
     private String m_xpathExprLhs = null;
 	
 	/**
 	 * An XPath expression list for general comparison operator's 
-	 * RHS operand.
+	 * rhs operand.
 	 */
 	private List<String> m_seqArrConstructorXPathRhs = new ArrayList<String>();
 	

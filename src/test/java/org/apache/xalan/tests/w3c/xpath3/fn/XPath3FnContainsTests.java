@@ -23,27 +23,20 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for various XPath 3.1 functions.
+ * for XPath 3.1 function fn:contains.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FnFunction1Tests extends W3CXPath3TestsUtil {
+public class XPath3FnContainsTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
-    	
-        m_test_set_fileArr = new String[] { "compare.xml", "concat.xml", "current-date.xml", "current-dateTime.xml", "current-time.xml",
-        		                            "translate.xml", "analyze-string.xml", "number.xml" };
-        
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/contains.xml";
         m_resultSubFolderName = "fn";
-        
-        m_test_set_result_fileArr = new String[] { "compare_result.xml", "concat_result.xml", "current-date_result.xml", "current-dateTime_result.xml", 
-        		                                   "current-time_result.xml", "translate_result.xml", "analyze-string_result.xml", 
-        		                                   "number_result.xml" };
+    	
+    	m_testResultFileName = "contains_result.xml";
     }
 
     @AfterClass
@@ -55,8 +48,8 @@ public class XPath3FnFunction1Tests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFnTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslFnContainsTests() {
+    	runXPathTestSetAndProduceResult();		
     }
 
 }

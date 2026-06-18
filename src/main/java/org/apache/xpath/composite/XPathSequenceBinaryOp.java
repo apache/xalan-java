@@ -54,7 +54,7 @@ import org.apache.xpath.operations.VcNotEquals;
  * A class definition, to implement XPath 3.1 binary operator
  * expressions like (if ...) + (if ...) , 
  *                  2 + (if ...),
- *                  (1, 2, 3) = (4, 5)
+ *                  (1, 2, 3) = (4, 5) etc
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

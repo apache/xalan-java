@@ -171,9 +171,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String IGNORE_PREFIXES = "ignore-prefixes";
     
+    public static final String XALAN_ERR_CODE_ABSENT = "xalan_err_code_absent";
+    
     public static final String DESC = "desc";
     
-    public static final String XSLT_PROCESSOR = "xslt_processor";
+    public static final String XSLT_PROCESSOR = "xslt_processor";        
     
     public static final String W3C_XPATH3_TEST_SUITE_RESULTS = "W3C XPath 3.1 test suite results";
     
@@ -277,7 +279,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					String runTimeErrCode = null;
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);												
+						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);						
 												
 						XPathContext xctxt = new XPathContext(true);
 						xctxt.setIncremental(false);
@@ -598,15 +600,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 									else if (errMesgParts.length > 1) {
 										runTimeErrCode = (errMesgParts[0]).trim();
-									}
+									}									
 									
 									if (runTimeErrCode == null) {
-										unRecoverableException = true;									
-										elemTestResult.setAttribute(STATUS, FAIL);
-										
-										elemTestRun.appendChild(elemTestResult);
-										
-										node = node.getNextSibling();
+									   runTimeErrCode = XALAN_ERR_CODE_ABSENT;
 									}
 								}
 								finally {

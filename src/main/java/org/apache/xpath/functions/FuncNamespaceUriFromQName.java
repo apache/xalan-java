@@ -19,7 +19,6 @@ package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -59,8 +58,7 @@ public class FuncNamespaceUriFromQName extends FunctionDef1Arg {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		Expression arg0 = getArg0();
-		XObject arg0Value = arg0.execute(xctxt);
+		XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 		if (arg0Value instanceof XSQName) {
 			XSQName xsQName = (XSQName)arg0Value;

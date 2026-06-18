@@ -348,7 +348,7 @@ public class InstanceOf extends Operation
     		java.lang.String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
     		xmlStr = xmlStr.trim();
     		if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".equals(xmlStr)) {
-    			// XPath 'instance of' operator's LHS is an empty sequence    			
+    			// XPath 'instance of' operator's lhs is an empty sequence    			
     			boolean isSequenceCardinalityOk = false;    			
     			if ((seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
     				                                                                  (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {

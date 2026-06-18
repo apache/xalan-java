@@ -446,7 +446,7 @@ public class XPathSequenceTypeSupport {
         try {        	
             if ((srcValue instanceof XMLNodeCursorImpl) && (expectedSeqTypeData != null)) {
                 if (expectedSeqTypeData.getBuiltInSequenceType() > 0) {
-                	// When XPath "cast as" operator's LHS is a node and RHS is a built-in 
+                	// When XPath "cast as" operator's lhs is a node and rhs is a built-in 
                 	// simple type, we check "cast as" on string value of node.
                 	srcValue = srcValue.getFresh();
                 	String strValue = XslTransformEvaluationHelper.getStrVal(srcValue);

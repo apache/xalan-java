@@ -214,7 +214,7 @@ public class Lt extends Operation
 		  int lSize = rSeqL.size();
 		  int rSize = strListR.size();		   
 		  for (int idx = 0; idx < lSize; idx++) {
-			 // Loop the LHS ResultSequence object			  
+			 // Loop the lhs ResultSequence object			  
 			 XObject xObj1 = rSeqL.item(idx);
 			 Double lDbl = null;
 			 java.lang.String lStr = null;
@@ -229,7 +229,7 @@ public class Lt extends Operation
 				lStr = XslTransformEvaluationHelper.getStrVal(xObj1);  
 			 }
 			 
-			 // Loop the RHS node list string values
+			 // Loop the rhs node list string values
 			 for (int idx2 = 0; idx2 < rSize; idx2++) {
 				 java.lang.String strRhs = strListR.get(idx2);
 				 if ((lStr != null) && (lStr.compareTo(strRhs) < 0)) {
@@ -275,7 +275,7 @@ public class Lt extends Operation
 		  int lSize = rSeqL.size();
 		  int rSize = strListR.size();		   
 		  for (int idx = 0; idx < lSize; idx++) {
-			 // Loop the LHS ResultSequence object			  
+			 // Loop the lhs ResultSequence object			  
 			 XObject xObj1 = rSeqL.item(idx);
 			 Double lDbl = null;
 			 java.lang.String lStr = null;
@@ -290,7 +290,7 @@ public class Lt extends Operation
 				lStr = XslTransformEvaluationHelper.getStrVal(xObj1);  
 			 }
 			 
-			 // Loop the RHS node list string values
+			 // Loop the rhs node list string values
 			 for (int idx2 = 0; idx2 < rSize; idx2++) {
 				 java.lang.String strRhs = strListR.get(idx2);
 				 if ((lStr != null) && (lStr.compareTo(strRhs) < 0)) {

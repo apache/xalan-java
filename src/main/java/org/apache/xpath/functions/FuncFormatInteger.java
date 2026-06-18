@@ -33,7 +33,6 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -73,37 +72,25 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		XObject result = null;
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-
-		Expression arg0 = getArg0();
 		
-		if (arg0 instanceof NodeTest) {
-  		   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)arg0)) {
+		if (m_arg0 instanceof NodeTest) {
+  		   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
   			  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function format-integer(), "
   			  		                                                                  + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
   		   }
   	    }
-		else if (arg0 instanceof XPathInlineFunction) {
+		else if (m_arg0 instanceof XPathInlineFunction) {
 		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function format-integer(), "
                         															  + "but the supplied type is a function type, which cannot be atomized.", srcLocator);
 		}
-		
-		Expression arg1 = getArg1();
-		Expression arg2 = getArg2();
 
 		Expression[] exprArray = getArgs();
 
-		if ((arg1 == null) || ((exprArray != null) && (exprArray.length > 0))) {
+		if ((m_arg1 == null) || ((exprArray != null) && (exprArray.length > 0))) {
 			throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function format-integer can have either two or three arguments.", srcLocator);
 		}
 		
-		XObject arg0Obj = null;
-		
-		if ((arg0 instanceof SelfIteratorNoPredicate) && (xctxt.getXPath3ContextItem() != null)) {
-		   arg0Obj = xctxt.getXPath3ContextItem(); 
-		}
-		else {
-		   arg0Obj = arg0.execute(xctxt);
-		}
+		XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		
 		if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
 		   result = new XSString("");
@@ -159,12 +146,14 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 					                                                                                                  + "an XML Schema type integer.", srcLocator);
 		}
 		
-		XObject arg1Obj = arg1.execute(xctxt);		
+		XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		
 		String pictureStr1 = XslTransformEvaluationHelper.getStrVal(arg1Obj);
 		
 		String str2 = null;		
-		if (arg2 != null) {
-		   XObject arg2Obj = arg2.execute(xctxt);
+		if (m_arg2 != null) {
+		   XObject arg2Obj = getFunctionArgEffectiveValue(m_arg2, xctxt);
+		   
 		   str2 = XslTransformEvaluationHelper.getStrVal(arg2Obj); 
 		}
 		
