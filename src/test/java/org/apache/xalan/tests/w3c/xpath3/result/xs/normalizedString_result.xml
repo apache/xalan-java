@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:01Z" fail="3" name="xs-normalizedString" pass="3" run="6" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:15Z" fail="3" name="xs-normalizedString" pass="3" run="6" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="cbcl-normalizedstring-001"/>
    <testResult status="fail" testName="cbcl-normalizedstring-002b"/>
    <testResult status="pass" testName="cbcl-normalizedstring-003"/>

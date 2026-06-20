@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:08Z" fail="15" name="fn-compare" pass="51" run="66" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:21:30Z" fail="16" name="fn-compare" pass="51" run="67" statusUnknown="0">
    <testResult status="pass" testName="fn-compare2args-1"/>
    <testResult status="pass" testName="fn-compare2args-2"/>
    <testResult status="pass" testName="fn-compare2args-3"/>
@@ -50,6 +50,7 @@
    <testResult status="pass" testName="compare-007"/>
    <testResult status="pass" testName="compare-008"/>
    <testResult status="pass" testName="compare-009"/>
+   <testResult status="fail" testName="compare-010"/>
    <testResult status="fail" testName="compare-011"/>
    <testResult status="pass" testName="compare-012"/>
    <testResult status="pass" testName="compare-013"/>

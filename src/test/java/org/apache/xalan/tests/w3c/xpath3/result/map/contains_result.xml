@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:01Z" fail="12" name="map-contains" pass="12" run="24" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:14Z" fail="14" name="map-contains" pass="12" run="26" statusUnknown="0">
    <testResult status="pass" testName="map-contains-001"/>
    <testResult status="pass" testName="map-contains-002"/>
    <testResult status="pass" testName="map-contains-003"/>
@@ -16,11 +16,13 @@
    <testResult status="fail" testName="map-contains-015"/>
    <testResult status="fail" testName="map-contains-016"/>
    <testResult status="fail" testName="map-contains-017"/>
+   <testResult status="fail" testName="map-contains-018"/>
    <testResult status="pass" testName="map-contains-019"/>
    <testResult status="pass" testName="map-contains-020"/>
    <testResult status="fail" testName="map-contains-901"/>
    <testResult status="fail" testName="map-contains-902"/>
    <testResult status="fail" testName="map-contains-903"/>
    <testResult status="pass" testName="map-contains-904"/>
+   <testResult status="fail" testName="map-contains-905"/>
    <testResult status="fail" testName="map-contains-906"/>
 </testrun>

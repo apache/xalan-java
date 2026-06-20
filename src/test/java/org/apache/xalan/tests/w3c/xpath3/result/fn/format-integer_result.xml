@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:12:32Z" fail="26" name="fn-format-integer" pass="22" run="48" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:22:31Z" fail="51" name="fn-format-integer" pass="22" run="73" statusUnknown="0">
    <testResult status="pass" testName="format-integer-001"/>
    <testResult status="fail" testName="format-integer-002"/>
    <testResult status="fail" testName="format-integer-003"/>
@@ -12,6 +12,11 @@
    <testResult status="fail" testName="format-integer-011"/>
    <testResult status="fail" testName="format-integer-012"/>
    <testResult status="fail" testName="format-integer-013"/>
+   <testResult status="fail" testName="format-integer-014"/>
+   <testResult status="fail" testName="format-integer-015"/>
+   <testResult status="fail" testName="format-integer-016"/>
+   <testResult status="fail" testName="format-integer-017"/>
+   <testResult status="fail" testName="format-integer-018"/>
    <testResult status="fail" testName="format-integer-019"/>
    <testResult status="pass" testName="format-integer-020"/>
    <testResult status="pass" testName="format-integer-021"/>
@@ -24,14 +29,30 @@
    <testResult status="fail" testName="format-integer-028"/>
    <testResult status="fail" testName="format-integer-029"/>
    <testResult status="fail" testName="format-integer-030"/>
+   <testResult status="fail" testName="format-integer-031"/>
+   <testResult status="fail" testName="format-integer-032"/>
+   <testResult status="fail" testName="format-integer-032-fr"/>
+   <testResult status="fail" testName="format-integer-032-it"/>
+   <testResult status="fail" testName="format-integer-033"/>
    <testResult status="pass" testName="format-integer-034"/>
+   <testResult status="fail" testName="format-integer-035"/>
    <testResult status="fail" testName="format-integer-036"/>
    <testResult status="pass" testName="format-integer-037"/>
    <testResult status="fail" testName="format-integer-038"/>
    <testResult status="pass" testName="format-integer-039"/>
    <testResult status="fail" testName="format-integer-040"/>
    <testResult status="fail" testName="format-integer-041"/>
+   <testResult status="fail" testName="format-integer-042"/>
+   <testResult status="fail" testName="format-integer-043"/>
+   <testResult status="fail" testName="format-integer-044"/>
+   <testResult status="fail" testName="format-integer-045"/>
+   <testResult status="fail" testName="format-integer-046"/>
+   <testResult status="fail" testName="format-integer-047"/>
+   <testResult status="fail" testName="format-integer-048"/>
+   <testResult status="fail" testName="format-integer-049"/>
+   <testResult status="fail" testName="format-integer-050"/>
    <testResult status="fail" testName="format-integer-051"/>
+   <testResult status="fail" testName="format-integer-052"/>
    <testResult status="pass" testName="format-integer-053"/>
    <testResult status="pass" testName="format-integer-054"/>
    <testResult status="pass" testName="format-integer-058"/>
@@ -39,7 +60,10 @@
    <testResult status="fail" testName="format-integer-060"/>
    <testResult status="pass" testName="format-integer-061"/>
    <testResult status="pass" testName="format-integer-062"/>
+   <testResult status="fail" testName="format-integer-063"/>
    <testResult status="fail" testName="format-integer-064"/>
+   <testResult status="fail" testName="format-integer-065"/>
+   <testResult status="fail" testName="format-integer-066"/>
    <testResult status="pass" testName="format-integer-067"/>
    <testResult status="pass" testName="format-integer-068"/>
    <testResult status="pass" testName="format-integer-069"/>
@@ -47,4 +71,5 @@
    <testResult status="pass" testName="format-integer-071"/>
    <testResult status="fail" testName="format-integer-072"/>
    <testResult status="fail" testName="format-integer-073"/>
+   <testResult status="fail" testName="format-integer-074"/>
 </testrun>

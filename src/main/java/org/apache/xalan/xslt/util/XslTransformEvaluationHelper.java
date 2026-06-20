@@ -682,17 +682,18 @@ public class XslTransformEvaluationHelper {
      * @throws Exception
      */
     public static String serializeXmlDomElementNode(Node node) throws Exception {
-    	String resultStr = null;
+    	
+    	String result = null;
 
     	DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
     																				 newInstance()).getDOMImplementation("LS"));    	
     	LSSerializer lsSerializer = domImplLS.createLSSerializer();
     	DOMConfiguration domConfig = lsSerializer.getDomConfig();
     	domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
-    	resultStr = lsSerializer.writeToString(node);
-    	resultStr = resultStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
+    	result = lsSerializer.writeToString(node);
+    	result = result.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
         		
-    	return resultStr;
+    	return result;
     }
     
     /**
@@ -701,6 +702,7 @@ public class XslTransformEvaluationHelper {
      * values "yes", "true", or "1").
      */
     public static boolean isTunnelAttributeYes(String val) {
+       
        boolean result = false;
        
        if (val != null) {

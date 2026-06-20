@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-18T11:30:21Z" fail="4" name="fn-exists" pass="52" run="56" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:22:31Z" fail="4" name="fn-exists" pass="52" run="56" statusUnknown="0">
    <testResult status="pass" testName="fn-existsint1args-1"/>
    <testResult status="pass" testName="fn-existsint1args-2"/>
    <testResult status="pass" testName="fn-existsint1args-3"/>
@@ -53,6 +53,6 @@
    <testResult status="pass" testName="K-SeqExistsFunc-13"/>
    <testResult status="fail" testName="K-SeqExistsFunc-14"/>
    <testResult status="pass" testName="cbcl-exists-002"/>
-   <testResult status="fail" testName="cbcl-exists-004"/>
-   <testResult status="pass" testName="cbcl-exists-005"/>
+   <testResult status="pass" testName="cbcl-exists-004"/>
+   <testResult status="fail" testName="cbcl-exists-005"/>
 </testrun>

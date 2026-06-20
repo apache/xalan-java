@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:08Z" fail="0" name="fn-default-collation" pass="7" run="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:21:31Z" fail="0" name="fn-default-collation" pass="7" run="7" statusUnknown="0">
    <testResult status="pass" testName="fn-default-collation-1"/>
    <testResult status="pass" testName="fn-default-collation-2"/>
    <testResult status="pass" testName="K-ContextDefaultCollationFunc-1"/>

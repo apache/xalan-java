@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-15T11:53:04Z" fail="0" name="math-pi" pass="3" run="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:13Z" fail="2" name="math-pi" pass="3" run="5" statusUnknown="0">
    <testResult status="pass" testName="math-pi-001"/>
    <testResult status="pass" testName="math-pi-002"/>
    <testResult status="pass" testName="math-pi-003"/>
+   <testResult status="fail" testName="math-pi-004"/>
+   <testResult status="fail" testName="math-pi-005"/>
 </testrun>

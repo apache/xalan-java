@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:02Z" fail="0" name="op-anyURI-less-than" pass="8" run="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:16Z" fail="0" name="op-anyURI-less-than" pass="8" run="8" statusUnknown="0">
    <testResult status="pass" testName="K2-AnyURILtGt-1"/>
    <testResult status="pass" testName="K2-AnyURILtGt-2"/>
    <testResult status="pass" testName="K2-AnyURILtGt-3"/>

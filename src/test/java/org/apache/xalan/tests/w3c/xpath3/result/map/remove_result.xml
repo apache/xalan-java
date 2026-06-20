@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:01Z" fail="7" name="map-remove" pass="7" run="14" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:15Z" fail="7" name="map-remove" pass="7" run="14" statusUnknown="0">
    <testResult status="pass" testName="map-remove-001"/>
    <testResult status="pass" testName="map-remove-002"/>
    <testResult status="pass" testName="map-remove-003"/>

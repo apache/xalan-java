@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:11:01Z" fail="17" name="map-get" pass="12" run="29" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:14Z" fail="19" name="map-get" pass="13" run="32" statusUnknown="0">
    <testResult status="pass" testName="map-get-001"/>
    <testResult status="pass" testName="map-get-002"/>
    <testResult status="pass" testName="map-get-003"/>
@@ -16,6 +16,7 @@
    <testResult status="fail" testName="map-get-015"/>
    <testResult status="fail" testName="map-get-016"/>
    <testResult status="fail" testName="map-get-017"/>
+   <testResult status="fail" testName="map-get-018"/>
    <testResult status="pass" testName="map-get-019"/>
    <testResult status="pass" testName="map-get-020"/>
    <testResult status="fail" testName="map-get-021"/>
@@ -23,9 +24,11 @@
    <testResult status="fail" testName="map-get-023"/>
    <testResult status="fail" testName="map-get-024"/>
    <testResult status="fail" testName="map-get-025"/>
+   <testResult status="pass" testName="map-get-100"/>
    <testResult status="fail" testName="map-get-901"/>
    <testResult status="fail" testName="map-get-902"/>
    <testResult status="fail" testName="map-get-903"/>
    <testResult status="pass" testName="map-get-904"/>
+   <testResult status="fail" testName="map-get-905"/>
    <testResult status="fail" testName="map-get-906"/>
 </testrun>

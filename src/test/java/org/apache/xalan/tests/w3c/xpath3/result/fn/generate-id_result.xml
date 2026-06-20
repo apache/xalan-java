@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T05:58:33Z" fail="9" name="fn-generate-id" pass="6" run="15" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:22:33Z" fail="13" name="fn-generate-id" pass="6" run="19" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="generate-id-001"/>
    <testResult status="pass" testName="generate-id-002"/>
    <testResult status="pass" testName="generate-id-003"/>
@@ -10,8 +10,13 @@
    <testResult status="fail" testName="generate-id-009"/>
    <testResult status="fail" testName="generate-id-010"/>
    <testResult status="fail" testName="generate-id-011"/>
-   <testResult status="fail" testName="generate-id-018"/>
+   <testResult status="fail" testName="generate-id-012"/>
+   <testResult status="fail" testName="generate-id-013"/>
+   <testResult reason="xpath-1.0-compatibility" status="skipped" testName="generate-id-018"/>
    <testResult status="fail" testName="generate-id-019"/>
+   <testResult status="fail" testName="generate-id-901"/>
+   <testResult status="fail" testName="generate-id-902"/>
    <testResult status="fail" testName="generate-id-903"/>
+   <testResult status="fail" testName="generate-id-904"/>
    <testResult status="fail" testName="generate-id-905"/>
 </testrun>

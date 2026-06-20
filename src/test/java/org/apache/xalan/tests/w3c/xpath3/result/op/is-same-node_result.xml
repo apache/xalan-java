@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-18T11:29:16Z" fail="13" name="op-is-same-node" pass="9" run="22" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:58Z" fail="13" name="op-is-same-node" pass="9" run="22" statusUnknown="0">
    <testResult status="fail" testName="nodeexpression1"/>
    <testResult status="fail" testName="nodeexpression3"/>
    <testResult status="fail" testName="nodeexpression4"/>
