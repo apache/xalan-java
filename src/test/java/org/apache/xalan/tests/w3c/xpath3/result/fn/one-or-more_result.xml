@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:12:32Z" fail="6" name="fn-one-or-more" pass="47" run="53" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T05:58:32Z" fail="5" name="fn-one-or-more" pass="48" run="53" statusUnknown="0">
    <testResult status="pass" testName="fn-one-or-moreint1args-1"/>
    <testResult status="pass" testName="fn-one-or-moreint1args-2"/>
    <testResult status="pass" testName="fn-one-or-moreint1args-3"/>
@@ -48,7 +48,7 @@
    <testResult status="fail" testName="K-SeqOneOrMoreFunc-7"/>
    <testResult status="pass" testName="K-SeqOneOrMoreFunc-8"/>
    <testResult status="pass" testName="K2-SeqOneOrMoreFunc-1"/>
-   <testResult status="fail" testName="cbcl-one-or-more-004"/>
+   <testResult status="pass" testName="cbcl-one-or-more-004"/>
    <testResult status="fail" testName="cbcl-one-or-more-005"/>
    <testResult status="fail" testName="cbcl-one-or-more-006"/>
    <testResult status="fail" testName="cbcl-one-or-more-007"/>

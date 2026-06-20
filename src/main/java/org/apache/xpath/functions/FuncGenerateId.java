@@ -29,7 +29,7 @@ import org.apache.xpath.objects.XdmProcessingInstructionItem;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 fn:generate-id function.
+ * Implementation of XPath 3.1 function fn:generate-id.
  * 
  * @xsl.usage advanced
  */
@@ -54,6 +54,7 @@ public class FuncGenerateId extends FunctionDef1Arg
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
+		
 		XObject result = null;
 
 		if ((m_arg0 == null) || (m_arg0 instanceof SelfIteratorNoPredicate)) {

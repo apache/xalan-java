@@ -277,6 +277,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 					String nodeName = testCaseElem.getNodeName();
 					String expectedErrCode = null;
 					String runTimeErrCode = null;
+					
 					if (TESTCASE.equals(nodeName)) {						    					
 						String testCaseNameStr = testCaseElem.getAttribute(NAME);												
 						NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);						
@@ -289,7 +290,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 						
 						PrefixResolver xmlNsPrefixResolver = null;						
                         String envName = null;                        
-                        boolean isxmlNsContextConfigured = false;
+                        boolean isXmlNsContextConf = false;
                         
                         Map<String, String> roleFileNameMap1 = new HashMap<String, String>();
                         
@@ -348,7 +349,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
 													xctxt.setNamespaceContext(xmlNsPrefixResolver);
 
-													isxmlNsContextConfigured = true;
+													isXmlNsContextConf = true;
 
 													String envFileRoleNameStr = elem3.getAttribute("role");                                            	
 													if (".".equals(envFileRoleNameStr)) {
@@ -421,7 +422,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														xmlNsPrefixResolver = getXMLNsPrefixResolver(nsMap);
 														xctxt.setNamespaceContext(xmlNsPrefixResolver);
 
-														isxmlNsContextConfigured = true;
+														isXmlNsContextConf = true;
 
 														String envFileRoleNameStr = elem3.getAttribute("role");														
 														resolveWithCatalog = true;
@@ -492,7 +493,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 				    		xpathVarMap2.put(new QName(roleName), xmlNodeCursorImpl);
 						}
 						
-						if (!isxmlNsContextConfigured) {
+						if (!isXmlNsContextConf) {
 						   xmlNsPrefixResolver = getXMLNsPrefixResolver(new HashMap<String, String>());
 						   xctxt.setNamespaceContext(xmlNsPrefixResolver);
 						}
@@ -542,15 +543,17 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									// To run XPath parse within a specified timeout, to
 									// avoid XPath parse inf loop.
 									
-									ExecutorService executor = Executors.newSingleThreadExecutor();
-									final String xpathExprStr2 = xpathExprStr;
-									PrefixResolver xmlNsPrefixResolver2 = xmlNsPrefixResolver; 
-									Future<XPath> future = executor.submit(() -> {                              	  
-									    XPath xpathObj2 = new XPath(xpathExprStr2, null, xmlNsPrefixResolver2, XPath.SELECT, null);
-									    
-									    return xpathObj2;
-									});
+									ExecutorService executorService = Executors.newSingleThreadExecutor();
 									
+									final String xpathExprStr2 = xpathExprStr;
+									PrefixResolver xmlNsPrefixResolver2 = xmlNsPrefixResolver;
+									 
+									Future<XPath> future1 = executorService.submit(() -> {                              	  
+										XPath xpathObj2 = new XPath(xpathExprStr2, null, xmlNsPrefixResolver2, XPath.SELECT, null);
+
+										return xpathObj2;
+									});
+																		
 									try {
 										// Configuring, XPath parse evaluation timeout
 										long timeOut = 10;
@@ -562,10 +565,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										   timeOut = 15;
 										}
 										
-										xpathObj = future.get(timeOut, TimeUnit.SECONDS);
+										xpathObj = future1.get(timeOut, TimeUnit.SECONDS);
 									} 
 									catch (TimeoutException ex) {
-										future.cancel(true);									    
+										future1.cancel(true);									    
 										xPathParseTimeOut = true;
 									}
 
@@ -574,7 +577,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										if (!xpathVarMap2.isEmpty()) {
 										   xpathVarMap2.clear();
 										}
-									}
+									}									
 								}
 								catch (TransformerException ex) {
 									String errMeg = ex.getMessage();									
@@ -651,6 +654,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								boolean expectedResultStrUnquoted = false;
 
 								XObject xpathExpectedObj = null;
+								
 								if ((xpathResultObj != null) && ASSERT.equals(nodeName2)) {
 									expectedResultStr = getXPathNormalizedStr(expectedResultStr);
 									Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
@@ -708,7 +712,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								
 								if (xPathParseTimeOut) {
 									elemTestResult.setAttribute(STATUS, SKIPPED);
-								}
+								}								
 								else if (ASSERT_DEEP_EQ.equals(nodeName2)) {
 									if (xpathResultObj != null) {
 										FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
@@ -741,7 +745,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 									else {
 									   elemTestResult.setAttribute(STATUS, FAIL);
-									} 
+									}
 								}
 								else if (ASSERT_EQ.equals(nodeName2)) {
 									boolean isStatusFinal = false;
@@ -1968,6 +1972,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:math", "http://www.w3.org/2005/xpath-functions/math");
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:map", "http://www.w3.org/2005/xpath-functions/map");
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:array", "http://www.w3.org/2005/xpath-functions/array");
+    	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:err", "http://www.w3.org/2005/xqt-errors");
     	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xs", "http://www.w3.org/2001/XMLSchema");
     	
     	if (nsMap.size() > 0) {
@@ -2078,6 +2083,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xpath-functions/math}", "math:");
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xpath-functions/map}", "map:");
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xpath-functions/array}", "array:");
+    	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xqt-errors}", "err:");
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2001/XMLSchema}", "xs:");
     	
     	result = xpathExprStr; 

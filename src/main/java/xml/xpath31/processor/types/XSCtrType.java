@@ -12,7 +12,7 @@ import org.apache.xpath.objects.ResultSequence;
  * A representation of the XSCtrType datatype.
  *
  * <p>All the XML Schema built-in types that have constructor functions
- * as defined by XPath 3.1 F&amp;O spec, XalanJ data type classes for those
+ * as defined by XPath 3.1 F&amp;O spec, Xalan-J data type classes for those
  * XML Schema built-in types have this class as a parent or an ancestor 
  * class.</p>
  */

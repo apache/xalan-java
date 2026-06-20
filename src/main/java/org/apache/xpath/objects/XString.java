@@ -1134,7 +1134,7 @@ public class XString extends XObject implements XMLString
   	visitor.visitStringLiteral(owner, this);
   }
 
-  public boolean isXrTreeFragSelectWrapperResult() {
+  public boolean getXrTreeFragSelectWrapperResult() {
 	return m_xrTreeFragSelectWrapper_result;
   }
 

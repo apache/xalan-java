@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-14T17:12:32Z" fail="125" name="prod-OrExpr" pass="204" run="329" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T05:58:33Z" fail="126" name="prod-OrExpr" pass="203" run="329" statusUnknown="0">
    <testResult status="pass" testName="op-logical-and-038"/>
    <testResult status="pass" testName="op-logical-and-039"/>
    <testResult status="pass" testName="op-logical-and-040"/>
@@ -311,7 +311,7 @@
    <testResult status="pass" testName="K-LogicExpr-29"/>
    <testResult status="pass" testName="K-LogicExpr-30"/>
    <testResult status="pass" testName="K-LogicExpr-31"/>
-   <testResult status="pass" testName="K-LogicExpr-32"/>
+   <testResult status="fail" testName="K-LogicExpr-32"/>
    <testResult status="fail" testName="K-LogicExpr-33"/>
    <testResult status="fail" testName="K-LogicExpr-34"/>
    <testResult status="pass" testName="K-LogicExpr-35"/>

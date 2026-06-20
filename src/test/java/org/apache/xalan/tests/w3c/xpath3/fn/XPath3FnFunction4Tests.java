@@ -36,11 +36,12 @@ public class XPath3FnFunction4Tests extends W3CXPath3TestsUtil {
     	
     	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
     	
-        m_test_set_fileArr = new String[] { "zero-or-one.xml", "one-or-more.xml", "exactly-one.xml" };
+        m_test_set_fileArr = new String[] { "zero-or-one.xml", "one-or-more.xml", "exactly-one.xml", "generate-id.xml" };
         
         m_resultSubFolderName = "fn";
         
-        m_test_set_result_fileArr = new String[] { "zero-or-one_result.xml", "one-or-more_result.xml", "exactly-one_result.xml" };
+        m_test_set_result_fileArr = new String[] { "zero-or-one_result.xml", "one-or-more_result.xml", "exactly-one_result.xml",
+        		                                   "generate-id_result.xml" };
     }
 
     @AfterClass

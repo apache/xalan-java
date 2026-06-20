@@ -721,10 +721,12 @@ class Lexer
 				  ObjectVector tokenQueue = m_compiler.getTokenQueue();
 				  int tokenQueueSize = m_compiler.getTokenQueueSize();
 				  boolean isTokenQueueContainsMapToken = false;
+				  
 				  for (int idx = 0; idx < tokenQueueSize; idx++) {
 					  String tokenStrValue = (tokenQueue.elementAt(idx)).toString();
 					  if ("map".equals(tokenStrValue)) {
 						  isTokenQueueContainsMapToken = true;
+						  
 						  break;
 					  }
 				  }
@@ -733,10 +735,12 @@ class Lexer
 				  {
 					  // Handle XPath "map" expression string 
 					  addToTokenQueue(":");
+					  
 					  return -1;
 				  }
 				  else {
-					  uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);              
+					  uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
+					  
 					  if (uName == null) {
 						  ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
 						  if (exprParent instanceof ElemTemplateElement) {
@@ -755,7 +759,8 @@ class Lexer
 		  }
 		  catch (ClassCastException cce)
 		  {
-			  uName = m_namespaceContext.getNamespaceForPrefix(prefix);        
+			  uName = m_namespaceContext.getNamespaceForPrefix(prefix);
+			  
 			  if (uName == null) {
 				  ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
 				  if (exprParent instanceof ElemTemplateElement) {
@@ -787,6 +792,7 @@ class Lexer
 	  ObjectVector tokenQueue = m_compiler.getTokenQueue();
 	  int tokenQueueSize = m_compiler.getTokenQueueSize();
 	  boolean isTokenQueueContainsLetToken = false;
+	  
 	  for (int idx = 0; idx < tokenQueueSize; idx++) {
 		  String tokenStrValue = (tokenQueue.elementAt(idx)).toString();
 		  if ("let".equals(tokenStrValue)) {

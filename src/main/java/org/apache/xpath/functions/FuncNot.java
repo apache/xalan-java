@@ -20,8 +20,6 @@
  */
 package org.apache.xpath.functions;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
@@ -51,23 +49,23 @@ public class FuncNot extends FunctionOneArg
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{	  
+		
 		XObject result = null;
 
-		SourceLocator srcLocator = xctxt.getSAXLocator(); 
-
 		try {
-			FuncBoolean fnBoolean = new FuncBoolean(m_arg0);
-
+			FuncBoolean fnBoolean = new FuncBoolean();			
+			fnBoolean.setArg0(m_arg0);
+			
 			result = fnBoolean.execute(xctxt);
 		}
 		catch (javax.xml.transform.TransformerException ex) {
-			throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument provided "
-																									+ "to function fn:not.", srcLocator); 
+            throw ex;																									
 		}
 
 		/**
-		 * Result of function fn:not is, boolean negation of fn:boolean 
-		 * function's result on the same function argument. 
+		 * Result of XPath function fn:not is, XPath function 
+		 * fn:boolean result's negation for the supplied function 
+		 * argument. 
 		 */
 
 		if (((XSBoolean)result).value()) {
@@ -78,7 +76,6 @@ public class FuncNot extends FunctionOneArg
 		}
 
 		return result;
-
 	}
   
 }

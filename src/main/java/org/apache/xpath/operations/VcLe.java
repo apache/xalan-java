@@ -59,6 +59,7 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * The XPath 3.1 value comparison "le" operation.
@@ -95,6 +96,18 @@ public class VcLe extends XPathRelationalOp
  	  
  	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 1)) {
  		 right = ((ResultSequence)right).item(0);   
+ 	  }
+ 	  
+ 	  if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
+ 		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+
+ 		  java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
+
+ 		  int compareResult = str1.compareTo(str2);
+
+ 		  result = (compareResult <= 0) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+ 		  
+ 		  return result;
  	  }
       
       if (left instanceof XNumber) {

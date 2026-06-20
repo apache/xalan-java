@@ -421,7 +421,7 @@ public class XPathParser
     Lexer lexer = new Lexer(compiler, namespaceContext, this);    
     lexer.setSourceLocator(m_sourceLocator);
     
-    // Remove any available XPath comments, from an XPath 
+    // Remove XPath comment fragments, from an XPath 
     // expression string.
     if (StringUtil.isStrHasXPathBalancedCommentDelim(expression)) {    	
        expression = StringUtil.removeXPathComments(expression);
@@ -436,7 +436,7 @@ public class XPathParser
     
     if (lexer.isNsBindingRequired() && !lexer.isNsBound()) {
        String nsUnboundPrefix = lexer.getNsUnboundPrefix();
-       if (nsUnboundPrefix != null) {
+       if ((nsUnboundPrefix != null) && !"".equals(nsUnboundPrefix)) {
           error(XPATHErrorResources.ER_NS_BINDING, new Object[]{ nsUnboundPrefix });
        }
     }
@@ -6495,7 +6495,7 @@ public class XPathParser
 				  {
 					  Literal();
 				  }
-			  }
+			  }			  
 
 			  consumeExpected(')');
 		  }
