@@ -37,13 +37,13 @@ public class XPath3FnFunction1Tests extends W3CXPath3TestsUtil {
     	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
     	
         m_test_set_fileArr = new String[] { "compare.xml", "concat.xml", "current-date.xml", "current-dateTime.xml", "current-time.xml",
-        		                            "translate.xml", "analyze-string.xml", "number.xml" };
+        		                            "translate.xml", "analyze-string.xml", "number.xml", "path.xml" };
         
         m_resultSubFolderName = "fn";
         
         m_test_set_result_fileArr = new String[] { "compare_result.xml", "concat_result.xml", "current-date_result.xml", "current-dateTime_result.xml", 
         		                                   "current-time_result.xml", "translate_result.xml", "analyze-string_result.xml", 
-        		                                   "number_result.xml" };
+        		                                   "number_result.xml", "path_result.xml" };
     }
 
     @AfterClass

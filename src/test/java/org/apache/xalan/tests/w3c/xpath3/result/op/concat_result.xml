@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:16Z" fail="6" name="op-concat" pass="86" run="92" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:11:58Z" fail="6" name="op-concat" pass="86" run="92" statusUnknown="0">
    <testResult status="pass" testName="op-concatint2args-1"/>
    <testResult status="pass" testName="op-concatint2args-2"/>
    <testResult status="pass" testName="op-concatint2args-3"/>

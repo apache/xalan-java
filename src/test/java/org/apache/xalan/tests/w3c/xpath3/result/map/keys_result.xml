@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:15Z" fail="1" name="map-keys" pass="9" run="10" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:11:57Z" fail="1" name="map-keys" pass="12" run="13" statusUnknown="0">
    <testResult status="pass" testName="map-keys-001"/>
    <testResult status="pass" testName="map-keys-002"/>
+   <testResult status="pass" testName="map-keys-003"/>
+   <testResult status="pass" testName="map-keys-004"/>
    <testResult status="pass" testName="map-keys-005"/>
    <testResult status="pass" testName="map-keys-006"/>
    <testResult status="pass" testName="map-keys-007"/>
+   <testResult status="pass" testName="map-keys-009"/>
    <testResult status="pass" testName="map-keys-010"/>
    <testResult status="pass" testName="map-keys-011"/>
    <testResult status="fail" testName="map-keys-012"/>

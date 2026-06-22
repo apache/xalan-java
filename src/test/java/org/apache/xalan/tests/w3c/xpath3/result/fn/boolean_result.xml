@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:02Z" fail="9" name="fn-boolean" pass="129" run="138" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:10:59Z" fail="9" name="fn-boolean" pass="129" run="138" statusUnknown="0">
    <testResult status="pass" testName="fn-booleanint1args-1"/>
    <testResult status="pass" testName="fn-booleanint1args-2"/>
    <testResult status="pass" testName="fn-booleanint1args-3"/>

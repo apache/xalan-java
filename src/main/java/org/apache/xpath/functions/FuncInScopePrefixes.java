@@ -17,18 +17,22 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -67,58 +71,82 @@ public class FuncInScopePrefixes extends FunctionOneArg {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		XObject nodeArg = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
-		if (nodeArg instanceof XMLNodeCursorImpl) {
-			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)nodeArg;
-			DTMCursorIterator dtmIter = nodeSet.iterRaw();
+		if (xObj0 instanceof XMLNodeCursorImpl) {
+			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj0;
+			DTMCursorIterator dtmIter = xmlNodeCursorImpl.iterRaw();
 			int nodeHandle = dtmIter.nextNode();
 			DTM dtm = xctxt.getDTM(nodeHandle);
 			Node node = dtm.getNode(nodeHandle);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Set<String> inScopePrefixesSet = new HashSet<String>();
-				getInScopePrefixes(node, inScopePrefixesSet);
-				Iterator<String> inscopePrefixesIterator = inScopePrefixesSet.iterator();
-				ResultSequence resultSequence = new ResultSequence(); 
-				while (inscopePrefixesIterator.hasNext()) {
-					resultSequence.add(new XSString(inscopePrefixesIterator.next())); 
-				}			 
-				result = resultSequence;
+				Map<String, String> map1 = new HashMap<String, String>();
+				
+				map1.put(Constants.S_XMLNAMESPACEURI, XMLConstants.XML_NS_PREFIX);
+				
+				getInScopePrefixes((Element)node, map1);			
+				
+				Set<String> keySet1 = map1.keySet();								
+				Iterator<String> iter1 = keySet1.iterator();
+				
+				ResultSequence rSeq = new ResultSequence();
+				while (iter1.hasNext()) {
+					String nsUri = iter1.next();
+					String prefix = map1.get(nsUri); 
+					rSeq.add(new XSString(prefix)); 
+				}
+				
+				result = rSeq;
 			}
 			else {
-				throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath 3.1 function 'in-scope-prefixes' "
-																											+ "is not an element node", srcLocator);	 
+				throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'in-scope-prefixes' "
+																											+ "argument is not an element node.", srcLocator);	 
 			}
 		}
 		else {
-			throw new javax.xml.transform.TransformerException("XPTY0004: The argument of XPath 3.1 function 'in-scope-prefixes' "
-																											+ "is not an element node", srcLocator); 
+			throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'in-scope-prefixes' "
+																											+ "argument is not an element node.", srcLocator); 
 		}
 
 		return result;
 	}
 
 	/**
-	 * Get the in-scope-prefixes of an element node.
+	 * Method definition, to get XML namespace in-scope-prefixes 
+	 * for an XML element node.
+	 * 
+	 * @param elemNode                      The supplied XML element node, for which 
+	 *                                      XML namespace in-scope-prefixes needs
+	 *                                      to be determined.
+	 * @param map1                          The supplied java.util.Map object, that
+	 *                                      helps with XML namespace in-scope-prefixes 
+	 *                                      computation.  
 	 */
-	private void getInScopePrefixes(Node node, Set<String> inScopePrefixesSet) {	  
-		NamedNodeMap attrMap = node.getAttributes();
-		int attrCount = attrMap.getLength();
+	private void getInScopePrefixes(Element elemNode, Map<String, String> map1) {	  
+		
+		NamedNodeMap namedNodeMap = elemNode.getAttributes();
+		
+		int attrCount = namedNodeMap.getLength();
 		for (int idx = 0; idx < attrCount; idx++) {
-			Node attrNode = attrMap.item(idx);
+			Node attrNode = namedNodeMap.item(idx);
 			String attrName = attrNode.getNodeName();
-			if ("xmlns".equals(attrName)) {
-				inScopePrefixesSet.add("");
+			String attrValue = attrNode.getNodeValue();
+			if ((XMLConstants.XMLNS_ATTRIBUTE).equals(attrName)) {
+				String prefixStr = "";
+				
+				map1.putIfAbsent(attrValue, prefixStr);
 			}
-			else if (attrName.startsWith("xmlns:")) {
+			else if (attrName.startsWith(XMLConstants.XMLNS_ATTRIBUTE + ":")) {
 				String prefixStr = attrName.substring(6);
-				inScopePrefixesSet.add(prefixStr);
+				
+				map1.putIfAbsent(attrValue, prefixStr);
 			}
 		}
 
-		Node parentNode = node.getParentNode();	  
-		if (parentNode.getNodeType() == Node.ELEMENT_NODE) {
-			getInScopePrefixes(node.getParentNode(), inScopePrefixesSet); 
+		Node node = elemNode.getParentNode();
+		
+		if ((node != null) && (node.getNodeType() == Node.ELEMENT_NODE)) {
+			getInScopePrefixes((Element)node, map1); 
 		}
 	}
 }

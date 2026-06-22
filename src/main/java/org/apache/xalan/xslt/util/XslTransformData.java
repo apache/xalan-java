@@ -39,9 +39,15 @@ public class XslTransformData {
     
 	/**    
      * This class field represents, an XSL stylesheet 
-     * document's uri, if available.
+     * document's uri string value, if available.
      */
     public static String m_xslSystemId;
+    
+    /**
+     * This class field represents, an XSL transformation's 
+     * XML document input uri string value, if available.
+     */
+    public static String m_xmlSystemId;
     
     /**
      * This class field represents, xdm function items that 

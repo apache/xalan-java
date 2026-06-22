@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:02Z" fail="5" name="fn-ceiling" pass="76" run="81" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:10:59Z" fail="5" name="fn-ceiling" pass="78" run="83" statusUnknown="0">
    <testResult status="pass" testName="fn-ceilingint1args-1"/>
    <testResult status="pass" testName="fn-ceilingint1args-2"/>
    <testResult status="pass" testName="fn-ceilingint1args-3"/>
@@ -71,6 +71,7 @@
    <testResult status="pass" testName="fn-ceiling-double-5"/>
    <testResult status="fail" testName="fn-ceiling-double-6"/>
    <testResult status="fail" testName="fn-ceiling-double-7"/>
+   <testResult status="pass" testName="fn-ceiling-double-8"/>
    <testResult status="pass" testName="fn-ceiling-double-11"/>
    <testResult status="pass" testName="fn-ceiling-float-1"/>
    <testResult status="pass" testName="fn-ceiling-float-2"/>
@@ -79,5 +80,6 @@
    <testResult status="pass" testName="fn-ceiling-float-5"/>
    <testResult status="pass" testName="fn-ceiling-float-6"/>
    <testResult status="pass" testName="fn-ceiling-float-7"/>
+   <testResult status="pass" testName="fn-ceiling-float-8"/>
    <testResult status="pass" testName="fn-ceiling-float-11"/>
 </testrun>

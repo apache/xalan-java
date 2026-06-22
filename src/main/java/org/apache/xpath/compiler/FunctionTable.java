@@ -615,6 +615,9 @@ public class FunctionTable
   
   /** The 'exactly-one()' id. */
   public static final int FUNC_EXACTLY_ONE = 197;
+  
+  /** The 'path()' id. */
+  public static final int FUNC_PATH = 198;
 
   // Proprietary
 
@@ -675,7 +678,7 @@ public class FunctionTable
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 198;
+  private static final int NUM_BUILT_IN_FUNCS = 199;
 
   /**
    * Number of built-in functions that may be added.
@@ -931,6 +934,8 @@ public class FunctionTable
 	   m_functions[FUNC_ZERO_OR_ONE] = org.apache.xpath.functions.FuncZeroOrOne.class;
 	   m_functions[FUNC_ONE_OR_MORE] = org.apache.xpath.functions.FuncOneOrMore.class;
 	   m_functions[FUNC_EXACTLY_ONE] = org.apache.xpath.functions.FuncExactlyOne.class;
+	   
+	   m_functions[FUNC_PATH] = org.apache.xpath.functions.FuncPath.class;
   }
 
   static {
@@ -1171,6 +1176,8 @@ public class FunctionTable
 	  m_functionId.put(Keywords.FUNC_ZERO_OR_ONE, Integer.valueOf(FunctionTable.FUNC_ZERO_OR_ONE));
 	  m_functionId.put(Keywords.FUNC_ONE_OR_MORE, Integer.valueOf(FunctionTable.FUNC_ONE_OR_MORE));
 	  m_functionId.put(Keywords.FUNC_EXACTLY_ONE, Integer.valueOf(FunctionTable.FUNC_EXACTLY_ONE));
+	  
+	  m_functionId.put(Keywords.FUNC_PATH, Integer.valueOf(FunctionTable.FUNC_PATH));
   }
   
   /**

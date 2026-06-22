@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:21:30Z" fail="12" name="fn-number" pass="53" run="65" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:13:10Z" fail="10" name="fn-number" pass="56" run="66" statusUnknown="0">
    <testResult status="pass" testName="fn-numberint1args-1"/>
    <testResult status="pass" testName="fn-numberint1args-2"/>
    <testResult status="pass" testName="fn-numberint1args-3"/>
@@ -27,10 +27,10 @@
    <testResult status="pass" testName="fn-numberpint1args-2"/>
    <testResult status="pass" testName="fn-numberpint1args-3"/>
    <testResult status="pass" testName="fn-numberulng1args-1"/>
-   <testResult status="fail" testName="fn-numberulng1args-2"/>
+   <testResult status="pass" testName="fn-numberulng1args-2"/>
    <testResult status="pass" testName="fn-numberulng1args-3"/>
    <testResult status="pass" testName="fn-numbernpi1args-1"/>
-   <testResult status="fail" testName="fn-numbernpi1args-2"/>
+   <testResult status="pass" testName="fn-numbernpi1args-2"/>
    <testResult status="pass" testName="fn-numbernpi1args-3"/>
    <testResult status="pass" testName="fn-numbernni1args-1"/>
    <testResult status="pass" testName="fn-numbernni1args-2"/>
@@ -44,6 +44,7 @@
    <testResult status="fail" testName="fn-number-4"/>
    <testResult status="fail" testName="fn-number-5"/>
    <testResult status="fail" testName="fn-number-6"/>
+   <testResult status="pass" testName="fn-number-7"/>
    <testResult status="fail" testName="fn-number-8"/>
    <testResult status="fail" testName="fn-number-9"/>
    <testResult status="fail" testName="fn-number-10"/>

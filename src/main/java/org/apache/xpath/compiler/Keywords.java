@@ -817,6 +817,9 @@ public class Keywords
   /** exactly-one function string. */
   public static final String FUNC_EXACTLY_ONE = "exactly-one";
   
+  /** path function string. */
+  public static final String FUNC_PATH = "path";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

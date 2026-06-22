@@ -960,24 +960,26 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Method definition, to produce a random permutation of
+     * Method definition, to produce a random permutation for
      * the supplied xdm sequence.
      * 
-     * @param rSeq                   Supplied xdm sequence, object instance
-     * @return                       Random permutation of the supplied sequence
+     * @param rSeq                   An xdm sequence, supplied as an 
+     *                               argument to this method.
+     * @return                       Random permutation for the supplied 
+     *                               xdm sequence.
      */
     public static XObject permute(ResultSequence rSeq)
     {
     	ResultSequence result = new ResultSequence();
 
-    	int rSeqLength = rSeq.size();
+    	int size1 = rSeq.size();
     	List<XObject> list1 = new ArrayList<XObject>();
-    	for (int idx = 0; idx < rSeqLength; idx++) {
+    	for (int idx = 0; idx < size1; idx++) {
     		list1.add(rSeq.item(idx));  
     	}
 
     	Collections.shuffle(list1);
-    	for (int idx = 0; idx < rSeqLength; idx++) {
+    	for (int idx = 0; idx < size1; idx++) {
     		result.add(list1.get(idx));  
     	}
 

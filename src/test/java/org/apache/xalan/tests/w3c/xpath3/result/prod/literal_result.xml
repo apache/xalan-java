@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:02Z" fail="45" name="prod-Literal" pass="69" run="114" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:11:00Z" fail="39" name="prod-Literal" pass="75" run="114" statusUnknown="0">
    <testResult status="pass" testName="Literals001"/>
    <testResult status="pass" testName="Literals002"/>
    <testResult status="pass" testName="Literals003"/>
    <testResult status="pass" testName="Literals004"/>
-   <testResult status="fail" testName="Literals006"/>
-   <testResult status="fail" testName="Literals007"/>
-   <testResult status="fail" testName="Literals008"/>
-   <testResult status="fail" testName="Literals009"/>
+   <testResult status="pass" testName="Literals006"/>
+   <testResult status="pass" testName="Literals007"/>
+   <testResult status="pass" testName="Literals008"/>
+   <testResult status="pass" testName="Literals009"/>
    <testResult status="pass" testName="Literals010"/>
    <testResult status="pass" testName="Literals011"/>
    <testResult status="pass" testName="Literals012"/>
@@ -61,11 +61,11 @@
    <testResult status="pass" testName="Literals061a"/>
    <testResult status="pass" testName="K-Literals-1"/>
    <testResult status="pass" testName="K-Literals-2"/>
-   <testResult status="fail" testName="K-Literals-3"/>
+   <testResult status="pass" testName="K-Literals-3"/>
    <testResult status="fail" testName="K-Literals-4"/>
    <testResult status="fail" testName="K-Literals-5"/>
    <testResult status="pass" testName="K-Literals-6"/>
-   <testResult status="fail" testName="K-Literals-7"/>
+   <testResult status="pass" testName="K-Literals-7"/>
    <testResult status="pass" testName="K-Literals-8"/>
    <testResult status="pass" testName="K-Literals-9"/>
    <testResult status="pass" testName="K-Literals-10"/>
@@ -82,7 +82,7 @@
    <testResult status="pass" testName="K-Literals-21"/>
    <testResult status="pass" testName="K-Literals-22"/>
    <testResult status="fail" testName="K-Literals-23"/>
-   <testResult status="fail" testName="K-Literals-24"/>
+   <testResult status="pass" testName="K-Literals-24"/>
    <testResult status="pass" testName="K-Literals-25"/>
    <testResult status="fail" testName="K-Literals-26"/>
    <testResult status="fail" testName="K-Literals-27"/>
@@ -100,7 +100,7 @@
    <testResult status="fail" testName="K2-Literals-8"/>
    <testResult status="fail" testName="K2-Literals-9"/>
    <testResult status="pass" testName="K2-Literals-10"/>
-   <testResult status="pass" testName="K2-Literals-11"/>
+   <testResult status="fail" testName="K2-Literals-11"/>
    <testResult status="pass" testName="K2-Literals-12"/>
    <testResult status="pass" testName="K2-Literals-13"/>
    <testResult status="pass" testName="K2-Literals-14"/>

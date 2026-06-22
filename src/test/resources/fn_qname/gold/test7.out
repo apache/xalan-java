@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
-  <prefixes count="2">
+  <prefixes count="3">
     <prefix>ns0</prefix>
     <prefix>ns1</prefix>
+    <prefix>xml</prefix>
   </prefixes>
 </result>

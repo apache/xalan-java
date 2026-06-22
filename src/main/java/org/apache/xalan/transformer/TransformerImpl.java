@@ -847,6 +847,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
       
       if (source != null) {
          base = source.getSystemId();
+         
+         XslTransformData.m_xmlSystemId = base; 
       }
       
       // If no systemID of the source, use the base of the stylesheet.

@@ -13,7 +13,7 @@
 
     <xsl:template match="/root">
        <result>
-         <xsl:variable name="inScopePrefixes" select="in-scope-prefixes(x)"/>         
+         <xsl:variable name="inScopePrefixes" select="sort(in-scope-prefixes(x))"/>         
          <prefixes count="{count($inScopePrefixes)}">
             <xsl:for-each select="$inScopePrefixes">
                <prefix><xsl:value-of select="."/></prefix>

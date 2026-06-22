@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:57Z" fail="9" name="op-gDay-equal" pass="36" run="45" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:12:37Z" fail="9" name="op-gDay-equal" pass="36" run="45" statusUnknown="0">
    <testResult status="pass" testName="op-gDay-equal2args-1"/>
    <testResult status="pass" testName="op-gDay-equal2args-2"/>
    <testResult status="pass" testName="op-gDay-equal2args-3"/>

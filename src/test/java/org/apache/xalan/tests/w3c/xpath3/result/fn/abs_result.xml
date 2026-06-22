@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-20T16:20:00Z" fail="3" name="fn-abs" pass="171" run="174" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:10:58Z" fail="3" name="fn-abs" pass="179" run="182" statusUnknown="0">
    <testResult status="pass" testName="fn-absint1args-1"/>
    <testResult status="pass" testName="fn-absint1args-2"/>
    <testResult status="pass" testName="fn-absint1args-3"/>
@@ -38,9 +38,17 @@
    <testResult status="pass" testName="fn-abssht1args-2"/>
    <testResult status="pass" testName="fn-abssht1args-3"/>
    <testResult status="pass" testName="fn-abs-more-args-001"/>
+   <testResult status="pass" testName="fn-abs-more-args-002"/>
+   <testResult status="pass" testName="fn-abs-more-args-003"/>
+   <testResult status="pass" testName="fn-abs-more-args-004"/>
+   <testResult status="pass" testName="fn-abs-more-args-005"/>
    <testResult status="pass" testName="fn-abs-more-args-006"/>
    <testResult status="pass" testName="fn-abs-more-args-007"/>
    <testResult status="pass" testName="fn-abs-more-args-008"/>
+   <testResult status="pass" testName="fn-abs-more-args-009"/>
+   <testResult status="pass" testName="fn-abs-more-args-010"/>
+   <testResult status="pass" testName="fn-abs-more-args-011"/>
+   <testResult status="pass" testName="fn-abs-more-args-012"/>
    <testResult status="pass" testName="fn-abs-more-args-013"/>
    <testResult status="pass" testName="fn-abs-more-args-014"/>
    <testResult status="pass" testName="fn-abs-more-args-015"/>

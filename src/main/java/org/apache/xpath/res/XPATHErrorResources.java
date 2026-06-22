@@ -509,10 +509,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "XPST0003 : An XPath 3.1 ''if'' keyword is not followed by a sequence of ''then'' and ''else'' keywords." },
 
   { ER_EXPECTED_DOUBLE_QUOTE,
-      "misquoted literal... expected double quote!"},
+      "XPST0003 : Misquoted string literal. Expected double quote."},
 
   { ER_EXPECTED_SINGLE_QUOTE,
-      "misquoted literal... expected single quote!"},
+      "XPST0003 : Misquoted string literal. Expected single quote."},
 
   { ER_EMPTY_EXPRESSION,
      "Empty expression!"},
