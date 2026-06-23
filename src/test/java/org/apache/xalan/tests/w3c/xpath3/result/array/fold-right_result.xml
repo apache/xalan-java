@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:11:57Z" fail="3" name="array-fold-right" pass="6" run="9" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:15Z" fail="3" name="array-fold-right" pass="6" run="9" statusUnknown="0">
    <testResult status="fail" testName="array-fold-right-001"/>
    <testResult status="pass" testName="array-fold-right-003"/>
    <testResult status="pass" testName="array-fold-right-004"/>

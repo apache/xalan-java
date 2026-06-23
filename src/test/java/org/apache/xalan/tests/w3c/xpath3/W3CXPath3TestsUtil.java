@@ -51,6 +51,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.tests.util.XslTransformTestsUtil;
 import org.apache.xalan.xslt.util.StringUtil;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
@@ -188,6 +189,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     public static final String XPATH30 = "XP30+";
     
     public static final String XPATH20 = "XP20+";
+    
+    public static final String XML_VERSION = "xml-version";
     
     public static final String RESULT = "result";
     
@@ -529,7 +532,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 							if (size1 == 0) {
 								dependencySpecified = false;							
 								size1 = 1;
-							}
+							}							
 
 							String xpathExprStr = null;
 
@@ -560,7 +563,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									String depType = elem3.getAttribute(TYPE);
 									String depValue = elem3.getAttribute(VALUE);							   
 									if (SPEC.equals(depType) && !(depValue.contains(XPATH31) || depValue.contains(XPATH30) 
-											|| depValue.contains(XPATH20))) {								   
+																														|| depValue.contains(XPATH20))) {								   
 										isNonXPathTest = true;
 
 										break;
@@ -585,7 +588,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									depValue = elem3.getAttribute(VALUE);
 								}
 
-								if (!dependencySpecified || (SPEC.equals(depType) && (depValue.contains(XPATH31) || depValue.contains(XPATH30) 
+								if (!dependencySpecified || XML_VERSION.equals(depType) || (SPEC.equals(depType) && (depValue.contains(XPATH31) || depValue.contains(XPATH30) 
 										                                                                                           || depValue.contains(XPATH20)))) {								
 
 									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));    							
@@ -2019,7 +2022,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 							elemTestRun.appendChild(elemTestResult);
 						}
 						finally {
-							xctxt.popCurrentNode();
+							xctxt.popCurrentNode();							
+							XslTransformData.m_xmlSystemId = null;
 						}
 					}    				
 				}
@@ -2231,6 +2235,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
     		String sourceDocUrlStr = resolvedUrl.toString();									 									 
     		Document document2 = m_xmlDocumentBuilder.parse(sourceDocUrlStr);
+    		
+    		XslTransformData.m_xmlSystemId = sourceDocUrlStr;
 
     		DOMSource domSource = new DOMSource(document2);
     		Source source = (Source)domSource;
@@ -2241,7 +2247,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     		dtm.setDocumentBaseURI(sourceDocUrlStr);
 
     		int docNodeHandle = dtm.getDocument();
-    		xctxt.pushCurrentNode(docNodeHandle);
+    		xctxt.pushCurrentNode(docNodeHandle);    		    		 
     	}
     }
     

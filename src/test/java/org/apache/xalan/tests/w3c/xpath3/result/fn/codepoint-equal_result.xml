@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:11:00Z" fail="0" name="fn-codepoint-equal" pass="30" run="30" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:02Z" fail="0" name="fn-codepoint-equal" pass="30" run="30" statusUnknown="0">
    <testResult status="pass" testName="fn-codepoint-equal-1"/>
    <testResult status="pass" testName="fn-codepoint-equal-2"/>
    <testResult status="pass" testName="fn-codepoint-equal-2a"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-19T10:01:43Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:55Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -52,14 +52,12 @@
    <testResult status="fail" testName="for-each-group-059">
       <outResult>
          <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Attribute: order has an illegal value: </errTrace>
+         <errTrace>FORG0006 : XPath 3.1 effective boolean value is defined only for xdm items with types boolean, string, number, uri and node.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="for-each-group-060">
       <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: Attribute: order has an illegal value: </errTrace>
+         <errTrace>FORG0006 : XPath 3.1 effective boolean value is defined only for xdm items with types boolean, string, number, uri and node.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="for-each-group-061"/>
@@ -95,7 +93,7 @@
    <testResult status="fail" testName="for-each-group-089">
       <outResult>
          <errTrace>XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>

@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-04T11:40:28Z" fail="2" name="choose" pass="52" run="54" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:06Z" fail="3" name="choose" pass="51" run="54" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
    <testResult reason="Xalan configured" status="skipped" testName="choose-0103"/>
    <testResult status="pass" testName="choose-0104"/>
-   <testResult status="pass" testName="choose-0105"/>
+   <testResult status="fail" testName="choose-0105">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="choose-0106"/>
    <testResult status="pass" testName="choose-0107"/>
    <testResult status="pass" testName="choose-0201"/>

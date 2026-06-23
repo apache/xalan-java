@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-22T11:14:43Z" desc="W3C XPath 3.1 test suite results" fail="1727" pass="6630" run="8361" skipped="2" success="79.3%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-23T12:37:17Z" desc="W3C XPath 3.1 test suite results" fail="1719" pass="6636" run="8359" skipped="2" success="79.39%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-fold-left fail="3" pass="5" run="8" success="62.5%"/>
     <array-fold-right fail="3" pass="6" run="9" success="66.67%"/>
@@ -10,7 +10,7 @@
     <fn-adjust-dateTime-to-timezone fail="14" pass="34" run="48" success="70.83%"/>
     <fn-adjust-time-to-timezone fail="13" pass="29" run="42" success="69.05%"/>
     <fn-analyze-string fail="10" pass="14" run="28" success="50.0%"/>
-    <fn-boolean fail="9" pass="129" run="138" success="93.48%"/>
+    <fn-boolean fail="8" pass="130" run="138" success="94.2%"/>
     <fn-ceiling fail="5" pass="78" run="83" success="93.98%"/>
     <fn-codepoint-equal fail="0" pass="30" run="30" success="100.0%"/>
     <fn-compare fail="16" pass="51" run="67" success="76.12%"/>
@@ -38,12 +38,12 @@
     <fn-hours-from-duration fail="5" pass="26" run="31" success="83.87%"/>
     <fn-hours-from-time fail="5" pass="22" run="27" success="81.48%"/>
     <fn-implicit-timezone fail="5" pass="21" run="26" success="80.77%"/>
-    <fn-in-scope-prefixes fail="4" pass="8" run="12" success="66.67%"/>
+    <fn-in-scope-prefixes fail="0" pass="12" run="12" success="100.0%"/>
     <fn-index-of fail="12" pass="41" run="53" success="77.36%"/>
     <fn-matches fail="37" pass="125" run="162" success="77.16%"/>
     <fn-number fail="10" pass="56" run="66" success="84.85%"/>
     <fn-one-or-more fail="5" pass="48" run="53" success="90.57%"/>
-    <fn-path fail="4" pass="8" run="12" success="66.67%"/>
+    <fn-path fail="1" pass="9" run="10" success="90.0%"/>
     <fn-replace fail="19" pass="69" run="88" skipped="1" success="78.41%"/>
     <fn-tokenize fail="15" pass="50" run="65" success="76.92%"/>
     <fn-translate fail="3" pass="41" run="44" success="93.18%"/>

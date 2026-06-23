@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-23T16:15:04Z" fail="13" name="context-item" pass="18" run="31" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:31Z" fail="13" name="context-item" pass="18" run="31" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="context-item-001"/>
    <testResult status="pass" testName="context-item-002"/>
    <testResult status="pass" testName="context-item-003"/>
@@ -32,9 +32,7 @@
    <testResult status="pass" testName="context-item-015"/>
    <testResult status="pass" testName="context-item-016"/>
    <testResult status="fail" testName="context-item-017">
-      <outResult>
-         <errTrace>XTSE0010 : an instruction xsl:next-match is not known to the XSLT processor.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;in/&gt;&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="context-item-018"/>
    <testResult status="pass" testName="context-item-019"/>

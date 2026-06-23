@@ -145,6 +145,7 @@ public class XslTransformData {
 	 */
 	public static void reset() {
 		m_xslSystemId = null;
+		m_xmlSystemId = null;
 		m_xpathInlineFunction = null;
 		m_xpathArray = null;
 		m_xpathMap = null;

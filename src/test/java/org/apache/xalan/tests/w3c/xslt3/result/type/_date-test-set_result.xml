@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:03Z" fail="46" name="date" pass="88" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:45Z" fail="46" name="date" pass="88" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -64,13 +64,7 @@
    <testResult status="pass" testName="date-062"/>
    <testResult status="pass" testName="date-063"/>
    <testResult status="pass" testName="date-063a"/>
-   <testResult status="fail" testName="date-064">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}format-time()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="date-064"/>
    <testResult status="pass" testName="date-065"/>
    <testResult status="pass" testName="date-066"/>
    <testResult status="pass" testName="date-067"/>
@@ -101,8 +95,8 @@
    <testResult status="pass" testName="date-089"/>
    <testResult status="fail" testName="date-090">
       <outResult>
-         <errTrace>Expected ), but found: ,</errTrace>
-         <errTrace>java.lang.ClassCastException</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 17, Column# : 82 XPST0003: Expected ), but found: ,
+java.lang.Exception: Line# : 17, Column# : 82 XPST0003: Expected ), but found: ,</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="date-091"/>

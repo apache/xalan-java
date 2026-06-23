@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-01T17:12:12Z" fail="67" name="mode" pass="74" run="141" skipped="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:20Z" fail="68" name="mode" pass="73" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -9,7 +9,7 @@
    <testResult feature="streaming" status="skipped" testName="mode-0008"/>
    <testResult status="pass" testName="mode-0009"/>
    <testResult feature="streaming" status="skipped" testName="mode-0010"/>
-   <testResult status="pass" testName="mode-0011"/>
+   <testResult status="fail" testName="mode-0011"/>
    <testResult feature="streaming" status="skipped" testName="mode-0012"/>
    <testResult status="pass" testName="mode-0013"/>
    <testResult feature="streaming" status="skipped" testName="mode-0014"/>
@@ -40,84 +40,48 @@
    <testResult status="pass" testName="mode-0901"/>
    <testResult status="pass" testName="mode-1001"/>
    <testResult status="pass" testName="mode-1101"/>
-   <testResult status="fail" testName="mode-1102">
-      <outResult>
-         <errTrace>Illegal value: b X  c used for QNAME attribute: mode</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="mode-1102"/>
    <testResult status="pass" testName="mode-1103"/>
    <testResult status="pass" testName="mode-1104"/>
    <testResult status="fail" testName="mode-1105"/>
    <testResult status="fail" testName="mode-1106a">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1106b">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1106c">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1106d">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1106e">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1107a">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1107b">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1107c">
       <outResult>
-         <errTrace>Illegal value: X	Y
-Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="mode-1108"/>
@@ -165,8 +129,7 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="fail" testName="mode-1429">
       <outResult>
          <errTrace>XTSE0740 : An XSL mode's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>XTSE0740 : An XSL apply-templates's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>XTTE0505 : An XSL mode instruction's attribute "on-no-match" has disallowed value ' text-only-copy '.</errTrace>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
       </outResult>
    </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1430"/>
@@ -360,8 +323,8 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="pass" testName="mode-1514"/>
    <testResult status="fail" testName="mode-1515">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
          <errTrace>function token not found.</errTrace>
       </outResult>
    </testResult>
@@ -389,8 +352,16 @@ Z&#13;#unnamed used for QNAME attribute: mode</errTrace>
    <testResult status="pass" testName="mode-1611"/>
    <testResult status="fail" testName="mode-1612"/>
    <testResult status="pass" testName="mode-1613"/>
-   <testResult status="fail" testName="mode-1614"/>
-   <testResult status="pass" testName="mode-1615"/>
+   <testResult status="fail" testName="mode-1614">
+      <outResult>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
+      </outResult>
+   </testResult>
+   <testResult status="fail" testName="mode-1615">
+      <outResult>
+         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="mode-1616"/>
    <testResult status="fail" testName="mode-1617"/>
    <testResult status="fail" testName="mode-1618"/>

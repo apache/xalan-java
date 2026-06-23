@@ -86,14 +86,9 @@ public class FuncPath extends FunctionDef1Arg
 
         						return result; 
         					}
-        					else if (xmlNodeCursorImpl.getLength() == 1) {
-        						nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
-        					}
         					else {
-        						throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
-																	        								+ "argument is not an xdm node "
-																	        								+ "reference.", srcLocator); 
-        					}
+        						nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
+        					}        					
         				}
         				else {
         					throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
@@ -114,14 +109,9 @@ public class FuncPath extends FunctionDef1Arg
 
         				return result; 
         			}
-        			else if (xmlNodeCursorImpl.getLength() == 1) {
-        				nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
-        			}
         			else {
-        				throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
-								                                                                          + "argument is not an xdm node "
-								                                                                          + "reference.", srcLocator);
-        			}
+        				nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
+        			}        			
         		}
         		else {
         			throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
@@ -158,14 +148,9 @@ public class FuncPath extends FunctionDef1Arg
 
                 		  return result; 
                 	  }
-                	  else if (xmlNodeCursorImpl.getLength() == 1) {
-                		  nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
-                	  }
                 	  else {
-                		  throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
-																	                				  + "argument is not an xdm node "
-																	                				  + "reference.", srcLocator); 
-                	  }
+                		  nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
+                	  }                	  
                   }
                   else {
                 	  throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
@@ -186,14 +171,9 @@ public class FuncPath extends FunctionDef1Arg
 
     			   return result; 
     		   }
-    		   else if (xmlNodeCursorImpl.getLength() == 1) {
-    			   nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
-    		   }
     		   else {
-    			   throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "
-                                                                                                     + "argument is not an xdm node "
-                                                                                                     + "reference.", srcLocator); 
-    		   }
+    			   nodeHandle = xmlNodeCursorImpl.asNode(xctxt);  
+    		   }    		   
     	   }
            else {
         	   throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'path' "

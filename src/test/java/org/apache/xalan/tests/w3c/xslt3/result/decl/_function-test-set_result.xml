@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-05T16:33:34Z" fail="25" name="function" pass="62" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:16Z" fail="25" name="function" pass="62" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -112,7 +112,7 @@ java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was exp
    </testResult>
    <testResult status="fail" testName="function-1034">
       <outResult>
-         <errTrace>XPST0081 : An XML namespace binding for prefix '' is not available.</errTrace>
+         <errTrace>XPST0003 : A location path was expected, but the following token was encountered [.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-1035"/>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-15T11:58:44Z" desc="W3C XSLT 3.0 test suite results" fail="1280" pass="3532" run="4816" skipped="627" success="73.34%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-23T12:45:44Z" desc="W3C XSLT 3.0 test suite results" fail="1277" pass="3535" run="4816" skipped="627" success="73.4%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="2" pass="57" run="59" skipped="3" success="96.61%"/>
     <match fail="72" pass="110" run="182" skipped="112" success="60.44%"/>
-    <mode fail="67" pass="74" run="141" skipped="28" success="52.48%"/>
-    <select fail="26" pass="106" run="132" skipped="26" success="80.3%"/>
+    <mode fail="68" pass="73" run="141" skipped="28" success="51.77%"/>
+    <select fail="24" pass="108" run="132" skipped="26" success="81.82%"/>
     <tunnel fail="36" pass="22" run="58" skipped="0" success="37.93%"/>
     <xpath-default-namespace fail="10" pass="12" run="22" skipped="4" success="54.55%"/>
   </attr>
@@ -49,10 +49,10 @@
     <apply-templates fail="15" pass="22" run="37" skipped="13" success="59.46%"/>
     <attribute fail="11" pass="11" run="23" skipped="7" success="47.83%"/>
     <call-template fail="5" pass="35" run="40" skipped="2" success="87.5%"/>
-    <choose fail="2" pass="52" run="54" skipped="1" success="96.3%"/>
+    <choose fail="3" pass="51" run="54" skipped="1" success="94.44%"/>
     <construct-node fail="12" pass="22" run="34" skipped="0" success="64.71%"/>
-    <copy fail="48" pass="77" run="125" skipped="23" success="61.6%"/>
-    <element fail="13" pass="16" run="29" skipped="0" success="55.17%"/>
+    <copy fail="49" pass="76" run="125" skipped="23" success="60.8%"/>
+    <element fail="14" pass="15" run="29" skipped="0" success="51.72%"/>
     <for-each-group fail="4" pass="74" run="78" skipped="7" success="94.87%"/>
     <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>
     <message fail="3" pass="38" run="42" skipped="3" success="90.48%"/>
@@ -71,7 +71,7 @@
     <boolean fail="1" pass="104" run="105" skipped="7" success="99.05%"/>
     <date fail="46" pass="88" run="134" skipped="4" success="65.67%"/>
     <maps fail="21" pass="16" run="37" skipped="13" success="43.24%"/>
-    <namespace fail="74" pass="147" run="221" skipped="3" success="66.52%"/>
+    <namespace fail="69" pass="152" run="221" skipped="3" success="68.78%"/>
     <node fail="1" pass="31" run="32" skipped="0" success="96.88%"/>
     <string fail="5" pass="129" run="134" skipped="2" success="96.27%"/>
   </type>

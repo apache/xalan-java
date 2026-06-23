@@ -23,6 +23,7 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction1Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction2Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction3Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction4Tests;
+import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnXmlInscopePrefixesTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnMatchesTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnReplaceTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnTokenizeTests;
@@ -61,7 +62,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3OpTestsThreePart1.class, XPath3OpTestsThreePart2.class, XPath3OpTestsFour.class, XPath3OpTestsFive.class, XPath3OpTestsSix.class, 
 	            XPath3OpTestsSeven.class, XPath3FnFunction1Tests.class, XPath3FnFunction2Tests.class, XPath3FnFunction3Tests.class, XPath3FnFunction4Tests.class,
 	            XPath3OrExprTests.class, XPath3FnMatchesTests.class, XPath3FnReplaceTests.class, XPath3FnTokenizeTests.class, XPath3QnameEqualTests.class,
-	            XPath3FnContainsTests.class, XPath3FnContainsTokenTests.class })
+	            XPath3FnContainsTests.class, XPath3FnContainsTokenTests.class, XPath3FnXmlInscopePrefixesTests.class })
 public class W3CXPath3Tests2 {
 
 }

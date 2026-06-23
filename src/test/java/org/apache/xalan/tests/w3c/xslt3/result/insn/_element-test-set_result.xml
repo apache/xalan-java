@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:27Z" fail="13" name="element" pass="16" run="29" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:12Z" fail="14" name="element" pass="15" run="29" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="element-0001"/>
    <testResult status="pass" testName="element-0002"/>
    <testResult status="pass" testName="element-0003"/>
@@ -21,7 +21,7 @@
    <testResult status="fail" testName="element-0301"/>
    <testResult status="fail" testName="element-0302">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}resolve-uri()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}resolve-uri()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
@@ -30,18 +30,20 @@
       <outResult>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-         <errTrace>Variable x is directly or indirectly referencing itself!</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XTTE0570 : An XSL variable x's evaluation result doesn't match the specified xdm sequence type element().</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="element-0304">
       <outResult>
          <errTrace>Unknown nodetype: element</errTrace>
          <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-         <errTrace>javax.xml.transform.TransformerException: Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
+         <errTrace>javax.xml.transform.TransformerException: XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="element-0305"/>
-   <testResult status="pass" testName="element-0306"/>
+   <testResult status="fail" testName="element-0306">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="element-0307"/>
    <testResult status="fail" testName="element-0308"/>
    <testResult status="fail" testName="element-0309"/>

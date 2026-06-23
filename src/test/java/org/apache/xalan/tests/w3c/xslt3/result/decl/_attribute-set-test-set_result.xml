@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:33:36Z" fail="7" name="attribute-set" pass="42" run="49" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:20Z" fail="7" name="attribute-set" pass="42" run="49" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="attribute-set-0101"/>
    <testResult status="fail" testName="attribute-set-0102">
       <outResult>
@@ -16,7 +16,7 @@
    <testResult status="pass" testName="attribute-set-0107"/>
    <testResult status="fail" testName="attribute-set-0108">
       <outResult>
-         <errTrace>XTSE0010 : xsl:next-match is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 10,24 : An XSL transformation processing could not add 'next-match' to 'attribute'.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="attribute-set-0201"/>
@@ -63,7 +63,7 @@
    <testResult status="pass" testName="attribute-set-1813"/>
    <testResult status="fail" testName="attribute-set-1814">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}static-base-uri()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}static-base-uri()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>

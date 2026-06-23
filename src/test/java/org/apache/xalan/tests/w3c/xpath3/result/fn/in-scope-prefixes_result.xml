@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:14:14Z" fail="4" name="fn-in-scope-prefixes" pass="8" run="12" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:36:31Z" fail="0" name="fn-in-scope-prefixes" pass="12" run="12" statusUnknown="0">
    <testResult status="pass" testName="fn-in-scope-prefixes-2"/>
    <testResult status="pass" testName="fn-in-scope-prefixes-21"/>
    <testResult status="pass" testName="fn-in-scope-prefixes-22"/>
    <testResult status="pass" testName="fn-in-scope-prefixes-23"/>
    <testResult status="pass" testName="fn-in-scope-prefixes-25"/>
    <testResult status="pass" testName="fn-in-scope-prefixes-26"/>
-   <testResult status="fail" testName="fn-in-scope-prefixes-27"/>
-   <testResult status="fail" testName="fn-in-scope-prefixes-28"/>
-   <testResult status="fail" testName="fn-in-scope-prefixes-29"/>
-   <testResult status="fail" testName="fn-in-scope-prefixes-30"/>
+   <testResult status="pass" testName="fn-in-scope-prefixes-27"/>
+   <testResult status="pass" testName="fn-in-scope-prefixes-28"/>
+   <testResult status="pass" testName="fn-in-scope-prefixes-29"/>
+   <testResult status="pass" testName="fn-in-scope-prefixes-30"/>
    <testResult status="pass" testName="K-InScopePrefixesFunc-1"/>
    <testResult status="pass" testName="K-InScopePrefixesFunc-2"/>
 </testrun>

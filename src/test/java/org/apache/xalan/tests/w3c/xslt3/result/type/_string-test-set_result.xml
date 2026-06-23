@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:15Z" fail="5" name="string" pass="129" run="134" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:56Z" fail="5" name="string" pass="129" run="134" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="string-001"/>
    <testResult status="pass" testName="string-002"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="string-003"/>
@@ -17,7 +17,7 @@
    <testResult status="pass" testName="string-016"/>
    <testResult status="pass" testName="string-017"/>
    <testResult status="pass" testName="string-018"/>
-   <testResult status="pass" testName="string-019"/>
+   <testResult status="fail" testName="string-019"/>
    <testResult status="pass" testName="string-020"/>
    <testResult status="pass" testName="string-021"/>
    <testResult status="pass" testName="string-022"/>
@@ -122,7 +122,11 @@
    <testResult status="pass" testName="string-119"/>
    <testResult status="pass" testName="string-120"/>
    <testResult status="pass" testName="string-121"/>
-   <testResult status="fail" testName="string-122"/>
+   <testResult status="fail" testName="string-122">
+      <outResult>
+         <errTrace>java.lang.StringIndexOutOfBoundsException: String index out of range: -31</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="string-123"/>
    <testResult status="pass" testName="string-124"/>
    <testResult status="pass" testName="string-125"/>
@@ -132,7 +136,7 @@
    <testResult status="pass" testName="string-129"/>
    <testResult status="pass" testName="string-130"/>
    <testResult status="pass" testName="string-131"/>
-   <testResult status="fail" testName="string-132"/>
+   <testResult status="pass" testName="string-132"/>
    <testResult status="pass" testName="string-133"/>
    <testResult status="pass" testName="string-134"/>
    <testResult status="pass" testName="string-135"/>

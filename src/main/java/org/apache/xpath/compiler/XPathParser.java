@@ -431,6 +431,8 @@ public class XPathParser
     }
 
     expression = normalizeMapKeyValueSeparator(expression);
+    
+    expression = replaceXPathExprStrNs(expression);
 
     lexer.tokenize(expression);
     
@@ -590,6 +592,8 @@ public class XPathParser
     lexer.setSourceLocator(m_sourceLocator);
     
     lexer.setIsMatchPattern(true);
+    
+    expression = replaceXPathExprStrNs(expression);
 
     lexer.tokenize(expression);
 
@@ -701,6 +705,8 @@ public class XPathParser
 	  lexer.setSourceLocator(m_sourceLocator);
 	  
 	  lexer.setIsMatchPattern(true);
+	  
+	  expression = replaceXPathExprStrNs(expression);
 
 	  lexer.tokenize(expression);
 
@@ -9855,6 +9861,40 @@ public class XPathParser
     		nextToken();       		  
     		ExprSingle();
     	}
+     }
+    
+    /**
+     * Method definition, to do XPath expression substring 
+     * replacement like *:abc, to *[local-name()='abc'] that 
+     * is known to work with Xalan-J. 
+     * 
+     * @param xpathExprStr              The supplied XPath expression
+     *                                  string.
+     * @return                          String value after replacement.
+     */
+     private String replaceXPathExprStrNs(String xpathExprStr) {
+
+    	 String result = null;
+
+    	 String expr1 = xpathExprStr; 
+
+    	 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\*\\:\\w+");
+    	 java.util.regex.Matcher matcher = pattern.matcher(expr1);    
+    	 while (matcher.find()) {
+    		 int startIdx = matcher.start();
+    		 int endIdx = matcher.end();
+    		 String localName = expr1.substring(startIdx + 2, endIdx);
+    		 String replacementStr = "*[local-name()='" + localName + "']";
+    		 String prefix = expr1.substring(0, startIdx); 
+    		 String suffix = expr1.substring(endIdx);
+    		 expr1 = prefix + replacementStr + suffix;
+    	 }
+
+    	 matcher.reset();
+
+    	 result = expr1; 
+
+    	 return result;
      }
   
 }

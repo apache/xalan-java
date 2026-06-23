@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:19Z" fail="12" name="expression" pass="88" run="100" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:35Z" fail="12" name="expression" pass="88" run="100" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="expression-0101"/>
    <testResult status="pass" testName="expression-0301"/>
    <testResult status="pass" testName="expression-0302"/>
@@ -47,7 +47,7 @@
    <testResult status="pass" testName="expression-0930"/>
    <testResult status="fail" testName="expression-0931">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}nilled()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}nilled()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
@@ -73,7 +73,7 @@
    <testResult status="pass" testName="expression-1501"/>
    <testResult status="fail" testName="expression-1601">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}escape-html-uri()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}escape-html-uri()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>

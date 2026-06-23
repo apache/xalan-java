@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-23T11:04:44Z" fail="8" name="strip-space" pass="18" run="26" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:26Z" fail="8" name="strip-space" pass="18" run="26" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="strip-space-001"/>
    <testResult status="fail" testName="strip-space-002">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;TEST xmlns:xs="http://www.w3.org/2001/XMLSchema"/&gt;</outResult>
@@ -40,10 +40,6 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="strip-space-029">
-      <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}serialize()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
 </testrun>

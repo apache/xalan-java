@@ -566,10 +566,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "Unknown nodetype: {0}"},
 
   { ER_PATTERN_LITERAL_NEEDS_BE_QUOTED,
-      "Pattern literal ({0}) needs to be quoted!"},
+      "Pattern literal ({0}) needs to be quoted."},
 
   { ER_COULDNOT_BE_FORMATTED_TO_NUMBER,
-      "{0} could not be formatted to a number!"},
+      "{0} could not be formatted to a number."},
 
   { ER_COULDNOT_CREATE_XMLPROCESSORLIAISON,
       "Could not create XML TransformerFactory Liaison: {0}"},

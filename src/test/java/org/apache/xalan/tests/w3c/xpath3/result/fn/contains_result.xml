@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-22T11:14:29Z" fail="12" name="fn-contains" pass="55" run="67" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:36:31Z" fail="12" name="fn-contains" pass="55" run="67" statusUnknown="0">
    <testResult status="pass" testName="fn-contains2args-1"/>
    <testResult status="pass" testName="fn-contains2args-2"/>
    <testResult status="pass" testName="fn-contains2args-3"/>

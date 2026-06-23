@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-18T11:38:33Z" fail="3" name="copy-of" pass="7" run="10" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:25Z" fail="3" name="copy-of" pass="7" run="10" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="copy-of-001"/>
    <testResult status="pass" testName="copy-of-002"/>
    <testResult status="fail" testName="copy-of-003">
@@ -18,8 +18,8 @@
    <testResult status="pass" testName="copy-of-012"/>
    <testResult status="fail" testName="copy-of-013">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : A sequence type occurence indicator 'and', is not recognized.
-javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence indicator 'and', is not recognized.</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 19, Column# : 145 XPST0051 : A sequence type occurence indicator 'and', is not recognized.
+java.lang.Exception: Line# : 19, Column# : 145 XPST0051 : A sequence type occurence indicator 'and', is not recognized.</errTrace>
       </outResult>
    </testResult>
 </testrun>

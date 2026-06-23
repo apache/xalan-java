@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-21T16:34:04Z" fail="26" name="select" pass="106" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:49Z" fail="24" name="select" pass="108" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -29,7 +29,7 @@
    <testResult status="pass" testName="select-1501"/>
    <testResult status="fail" testName="select-1502">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
@@ -47,8 +47,8 @@
    <testResult status="pass" testName="select-1802"/>
    <testResult status="fail" testName="select-1803">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0051 : A sequence type occurence indicator ']', is not recognized.
-javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 9, Column# : 80 XPST0051 : A sequence type occurence indicator ']', is not recognized.
+java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="select-1804"/>
@@ -58,7 +58,7 @@ javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence i
    <testResult status="fail" testName="select-2003"/>
    <testResult status="fail" testName="select-2004">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
@@ -75,14 +75,14 @@ javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence i
    <testResult reason="Xalan configured" status="skipped" testName="select-2014"/>
    <testResult status="fail" testName="select-2015">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="select-2016"/>
    <testResult status="pass" testName="select-2017"/>
-   <testResult status="fail" testName="select-2018"/>
+   <testResult status="pass" testName="select-2018"/>
    <testResult status="pass" testName="select-2019"/>
    <testResult status="pass" testName="select-2020"/>
    <testResult status="fail" testName="select-2021"/>
@@ -102,14 +102,14 @@ javax.xml.transform.TransformerException: XPST0051 : A sequence type occurence i
    <testResult reason="Xalan configured" status="skipped" testName="select-2035"/>
    <testResult status="fail" testName="select-2036">
       <outResult>
-         <errTrace>Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
+         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
          <errTrace>function token not found.</errTrace>
          <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="select-2037"/>
    <testResult status="fail" testName="select-2038"/>
-   <testResult status="fail" testName="select-2039"/>
+   <testResult status="pass" testName="select-2039"/>
    <testResult status="fail" testName="select-2101"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2102"/>
    <testResult status="pass" testName="select-2103"/>

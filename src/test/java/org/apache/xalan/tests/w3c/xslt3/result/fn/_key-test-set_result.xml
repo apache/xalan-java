@@ -1,6 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-05-12T06:52:58Z" fail="34" name="key" pass="62" run="96" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:59Z" fail="34" name="key" pass="62" run="96" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
-   <testResult status="fail" testName="key-002"/>
+   <testResult status="fail" testName="key-002">
+      <outResult>
+         <errTrace>XPST0017 : An XPath function 'key' only allows 2 arguments.</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 31, Column# : 79 XPST0003 : A location path was expected, but the following token was encountered =.
+java.lang.Exception: Line# : 31, Column# : 79 XPST0003 : A location path was expected, but the following token was encountered =.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="key-003"/>
    <testResult status="fail" testName="key-004"/>
    <testResult status="pass" testName="key-005"/>
@@ -98,7 +104,7 @@ java.lang.Exception: Line# : 14, Column# : 15 XPST0003: Expected ,, but found: n
    <testResult status="fail" testName="key-066">
       <outResult>
          <errTrace>Variable data is directly or indirectly referencing itself!</errTrace>
-         <errTrace>org.apache.xml.utils.WrappedRuntimeException: Variable $data accessed before it is bound!</errTrace>
+         <errTrace>org.apache.xml.utils.WrappedRuntimeException: XPST0008 : Variable $data accessed before it is bound.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="key-067"/>

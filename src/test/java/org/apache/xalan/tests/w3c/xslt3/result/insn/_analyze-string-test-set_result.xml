@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-18T11:38:48Z" fail="8" name="analyze-string" pass="45" run="53" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:01Z" fail="8" name="analyze-string" pass="45" run="53" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="analyze-string-001"/>
    <testResult status="pass" testName="analyze-string-002"/>
    <testResult status="pass" testName="analyze-string-003"/>
@@ -44,7 +44,7 @@
    <testResult status="fail" testName="analyze-string-084"/>
    <testResult status="fail" testName="analyze-string-085">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;ales&gt; &#13;
-        &lt;no-match&gt;HISTï¿½RIA DE LA CIï¿½NCIA&lt;/no-match&gt; &#13;
+        &lt;no-match&gt;HIST�RIA DE LA CI�NCIA&lt;/no-match&gt; &#13;
         &lt;codi/&gt; &#13;
         &lt;no-match&gt;50003&lt;/no-match&gt; &#13;
         &lt;no-match&gt;Tipologia: &lt;/no-match&gt; &#13;
@@ -62,12 +62,12 @@
    <testResult status="pass" testName="analyze-string-096"/>
    <testResult status="fail" testName="analyze-string-097">
       <outResult>
-         <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet copy-of instruction.</errTrace>
+         <errTrace>String index out of range: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="analyze-string-097a">
       <outResult>
-         <errTrace>XTTE1540 : An error occured while evaluating an XSL stylesheet copy-of instruction.</errTrace>
+         <errTrace>String index out of range: -1</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="analyze-string-098"/>

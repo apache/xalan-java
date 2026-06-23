@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-04-23T11:04:29Z" fail="74" name="namespace" pass="147" run="221" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:49Z" fail="69" name="namespace" pass="152" run="221" skipped="3" statusUnknown="0">
    <testResult status="fail" testName="namespace-0101">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a/&gt;&lt;/out&gt;</outResult>
    </testResult>
@@ -35,13 +35,13 @@
    <testResult status="pass" testName="namespace-1103"/>
    <testResult status="fail" testName="namespace-1104"/>
    <testResult status="pass" testName="namespace-1201"/>
-   <testResult status="fail" testName="namespace-1301"/>
+   <testResult status="pass" testName="namespace-1301"/>
    <testResult status="pass" testName="namespace-1401"/>
-   <testResult status="fail" testName="namespace-1402"/>
+   <testResult status="pass" testName="namespace-1402"/>
    <testResult status="pass" testName="namespace-1403"/>
-   <testResult status="fail" testName="namespace-1404"/>
-   <testResult status="fail" testName="namespace-1501"/>
-   <testResult status="fail" testName="namespace-1502"/>
+   <testResult status="pass" testName="namespace-1404"/>
+   <testResult status="pass" testName="namespace-1501"/>
+   <testResult status="pass" testName="namespace-1502"/>
    <testResult status="fail" testName="namespace-1601"/>
    <testResult status="fail" testName="namespace-1602"/>
    <testResult status="pass" testName="namespace-1701"/>
@@ -273,7 +273,9 @@
    <testResult status="pass" testName="namespace-4009"/>
    <testResult status="fail" testName="namespace-4101"/>
    <testResult status="pass" testName="namespace-4301"/>
-   <testResult status="fail" testName="namespace-4302"/>
+   <testResult status="fail" testName="namespace-4302">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="namespace-4401"/>
    <testResult status="fail" testName="namespace-4501"/>
    <testResult status="pass" testName="namespace-4601"/>

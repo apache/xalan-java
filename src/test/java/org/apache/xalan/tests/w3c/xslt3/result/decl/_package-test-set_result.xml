@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-02-20T15:34:52Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:30Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
    <testResult status="pass" testName="package-001"/>
    <testResult status="pass" testName="package-001a"/>
    <testResult status="pass" testName="package-001b"/>
@@ -132,7 +132,7 @@
    <testResult status="fail" testName="package-912">
       <outResult>
          <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
-         <errTrace>Variable $var accessed before it is bound!</errTrace>
+         <errTrace>XPST0008 : Variable accessed before it is bound.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="package-913">
