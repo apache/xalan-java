@@ -118,7 +118,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         else if (m_arg2 instanceof NodeTest) {
            transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
            
-           elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg2, transformerImpl, srcLocator);          
+           elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg2, srcLocator);          
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The third argument to function call "

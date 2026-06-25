@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-25T16:49:25Z" fail="0" name="array-append" pass="6" run="6" statusUnknown="0">
+   <testResult status="pass" testName="array-append-101"/>
+   <testResult status="pass" testName="array-append-102"/>
+   <testResult status="pass" testName="array-append-104"/>
+   <testResult status="pass" testName="array-append-105"/>
+   <testResult status="pass" testName="array-append-106"/>
+   <testResult status="pass" testName="array-append-107"/>
+</testrun>

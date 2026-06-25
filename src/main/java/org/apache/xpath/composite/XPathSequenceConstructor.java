@@ -46,7 +46,6 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -145,7 +144,8 @@ public class XPathSequenceConstructor extends Expression {
         	   if (currentNode == DTM.NULL) {
         		   String[] strArr1 = xpathExprStr.split("/");
         		   if ((strArr1.length > 0) && strArr1[0].startsWith("$")) {
-        			   String varName = (strArr1[0]).substring(1); 
+        			   String varName = (strArr1[0]).substring(1);
+        			   varName = varName.trim();
         			   Map<QName, XObject> map1 = xctxt.getXPathVarMap();
         			   XObject xObj = map1.get(new QName(varName));
         			   if (xObj instanceof XMLNodeCursorImpl) {
@@ -157,9 +157,9 @@ public class XPathSequenceConstructor extends Expression {
         		   }
         	   }
 
-        	   Expression xpathExpr = xpathObj.getExpression();
+        	   Expression xpathExpr = xpathObj.getExpression();        	           	   
 
-        	   if (xpathExpr instanceof LocPathIterator) {
+        	   if (xpathExpr instanceof LocPathIterator) {        		           		           		   
         		   isSourceKind1 = true;
         		   LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;                              
 
@@ -171,7 +171,7 @@ public class XPathSequenceConstructor extends Expression {
         			   // no op
         		   }
 
-        		   if (dtmIter != null) {
+        		   if (dtmIter != null) {        			   
         			   int nextNode;
         			   boolean isEmptyNodeSet = true;
         			   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
@@ -182,26 +182,25 @@ public class XPathSequenceConstructor extends Expression {
         			   }
 
         			   if (isEmptyNodeSet) {
-        				   String funcNameRef = ((NodeTest)xpathExpr).getLocalName();
-        				   XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();
-        				   int hashCharIdx = funcNameRef.indexOf('#');
-        				   if ((hashCharIdx > -1) && xslFunctionService.isFuncArityWellFormed(funcNameRef)) {
-        					   if (prefixTable != null) {
-        						   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
-        					   }
+        				   // Possible XML namespace string handling 
+        				   xpathExprStr = xpathExprStr.replace(" : ", ":");
+        				   
+        				   if (prefixTable != null) {
+    						   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+    					   }
 
-        					   XPath xpathObj2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-        					   if (m_vars != null) {
-        						   xpathObj2.fixupVariables(m_vars, m_globals_size);
-        					   }
+    					   XPath xpathObj2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    					   if (m_vars != null) {
+    						   xpathObj2.fixupVariables(m_vars, m_globals_size);
+    					   }
 
-        					   Expression xpathExpr2 = xpathObj2.getExpression();
-        					   resultSeq.add((XPathNamedFunctionReference)xpathExpr2);
-        				   }
+    					   Expression xpathExpr2 = xpathObj2.getExpression();        				      					   
+    					   if (xpathExpr2 instanceof XPathNamedFunctionReference) {
+    						  resultSeq.add((XPathNamedFunctionReference)xpathExpr2); 
+    					   }
         			   }
         		   }
-        		   else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
-        				   xpathExprStr.endsWith("]")) {
+        		   else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && xpathExprStr.endsWith("]")) {
         			   String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
         			   String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
         					   xpathExprStr.indexOf(']'));
@@ -209,11 +208,10 @@ public class XPathSequenceConstructor extends Expression {
         			   // Evaluate the, variable reference XPath expression
         			   if (prefixTable != null) {
         				   varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-        						   varRefXPathExprStr, prefixTable);
+        						   																			varRefXPathExprStr, prefixTable);
         			   }
 
-        			   XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
-        					   XPath.SELECT, null);
+        			   XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         			   if (m_vars != null) {
         				   varXPathObj.fixupVariables(m_vars, m_globals_size);
         			   }
@@ -223,18 +221,16 @@ public class XPathSequenceConstructor extends Expression {
         			   // Evaluate the, xdm sequence index XPath expression
         			   if (prefixTable != null) {
         				   xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-        						   xpathIndexExprStr, 
-        						   prefixTable);
+																			        						   xpathIndexExprStr, 
+																			        						   prefixTable);
         			   }
 
-        			   XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
-        					   XPath.SELECT, null);
+        			   XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         			   if (m_vars != null) {
         				   xpathIndexObj.fixupVariables(m_vars, m_globals_size);
         			   }
 
-        			   XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
-        					   xctxt.getNamespaceContext());
+        			   XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
 
         			   if (varEvalResult instanceof ResultSequence) {
         				   ResultSequence varEvalResultSeq = (ResultSequence)varEvalResult; 

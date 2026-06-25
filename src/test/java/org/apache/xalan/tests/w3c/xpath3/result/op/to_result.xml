@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:16Z" fail="81" name="op-to" pass="85" run="166" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-25T16:49:25Z" fail="68" name="op-to" pass="98" run="166" statusUnknown="0">
    <testResult status="pass" testName="rangeExpr-1"/>
    <testResult status="pass" testName="rangeExpr-2"/>
    <testResult status="pass" testName="rangeExpr-3"/>
@@ -23,9 +23,9 @@
    <testResult status="pass" testName="rangeExpr-22"/>
    <testResult status="pass" testName="rangeExpr-23"/>
    <testResult status="pass" testName="rangeExpr-24"/>
-   <testResult status="fail" testName="rangeExpr-25"/>
-   <testResult status="fail" testName="rangeExpr-26"/>
-   <testResult status="fail" testName="rangeExpr-27"/>
+   <testResult status="pass" testName="rangeExpr-25"/>
+   <testResult status="pass" testName="rangeExpr-26"/>
+   <testResult status="pass" testName="rangeExpr-27"/>
    <testResult status="fail" testName="rangeExpr-28"/>
    <testResult status="fail" testName="rangeExpr-29"/>
    <testResult status="fail" testName="rangeExpr-30"/>
@@ -146,22 +146,22 @@
    <testResult status="pass" testName="RangeExpr-412c"/>
    <testResult status="fail" testName="RangeExpr-412d"/>
    <testResult status="pass" testName="RangeExpr-412e"/>
-   <testResult status="fail" testName="RangeExpr-413"/>
-   <testResult status="fail" testName="RangeExpr-413a"/>
+   <testResult status="pass" testName="RangeExpr-413"/>
+   <testResult status="pass" testName="RangeExpr-413a"/>
    <testResult status="fail" testName="RangeExpr-413b"/>
-   <testResult status="fail" testName="RangeExpr-413c"/>
+   <testResult status="pass" testName="RangeExpr-413c"/>
    <testResult status="fail" testName="RangeExpr-413d"/>
-   <testResult status="fail" testName="RangeExpr-413e"/>
-   <testResult status="fail" testName="RangeExpr-414"/>
-   <testResult status="fail" testName="RangeExpr-414a"/>
+   <testResult status="pass" testName="RangeExpr-413e"/>
+   <testResult status="pass" testName="RangeExpr-414"/>
+   <testResult status="pass" testName="RangeExpr-414a"/>
    <testResult status="fail" testName="RangeExpr-414b"/>
    <testResult status="fail" testName="RangeExpr-414c"/>
    <testResult status="fail" testName="RangeExpr-414d"/>
-   <testResult status="fail" testName="RangeExpr-415"/>
-   <testResult status="fail" testName="RangeExpr-415a"/>
+   <testResult status="pass" testName="RangeExpr-415"/>
+   <testResult status="pass" testName="RangeExpr-415a"/>
    <testResult status="fail" testName="RangeExpr-415b"/>
-   <testResult status="fail" testName="RangeExpr-416"/>
-   <testResult status="fail" testName="RangeExpr-416a"/>
+   <testResult status="pass" testName="RangeExpr-416"/>
+   <testResult status="pass" testName="RangeExpr-416a"/>
    <testResult status="fail" testName="RangeExpr-416b"/>
    <testResult status="fail" testName="RangeExpr-600"/>
    <testResult status="fail" testName="RangeExpr-601"/>

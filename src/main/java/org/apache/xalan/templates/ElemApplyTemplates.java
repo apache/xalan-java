@@ -1462,8 +1462,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 				  DTMCursorIterator dtmIter = nodeSet.getContainedIter();                    		  
 				  if (dtmIter instanceof NodeTest) {
 					  try {
-						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-								  																					(NodeTest)dtmIter, transformer, srcLocator);
+						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)dtmIter, 
+								   																											srcLocator);
 						  if (elemFunction != null) {
 							  // REVISIT : To check for elemFunction object's conformance with details in 
 							  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  

@@ -67,6 +67,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.VcEquals;
 import org.w3c.dom.Document;
@@ -191,6 +192,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     public static final String XPATH20 = "XP20+";
     
     public static final String XML_VERSION = "xml-version";
+    
+    public static final String HIGHER_ORDER_FUNC = "higherOrderFunctions";
     
     public static final String RESULT = "result";
     
@@ -589,7 +592,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								}
 
 								if (!dependencySpecified || XML_VERSION.equals(depType) || (SPEC.equals(depType) && (depValue.contains(XPATH31) || depValue.contains(XPATH30) 
-										                                                                                           || depValue.contains(XPATH20)))) {								
+										                                                                                                        || depValue.contains(XPATH20)))
+										                                                || (FEATURE.equals(depType) && HIGHER_ORDER_FUNC.equals(depValue))) {								
 
 									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));    							
 									xpathExprStr = elemNode1.getTextContent();
@@ -637,10 +641,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										}
 
 										if (xpathObj != null) {									   
-											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
-											if (!xpathVarMap2.isEmpty()) {
-												xpathVarMap2.clear();
-											}
+											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);											
 										}									
 									}
 									catch (TransformerException ex) {
@@ -672,7 +673,12 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										if (runTimeErrCode == null) {
 											runTimeErrCode = XALAN_ERR_CODE_ABSENT;
 										}
-									}								
+									}
+									finally {
+										if (!xpathVarMap2.isEmpty()) {
+											xpathVarMap2.clear();
+										}
+									}
 
 									break;
 								}
@@ -729,18 +735,29 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										expectedResultStr = getXPathNormalizedStr(expectedResultStr);
 										
 										if ((expectedResultStr != null) && !EMPTY_STRING.equals(expectedResultStr)) {
+											boolean isExpResultStrFinal = false;
 											if ((xpathResultObj instanceof ResultSequence) && (!expectedResultStr.startsWith("(") 
 													                                                                        && !expectedResultStr.endsWith(")"))) {									   
+												isExpResultStrFinal = true;
 												expectedResultStr = "(" + expectedResultStr + ")";   									   
 											}
-											else if (expectedResultStr.startsWith("\"") && expectedResultStr.endsWith("\"")) {
-												int size2 = expectedResultStr.length();
-												expectedResultStr = expectedResultStr.substring(1, size2 - 1);
-												expectedResultStr = "'" + expectedResultStr + "'"; 
+											else if (xpathResultObj instanceof XPathArray) {
+												isExpResultStrFinal = true;
+												if (!expectedResultStr.startsWith("[") && !expectedResultStr.endsWith("]")) {
+												   expectedResultStr = "[" + expectedResultStr + "]"; 
+												}
 											}
-											else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
-												expectedResultStr = "'" + expectedResultStr + "'";										
-												expectedResultStrUnquoted = true;
+											
+											if (!isExpResultStrFinal) {
+												if (expectedResultStr.startsWith("\"") && expectedResultStr.endsWith("\"")) {
+													int size2 = expectedResultStr.length();
+													expectedResultStr = expectedResultStr.substring(1, size2 - 1);
+													expectedResultStr = "'" + expectedResultStr + "'"; 
+												}
+												else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
+													expectedResultStr = "'" + expectedResultStr + "'";										
+													expectedResultStrUnquoted = true;
+												}
 											}
 
 											XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1166,18 +1183,29 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													if (xpathResultObj != null) {
 														expectedResultStr2 = getXPathNormalizedStr(expectedResultStr2);
 														if ((expectedResultStr2 != null) && !EMPTY_STRING.equals(expectedResultStr2)) {
+															boolean isExpResultStrFinal = false;
 															if ((xpathResultObj instanceof ResultSequence) && (!expectedResultStr2.startsWith("(") 
 																																			 && !expectedResultStr2.endsWith(")"))) {									   
+																isExpResultStrFinal = true;
 																expectedResultStr2 = "(" + expectedResultStr2 + ")";   									   
 															}
-															else if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
-																int size3 = expectedResultStr2.length();
-																expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
-																expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
-															}
-															else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
-																expectedResultStr2 = "'" + expectedResultStr2 + "'";										
-																expectedResultStrUnquoted = true;
+															else if (xpathResultObj instanceof XPathArray) {
+																isExpResultStrFinal = true;
+																if (!expectedResultStr2.startsWith("[") && !expectedResultStr2.endsWith("]")) {
+																   expectedResultStr2 = "[" + expectedResultStr2 + "]";
+																}
+                                                            }
+															
+															if (!isExpResultStrFinal) {
+																if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
+																	int size3 = expectedResultStr2.length();
+																	expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
+																	expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
+																}
+																else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
+																	expectedResultStr2 = "'" + expectedResultStr2 + "'";										
+																	expectedResultStrUnquoted = true;
+																}
 															}
 
 															XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1606,18 +1634,29 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													if (xpathResultObj != null) {
 														expectedResultStr2 = getXPathNormalizedStr(expectedResultStr2);
 														if ((expectedResultStr2 != null) && !EMPTY_STRING.equals(expectedResultStr2)) {
+															boolean isExpResultStrFinal = false;
 															if ((xpathResultObj instanceof ResultSequence) && (!expectedResultStr2.startsWith("(") 
 																																			 && !expectedResultStr2.endsWith(")"))) {									   
+																isExpResultStrFinal = true;
 																expectedResultStr2 = "(" + expectedResultStr2 + ")";   									   
 															}
-															else if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
-																int size3 = expectedResultStr2.length();
-																expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
-																expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
-															}
-															else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
-																expectedResultStr2 = "'" + expectedResultStr2 + "'";										
-																expectedResultStrUnquoted = true;
+															else if (xpathResultObj instanceof XPathArray) {
+																isExpResultStrFinal = true;
+																if (!expectedResultStr2.startsWith("[") && !expectedResultStr2.endsWith("]")) {
+																   expectedResultStr2 = "[" + expectedResultStr2 + "]";
+																}
+                                                            }
+															
+															if (!isExpResultStrFinal) {
+																if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
+																	int size3 = expectedResultStr2.length();
+																	expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
+																	expectedResultStr2 = "'" + expectedResultStr2 + "'"; 
+																}
+																else if (!expectedResultStr2.startsWith("\'") && !expectedResultStr2.endsWith("\'")) {
+																	expectedResultStr2 = "'" + expectedResultStr2 + "'";										
+																	expectedResultStrUnquoted = true;
+																}
 															}
 
 															XPath xpathObj = new XPath(expectedResultStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);

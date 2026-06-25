@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:35:19Z" fail="5" name="fn-day-from-date" pass="22" run="27" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-25T16:50:23Z" fail="4" name="fn-day-from-date" pass="23" run="27" statusUnknown="0">
    <testResult status="pass" testName="fn-day-from-date1args-1"/>
    <testResult status="pass" testName="fn-day-from-date1args-2"/>
    <testResult status="pass" testName="fn-day-from-date1args-3"/>
@@ -13,7 +13,7 @@
    <testResult status="pass" testName="fn-day-from-date-9"/>
    <testResult status="pass" testName="fn-day-from-date-10"/>
    <testResult status="pass" testName="fn-day-from-date-11"/>
-   <testResult status="fail" testName="fn-day-from-date-12"/>
+   <testResult status="pass" testName="fn-day-from-date-12"/>
    <testResult status="pass" testName="fn-day-from-date-13"/>
    <testResult status="pass" testName="fn-day-from-date-14"/>
    <testResult status="pass" testName="fn-day-from-date-15"/>

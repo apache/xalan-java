@@ -920,7 +920,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 			}
 			
 			if ((size1 == 0) && (arg0Expr instanceof NodeTest)) {
-				ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)arg0Expr, transformer, srcLocator);
+				ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)arg0Expr, srcLocator);
                 if (elemFunction != null) {				
                 	QName fQName = elemFunction.getName();
                 	String localPart = fQName.getLocalPart();

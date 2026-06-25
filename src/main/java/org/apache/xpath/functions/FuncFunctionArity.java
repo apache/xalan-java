@@ -120,7 +120,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		   else if ((selectExpr != null) && (selectExpr instanceof NodeTest)) {
 			   TransformerImpl transformerImpl = getXSLTransformerImpl();			   
 			   ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)selectExpr, 
-					                                                                                          transformerImpl, srcLocator);
+					                                                                                                              srcLocator);
 			   if (elemFunction != null) {
 				   short funcArity = elemFunction.getArity();
 				   result = new XSInteger(String.valueOf(funcArity));
@@ -146,7 +146,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		else if (m_arg0 instanceof NodeTest) {
 			TransformerImpl transformerImpl = getXSLTransformerImpl();			
 			ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg0, 
-					                                                                                        transformerImpl, srcLocator);			
+					                                                                                                       srcLocator);			
 			if (elemFunction != null) {
 			   short funcArity = elemFunction.getArity();
 			   result = new XSInteger(String.valueOf(funcArity));

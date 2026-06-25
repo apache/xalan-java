@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-25T16:49:25Z" fail="0" name="array-filter" pass="10" run="10" statusUnknown="0">
+   <testResult status="pass" testName="array-filter-001"/>
+   <testResult status="pass" testName="array-filter-002"/>
+   <testResult status="pass" testName="array-filter-005"/>
+   <testResult status="pass" testName="array-filter-006"/>
+   <testResult status="pass" testName="array-filter-007"/>
+   <testResult status="pass" testName="array-filter-008"/>
+   <testResult status="pass" testName="array-filter-009"/>
+   <testResult status="pass" testName="array-filter-010"/>
+   <testResult status="pass" testName="array-filter-011"/>
+   <testResult status="pass" testName="array-filter-012"/>
+</testrun>

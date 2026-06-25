@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-23T12:37:17Z" desc="W3C XPath 3.1 test suite results" fail="1719" pass="6636" run="8359" skipped="2" success="79.39%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-25T16:57:27Z" desc="W3C XPath 3.1 test suite results" fail="1695" pass="6674" run="8373" skipped="2" success="79.71%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
-    <array-fold-left fail="3" pass="5" run="8" success="62.5%"/>
-    <array-fold-right fail="3" pass="6" run="9" success="66.67%"/>
+    <array-append fail="0" pass="6" run="6" success="100.0%"/>
+    <array-filter fail="0" pass="10" run="10" success="100.0%"/>
+    <array-fold-left fail="2" pass="5" run="7" success="71.43%"/>
+    <array-fold-right fail="2" pass="6" run="8" success="75.0%"/>
   </array>
   <fn>
     <fn-abs fail="3" pass="179" run="182" success="98.35%"/>
@@ -21,9 +23,9 @@
     <fn-current-date fail="2" pass="24" run="26" success="92.31%"/>
     <fn-current-time fail="2" pass="22" run="24" success="91.67%"/>
     <fn-dateTime fail="11" pass="41" run="52" success="78.85%"/>
-    <fn-day-from-dateTime fail="5" pass="22" run="27" success="81.48%"/>
-    <fn-day-from-date fail="5" pass="22" run="27" success="81.48%"/>
-    <fn-days-from-duration fail="5" pass="26" run="31" success="83.87%"/>
+    <fn-day-from-dateTime fail="4" pass="23" run="27" success="85.19%"/>
+    <fn-day-from-date fail="4" pass="23" run="27" success="85.19%"/>
+    <fn-days-from-duration fail="4" pass="27" run="31" success="87.1%"/>
     <fn-default-collation fail="0" pass="7" run="7" success="100.0%"/>
     <fn-empty fail="5" pass="47" run="52" success="90.38%"/>
     <fn-ends-with fail="1" pass="37" run="38" success="97.37%"/>
@@ -33,10 +35,10 @@
     <fn-floor fail="4" pass="80" run="84" success="95.24%"/>
     <fn-format-integer fail="51" pass="22" run="73" success="30.14%"/>
     <fn-generate-id fail="13" pass="6" run="19" skipped="1" success="31.58%"/>
-    <fn-head fail="4" pass="4" run="8" success="50.0%"/>
-    <fn-hours-from-dateTime fail="4" pass="23" run="27" success="85.19%"/>
-    <fn-hours-from-duration fail="5" pass="26" run="31" success="83.87%"/>
-    <fn-hours-from-time fail="5" pass="22" run="27" success="81.48%"/>
+    <fn-head fail="3" pass="5" run="8" success="62.5%"/>
+    <fn-hours-from-dateTime fail="3" pass="24" run="27" success="88.89%"/>
+    <fn-hours-from-duration fail="4" pass="27" run="31" success="87.1%"/>
+    <fn-hours-from-time fail="4" pass="23" run="27" success="85.19%"/>
     <fn-implicit-timezone fail="5" pass="21" run="26" success="80.77%"/>
     <fn-in-scope-prefixes fail="0" pass="12" run="12" success="100.0%"/>
     <fn-index-of fail="12" pass="41" run="53" success="77.36%"/>
@@ -138,7 +140,7 @@
     <op-time-equal fail="1" pass="51" run="52" success="98.08%"/>
     <op-time-greater-than fail="4" pass="34" run="38" success="89.47%"/>
     <op-time-less-than fail="8" pass="30" run="38" success="78.95%"/>
-    <op-to fail="81" pass="85" run="166" success="51.2%"/>
+    <op-to fail="68" pass="98" run="166" success="59.04%"/>
     <op-yearMonthDuration-greater-than fail="4" pass="24" run="28" success="85.71%"/>
     <op-yearMonthDuration-less-than fail="4" pass="24" run="28" success="85.71%"/>
   </op>
@@ -162,11 +164,11 @@
     <prod-GeneralComp.ne fail="35" pass="54" run="89" success="60.67%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
     <prod-InlineFunctionExpr fail="16" pass="10" run="26" success="38.46%"/>
-    <prod-InstanceofExpr fail="58" pass="215" run="273" success="78.75%"/>
+    <prod-InstanceofExpr fail="57" pass="216" run="273" success="79.12%"/>
     <prod-LetClause fail="7" pass="16" run="23" success="69.57%"/>
     <prod-Literal fail="39" pass="75" run="114" success="65.79%"/>
     <prod-OrExpr fail="126" pass="203" run="329" success="61.7%"/>
-    <prod-QuantifiedExpr fail="40" pass="121" run="161" success="75.16%"/>
+    <prod-QuantifiedExpr fail="39" pass="122" run="161" success="75.78%"/>
   </prod>
   <xs>
     <xs-anyURI fail="1" pass="8" run="9" success="88.89%"/>

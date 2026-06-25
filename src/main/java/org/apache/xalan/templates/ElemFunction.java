@@ -1667,7 +1667,7 @@ public class ElemFunction extends ElemTemplate
 				  if (dtmIter instanceof NodeTest) {
 					  try {
 						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-								                                                                               (NodeTest)dtmIter, transformer, srcLocator);
+								                                                                                        (NodeTest)dtmIter, srcLocator);
 						  if (elemFunction != null) { 
 							  argConvertedVal = new ElemFunctionItem(elemFunction);
 						  }

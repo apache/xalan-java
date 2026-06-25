@@ -7179,45 +7179,48 @@ public class XPathParser
  	  while (!tokenIs(rParen)) {
  		  if (!(tokenIs(',') || tokenIs(rParen))) {
  			  xpathExpr += m_token;
+ 			  xpathExpr += " ";
  			  nextToken();
  			  if (tokenIs(rParen) && !StringUtil.isStrHasBalancedParentheses(lParen + xpathExpr, lParen, rParen)) {
  				  if (lookahead(null, 1)) {
- 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExprPartList.add(xpathExpr.trim());
  					  
  					  break;
  				  }
  				  else if (lookahead(',', 1)) {
- 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExprPartList.add(xpathExpr.trim());
  					  xpathExpr = "";
  					  
  					  break;
  				  }
  				  else if (!xpathExpr.contains(lParen+"") && tokenIs(rParen)) {
- 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExprPartList.add(xpathExpr.trim());
  					  xpathExpr = "";
  					  
  					  break;
  				  }
  				  else {
  					  xpathExpr += m_token;
+ 					  xpathExpr += " ";
  				  }
  				  nextToken();
  				  if (tokenIs(rParen)) {
  					  if (StringUtil.isStrHasBalancedParentheses(lParen + xpathExpr + rParen, lParen, rParen) 
  							                                                                                 && !lookahead(rParen, 1)) {
- 						  xpathExpr = (lParen + xpathExpr + m_token); 
+ 						  xpathExpr = (lParen + xpathExpr + m_token + " "); 
  						  nextToken();
  						  fl1 = false;
  					  }
  				  }
  				  else {
  					  xpathExpr += m_token;
+ 					  xpathExpr += " ";
  					  nextToken();
  				  }
  			  }
  			  else if (fl1){		       	    
  				  if (tokenIs(',')) {
- 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExprPartList.add(xpathExpr.trim());
  					  xpathExpr = "";
  					  consumeExpected(',');
  				  }
@@ -7227,13 +7230,14 @@ public class XPathParser
  			  else {
  				  fl1 = true;
  				  xpathExpr += m_token;
+ 				  xpathExpr += " ";
  				  nextToken();
  				  
  				  break;
  			  }
  		  }
  		  else if (tokenIs(',')) {
- 			  xpathExprPartList.add(xpathExpr);
+ 			  xpathExprPartList.add(xpathExpr.trim());
  			  xpathExpr = "";
  			  consumeExpected(',');
  		  }

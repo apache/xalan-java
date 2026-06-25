@@ -625,7 +625,7 @@ public class ElemSequence extends ElemTemplateElement
 				  DTMCursorIterator iter = xmlNodeCursorImpl.iterRaw();
 				  if (iter.nextNode() == DTM.NULL) {					  
 					  if (!"".equals(nodeTest.getLocalName())) {
-						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(nodeTest, transformer, srcLocator);
+						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(nodeTest, srcLocator);
 						  if (elemFunction != null) {
 							  // Evaluation of xsl:sequence instruction resulted in a single 
 							  // xsl:function xdm function item. 
@@ -669,7 +669,7 @@ public class ElemSequence extends ElemTemplateElement
 						  Expression xpathExpr = xpathObj.getExpression();
 						  if (xpathExpr instanceof NodeTest) {
 							  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-									                                                                                    (NodeTest)xpathExpr, transformer, srcLocator);
+									                                                                                    (NodeTest)xpathExpr, srcLocator);
 							  if (elemFunction != null) {
 								  XPathNamedFunctionReference xpathNamedFunctionReference = new XPathNamedFunctionReference();
 								  xpathNamedFunctionReference.setXslStylesheetFunction(elemFunction, getStylesheetRoot());

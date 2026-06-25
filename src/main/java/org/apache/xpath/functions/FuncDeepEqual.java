@@ -44,7 +44,7 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an XPath 3.1 fn:deep-equal function.
+ * Implementation of an XPath 3.1 function fn:deep-equal.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -85,10 +85,8 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
 	  if ((m_arg0 == null) || (m_arg1 == null)) {
-		 throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
-		 		                                                   + "calling deep-equal() function is wrong. Expected "
-		 		                                                   + "number of arguments for deep-equal() function is two "
-		 		                                                   + "or three.", srcLocator);  
+		 throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function call 'deep-equal' requires "
+		 		                                                                                                         + "two or three arguments.", srcLocator);  
 	  }
 	  
 	  try {	  
@@ -116,7 +114,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  for (int idx = 0; idx < size1; idx++) {
 			 XObject xObj1 = resultSeq0.item(idx);
 			 if (xObj1 instanceof XPathNamedFunctionReference) {
-				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath function call deep-equal() has an argument with type function item.", srcLocator);   
+				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath 3.1 function call 'deep-equal' has an argument containing a function item.", srcLocator);   
 			 }
 		  }
 		  
@@ -126,14 +124,14 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  for (int idx = 0; idx < size2; idx++) {
 			 XObject xObj1 = resultSeq1.item(idx);
 			 if (xObj1 instanceof XPathNamedFunctionReference) {
-				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath function call deep-equal() has an argument with type function item.", srcLocator);   
+				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath 3.1 function call 'deep-equal' has an argument containing a function item.", srcLocator);   
 			 }
 		  }
 		  
 		  boolean isDeepEqual = false;
 		  
 		  if (size1 == size2) {		 
-			  isDeepEqual = isTwoSequenceDeepEqual(xctxt, collationUri, resultSeq0, resultSeq1);
+			  isDeepEqual = isTwoSequenceDeepEqual(resultSeq0, resultSeq1, xctxt, collationUri);
 		  }
 
 		  if (isDeepEqual) {
@@ -151,11 +149,19 @@ public class FuncDeepEqual extends FunctionMultiArgs {
   }
 
   /**
-   * Function definition to check whether two XDM sequences of same size 
-   * are equal.
+   * Method definition, to check whether two xdm sequences of same size
+   * are deep equal.
+   * 
+   * @param resultSeq0                         The first, supplied result sequence
+   * @param resultSeq1                         The second, supplied result sequence
+   * @param xctxt                              An XPath context object
+   * @param collationUri                       The collation uri
+   * @return                                   Boolean value true or false
+   * @throws TransformerException
+   * @throws Exception
    */
-  public boolean isTwoSequenceDeepEqual(XPathContext xctxt, String collationUri, ResultSequence resultSeq0, 
-		                                                    ResultSequence resultSeq1) throws TransformerException, Exception {
+  public boolean isTwoSequenceDeepEqual(ResultSequence resultSeq0, ResultSequence resultSeq1,
+		                                                                         XPathContext xctxt, String collationUri) throws TransformerException, Exception {
 	
 	  boolean result = true;
 
@@ -242,8 +248,15 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	  return result;
   }
   
-  /*
-   * Check whether two XML DOM nodes are equal.
+  /**
+   * Method definition, to check whether two XML dom nodes 
+   * are equal.
+   * 
+   * @param node1							The first XML dom node
+   * @param node2                           The second XML dom node
+   * @param collationUri                    The collation uri
+   * @return                                Boolean value true or false
+   * @throws Exception
    */
   private boolean isTwoXmlDomNodesEqual(Node node1, Node node2, String collationUri) throws Exception {
 	 
@@ -305,8 +318,15 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 return isTwoXmlDomNodesEqual; 
   }
   
-  /*
-   * Check whether two XML document strings are equal.
+  /**
+   * Method definition, to check whether two XML documents represented
+   * by the supplied XML document strings are equals.
+   * 
+   * @param xmlStr1                       XML document string one
+   * @param xmlStr2                       XML document string two
+   * @param collationUri                  The collation uri
+   * @return                              Boolean value true or false
+   * @throws Exception
    */
   private boolean isTwoXmlDocumentStrEqual(String xmlStr1, String xmlStr2, String collationUri) 
 		                                                               throws Exception {

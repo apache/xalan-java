@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.operations;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -176,8 +177,6 @@ public class IDiv extends XPathArithmeticOp
 							 typeNs1 = xsTypeDefn.getNamespace();
 						 }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -206,8 +205,6 @@ public class IDiv extends XPathArithmeticOp
 						  typeNs1 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 
 			  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
@@ -254,8 +251,6 @@ public class IDiv extends XPathArithmeticOp
 							  typeNs2 = xsTypeDefn.getNamespace();
 						  }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -284,8 +279,6 @@ public class IDiv extends XPathArithmeticOp
 						  typeNs2 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 
 			  XMLString xmlStr2 = dtm.getStringValue(nodeHandle);
@@ -427,41 +420,59 @@ public class IDiv extends XPathArithmeticOp
 
 	  java.lang.String xpathCastAsStr = "(" + arg0Str + " div " + arg1Str + ") cast as xs:integer";
 
-	  List<XMLNSDecl> prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-	  Iterator<XMLNSDecl> iter = prefixTable.iterator();
+	  List<XMLNSDecl> prefixTable = null;
+	  
+	  boolean isXsNsDeclAvailable = false;
+	  Iterator<XMLNSDecl> iter = null;
+	  
+	  if ((elemTemplateElement != null) && (elemTemplateElement.getPrefixTable() != null)) {
+		  prefixTable = elemTemplateElement.getPrefixTable();
+		  iter = prefixTable.iterator();
+		    	      
+		  while (iter.hasNext()) {
+			  XMLNSDecl xmlNSDecl = iter.next();
+			  java.lang.String uri = xmlNSDecl.getURI();
+			  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(uri)) {
+				  isXsNsDeclAvailable = true;
 
-	  boolean isXsNsDeclAvailable = false;  	      
-	  while (iter.hasNext()) {
-		  XMLNSDecl xmlNSDecl = iter.next();
-		  java.lang.String uri = xmlNSDecl.getURI();
-		  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(uri)) {
-			  isXsNsDeclAvailable = true;
-
-			  break;
-		  }  	    	 
+				  break;
+			  }  	    	 
+		  }
 	  }
+	  
+	  XslTransformData.m_xpathCallingOpCode = OpCodes.XPath3OpCodes.OP_IDIV;
 
 	  try {
 		  // Add XML Schema namespace binding to Xalan-J namespace prefix table, 
 		  // if this namespace binding is currently not there in prefix table.
-		  if (!isXsNsDeclAvailable) {
+		  if (!isXsNsDeclAvailable && (prefixTable != null)) {
 			  prefixTable.add(new XMLNSDecl("xs", XMLConstants.W3C_XML_SCHEMA_NS_URI, false));  
 		  }
+		  
+		  XPath xpathObj1 = null;
+		  
+		  IDivEvaluatorPrefixResolver idivOpPrefixResolver = null;
 
-		  IDivEvaluatorPrefixResolver iDivOpPrefixResolver = new IDivEvaluatorPrefixResolver(prefixTable);
-
-		  XPath xpath = new XPath(xpathCastAsStr, this, iDivOpPrefixResolver, XPath.SELECT, null);
-
-		  XslTransformData.m_xpathCallingOpCode = OpCodes.XPath3OpCodes.OP_IDIV;
+		  if (prefixTable != null) {
+			  idivOpPrefixResolver = new IDivEvaluatorPrefixResolver(prefixTable);
+			  xpathObj1 = new XPath(xpathCastAsStr, this, idivOpPrefixResolver, XPath.SELECT, null);
+		  }
+		  else {
+			  prefixTable = new ArrayList<XMLNSDecl>();
+			  prefixTable.add(new XMLNSDecl("xs", XMLConstants.W3C_XML_SCHEMA_NS_URI, false));
+			  
+			  idivOpPrefixResolver = new IDivEvaluatorPrefixResolver(prefixTable);
+			  xpathObj1 = new XPath(xpathCastAsStr, this, idivOpPrefixResolver, XPath.SELECT, null);
+		  }		  
 
 		  // Get the result of XPath 'idiv' operator evaluation
-		  result = xpath.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+		  result = xpathObj1.execute(xctxt, xctxt.getCurrentNode(), idivOpPrefixResolver);
 	  }
 	  finally {
 		  // Remove XML Schema namespace binding from Xalan-J namespace prefix 
 		  // table, that was previously added to evaluate XPath 'idiv' operation.
 
-		  if (!isXsNsDeclAvailable) {
+		  if (!isXsNsDeclAvailable && (iter != null)) {
 			  iter = prefixTable.iterator();
 			  while (iter.hasNext()) {
 				  XMLNSDecl xmlNSDecl = iter.next();
@@ -473,6 +484,8 @@ public class IDiv extends XPathArithmeticOp
 				  }  	    	 
 			  }
 		  }
+		  
+		  XslTransformData.m_xpathCallingOpCode = Integer.MIN_VALUE;
 	  }
 
 	  return result;

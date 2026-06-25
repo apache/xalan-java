@@ -17,6 +17,7 @@
 package org.apache.xpath.functions.array;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -24,7 +25,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
 /**
- * Implementation of the array:append function.
+ * Implementation of an XPath 3.1 function array:append.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -57,19 +58,19 @@ public class FuncArrayAppend extends Function2Args {
 
 		XPathArray xpathArr = null;
 
-		XObject xdmInputArr = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
-		if (xdmInputArr instanceof XPathArray) {
-			xpathArr = (XPathArray)xdmInputArr;
+		if (xObj0 instanceof XPathArray) {
+			xpathArr = (XPathArray)xObj0;
 		}
 		else {
-			throw new javax.xml.transform.TransformerException("FORG0006 : The first argument of array:append function call, "
-					                                                                                     + "needs to be an xdm array", srcLocator);	   
+			throw new TransformerException("XPTY0004 : An XPath 3.1 function array 'append' requires an xdm array as its "
+					                                                                                       + "first argument.", srcLocator);	   
 		}
 
-		XObject xdmValueToAppend = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		XObject xObj2 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		
-		xpathArr.add(xdmValueToAppend);
+		xpathArr.add(xObj2);
 
 		result = xpathArr;
 

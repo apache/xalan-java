@@ -165,7 +165,7 @@ public class FuncSort extends FunctionMultiArgs
                 			 
             			     transformerImpl = getTransformerImplFromXPathExpression((NodeTest)dtmIter);
             			     elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-            			    		                                                                    (NodeTest)dtmIter, transformerImpl, srcLocator);
+            			    		                                                                    (NodeTest)dtmIter, srcLocator);
             			  }                      	  
                       	  
                       	  ResultSequence argSeq = new ResultSequence(); 
@@ -244,7 +244,7 @@ public class FuncSort extends FunctionMultiArgs
             		   transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
                        
                    	   elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-                   			                                                                      (NodeTest)m_arg2, transformerImpl, srcLocator);
+                   			                                                                      (NodeTest)m_arg2, srcLocator);
                    	   
                    	   ResultSequence argSeq = new ResultSequence(); 
                    	   argSeq.add(xNodeSetItem);
@@ -353,7 +353,7 @@ public class FuncSort extends FunctionMultiArgs
             		 transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
 
             		 elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-            				                                                                    (NodeTest)m_arg2, transformerImpl, srcLocator);
+            				                                                                    (NodeTest)m_arg2, srcLocator);
 
             		 ResultSequence argSeq = new ResultSequence(); 
             		 argSeq.add(inputSeqItem);

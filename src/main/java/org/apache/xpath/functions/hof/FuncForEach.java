@@ -136,7 +136,7 @@ public class FuncForEach extends Function2Args {
 		   TransformerImpl transformerImpl = getTransformerImplFromXPathExpression(m_arg1);
 
 		   ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-				   (NodeTest)m_arg1, transformerImpl, srcLocator);
+				                                                                                        (NodeTest)m_arg1, srcLocator);
 
 		   if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
 			   xObjectArg = castSingletonItemToResultSequence(xObjectArg); 
@@ -177,7 +177,7 @@ public class FuncForEach extends Function2Args {
 			   TransformerImpl transformerImpl = getTransformerImplFromXPathExpression((NodeTest)dtmIter);
 
 			   ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-					   																						(NodeTest)dtmIter, transformerImpl, srcLocator);
+					   																						(NodeTest)dtmIter, srcLocator);
 
 			   if (xObjectArg != null && !(xObjectArg instanceof ResultSequence)) {
 				   xObjectArg = castSingletonItemToResultSequence(xObjectArg); 

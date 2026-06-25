@@ -113,7 +113,7 @@ public class XslForEachGroupCompositeGroupingKey {
 		try {
 			if (m_value.size() == value2.size()) {
 			   FuncDeepEqual funcDeepEqual = new FuncDeepEqual(m_xpathCollationSupport);
-			   result = funcDeepEqual.isTwoSequenceDeepEqual(m_xctxt, m_collationUri, m_value, value2);
+			   result = funcDeepEqual.isTwoSequenceDeepEqual(m_value, value2, m_xctxt, m_collationUri);
 			}
 		} catch (TransformerException ex) {
 			// no op

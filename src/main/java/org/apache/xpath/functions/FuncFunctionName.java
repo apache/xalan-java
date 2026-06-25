@@ -322,9 +322,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 		}
 
 		StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode; 
-		ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
-																									nodeTest, stylesheetRoot.getTransformerImpl(), 
-																									srcLocator);
+		ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(nodeTest, srcLocator);
 		String funcNameRef = nodeTest.getLocalName();
 		String namespace = nodeTest.getNamespace();
 		int hashCharIdx = funcNameRef.indexOf('#');

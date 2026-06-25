@@ -36,11 +36,13 @@ public class XPath3ArrayTests extends W3CXPath3TestsUtil {
     	
     	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/";
     	
-    	m_test_set_fileArr = new String[] { "fold-left.xml", "fold-right.xml" };
+    	m_test_set_fileArr = new String[] { "fold-left.xml", "fold-right.xml", "append.xml",
+    			                            "filter.xml" };
         
         m_resultSubFolderName = "array";
         
-        m_test_set_result_fileArr = new String[] { "fold-left_result.xml", "fold-right_result.xml" };
+        m_test_set_result_fileArr = new String[] { "fold-left_result.xml", "fold-right_result.xml", "append_result.xml",
+        		                                   "filter_result.xml" };
     }
 
     @AfterClass

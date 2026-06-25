@@ -42,7 +42,6 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -109,8 +108,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * @xsl.usage advanced
  */
 public class XslTransformEvaluationHelper {
-    
-    
+        
 	/**
      * Method definition, to do, given an xdm input sequence, expand the 
      * sequence to produce a new sequence none of whose items are sequence 
@@ -807,55 +805,54 @@ public class XslTransformEvaluationHelper {
      * 
      * @param nodeTest							   A NodeTest object instance constructed from XPath 
      *                                             named function reference like fn0:abc#1.
-     * @param transformerImpl					   An XSL transform TransformerImpl object
      * @param srcLocator						   SourceLocator object in XPath context
      * @return									   An ElemFunction object if available, otherwise null
      * 
      * @throws javax.xml.transform.TransformerException
      */
-    public static ElemFunction getElemFunctionFromNodeTestExpression(NodeTest nodeTest, TransformerImpl transformerImpl, 
-  		                                                             SourceLocator srcLocator) throws javax.xml.transform.TransformerException {
+    public static ElemFunction getElemFunctionFromNodeTestExpression(NodeTest nodeTest, SourceLocator srcLocator) 
+    																							               throws javax.xml.transform.TransformerException {
 
-  	  ElemFunction result = null;
+    	ElemFunction result = null;
 
-  	  String funcNameRef = nodeTest.getLocalName();
-  	  String funcNamespace = nodeTest.getNamespace();
+    	String funcNameRef = nodeTest.getLocalName();
+    	String funcNamespace = nodeTest.getNamespace();
 
-  	  ExpressionNode expressionNode = nodeTest.getExpressionOwner();
-  	  ExpressionNode stylesheetRootNode = null;
-  	  while (expressionNode != null) {
-  		  stylesheetRootNode = expressionNode;
-  		  expressionNode = expressionNode.exprGetParent();                     
-  	  }
+    	ExpressionNode expressionNode = nodeTest.getExpressionOwner();
+    	ExpressionNode stylesheetRootNode = null;
+    	while (expressionNode != null) {
+    		stylesheetRootNode = expressionNode;
+    		expressionNode = expressionNode.exprGetParent();                     
+    	}
 
-  	  StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;  	    	  
+    	StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;  	    	  
 
-  	  if (stylesheetRoot != null) {
-  		  TemplateList templateList = stylesheetRoot.getTemplateListComposed();  		  
-  		  XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();  		  
-  		  if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
-  			  int hashCharIdx = funcNameRef.indexOf('#');
-  			  String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
-  			  int funcArity = Integer.valueOf(funcNameRef.substring(hashCharIdx + 1));        		   
-  			  ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
-  			  if (elemTemplate != null) {
-  				  result = (ElemFunction)elemTemplate;
-  				  int xslFuncDefnParamCount = result.getArity();                      
-  				  String str = funcNameRef.substring(hashCharIdx + 1);
-  				  int funcRefParamCount = (Integer.valueOf(str)).intValue();
-  				  if (funcRefParamCount != xslFuncDefnParamCount) {
-  					  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcNameRef + " cannot resolve to a function "
-  																													                 + "definition.", srcLocator); 
-  				  }
-  			  }
-  		  }
-  		  else {
-  			  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcNameRef + " cannot resolve to a function "
-  																											                 + "definition.", srcLocator);
-  		  }
-  	  }
+    	if (stylesheetRoot != null) {
+    		TemplateList templateList = stylesheetRoot.getTemplateListComposed();  		  
+    		XSL3FunctionService xslFunctionService = XSLFunctionBuilder.getXSLFunctionService();  		  
+    		if (xslFunctionService.isFuncArityWellFormed(funcNameRef)) {        	   
+    			int hashCharIdx = funcNameRef.indexOf('#');
+    			String funcNameRef2 = funcNameRef.substring(0, hashCharIdx);
+    			int funcArity = Integer.valueOf(funcNameRef.substring(hashCharIdx + 1));        		   
+    			ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);        		   
+    			if (elemTemplate != null) {
+    				result = (ElemFunction)elemTemplate;
+    				int xslFuncDefnParamCount = result.getArity();                      
+    				String str = funcNameRef.substring(hashCharIdx + 1);
+    				int funcRefParamCount = (Integer.valueOf(str)).intValue();
+    				if (funcRefParamCount != xslFuncDefnParamCount) {
+    					throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcNameRef + " cannot resolve to a function "
+    																													                 + "definition.", srcLocator); 
+    				}
+    			}
+    		}
+    		else {
+    			throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcNameRef + " cannot resolve to a function "
+    																															 + "definition.", srcLocator);
+    		}
+    	}
 
-  	  return result;  	  
+    	return result;  	  
     }
     
     /**

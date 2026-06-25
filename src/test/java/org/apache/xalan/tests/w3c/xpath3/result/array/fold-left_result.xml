@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:15Z" fail="3" name="array-fold-left" pass="5" run="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-25T16:49:25Z" fail="2" name="array-fold-left" pass="5" run="7" statusUnknown="0">
    <testResult status="fail" testName="array-fold-left-101"/>
    <testResult status="pass" testName="array-fold-left-103"/>
    <testResult status="pass" testName="array-fold-left-104"/>
    <testResult status="fail" testName="array-fold-left-105"/>
    <testResult status="pass" testName="array-fold-left-107"/>
    <testResult status="pass" testName="array-fold-left-108"/>
-   <testResult status="fail" testName="array-fold-left-109"/>
    <testResult status="pass" testName="array-fold-left-110"/>
 </testrun>
