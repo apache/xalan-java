@@ -23,27 +23,27 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for various XPath 3.1 functions.
+ * for various XPath 3.1 string related functions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FnFunction3Tests extends W3CXPath3TestsUtil {
+public class XPath3FunctionStringTests extends W3CXPath3TestsUtil {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	
     	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
     	
-        m_test_set_fileArr = new String[] { "floor.xml", "true.xml", "false.xml", "format-integer.xml", "head.xml", "hours-from-dateTime.xml", 
-        		                            "hours-from-duration.xml", "hours-from-time.xml", "implicit-timezone.xml", "index-of.xml" };
+        m_test_set_fileArr = new String[] { "starts-with.xml", "string.xml", "string-join.xml", "string-length.xml", "string-to-codepoints.xml",
+        		                            "substring.xml", "substring-after.xml", "substring-before.xml" };
         
         m_resultSubFolderName = "fn";
         
-        m_test_set_result_fileArr = new String[] { "floor_result.xml", "true_result.xml", "false_result.xml", "format-integer_result.xml", "head_result.xml", 
-        		                                   "hours-from-dateTime_result.xml", "hours-from-duration_result.xml", "hours-from-time_result.xml", 
-        		                                   "implicit-timezone_result.xml", "index-of_result.xml" };
+        m_test_set_result_fileArr = new String[] { "starts-with_result.xml", "string_result.xml", "string-join_result.xml",
+        		                                   "string-length_result.xml", "string-to-codepoints_result.xml", "substring_result.xml",
+        		                                   "substring-after_result.xml", "substring-before_result.xml" };
     }
 
     @AfterClass
@@ -55,7 +55,7 @@ public class XPath3FnFunction3Tests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFnTests() {
+    public void runXslFunctionStringTests() {
     	runXPathTestSetCollectionAndProduceResult();		
     }
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T05:05:57Z" fail="2" name="fn-true" pass="23" run="25" statusUnknown="0">
+   <testResult status="pass" testName="fn-true-1"/>
+   <testResult status="pass" testName="fn-true-2"/>
+   <testResult status="pass" testName="fn-true-3"/>
+   <testResult status="pass" testName="fn-true-4"/>
+   <testResult status="pass" testName="fn-true-5"/>
+   <testResult status="pass" testName="fn-true-6"/>
+   <testResult status="pass" testName="fn-true-7"/>
+   <testResult status="pass" testName="fn-true-8"/>
+   <testResult status="pass" testName="fn-true-9"/>
+   <testResult status="pass" testName="fn-true-10"/>
+   <testResult status="pass" testName="fn-true-11"/>
+   <testResult status="pass" testName="fn-true-12"/>
+   <testResult status="pass" testName="fn-true-13"/>
+   <testResult status="fail" testName="fn-true-14"/>
+   <testResult status="pass" testName="fn-true-15"/>
+   <testResult status="pass" testName="fn-true-16"/>
+   <testResult status="pass" testName="fn-true-17"/>
+   <testResult status="pass" testName="fn-true-18"/>
+   <testResult status="pass" testName="fn-true-19"/>
+   <testResult status="pass" testName="fn-true-20"/>
+   <testResult status="pass" testName="fn-true-21"/>
+   <testResult status="fail" testName="fn-true-22"/>
+   <testResult status="pass" testName="K-TrueFunc-1"/>
+   <testResult status="pass" testName="K-TrueFunc-2"/>
+   <testResult status="pass" testName="K-TrueFunc-3"/>
+</testrun>

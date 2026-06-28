@@ -16,8 +16,6 @@
  */
 package org.apache.xpath.functions.array;
 
-import java.util.List;
-
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
@@ -25,7 +23,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
 /**
- * Implementation of the array:flatten function.
+ * Implementation of an XPath 3.1 function array:flatten.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -71,23 +69,23 @@ public class FuncArrayFlatten extends FunctionOneArg {
 	}
 
 	/**
-     * Flatten the contents of an input sequence recursively, 
-     * and return the result.
+     * Method definition, to flatten the contents of the 
+     * supplied xdm sequence recursively, and return 
+     * the result.
 	 */
 	private ResultSequence flatten(ResultSequence rSeq) {
 		
 		ResultSequence result = new ResultSequence();
 		
-		int size1 = rSeq.size();
-		
+		int size1 = rSeq.size();		
 		for (int idx = 0; idx < size1; idx++) {
 		   XObject xdmItem = rSeq.item(idx);
 		   
 		   if (xdmItem instanceof XPathArray) {
-			  ResultSequence seq = flatten((XPathArray)xdmItem);
-			  int size2 = seq.size();
+			  ResultSequence seq1 = flatten((XPathArray)xdmItem);
+			  int size2 = seq1.size();
 			  for (int idx1 = 0; idx1 < size2; idx1++) {
-			     result.add(seq.item(idx1)); 
+			     result.add(seq1.item(idx1)); 
 			  }  
 		   }
 		   else {
@@ -99,19 +97,17 @@ public class FuncArrayFlatten extends FunctionOneArg {
 	}
 
 	/**
-     * Flatten the contents of an input array recursively, 
-     * and return the result.
+     * Method definition, to flatten the contents of the 
+     * supplied xdm array recursively, and return 
+     * the result.
 	 */
-	private ResultSequence flatten(XPathArray arr) {
+	private ResultSequence flatten(XPathArray xpathArr) {
 		
 		ResultSequence result = new ResultSequence();
 		
-		List<XObject> nativeArr = arr.getNativeArray();
-		
-		int size1 = nativeArr.size();
-		
+		int size1 = xpathArr.size();		
 		for (int idx = 0; idx < size1; idx++) {
-		   XObject xdmItem = nativeArr.get(idx);
+		   XObject xdmItem = xpathArr.get(idx);
 		   
 		   if (xdmItem instanceof XPathArray) {
 			  ResultSequence rSeq = flatten((XPathArray)xdmItem);

@@ -23,26 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 arrays.
+ * for XPath 3.1 function array:for-each.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3ArrayTests extends W3CXPath3TestsUtil {
-	
+public class XPath3FunctionArrayForeachTests extends W3CXPath3TestsUtil { 
+
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/for-each.xml";
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/";
-    	
-    	m_test_set_fileArr = new String[] { "fold-left.xml", "fold-right.xml", "append.xml",
-    			                            "filter.xml" };
-        
         m_resultSubFolderName = "array";
-        
-        m_test_set_result_fileArr = new String[] { "fold-left_result.xml", "fold-right_result.xml", "append_result.xml",
-        		                                   "filter_result.xml" };
+    	
+    	m_testResultFileName = "for-each_result.xml";
     }
 
     @AfterClass
@@ -54,8 +49,8 @@ public class XPath3ArrayTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslArrayTests() {    	
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslFunctionArrayForeachTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

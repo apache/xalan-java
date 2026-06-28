@@ -227,7 +227,7 @@ public class FuncArrayFilter extends Function2Args {
                         XObject funcEvalResult = functionOneArg.execute(xctxt);        				
         				
                         if ((funcEvalResult instanceof XSBoolean) || (funcEvalResult instanceof XBoolean) || 
-                        		(funcEvalResult instanceof XBooleanStatic)) {
+                        											 (funcEvalResult instanceof XBooleanStatic)) {
                         	if (funcEvalResult.bool()) {
                         		result.add(xObj);
                         	}

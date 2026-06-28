@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xpath3.fn;
+package org.apache.xalan.tests.w3c.xpath3.array;
 
 import org.apache.xalan.tests.w3c.xpath3.W3CXPath3TestsUtil;
 import org.junit.AfterClass;
@@ -23,27 +23,26 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for various XPath 3.1 functions.
+ * for XPath 3.1 xdm arrays.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FnFunction3Tests extends W3CXPath3TestsUtil {
-
+public class XPath3Array1Tests extends W3CXPath3TestsUtil {
+	
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
+    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/";
     	
-        m_test_set_fileArr = new String[] { "floor.xml", "true.xml", "false.xml", "format-integer.xml", "head.xml", "hours-from-dateTime.xml", 
-        		                            "hours-from-duration.xml", "hours-from-time.xml", "implicit-timezone.xml", "index-of.xml" };
+    	m_test_set_fileArr = new String[] { "fold-left.xml", "fold-right.xml", "append.xml",
+    			                            "filter.xml" };
         
-        m_resultSubFolderName = "fn";
+        m_resultSubFolderName = "array";
         
-        m_test_set_result_fileArr = new String[] { "floor_result.xml", "true_result.xml", "false_result.xml", "format-integer_result.xml", "head_result.xml", 
-        		                                   "hours-from-dateTime_result.xml", "hours-from-duration_result.xml", "hours-from-time_result.xml", 
-        		                                   "implicit-timezone_result.xml", "index-of_result.xml" };
+        m_test_set_result_fileArr = new String[] { "fold-left_result.xml", "fold-right_result.xml", "append_result.xml",
+        		                                   "filter_result.xml" };
     }
 
     @AfterClass
@@ -55,7 +54,7 @@ public class XPath3FnFunction3Tests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFnTests() {
+    public void runXslArrayTests() {    	
     	runXPathTestSetCollectionAndProduceResult();		
     }
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-06-25T16:57:27Z" desc="W3C XPath 3.1 test suite results" fail="1695" pass="6674" run="8373" skipped="2" success="79.71%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-06-28T05:06:36Z" desc="W3C XPath 3.1 test suite results" fail="1757" pass="7047" run="8808" skipped="2" success="80.01%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="6" run="6" success="100.0%"/>
     <array-filter fail="0" pass="10" run="10" success="100.0%"/>
     <array-fold-left fail="2" pass="5" run="7" success="71.43%"/>
     <array-fold-right fail="2" pass="6" run="8" success="75.0%"/>
+    <array-for-each fail="3" pass="4" run="7" success="57.14%"/>
   </array>
   <fn>
     <fn-abs fail="3" pass="179" run="182" success="98.35%"/>
@@ -42,13 +43,24 @@
     <fn-implicit-timezone fail="5" pass="21" run="26" success="80.77%"/>
     <fn-in-scope-prefixes fail="0" pass="12" run="12" success="100.0%"/>
     <fn-index-of fail="12" pass="41" run="53" success="77.36%"/>
+    <fn-lower-case fail="2" pass="26" run="28" success="92.86%"/>
     <fn-matches fail="37" pass="125" run="162" success="77.16%"/>
     <fn-number fail="10" pass="56" run="66" success="84.85%"/>
     <fn-one-or-more fail="5" pass="48" run="53" success="90.57%"/>
     <fn-path fail="1" pass="9" run="10" success="90.0%"/>
     <fn-replace fail="19" pass="69" run="88" skipped="1" success="78.41%"/>
+    <fn-starts-with fail="1" pass="38" run="39" success="97.44%"/>
+    <fn-string-join fail="11" pass="28" run="39" success="71.79%"/>
+    <fn-string-length fail="3" pass="29" run="32" success="90.62%"/>
+    <fn-string-to-codepoints fail="12" pass="32" run="44" success="72.73%"/>
+    <fn-string fail="15" pass="54" run="69" success="78.26%"/>
+    <fn-substring-after fail="3" pass="35" run="38" success="92.11%"/>
+    <fn-substring-before fail="2" pass="35" run="37" success="94.59%"/>
+    <fn-substring fail="6" pass="42" run="48" success="87.5%"/>
     <fn-tokenize fail="15" pass="50" run="65" success="76.92%"/>
     <fn-translate fail="3" pass="41" run="44" success="93.18%"/>
+    <fn-true fail="2" pass="23" run="25" success="92.0%"/>
+    <fn-upper-case fail="2" pass="27" run="29" success="93.1%"/>
     <fn-zero-or-one fail="3" pass="46" run="49" success="93.88%"/>
   </fn>
   <map>

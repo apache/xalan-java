@@ -29,9 +29,16 @@ import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.FuncArgPlaceholder;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
@@ -41,7 +48,7 @@ import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Evaluation of an array:for-each function.
+ * Evaluation of an XPath 3.1 function array:for-each.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -89,40 +96,166 @@ public class FuncArrayForEach extends Function2Args {
            m_arg0.fixupVariables(m_vars, m_globals_size);
         }
         
-        XObject arg0XsObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        XObject xObjArg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
-        if (!(arg0XsObject instanceof XPathArray)) {
-           throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of function call array:for-each "
-           		                                                            + "is not an array.", xctxt.getSAXLocator());
+        if (!(xObjArg0 instanceof XPathArray)) {
+           throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each' first "
+           		                                                                              + "argument is not an xdm array.", srcLocator);
         }
                     
         if (m_arg1 instanceof XPathInlineFunction) {
             XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
             verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
             
-            result = evaluateArrayForEach(xctxt, (XPathArray)arg0XsObject, inlineFuncArg); 
+            result = evaluateArrayForEach((XPathArray)xObjArg0, inlineFuncArg, xctxt); 
+        }
+        else if (m_arg1 instanceof Function) {
+        	Function function = (Function)m_arg1;        	        	
+        	
+        	result = new XPathArray();
+        	
+        	try {
+        		Expression arg0 = null;
+        		Expression arg1 = null;
+        		Expression arg2 = null;
+        		
+        		Function3Args function3Args = null;
+        		Function2Args function2Args = null;
+        		FunctionOneArg functionOneArg = null;
+        		
+        		if (function instanceof Function3Args) {
+        			function3Args = (Function3Args)function;				
+        			arg0 = function3Args.getArg0();
+        			arg1 = function3Args.getArg1();
+        			arg2 = function3Args.getArg2();
+        		}
+        		else if (function instanceof Function2Args) {
+        			function2Args = (Function2Args)function;				
+        			arg0 = function2Args.getArg0();
+        			arg1 = function2Args.getArg1();
+        		}
+        		else if (function instanceof FunctionOneArg) {
+        			functionOneArg = (FunctionOneArg)function;				
+        			arg0 = functionOneArg.getArg0();
+        		}
+				
+				boolean b1 = false;
+				if (arg0 instanceof FuncArgPlaceholder) {
+				   b1 = true;
+				}
+				
+				boolean b2 = false;
+				if (arg1 instanceof FuncArgPlaceholder) {
+				   b2 = true;
+				}
+				
+				boolean b3 = false;
+				if (arg2 instanceof FuncArgPlaceholder) {
+				   b3 = true;
+				}
+				
+        		XPathArray xpathArr = (XPathArray)xObjArg0;
+        		int size1 = xpathArr.size();
+        		for (int idx = 0; idx < size1; idx++) {
+        			XObject xObj = xpathArr.get(idx);
+
+        			if (function instanceof Function3Args) {        				
+        				if (b1) {
+        					function3Args.setArg(xObj, 0);
+        				}
+
+        				if (b2) {
+        					function3Args.setArg(xObj, 1);
+        				}
+
+        				if (b3) {
+        					function3Args.setArg(xObj, 2);
+        				}
+        				
+        				XObject funcEvalResult = function3Args.execute(xctxt);
+        				
+        			    result.add(funcEvalResult);        					
+        			}
+        			else if (function instanceof Function2Args) {
+        				if (b1) {
+        					function2Args.setArg(xObj, 0);
+        				}
+
+        				if (b2) {
+        					function2Args.setArg(xObj, 1);
+        				}
+        				
+                        XObject funcEvalResult = function2Args.execute(xctxt);
+                        
+                        result.add(funcEvalResult);
+        			}
+        			else if (function instanceof FunctionOneArg) {
+        				if (b1) {
+        					functionOneArg.setArg(xObj, 0);
+        				}
+        				
+                        XObject funcEvalResult = functionOneArg.execute(xctxt);
+                        
+                        result.add(funcEvalResult);
+        			}
+        		}
+            }
+            catch (TransformerException ex) {
+            	throw ex;
+            }
+        	catch (WrongNumberArgsException ex) {
+        		// no op
+        	}
+        }
+        else if (m_arg1 instanceof XPathNamedFunctionReference) {
+            XPathNamedFunctionReference xpathNamedFuncRef = (XPathNamedFunctionReference)m_arg1;
+            String funcName = xpathNamedFuncRef.getFuncName();
+            String namespace2 = xpathNamedFuncRef.getFuncNamespace();
+            short arity = xpathNamedFuncRef.getArity();
+            if (arity == 1) {
+            	result = new XPathArray();
+            	
+                FunctionTable funcTable = xctxt.getFunctionTable();
+                int funcId = (Integer)(funcTable.getFunctionId(funcName));
+                Function function = funcTable.getFunction(funcId);
+                XPathArray xpathArr = (XPathArray)xObjArg0;
+        		int size1 = xpathArr.size();        		
+        		for (int idx = 0; idx < size1; idx++) {
+        		   XObject xObj = xpathArr.get(idx);
+        		   function.setArg0(xObj);
+        		   XObject funcEvalResult = function.execute(xctxt);
+        		   
+        		   result.add(funcEvalResult);
+        		}
+            }
+            else {
+            	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each' "
+            			                                                                   + "argument function item arity should be "
+            			                                                                   + "one. The supplied argument function item "
+            			                                                                   + "arity is " + arity + ".", srcLocator);  
+            }
         }
         else if (m_arg1 instanceof Variable) {
             if (m_vars != null) {
             	m_arg1.fixupVariables(m_vars, m_globals_size);
             }
             
-            XObject arg1VarValue = getFunctionArgEffectiveValue(m_arg1, xctxt);
+            XObject xObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
             
-            if (arg1VarValue instanceof XPathInlineFunction) {
-                XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
+            if (xObjArg1 instanceof XPathInlineFunction) {
+                XPathInlineFunction inlineFuncArg = (XPathInlineFunction)xObjArg1;
                 verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
                 
-                result = evaluateArrayForEach(xctxt, (XPathArray)arg0XsObject, inlineFuncArg);   
+                result = evaluateArrayForEach((XPathArray)xObjArg0, inlineFuncArg, xctxt);   
             }
             else {
-                throw new javax.xml.transform.TransformerException("FORG0006 : The 2nd argument to function call array:for-each, "
-                                                                                               + "is not a function item.", xctxt.getSAXLocator());    
+                throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each', "
+                                                                                                    + "second argument is not a function item.", srcLocator);    
             }
         }
         else {
-            throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call array:for-each, "
-                                                                                           + "is not a function item.", xctxt.getSAXLocator());               
+        	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each', "
+                    																				+ "second argument is not a function item.", srcLocator);               
         }
         
         return result;
@@ -160,31 +293,35 @@ public class FuncArrayForEach extends Function2Args {
   }
   
   /**
-   * Verify the, number of function parameters, that an inline function is allowed to have for array:for-each.
+   * Method definition, to verify the number of function parameters, that 
+   * an XPath 3.1 inline function is allowed to have for function array 'for-each'.
    */
   private void verifyInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
       List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
-          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function array:for-each's function item has " + 
-                                                                                             funcParamList.size() + " parameters. "
-                                                                                             + "Expected 1.", srcLocator);   
+          throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each' function item has " + 
+                                                                                                     funcParamList.size() + " parameters. "
+                                                                                                     + "Expected 1.", srcLocator);   
       }
   }
   
   /**
-   * Evaluate an array:for-each function call, given its computed arguments.
+   * Method definition, to evaluate an XPath 3.1 function array:for-each 
+   * for the supplied function arguments.
    * 
-   * @param xctxt						XPath context
-   * @param xpathArr					An XPath input, array
-   * @param funcItem					Function item that is evaluated for each member of array
-   * @return							An array whose members are, concatenation of function item's 
+   * @param xpathArr					The supplied xdm array
+   * @param funcItem					An xdm function item that is evaluated 
+   *                                    for each xdm array member.
+   * @param xctxt						An XPath context object
+   * @return							An xdm array whose members are, 
+   *                                    concatenation of function item's 
    *                                    evaluation results.
    * @throws TransformerException
    */
-  private XPathArray evaluateArrayForEach(XPathContext xctxt, XPathArray xpathArr, XPathInlineFunction funcItem) 
+  private XPathArray evaluateArrayForEach(XPathArray xpathArr, XPathInlineFunction funcItem, XPathContext xctxt) 
                                                                                     throws TransformerException {
-	    XPathArray resultArr = new XPathArray();
+	    XPathArray result = new XPathArray();
 	    
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -194,7 +331,7 @@ public class FuncArrayForEach extends Function2Args {
         String funcBodyXPathExprStr = funcItem.getFuncBodyXPathExprStr();
         
         if (funcBodyXPathExprStr == null || "".equals(funcBodyXPathExprStr)) {
-           return resultArr;
+           return result;
         }
         
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
@@ -218,12 +355,12 @@ public class FuncArrayForEach extends Function2Args {
         	}
 
         	XObject resultObj = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
-        	resultArr.add(resultObj);
+        	result.add(resultObj);
         }
 
         inlineFunctionVarMap.clear();
         
-        return resultArr;
+        return result;
    }
 
 }
