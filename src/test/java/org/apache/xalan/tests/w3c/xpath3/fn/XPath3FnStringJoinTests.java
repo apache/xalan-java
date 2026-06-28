@@ -23,27 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for various XPath 3.1 string related functions.
+ * for XPath 3.1 function fn:string-join.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FunctionStringTests extends W3CXPath3TestsUtil {
+public class XPath3FnStringJoinTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/string-join.xml";
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
-    	
-        m_test_set_fileArr = new String[] { "starts-with.xml", "string.xml", "string-length.xml", "string-to-codepoints.xml",
-        		                            "substring.xml", "substring-after.xml", "substring-before.xml" };
-        
         m_resultSubFolderName = "fn";
-        
-        m_test_set_result_fileArr = new String[] { "starts-with_result.xml", "string_result.xml", "string-length_result.xml", 
-        		                                   "string-to-codepoints_result.xml", "substring_result.xml", "substring-after_result.xml", 
-        		                                   "substring-before_result.xml" };
+    	
+    	m_testResultFileName = "string-join_result.xml";
     }
 
     @AfterClass
@@ -55,8 +49,8 @@ public class XPath3FunctionStringTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFunctionStringTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslFnStringJoinTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

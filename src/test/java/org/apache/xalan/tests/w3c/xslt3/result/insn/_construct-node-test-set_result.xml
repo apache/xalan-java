@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:28Z" fail="12" name="construct-node" pass="22" run="34" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T11:46:44Z" fail="11" name="construct-node" pass="23" run="34" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="construct-node-001"/>
    <testResult status="pass" testName="construct-node-002"/>
    <testResult status="pass" testName="construct-node-003"/>
    <testResult status="pass" testName="construct-node-004"/>
    <testResult status="pass" testName="construct-node-005"/>
-   <testResult status="fail" testName="construct-node-006"/>
+   <testResult status="pass" testName="construct-node-006"/>
    <testResult status="pass" testName="construct-node-007"/>
    <testResult status="fail" testName="construct-node-008"/>
    <testResult status="pass" testName="construct-node-009"/>

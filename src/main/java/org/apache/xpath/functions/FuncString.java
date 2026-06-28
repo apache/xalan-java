@@ -15,24 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function fn:string.
+ * Implementation of an XPath 3.1 function fn:string.
  * 
  * @xsl.usage advanced
  */
@@ -60,18 +64,70 @@ public class FuncString extends FunctionDef1Arg
 		XObject result = null;
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-
-		if (m_arg0 instanceof NodeTest) {
-			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-				throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
-																											+ "function, whose string value "
-																											+ "cannot be determined.", srcLocator);  
-			} 
+		
+		final int sourceNode = xctxt.getContextNode();
+		
+		XObject xObj0 = null;
+		
+		if (m_arg0 != null) {
+		   if (m_arg0 instanceof SelfIteratorNoPredicate) {
+			   if ((xctxt.getXPath3ContextItem() == null) && (sourceNode == DTM.NULL)) {
+				   throw new javax.xml.transform.TransformerException("XPDY0002 : An XPath 3.1 function 'string' is called "
+																					                            + "with an argument set to \".\", and an "
+																					                            + "XPath context item is absent.", srcLocator);  
+			   }
+		   }
+		   else if (m_arg0 instanceof NodeTest) {
+				if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
+					throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath 3.1 function 'string' has argument as "
+																												+ "function item, whose string value "
+																												+ "is not defined.", srcLocator);  
+				} 
+		   }
+		   else if (m_arg0 instanceof XPathInlineFunction) {
+				throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath 3.1 function 'string' has argument as "
+																												+ "function item, whose string value "
+																												+ "is not defined.", srcLocator);
+		   }
+		   else if (m_arg0 instanceof XPathNamedFunctionReference) {
+				throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath 3.1 function 'string' has argument as "
+																												+ "function item, whose string value "
+																												+ "is not defined.", srcLocator);
+		   }
+		   else {	
+		        xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		   }
 		}
-		else if (m_arg0 instanceof XPathInlineFunction) {
-			throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath function call string() has an argument of type "
-																											+ "function, whose string value "
-																											+ "cannot be determined.", srcLocator); 
+		else if ((xctxt.getXPath3ContextItem() == null) && (sourceNode == DTM.NULL)) {
+		   throw new javax.xml.transform.TransformerException("XPDY0002 : An XPath 3.1 function 'string' is called "
+		   		                                                                           + "without an argument, and an "
+		   		                                                                           + "XPath context item is absent.", srcLocator);
+		}		
+						
+		if (xObj0 instanceof XSQName) {
+		   XSQName xsQName = (XSQName)xObj0;
+		   String prefix = xsQName.getPrefix();
+		   if ((prefix != null) && !"".equals(prefix)) {
+			  String str1 = prefix + ":" + xsQName.getLocalPart();
+			  
+			  result = new XSString(str1);
+			  
+			  return result;
+		   }
+		}
+		
+		if (xObj0 instanceof XPathMap) {
+		   throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath 3.1 function 'string' is called "
+                                                                                            + "with an xdm map as argument.", srcLocator);
+		}
+		else if (xObj0 instanceof XPathArray) {
+		   throw new javax.xml.transform.TransformerException("FOTY0014 : An XPath 3.1 function 'string' is called "
+                                                                                            + "with an xdm array as argument.", srcLocator);
+		}		
+		else if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() > 1)) {
+		   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'string' is called "
+                                                                                            + "with an argument whose cardinality is "
+                                                                                            + "greater than one.", srcLocator);
 		}
 
 		XMLString xmlStr = getArg0AsString(xctxt);

@@ -17,27 +17,17 @@
  */
 package org.apache.xpath.operations;
 
-import javax.xml.XMLConstants;
-import javax.xml.transform.TransformerException;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
-import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-
-import xml.xpath31.processor.types.XSAnyType;
 
 /**
- * An implementation of XPath 3.1 simple map '!' operator.
- * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-map-operator
+ * Class definition, implementing an XPath 3.1 simple 
+ * map operator, '!'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,86 +38,103 @@ public class SimpleMapOperator extends Operation
     
    private static final long serialVersionUID = -1467842928587523219L;
 
+   /**
+    * Apply an XPath operation to two operands, and return the result.
+    *
+    * @param left non-null reference to the evaluated left operand.
+    * @param right non-null reference to the evaluated right operand.
+    *
+    * @return non-null reference to the XObject that represents the result of the operation.
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       XObject result = null;        
+       XObject result = null;
        
-       XObject expr1 = null; 
-               
-       if (m_left instanceof XSL3ConstructorOrExtensionFunction) {
-           XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_left;
-           if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
-               try {
-            	   XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
-                   expr1 = xslFunctionService.callFunction(xpathFunc, null, xctxt);
-               }
-               catch (TransformerException ex) {
-                   throw ex; 
-               } 
-           }
-           else {
-              expr1 = m_left.execute(xctxt, true);  
-           }
+       final int sourceNode = xctxt.getCurrentNode();
+       
+       XObject xObjL = null;
+       
+       if (m_left instanceof SelfIteratorNoPredicate) {
+    	   XObject contextItem = xctxt.getXPath3ContextItem();
+    	   if (contextItem != null) {
+    		   xObjL = contextItem;  
+    	   }
+    	   else {
+    		   xObjL = m_left.execute(xctxt); 
+    	   }
        }
-       else {
-           expr1 = m_left.execute(xctxt, true); 
+       else {  
+    	   xObjL = m_left.execute(xctxt);
        }
        
-       if (expr1 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)expr1;
+       if (xObjL instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xObjL;
            DTMCursorIterator dtmIter = xsObjNodeSet.iterRaw();
            
-           int contextNode;           
+           int nextNode = DTM.NULL;           
            ResultSequence resultSeq = new ResultSequence();            
-           while ((contextNode = dtmIter.nextNode()) != DTM.NULL) {
-              xctxt.pushCurrentNode(contextNode);
-              XObject xsObj = m_right.execute(xctxt, contextNode);
-              resultSeq.add(xsObj);
-              xctxt.popCurrentNode();              
-           }
-           
-           result = resultSeq;
-       }
-       else if (expr1 instanceof ResultSequence) {
-           ResultSequence inpSeq = (ResultSequence)expr1;
-           ResultSequence resultSeq = new ResultSequence(); 
-           for (int idx = 0; idx < inpSeq.size(); idx++) {
-              XObject xObj = inpSeq.item(idx);
-              if ((xObj instanceof XSAnyType) || (xObj instanceof XBoolean) || 
-                  (xObj instanceof XNumber) || (xObj instanceof XString)) {
-            	  // Make copy of few XPath context values
-            	  XObject prevCtxtItem = xctxt.getXPath3ContextItem();
-            	  int prevCtxtPosition = xctxt.getXPath3ContextPosition();
-            	  int prevCtxtSize = xctxt.getXPath3ContextSize();
-            	  // Set XPath context values, for XPath expression evaluation
-                  xctxt.setXPath3ContextItem(xObj);
-                  xctxt.setXPath3ContextPosition(idx + 1);
-                  xctxt.setXPath3ContextSize(inpSeq.size());
-                  XObject xsObj = m_right.execute(xctxt, DTM.NULL);
-                  resultSeq.add(xsObj);
-                  // Restore XPath context values
-                  xctxt.setXPath3ContextItem(prevCtxtItem);
-                  xctxt.setXPath3ContextPosition(prevCtxtPosition);
-                  xctxt.setXPath3ContextSize(prevCtxtSize);
+           while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+              xctxt.pushCurrentNode(nextNode);
+              
+              try {
+            	  XObject xsObj = m_right.execute(xctxt, nextNode);                          	  
+            	  resultSeq.add(xsObj);
               }
-              else if (xObj instanceof XMLNodeCursorImpl) {
-                  int contextNode = ((XMLNodeCursorImpl)xObj).getCurrentNode();
-                  xctxt.pushCurrentNode(contextNode);
-                  XObject xsObj = m_right.execute(xctxt, contextNode);
-                  resultSeq.add(xsObj);
-                  xctxt.popCurrentNode();
+              finally {
+            	  xctxt.popCurrentNode();
               }
            }
            
            result = resultSeq;
        }
-       else {
-           // We're assuming here that, the XObject object instance expr1
-           // represents a singleton value.
-           xctxt.setXPath3ContextItem(expr1);
-           XObject xsObj = m_right.execute(xctxt, DTM.NULL);
-           result = xsObj;
-           xctxt.setXPath3ContextItem(null);
+       else if (xObjL instanceof ResultSequence) {
+           ResultSequence inpSeq = (ResultSequence)xObjL;
+           ResultSequence resultSeq = new ResultSequence();
+           int size1 = inpSeq.size();
+           for (int idx = 0; idx < size1; idx++) {
+        	   XObject xObj = inpSeq.item(idx);              
+          	  
+        	   XObject prevCtxtItem = xctxt.getXPath3ContextItem();
+        	   int prevCtxtPosition = xctxt.getXPath3ContextPosition();
+        	   int prevCtxtSize = xctxt.getXPath3ContextSize();
+
+        	   xctxt.setXPath3ContextItem(xObj);
+        	   xctxt.setXPath3ContextPosition(idx + 1);
+        	   xctxt.setXPath3ContextSize(size1);
+
+        	   try {
+        		   XObject xsObj = m_right.execute(xctxt, sourceNode);        		   
+        		   resultSeq.add(xsObj);
+        	   }
+        	   finally {
+        		   xctxt.setXPath3ContextItem(prevCtxtItem);
+        		   xctxt.setXPath3ContextPosition(prevCtxtPosition);
+        		   xctxt.setXPath3ContextSize(prevCtxtSize);
+        	   }
+           }
+           
+           result = resultSeq;
+       }
+       else {          	  
+    	   XObject prevCtxtItem = xctxt.getXPath3ContextItem();
+    	   int prevCtxtPosition = xctxt.getXPath3ContextPosition();
+    	   int prevCtxtSize = xctxt.getXPath3ContextSize();
+
+    	   xctxt.setXPath3ContextItem(xObjL);
+    	   xctxt.setXPath3ContextPosition(1);
+    	   xctxt.setXPath3ContextSize(1);
+
+    	   try {
+    		   XObject xsObj = m_right.execute(xctxt, sourceNode);
+    		   result = xsObj;
+    	   }
+    	   finally {
+    		   xctxt.setXPath3ContextItem(prevCtxtItem);
+    		   xctxt.setXPath3ContextPosition(prevCtxtPosition);
+    		   xctxt.setXPath3ContextSize(prevCtxtSize);
+    	   }
        }
        
        return result; 

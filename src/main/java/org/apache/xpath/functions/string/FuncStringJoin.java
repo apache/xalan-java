@@ -18,29 +18,22 @@
 package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.FuncString;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Operation;
-import org.apache.xpath.operations.Range;
-import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSString;
-import xml.xpath31.processor.types.XSUntyped;
-import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of an XPath 3.1 function fn:string-join.
@@ -75,74 +68,28 @@ public class FuncStringJoin extends Function2Args {
 	    
 	    SourceLocator srcLocator = xctxt.getSAXLocator();	    	    
 	    
-	    ResultSequence arg0ResultSeq = null;
+	    XObject xObjArg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    
-	    if ((m_arg0 instanceof Function) || (m_arg0 instanceof Variable) || 
-	    		                            (m_arg0 instanceof Range) || 
-	    		                            (m_arg0 instanceof Operation)) {
-	        
-	    	XObject evalResult = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	        
-	        if (evalResult instanceof ResultSequence) {
-	           arg0ResultSeq = (ResultSequence)evalResult;   
-	        }
-	        else {
-	           arg0ResultSeq = new ResultSequence();
-	           arg0ResultSeq.add(evalResult);
-	        }
-	    }    
-	    else if (m_arg0 instanceof LocPathIterator) {
-	        arg0ResultSeq = new ResultSequence();
-	        	        
-	        final int contextNode = xctxt.getCurrentNode();
-	        DTMCursorIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
-	        
-	        int nodeDtmHandle;	        
-	        DTMManager dtmMgr = (DTMManager)xctxt;
-	        
-	        while ((nodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-	            XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nodeDtmHandle, dtmMgr);            
-	            String nodeStrValue = xNodeSetItem.str();
-	            
-	            DTM dtm = dtmMgr.getDTM(nodeDtmHandle);
-	            
-	            if (dtm.getNodeType(nodeDtmHandle) == DTM.ELEMENT_NODE) {
-	               XSUntyped xsUntyped = new XSUntyped(nodeStrValue);
-	               arg0ResultSeq.add(xsUntyped);
-	            }
-	            else if (dtm.getNodeType(nodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
-	               XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-	               arg0ResultSeq.add(xsUntypedAtomic);
-	            }
-	            else {
-	               XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-	               arg0ResultSeq.add(xsUntypedAtomic);
-	            }                        
-	        }
+	    ResultSequence arg0Seq = new ResultSequence();
+	    
+	    if (xObjArg0 instanceof ResultSequence) {
+	    	ResultSequence rSeq = (ResultSequence)xObjArg0;
+	    	int size1 = rSeq.size();
+	    	for (int idx = 0; idx < size1; idx++) {
+	    		arg0Seq.add(rSeq.item(idx));  
+	    	}
 	    }
-	    else if (m_arg0 instanceof ResultSequence) {
-	    	arg0ResultSeq = (ResultSequence)m_arg0;
+	    else if (xObjArg0 instanceof XMLNodeCursorImpl) {
+	    	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjArg0;
+	    	int nextNode = DTM.NULL;
+	    	DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
+	    	while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
+	    	   XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, xctxt);
+	    	   arg0Seq.add(xNodeSetItem);
+	    	}
 	    }
 	    else {
-	    	XObject evalResult = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    	
-	    	if (evalResult instanceof ResultSequence) {
-	    		arg0ResultSeq = new ResultSequence();
-	    		ResultSequence resultSeq = (ResultSequence)evalResult;
-	    		int size1 = resultSeq.size();
-	    		for (int idx = 0; idx < size1; idx++) {
-	    			arg0ResultSeq.add(resultSeq.item(idx));  
-	    		}
-	    	}
-	    	else {
-	    		arg0ResultSeq = new ResultSequence();
-	    		arg0ResultSeq.add(evalResult);
-	    	}
-	    }
-	    
-	    if (arg0ResultSeq == null) {
-	        throw new javax.xml.transform.TransformerException("FOAP0001 : The first argument of XPath function call string-join, "
-	        		                                                                                          + "did'nt evaluate to a sequence.", srcLocator);    
+	    	arg0Seq.add(xObjArg0);
 	    }
 	    
 	    String strJoinSeparator = null;
@@ -150,29 +97,43 @@ public class FuncStringJoin extends Function2Args {
 	    if (m_arg1 == null) {
 	       strJoinSeparator = "";   
 	    }    
-	    else if (m_arg1 instanceof XString) {
-	       strJoinSeparator = ((XString)m_arg1).str();
-	    }
 	    else {
-	       throw new javax.xml.transform.TransformerException("FOAP0001 : The second argument of XPath function call string-join "
-	       		                                                                                              + "must be absent, or it must be a string value.", srcLocator);
+	       XObject xObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	       
+	       if ((xObjArg1 instanceof ResultSequence) && (((ResultSequence)xObjArg1).size() == 0)) {
+	    	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'string-join' "
+					    	  		                                                               + "second argument cannot be an empty "
+					    	  		                                                               + "sequence.", srcLocator); 
+	       }
+	    	
+	       FuncString funcStr = new FuncString();
+	       funcStr.setArg0(m_arg1);
+	       
+	       XObject xObj1 = null;
+	       try {
+	          xObj1 = funcStr.execute(xctxt);	          
+	          strJoinSeparator = XslTransformEvaluationHelper.getStrVal(xObj1);
+	       }
+	       catch (TransformerException ex) {
+	    	  throw ex; 
+	       }
 	    }
 	    
-	    StringBuffer strBuffer = new StringBuffer();
+	    StringBuffer strBuff = new StringBuffer();
 	    
-	    int size1 = arg0ResultSeq.size();
+	    int size1 = arg0Seq.size();
 	    for (int idx = 0; idx < size1; idx++) {       
-	       XObject xObject = arg0ResultSeq.item(idx);       
+	       XObject xObject = arg0Seq.item(idx);       
 	       String strValue = XslTransformEvaluationHelper.getStrVal(xObject);       
-	       if (idx < (arg0ResultSeq.size() - 1)) {
-	          strBuffer.append(strValue + strJoinSeparator);    
+	       if (idx < (size1 - 1)) {
+	          strBuff.append(strValue + strJoinSeparator);    
 	       }
 	       else {
-	          strBuffer.append(strValue);    
+	          strBuff.append(strValue);    
 	       }
 	    }
 	    
-	    result = new XSString(strBuffer.toString());
+	    result = new XSString(strBuff.toString());
 	
 	    return result;
   }

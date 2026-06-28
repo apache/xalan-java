@@ -183,6 +183,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String XPATH10_COMPATIBILITY_MODE = "xpath-1.0-compatibility";
     
+    public static final String XS_SCHEMA_VALIDATION = "schemaValidation";
+    
     public static final String REASON = "reason";
     
     public static final String XPATH31 = "XP31+";
@@ -554,6 +556,14 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									if (FEATURE.equals(depType) && XPATH10_COMPATIBILITY_MODE.equals(depValue)) {
 										elemTestResult.setAttribute(STATUS, SKIPPED);
 										elemTestResult.setAttribute(REASON, XPATH10_COMPATIBILITY_MODE);
+
+										elemTestRun.appendChild(elemTestResult);
+
+										break;
+									}
+									else if (FEATURE.equals(depType) && XS_SCHEMA_VALIDATION.equals(depValue)) {
+										elemTestResult.setAttribute(STATUS, SKIPPED);
+										elemTestResult.setAttribute(REASON, XS_SCHEMA_VALIDATION);
 
 										elemTestRun.appendChild(elemTestResult);
 

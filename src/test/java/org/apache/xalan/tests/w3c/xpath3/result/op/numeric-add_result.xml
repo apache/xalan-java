@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:48Z" fail="33" name="op-numeric-add" pass="98" run="131" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T11:39:43Z" fail="33" name="op-numeric-add" pass="98" run="131" skipped="11" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-addint2args-1"/>
    <testResult status="pass" testName="op-numeric-addint2args-2"/>
    <testResult status="pass" testName="op-numeric-addint2args-3"/>
@@ -130,4 +130,15 @@
    <testResult status="pass" testName="K-NumericAdd-65"/>
    <testResult status="pass" testName="K-NumericAdd-66"/>
    <testResult status="fail" testName="K2-NumericAdd-1"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-2"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-3"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-4"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-5"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-6"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-7"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-8"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-9"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-10"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-11"/>
+   <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-12"/>
 </testrun>

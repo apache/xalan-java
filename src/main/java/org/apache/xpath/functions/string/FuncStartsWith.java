@@ -128,6 +128,15 @@ public class FuncStartsWith extends XSL3StringCollationAwareFunction
 		  }
 		  else if (collationUri != null) {
 			  result = XBoolean.S_FALSE;
+			  
+			  if ("".equals(arg1StrValue)) {
+				  int comparisonResult = xPathCollationSupport.compareStringsUsingCollation("", arg1StrValue, collationUri);
+				  if (comparisonResult == 0) {
+					  result = XBoolean.S_TRUE;					  
+				  }
+				  
+				  return result;
+			  }
 
 			  int arg0StrLength = arg0StrValue.length();
 			  for (int idx = 0; idx < arg0StrLength; idx++) {

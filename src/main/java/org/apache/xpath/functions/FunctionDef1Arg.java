@@ -74,7 +74,7 @@ public class FunctionDef1Arg extends FunctionOneArg
    * string. If the argument is null, then get the string value from the
    * current context node.
    *
-   * @param xctxt Runtime XPath context.
+   * @param xctxt                    An XPath context object
    *
    * @return The string value of the first argument, or the string value of the
    *         current context node if the first argument is null.
@@ -85,42 +85,52 @@ public class FunctionDef1Arg extends FunctionOneArg
   protected XMLString getArg0AsString(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-    XMLString resultVal = null;
-      
-    if (m_arg0 == null)
-    {
-      int currentNode = xctxt.getCurrentNode();
-      if (DTM.NULL == currentNode) {
-          resultVal = XString.EMPTYSTRING;
-      }
-      else
-      {
-          DTM dtm = xctxt.getDTM(currentNode);
-          resultVal = dtm.getStringValue(currentNode);
-      }      
-    }
-    else if (m_arg0 instanceof SelfIteratorNoPredicate) {
-       XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-       if (xpath3ContextItem != null) {
-          resultVal = new XString(XslTransformEvaluationHelper.getStrVal(xpath3ContextItem));
-       }
-       else {
-          XObject arg0XObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
-           
-          resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
-       }
-    }
-    else if (m_arg0 instanceof XSString) {
-       String strVal = ((XSString)m_arg0).stringValue();
-       resultVal = new XString(strVal);
-    }
-    else {
-       XObject arg0XObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
-        
-       resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));  
-    }
-    
-    return resultVal;
+	  XMLString result = null;
+
+	  if (m_arg0 == null)
+	  {
+		  XObject xObj0 = xctxt.getXPath3ContextItem();
+		  if (xObj0 != null) {
+              FuncString funcString = new FuncString();
+              funcString.setArg0(xObj0);
+              
+              XSString xsString = (XSString)(funcString.execute(xctxt));
+              result = new XString(xsString.stringValue());
+		  }
+		  else {
+			  int currentNode = xctxt.getCurrentNode();
+			  if (DTM.NULL == currentNode) {
+				  result = XString.EMPTYSTRING;
+			  }
+			  else
+			  {
+				  DTM dtm = xctxt.getDTM(currentNode);
+				  result = dtm.getStringValue(currentNode);
+			  }
+		  }
+	  }
+	  else if (m_arg0 instanceof SelfIteratorNoPredicate) {
+		  XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+		  if (xpath3ContextItem != null) {
+			  result = new XString(XslTransformEvaluationHelper.getStrVal(xpath3ContextItem));
+		  }
+		  else {
+			  XObject arg0XObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+			  result = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
+		  }
+	  }
+	  else if (m_arg0 instanceof XSString) {
+		  String strVal = ((XSString)m_arg0).stringValue();
+		  result = new XString(strVal);
+	  }
+	  else {
+		  XObject arg0XObject = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+		  result = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));  
+	  }
+
+	  return result;
   }
 
   /**

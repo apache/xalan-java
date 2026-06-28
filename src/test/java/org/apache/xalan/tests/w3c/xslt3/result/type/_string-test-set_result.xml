@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:56Z" fail="5" name="string" pass="129" run="134" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T11:46:06Z" fail="4" name="string" pass="130" run="134" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="string-001"/>
    <testResult status="pass" testName="string-002"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="string-003"/>
@@ -127,7 +127,7 @@
          <errTrace>java.lang.StringIndexOutOfBoundsException: String index out of range: -31</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="string-123"/>
+   <testResult status="pass" testName="string-123"/>
    <testResult status="pass" testName="string-124"/>
    <testResult status="pass" testName="string-125"/>
    <testResult status="pass" testName="string-126"/>
