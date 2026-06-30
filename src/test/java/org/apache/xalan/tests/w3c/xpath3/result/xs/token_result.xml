@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:15Z" fail="3" name="xs-token" pass="3" run="6" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T10:57:56Z" fail="0" name="xs-token" pass="6" run="6" statusUnknown="0">
    <testResult status="pass" testName="cbcl-token-001"/>
-   <testResult status="fail" testName="cbcl-token-002b"/>
+   <testResult status="pass" testName="cbcl-token-002b"/>
    <testResult status="pass" testName="cbcl-token-003"/>
    <testResult status="pass" testName="cbcl-token-004"/>
-   <testResult status="fail" testName="cbcl-token-005"/>
-   <testResult status="fail" testName="cbcl-token-006"/>
+   <testResult status="pass" testName="cbcl-token-005"/>
+   <testResult status="pass" testName="cbcl-token-006"/>
 </testrun>

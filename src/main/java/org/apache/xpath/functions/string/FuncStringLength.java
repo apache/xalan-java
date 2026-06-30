@@ -17,18 +17,24 @@
  */
 package org.apache.xpath.functions.string;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.FunctionDef1Arg;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of XPath 3.1 function fn:string-length.
+ * Implementation of an XPath 3.1 function fn:string-length.
  * 
  * @xsl.usage advanced
  */
@@ -55,8 +61,48 @@ public class FuncStringLength extends FunctionDef1Arg
   {
 
 	  XObject result = null;
+	  
+	  SourceLocator scrLocator = xctxt.getSAXLocator();
+	  
+	  final int sourceNode = xctxt.getContextNode();
+	  
+	  if (m_arg0 == null) {
+		 if ((xctxt.getXPath3ContextItem() == null) && (sourceNode == DTM.NULL)) {
+			throw new TransformerException("XPDY0002 : An XPath 3.1 function 'string-length' is called with "
+					                                                                     + "no arguments, and XPath context "
+					                                                                     + "item is absent.", scrLocator); 
+		 }
+	  }
+	  
+	  if ((m_arg0 instanceof XPathInlineFunction) || (m_arg0 instanceof XPathNamedFunctionReference)) {
+		  throw new TransformerException("FOTY0013 : An XPath 3.1 function 'string-length' is supplied "
+		  		                                                                         + "with an argument which is "
+		  		                                                                         + "a function item.", scrLocator); 
+	  }
 
 	  try {
+		  if (m_arg0 != null) {
+			  XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+			  if (xObj0 instanceof ResultSequence) {
+				  ResultSequence rSeq = (ResultSequence)xObj0;
+				  if (rSeq.size() > 1) {
+					  throw new TransformerException("XPTY0004 : An XPath 3.1 function 'string-length' is supplied "
+																									  + "an argument which is a sequence of "
+																									  + "size greater than one.", scrLocator); 
+				  }
+			  }
+
+			  if (xObj0 instanceof XMLNodeCursorImpl) {
+				  int size1 = ((XMLNodeCursorImpl)xObj0).getLength();
+				  if (size1 > 1) {
+					  throw new TransformerException("XPTY0004 : An XPath 3.1 function 'string-length' is supplied "
+																									  + "an argument which is a sequence of "
+																									  + "size greater than one.", scrLocator); 
+				  }
+			  }
+		  }
+		  
 		  XMLString xmlStr1 = getArg0AsString(xctxt);
 		  String inpStr = xmlStr1.toString();
 

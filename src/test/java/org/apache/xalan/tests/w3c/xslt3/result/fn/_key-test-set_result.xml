@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:59Z" fail="34" name="key" pass="62" run="96" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:03:46Z" fail="33" name="key" pass="63" run="96" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002">
       <outResult>
@@ -56,7 +56,7 @@ java.lang.Exception: Line# : 31, Column# : 79 XPST0003 : A location path was exp
    <testResult status="fail" testName="key-034"/>
    <testResult status="pass" testName="key-035"/>
    <testResult status="fail" testName="key-036"/>
-   <testResult status="fail" testName="key-037"/>
+   <testResult status="pass" testName="key-037"/>
    <testResult status="pass" testName="key-038"/>
    <testResult status="pass" testName="key-039"/>
    <testResult status="pass" testName="key-040"/>

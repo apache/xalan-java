@@ -123,8 +123,8 @@ public class FuncStringJoin extends Function2Args {
 	    
 	    int size1 = arg0Seq.size();
 	    for (int idx = 0; idx < size1; idx++) {       
-	       XObject xObject = arg0Seq.item(idx);       
-	       String strValue = XslTransformEvaluationHelper.getStrVal(xObject);       
+	       XObject xObj = arg0Seq.item(idx);       
+	       String strValue = XslTransformEvaluationHelper.getStrVal(xObj);       
 	       if (idx < (size1 - 1)) {
 	          strBuff.append(strValue + strJoinSeparator);    
 	       }

@@ -26,7 +26,10 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * This class is used for xsl:for-each-group instruction's
@@ -93,6 +96,11 @@ public class XslForEachGroupNodeCompareElem {
 			if (!sortKeys.isEmpty()) {
 				NodeSortKey k1 = (NodeSortKey) sortKeys.elementAt(0);
 				XObject r = (k1.m_selectPat).execute(xctxt, currentNode, k1.m_namespaceContext);
+				if (r instanceof XSNumericType) {
+				    String str1 = XslTransformEvaluationHelper.getStrVal(r);
+				    Double d1 = Double.valueOf(str1);
+				    r = new XNumber(d1);
+				}
 
 				double d;
 

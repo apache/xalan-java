@@ -95,6 +95,7 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -203,8 +204,11 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Method definition, to get string value of XPath 3.1 
-     * xdm item. 
+     * Method definition, to get string value for an 
+     * XPath 3.1 supplied xdm item.
+     * 
+     * @param xObj                  An XPath 3.1 supplied xdm item
+     * @return                      The computed string value
      */
     public static String getStrVal(XObject xObj) {       
        
@@ -212,19 +216,21 @@ public class XslTransformEvaluationHelper {
        
        if (xObj instanceof XSDecimal) {    	  
     	  result = (((XSDecimal)xObj).getValue()).toPlainString();
-    	  int i = result.indexOf('.');
-    	  if (i > -1) {
-    		  // Delete trailing 0's to rhs of decimal point, for string value
-    		  String prefix = result.substring(0, i);
-    		  String suffix = result.substring(i + 1);
+    	  int idx1 = result.indexOf('.');
+    	  if (idx1 > -1) {
+    		  // Removing trailing 0's from rhs of decimal point, 
+    		  // for string value.
+    		  String prefix = result.substring(0, idx1);
+    		  String suffix = result.substring(idx1 + 1);
     		  int suffixLength = suffix.length();
-    		  int j = suffixLength;
-    		  for (j = (suffixLength - 1); j > -1; j--) {
-    			  if (suffix.charAt(j) != '0') {
+    		  int idx2 = suffixLength;
+    		  for (idx2 = (suffixLength - 1); idx2 > -1; idx2--) {
+    			  if (suffix.charAt(idx2) != '0') {
     				  break; 
     			  }
-    		  }    		
-    		  suffix = suffix.substring(0, j + 1);
+    		  }
+    		  
+    		  suffix = suffix.substring(0, idx2 + 1);
     		  result = (suffix.length() > 0) ? (prefix + "." + suffix) : prefix;
     	  }
        }
@@ -454,7 +460,7 @@ public class XslTransformEvaluationHelper {
      * and an XPath context object, find the count of xdm items represented by the 
      * provided compiled XPath expression object.  
      */
-    public static XNumber getSequenceItemCount(Expression expr, XPathContext xctxt) throws 
+    public static XSInteger getSequenceItemCount(Expression expr, XPathContext xctxt) throws 
                                                                                   javax.xml.transform.TransformerException {
         int xdmSequenceSize = 0;
         
@@ -566,7 +572,7 @@ public class XslTransformEvaluationHelper {
             }
         }
     
-        return new XNumber((double)xdmSequenceSize);
+        return new XSInteger(xdmSequenceSize + "");
     }
     
     /**

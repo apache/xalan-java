@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:00:27Z" fail="3" name="xs-float" pass="3" run="6" statusUnknown="0">
+   <testResult status="pass" testName="xs-float-001"/>
+   <testResult status="fail" testName="xs-float-002"/>
+   <testResult status="pass" testName="xs-float-003"/>
+   <testResult status="fail" testName="xs-float-004"/>
+   <testResult status="fail" testName="cbcl-float-001"/>
+   <testResult status="pass" testName="cbcl-float-002"/>
+</testrun>

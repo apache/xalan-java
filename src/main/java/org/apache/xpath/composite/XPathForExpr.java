@@ -137,20 +137,22 @@ public class XPathForExpr extends Expression {
                                                                                             varBindingXPathStr, prefixTable);
            }                     
            
-           // Fixing XPath expression string like .a$b to 
-           // correct form as . a $b           
+           // Replace XPath expression string like .a$b to, 
+           // form as . a $b           
            int indexPeriod = varBindingXPathStr.indexOf('.');
+           int size1 = varBindingXPathStr.length();
            if (indexPeriod > 0) {
         	   String str1 = varBindingXPathStr.substring(0, indexPeriod + 1);
-        	   String str2 = varBindingXPathStr.substring(indexPeriod + 1);
-        	   int idx$ = str2.indexOf('$');
-        	   if (idx$ > -1) {
-        		   String str3 = str2.substring(0, idx$);
-        		   String str4 = str2.substring(idx$);
-        		   str2 = str3 + " " + str4; 
-        	   }         	 
-
-        	   varBindingXPathStr = str1 + " " + str2;
+        	   if (size1 > (indexPeriod + 1)) {
+        		   String str2 = varBindingXPathStr.substring(indexPeriod + 1);
+        		   int idx$ = str2.indexOf('$');
+        		   if (idx$ > 0) {
+        			   String str3 = str2.substring(0, idx$);
+        			   String str4 = str2.substring(idx$);
+        			   str2 = str3 + " " + str4;
+        			   varBindingXPathStr = str1 + " " + str2;
+        		   }
+        	   }
            }
            
            XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 

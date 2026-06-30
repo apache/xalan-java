@@ -18,6 +18,7 @@
 package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -67,47 +68,35 @@ public class FuncMatches extends Function3Args {
 
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	   String inputStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg0, xctxt));
+	   String regexInpStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg0, xctxt));
 
-	   String patternStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg1, xctxt));
+	   String regexPatternStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg1, xctxt));
 
-	   String flagStr = null;
+	   String regexFlagStr = null;
 
 	   if (m_arg2 != null) {
-		   flagStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg2, xctxt));
+		   regexFlagStr = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg2, xctxt));
 
-		   if (!RegexEvaluationSupport.isRegexFlagStrValid(flagStr)) {               
-			   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-					   																			ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }), srcLocator); 
+		   if (!RegexEvaluationSupport.isRegexFlagStrValid(regexFlagStr)) {               
+			   throw new TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX_FLAGS, 
+					                                                                                             new Object[]{ FUNCTION_NAME }), srcLocator); 
 		   }
 	   }
 
-	   boolean boolValue = false;
-
 	   try {        	        	        	
-		   Matcher regexMatcher = null;
-
-		   try {
-			   regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(patternStr), 
-					   flagStr != null ? flagStr : null, inputStr);
-		   }
-		   catch (Exception ex) {        		        		
-			   String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
-
-			   String mesg1 = ex.getMessage();
-			   errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;  
-
-			   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
-		   }
-
-		   while (regexMatcher.find()) {
-			   boolValue = true;
-			   break;
-		   }            
+		   Matcher regexMatcher = RegexEvaluationSupport.getRegexMatcher(RegexEvaluationSupport.transformRegexStrForSubtrOp(regexPatternStr), 
+                   																													regexFlagStr != null ? regexFlagStr : null, regexInpStr);		   
+		   result = (regexMatcher.find() ? new XSBoolean(true) : new XSBoolean(false)); 
+		   
+		   regexMatcher.reset();
 	   } 
 	   catch (PatternSyntaxException ex) {
-		   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-				   																							ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), srcLocator); 
+		   String errMesg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME });        		
+
+		   String mesg1 = ex.getMessage();
+		   errMesg = (mesg1 != null) ? (errMesg + " " + mesg1) : errMesg;
+		   
+		   throw new TransformerException(errMesg, srcLocator);
 	   }
 	   catch (Exception ex) {
 		   String errMesg = ex.getMessage();        	
@@ -119,10 +108,8 @@ public class FuncMatches extends Function3Args {
 
 		   errMesg = errCode + " : " + errMesg;  
 
-		   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
-	   }
-
-	   result = (boolValue ? new XSBoolean(true) : new XSBoolean(false));  
+		   throw new TransformerException(errMesg, srcLocator);
+	   }	    
 
 	   return result;
    }

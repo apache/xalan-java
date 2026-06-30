@@ -7,7 +7,8 @@ package xml.xpath31.processor.types;
 import org.apache.xpath.objects.ResultSequence;
 
 /**
- * An XML Schema data type representation, of the xs:float datatype.
+ * An XML Schema data type representation, for the 
+ * xs:float datatype.
  */
 public class XSFloat extends XSNumericType {
 
@@ -20,34 +21,39 @@ public class XSFloat extends XSNumericType {
 	private XPath3DecimalFormat xpath3DecimalFormat = new XPath3DecimalFormat(
 	                                                                   "0.#######E0");
 	
-	/*
+	/**
 	 * Class constructor.
 	 */
 	public XSFloat(float x) {
 		_value = new Float(x);
 	}
 
-	/*
-     * Class constructor.
+	/**
+     * Default constructor.
      */
 	public XSFloat() {
 		this(0);
 	}
 
-	/*
+	/**
      * Class constructor.
      */
-	public XSFloat(String val) {
+	public XSFloat(String strVal) throws javax.xml.transform.TransformerException {
 		try {
-	       if (val.equals("-INF")) {
+	       if ("-INF".equals(strVal)) {
 			  _value = new Float(Float.NEGATIVE_INFINITY);
-		   } else if (val.equals("INF")) {
+		   } 
+	       else if ("INF".equals(strVal) || "+INF".equals(strVal)) {
+	    	  // +INF is rejected with XSD 1.0
 			  _value = new Float(Float.POSITIVE_INFINITY);
-		   } else {
-		      _value = new Float(val);
+		   } 
+	       else {
+		      _value = new Float(strVal);
 		   }
-		} catch (NumberFormatException ex) {
-			// to do
+		} 
+		catch (NumberFormatException ex) {
+			throw new javax.xml.transform.TransformerException("FORG0006 : The string value '" + 
+																							strVal + "' cannot be cast to schema type float.");
 		}
 	}
 	
@@ -89,14 +95,17 @@ public class XSFloat extends XSNumericType {
         try {
             Float floatVal = null;
             
-            if ((xsAnyType.stringValue()).equals("INF")) {
+            String strVal = xsAnyType.stringValue();
+            
+            if ("INF".equals(strVal) || "+INF".equals(strVal)) {
+            	// +INF is rejected with XSD 1.0
                 floatVal = new Float(Float.POSITIVE_INFINITY);
             } 
-            else if ((xsAnyType.stringValue()).equals("-INF")) {
+            else if ("-INF".equals(strVal)) {
                 floatVal = new Float(Float.NEGATIVE_INFINITY);
             } 
             else if (xsAnyType instanceof XSBoolean) {
-                if ((xsAnyType.stringValue()).equals("true")) {
+                if (strVal.equals("true")) {
                     floatVal = new Float("1.0E0");
                 } else {
                     floatVal = new Float("0.0E0");

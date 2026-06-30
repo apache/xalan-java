@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:36:16Z" fail="3" name="fn-zero-or-one" pass="46" run="49" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:00:10Z" fail="2" name="fn-zero-or-one" pass="47" run="49" statusUnknown="0">
    <testResult status="pass" testName="fn-zero-or-oneint1args-1"/>
    <testResult status="pass" testName="fn-zero-or-oneint1args-2"/>
    <testResult status="pass" testName="fn-zero-or-oneint1args-3"/>
@@ -47,5 +47,5 @@
    <testResult status="pass" testName="K-SeqZeroOrOneFunc-6"/>
    <testResult status="fail" testName="K-SeqZeroOrOneFunc-7"/>
    <testResult status="pass" testName="K-SeqZeroOrOneFunc-8"/>
-   <testResult status="fail" testName="cbcl-if-not-empty-001"/>
+   <testResult status="pass" testName="cbcl-if-not-empty-001"/>
 </testrun>

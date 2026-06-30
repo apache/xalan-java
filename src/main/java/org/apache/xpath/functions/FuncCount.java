@@ -15,14 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -53,9 +49,7 @@ public class FuncCount extends FunctionOneArg
     {
     	XObject result = null;
 
-    	XNumber xNumber = XslTransformEvaluationHelper.getSequenceItemCount(m_arg0, xctxt);
-
-    	result = xNumber;
+    	result = XslTransformEvaluationHelper.getSequenceItemCount(m_arg0, xctxt);
 
     	return result;    
     }

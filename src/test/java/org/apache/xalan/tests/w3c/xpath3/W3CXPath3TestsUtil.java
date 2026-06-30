@@ -76,8 +76,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import xml.xpath31.processor.types.XSNormalizedString;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSToken;
 
 /**
  * Xalan-J XSL 3 test base class, to support Xalan-J W3C 
@@ -195,6 +197,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String XML_VERSION = "xml-version";
     
+    public static final String XSD_VERSION = "xsd-version";
+    
     public static final String HIGHER_ORDER_FUNC = "higherOrderFunctions";
     
     public static final String RESULT = "result";
@@ -202,6 +206,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     public static final String ROLE = "role";
     
     public static final String EMPTY_STRING = "";
+    
+    public static final String XS_COLON = "xs:";
+    
+    public static final String FN_COLON = "fn:";
     
     public static final String W3C_XPATH3_TEST_SUITE_RESULTS = "W3C XPath 3.1 test suite results";
     
@@ -601,8 +609,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									depValue = elem3.getAttribute(VALUE);
 								}
 
-								if (!dependencySpecified || XML_VERSION.equals(depType) || (SPEC.equals(depType) && (depValue.contains(XPATH31) || depValue.contains(XPATH30) 
-										                                                                                                        || depValue.contains(XPATH20)))
+								if (!dependencySpecified || XML_VERSION.equals(depType) || XSD_VERSION.equals(depType) 
+										                                                || (SPEC.equals(depType) && (depValue.contains(XPATH31) 
+										                                                || depValue.contains(XPATH30) 
+										                                                || depValue.contains(XPATH20)))
 										                                                || (FEATURE.equals(depType) && HIGHER_ORDER_FUNC.equals(depValue))) {								
 
 									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));    							
@@ -746,11 +756,12 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										
 										if ((expectedResultStr != null) && !EMPTY_STRING.equals(expectedResultStr)) {
 											boolean isExpResultStrFinal = false;
-											if ((xpathResultObj instanceof ResultSequence) && (!expectedResultStr.startsWith("(") 
-													                                                                        && !expectedResultStr.endsWith(")"))) {									   
+											if (xpathResultObj instanceof ResultSequence) {									   
 												isExpResultStrFinal = true;
-												expectedResultStr = "(" + expectedResultStr + ")";   									   
-											}
+												if (!expectedResultStr.startsWith("(") && !expectedResultStr.endsWith(")")) {
+												   expectedResultStr = "(" + expectedResultStr + ")";
+												}
+											}											
 											else if (xpathResultObj instanceof XPathArray) {
 												isExpResultStrFinal = true;
 												if (!expectedResultStr.startsWith("[") && !expectedResultStr.endsWith("]")) {
@@ -780,18 +791,24 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 										xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 									}
+									else if ((xpathResultObj != null) && ASSERT_COUNT.equals(nodeName2)) {										
+										XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+										xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+									}
 									else if (!(ASSERT_TRUE.equals(nodeName2) || ASSERT_FALSE.equals(nodeName2) || ASSERT_TYPE.equals(nodeName2) || 
 																												  ALL_OF.equals(nodeName2) || ANY_OF.equals(nodeName2) || 
 																												  ASSERT_XML.equals(nodeName2) || ERROR.equals(nodeName2)) && 
 																												                     (expectedResultStr != null) && !EMPTY_STRING.equals(expectedResultStr)) {
-										if (expectedResultStr.startsWith("\"") && expectedResultStr.endsWith("\"")) {
-											int size2 = expectedResultStr.length();
-											expectedResultStr = expectedResultStr.substring(1, size2 - 1);
-											expectedResultStr = "'" + expectedResultStr + "'"; 
-										}
-										else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
-											expectedResultStr = "'" + expectedResultStr + "'";										
-											expectedResultStrUnquoted = true;
+										if (!expectedResultStr.startsWith(XS_COLON) && !expectedResultStr.startsWith(FN_COLON)) {
+											if (expectedResultStr.startsWith("\"") && expectedResultStr.endsWith("\"")) {
+												int size2 = expectedResultStr.length();
+												expectedResultStr = expectedResultStr.substring(1, size2 - 1);
+												expectedResultStr = "'" + expectedResultStr + "'"; 
+											}
+											else if (!expectedResultStr.startsWith("\'") && !expectedResultStr.endsWith("\'")) {
+												expectedResultStr = "'" + expectedResultStr + "'";										
+												expectedResultStrUnquoted = true;
+											}
 										}
 
 										XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -861,7 +878,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 												xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 											}
-											else if (expectedResultStr.startsWith("xs:")) {
+											else if (expectedResultStr.startsWith(XS_COLON)) {
 												XPath xpathObj = new XPath(expectedResultStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
 												xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 											}
@@ -911,7 +928,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											}
 											else {
 												resultSeqLength = 1;
-											}
+											}																						
 
 											if (((XNumber)xpathExpectedObj).num() == (double)resultSeqLength) {
 												elemTestResult.setAttribute(STATUS, PASS);
@@ -961,7 +978,15 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 											if (!a1) {
 												String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-												String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+												//String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+												String resultStr1 = null;
+												if ((xpathResultObj instanceof XSNormalizedString) || (xpathResultObj instanceof XSToken)) {
+												   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj));
+												}
+												else {
+												   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+												}
+												
 												if (expectedStr1.equals(resultStr1)) {
 													elemTestResult.setAttribute(STATUS, PASS);
 												}
@@ -1043,7 +1068,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														String ignorePrefixesStr = resultElem1.getAttribute(IGNORE_PREFIXES);
 														if (TRUE.equals(ignorePrefixesStr)) {
 															expectedResultStr = expectedResultStr.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
-															expectedResultStr = expectedResultStr.replace("fn:", EMPTY_STRING);
+															expectedResultStr = expectedResultStr.replace(FN_COLON, EMPTY_STRING);
 														}
 
 														expectedResultStr = expectedResultStr.replaceAll(">\\s*<", "><");
@@ -1194,10 +1219,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														expectedResultStr2 = getXPathNormalizedStr(expectedResultStr2);
 														if ((expectedResultStr2 != null) && !EMPTY_STRING.equals(expectedResultStr2)) {
 															boolean isExpResultStrFinal = false;
-															if ((xpathResultObj instanceof ResultSequence) && (!expectedResultStr2.startsWith("(") 
-																																			 && !expectedResultStr2.endsWith(")"))) {									   
+															if (xpathResultObj instanceof ResultSequence) {									   
 																isExpResultStrFinal = true;
-																expectedResultStr2 = "(" + expectedResultStr2 + ")";   									   
+																if (!expectedResultStr2.startsWith("(") && !expectedResultStr2.endsWith(")")) {
+																   expectedResultStr2 = "(" + expectedResultStr2 + ")";
+																}
 															}
 															else if (xpathResultObj instanceof XPathArray) {
 																isExpResultStrFinal = true;
@@ -1242,7 +1268,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														}
 													}
 
-													if (!expectedResultStr2.startsWith("xs:")) {      											                                        	  
+													if (!expectedResultStr2.startsWith(XS_COLON) && !expectedResultStr2.startsWith(FN_COLON)) {      											                                        	  
 														if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
 															int size3 = expectedResultStr2.length();
 															expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
@@ -1366,7 +1392,16 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
 														String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-														String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+														//String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+														//String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj));
+														String resultStr1 = null;
+														if ((xpathResultObj instanceof XSNormalizedString) || (xpathResultObj instanceof XSToken)) {
+														   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj));
+														}
+														else {
+														   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+														}
+														
 														if (!expectedStr1.equals(resultStr1)) {
 															isXslTestPass = false;
 
@@ -1433,7 +1468,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																	String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
 																	if (TRUE.equals(ignorePrefixesStr)) {
 																		expectedResultStr2 = expectedResultStr2.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
-																		expectedResultStr2 = expectedResultStr2.replace("fn:", EMPTY_STRING);
+																		expectedResultStr2 = expectedResultStr2.replace(FN_COLON, EMPTY_STRING);
 																	}
 
 																	if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
@@ -1506,7 +1541,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													}
 												}
 												else if (ERROR.equals(nodeName3)) {
-													expectedErrCode = resultElem1.getAttribute("code");
+													expectedErrCode = elNode1.getAttribute("code");
 													if ((runTimeErrCode != null) && !runTimeErrCode.equals(expectedErrCode)) {
 														isXslTestPass = false;
 
@@ -1645,10 +1680,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														expectedResultStr2 = getXPathNormalizedStr(expectedResultStr2);
 														if ((expectedResultStr2 != null) && !EMPTY_STRING.equals(expectedResultStr2)) {
 															boolean isExpResultStrFinal = false;
-															if ((xpathResultObj instanceof ResultSequence) && (!expectedResultStr2.startsWith("(") 
-																																			 && !expectedResultStr2.endsWith(")"))) {									   
+															if (xpathResultObj instanceof ResultSequence) {									   
 																isExpResultStrFinal = true;
-																expectedResultStr2 = "(" + expectedResultStr2 + ")";   									   
+																if (!expectedResultStr2.startsWith("(") && !expectedResultStr2.endsWith(")")) {
+																   expectedResultStr2 = "(" + expectedResultStr2 + ")";
+																}
 															}
 															else if (xpathResultObj instanceof XPathArray) {
 																isExpResultStrFinal = true;
@@ -1693,7 +1729,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														}
 													}
 
-													if (!expectedResultStr2.startsWith("xs:")) { 
+													if (!expectedResultStr2.startsWith(XS_COLON) && !expectedResultStr2.startsWith(FN_COLON)) { 
 														if (expectedResultStr2.startsWith("\"") && expectedResultStr2.endsWith("\"")) {
 															int size3 = expectedResultStr2.length();
 															expectedResultStr2 = expectedResultStr2.substring(1, size3 - 1);
@@ -1813,7 +1849,16 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 
 														String expectedStr1 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);
-														String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+														//String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+														//String resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj));
+														String resultStr1 = null;
+														if ((xpathResultObj instanceof XSNormalizedString) || (xpathResultObj instanceof XSToken)) {
+														   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj));
+														}
+														else {
+														   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+														}
+														
 														if (expectedStr1.equals(resultStr1)) {
 															isXslTestPass = true;
 
@@ -1880,7 +1925,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																	String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
 																	if (TRUE.equals(ignorePrefixesStr)) {
 																		expectedResultStr2 = expectedResultStr2.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
-																		expectedResultStr2 = expectedResultStr2.replace("fn:", EMPTY_STRING);
+																		expectedResultStr2 = expectedResultStr2.replace(FN_COLON, EMPTY_STRING);
 																	}
 
 																	if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
@@ -1948,7 +1993,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													}
 												}                                		  
 												else if (ERROR.equals(nodeName3)) {
-													expectedErrCode = resultElem1.getAttribute("code");
+													expectedErrCode = elNode1.getAttribute("code");
 													if ((runTimeErrCode != null) && runTimeErrCode.equals(expectedErrCode)) {
 														isXslTestPass = true;
 
@@ -2336,7 +2381,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xpath-functions/map}", "map:");
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xpath-functions/array}", "array:");
     	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2005/xqt-errors}", "err:");
-    	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2001/XMLSchema}", "xs:");
+    	xpathExprStr = xpathExprStr.replace("Q{http://www.w3.org/2001/XMLSchema}", XS_COLON);
     	
     	result = xpathExprStr; 
 		

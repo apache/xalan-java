@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:14Z" fail="0" name="math-pow" pass="32" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T10:57:54Z" fail="0" name="math-pow" pass="34" run="34" statusUnknown="0">
    <testResult status="pass" testName="math-pow-001"/>
    <testResult status="pass" testName="math-pow-002"/>
    <testResult status="pass" testName="math-pow-003"/>
@@ -14,10 +14,12 @@
    <testResult status="pass" testName="math-pow-013"/>
    <testResult status="pass" testName="math-pow-014"/>
    <testResult status="pass" testName="math-pow-015"/>
+   <testResult status="pass" testName="math-pow-016"/>
    <testResult status="pass" testName="math-pow-017"/>
    <testResult status="pass" testName="math-pow-018"/>
    <testResult status="pass" testName="math-pow-019"/>
    <testResult status="pass" testName="math-pow-020"/>
+   <testResult status="pass" testName="math-pow-021"/>
    <testResult status="pass" testName="math-pow-022"/>
    <testResult status="pass" testName="math-pow-023"/>
    <testResult status="pass" testName="math-pow-024"/>

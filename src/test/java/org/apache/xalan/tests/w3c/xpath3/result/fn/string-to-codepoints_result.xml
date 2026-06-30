@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T05:06:17Z" fail="12" name="fn-string-to-codepoints" pass="32" run="44" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:00:27Z" fail="1" name="fn-string-to-codepoints" pass="43" run="44" statusUnknown="0">
    <testResult status="pass" testName="fn-string-to-codepoints1args-1"/>
    <testResult status="pass" testName="fn-string-to-codepoints1args-2"/>
    <testResult status="pass" testName="fn-string-to-codepoints1args-3"/>
    <testResult status="pass" testName="fn-string-to-codepoints1args-4"/>
    <testResult status="pass" testName="fn-string-to-codepoints1args-5"/>
    <testResult status="pass" testName="fn-string-to-codepoints1args-6"/>
-   <testResult status="fail" testName="fn-string-to-codepoints1args-7"/>
+   <testResult status="pass" testName="fn-string-to-codepoints1args-7"/>
    <testResult status="pass" testName="fn-string-to-codepoints1args-8"/>
    <testResult status="pass" testName="fn-string-to-codepoints-1"/>
    <testResult status="pass" testName="fn-string-to-codepoints-2"/>
@@ -13,8 +13,8 @@
    <testResult status="pass" testName="fn-string-to-codepoints-4"/>
    <testResult status="pass" testName="fn-string-to-codepoints-5"/>
    <testResult status="pass" testName="fn-string-to-codepoints-6"/>
-   <testResult status="fail" testName="fn-string-to-codepoints-7"/>
-   <testResult status="fail" testName="fn-string-to-codepoints-8"/>
+   <testResult status="pass" testName="fn-string-to-codepoints-7"/>
+   <testResult status="pass" testName="fn-string-to-codepoints-8"/>
    <testResult status="pass" testName="fn-string-to-codepoints-9"/>
    <testResult status="pass" testName="fn-string-to-codepoints-10"/>
    <testResult status="pass" testName="fn-string-to-codepoints-11"/>
@@ -22,7 +22,7 @@
    <testResult status="pass" testName="fn-string-to-codepoints-13"/>
    <testResult status="pass" testName="fn-string-to-codepoints-14"/>
    <testResult status="pass" testName="fn-string-to-codepoints-15"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-1"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-1"/>
    <testResult status="pass" testName="K-StringToCodepointFunc-2"/>
    <testResult status="pass" testName="K-StringToCodepointFunc-3"/>
    <testResult status="pass" testName="K-StringToCodepointFunc-4"/>
@@ -35,12 +35,12 @@
    <testResult status="fail" testName="K-StringToCodepointFunc-11"/>
    <testResult status="pass" testName="K-StringToCodepointFunc-12"/>
    <testResult status="pass" testName="K-StringToCodepointFunc-13"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-14"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-15"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-16"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-17"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-18"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-19"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-14"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-15"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-16"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-17"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-18"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-19"/>
    <testResult status="pass" testName="K-StringToCodepointFunc-20"/>
-   <testResult status="fail" testName="K-StringToCodepointFunc-21"/>
+   <testResult status="pass" testName="K-StringToCodepointFunc-21"/>
 </testrun>

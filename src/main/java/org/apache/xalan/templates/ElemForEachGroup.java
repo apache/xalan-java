@@ -57,8 +57,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.types.XslForEachGroupCompositeGroupingKey;
 import org.apache.xpath.types.StringWithCollation;
+import org.apache.xpath.types.XslForEachGroupCompositeGroupingKey;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSAnyURI;
@@ -628,16 +628,14 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Method definition, to do xsl:for-each-group instruction's XSL transformation.
+   * Method definition, to do XSL transformation's xsl:for-each-group 
+   * instruction processing.
    *
    * @param transformer              non-null reference to the the current transform-time state.
    *
-   * @throws TransformerException    thrown in a variety of circumstances.
-   * 
-   * @xsl.usage advanced
+   * @throws TransformerException    An XSL transformation exception object
    */
-  private void transformSelectedNodes(TransformerImpl transformer)
-                                                               throws TransformerException {
+  private void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
       
         XPathContext xctxt = transformer.getXPathContext();
         
@@ -806,18 +804,18 @@ public class ElemForEachGroup extends ElemTemplateElement
         List<List<Integer>> xslForEachGroupStartingWithEndingWith = new ArrayList<List<Integer>>();
         
         if (m_groupByExpression != null) {
-        	constructGroupsForGroupBy(xctxt, sourceNodes, xslForEachGroupMap);
+        	constructGroupsForGroupBy(sourceNodes, xslForEachGroupMap, xctxt);
         }        
         else if (m_groupStartingWithExpression != null) {
         	boolean isReverse = (selectExpr instanceof FuncReverse);
-        	constructGroupsForGroupStartingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, m_isInpSeqAllAtomicValues, isReverse);
+        	constructGroupsForGroupStartingWith(sourceNodes, xslForEachGroupStartingWithEndingWith, xctxt, m_isInpSeqAllAtomicValues, isReverse);
         }
         else if (m_groupEndingWithExpression != null) {
         	boolean isReverse = (selectExpr instanceof FuncReverse);
-        	constructGroupsForGroupEndingWith(xctxt, sourceNodes, xslForEachGroupStartingWithEndingWith, m_isInpSeqAllAtomicValues, isReverse);
+        	constructGroupsForGroupEndingWith(sourceNodes, xslForEachGroupStartingWithEndingWith, xctxt, m_isInpSeqAllAtomicValues, isReverse);
         }
         else if (m_groupAdjacentExpression != null) {
-        	constructGroupsForGroupAdjacent(xctxt, sourceNodes, xslForEachGroupAdjacentList, m_isInpSeqAllAtomicValues);
+        	constructGroupsForGroupAdjacent(sourceNodes, xslForEachGroupAdjacentList, xctxt, m_isInpSeqAllAtomicValues);
         }
         
         try {
@@ -1072,18 +1070,19 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Construct groups using xsl:for-each-group instruction, when 'group-by' 
-   * attribute is present.
+   * Method definition, to construct groups using xsl:for-each-group instruction, 
+   * when 'group-by' attribute is present.
    * 
-   * @param xctxt                     XPath context object
-   * @param sourceNodes               Iterator object for source document nodes that 
-   *                                  have to be grouped.
-   * @param xslForEachGroupByMap      java.util.Map object that needs to be populated
+   * @param sourceNodes               An DTMCursorIterator object instance corresponding 
+   *                                  to, XML document source nodes that have to be grouped.
+   * @param xslForEachGroupByMap      A java.util.Map object that needs to be populated
    *                                  with groups formed.
+   * @param xctxt                     An XPath context object
    * @throws TransformerException
    */
-  private void constructGroupsForGroupBy(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		  							                                   Map<Object, List<Integer>> xslForEachGroupByMap) throws TransformerException {
+  private void constructGroupsForGroupBy(DTMCursorIterator sourceNodes, Map<Object, List<Integer>> xslForEachGroupByMap, 
+		                                                                XPathContext xctxt) throws TransformerException {
+	  
 	  int nextNode;
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -1094,7 +1093,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
 			  FuncPosition.m_forEachGroupGroupByPos = ++pos; 
 			  XObject xpathEvalResult = m_groupByExpression.execute(xctxt, nextNode, xctxt.getNamespaceContext());
-			  Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
+			  Object groupingKeyValue = getNormalizedGroupingKeyValue(xpathEvalResult, xctxt);
 
 			  if (!m_composite) {
 				  addXdmNodeHandleToGroup(xslForEachGroupByMap, nextNode, groupingKeyValue);
@@ -1126,15 +1125,16 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
 
   /**
-   * When processing xsl:for-each-group instruction having 'group-by' attribute, 
-   * resulting in a grouping key having atomic value, add an XDM node handle to the 
-   * required group represented by an object of type java.util.Map. 
+   * Method definition, to do, while processing xsl:for-each-group instruction 
+   * having 'group-by' attribute, resulting in a grouping key that is an 
+   * xdm atomic value, add an xdm node handle to the required group represented 
+   * by an object of type java.util.Map. 
    * 
-   * @param xslForEachGroupByMap		An java.util.Map object representing all the groups 
+   * @param xslForEachGroupByMap		An java.util.Map object representing the groups 
    *                                    constructed for xsl:for-each-group instruction. 
-   * @param nodeHandle                  An XDM node handle that needs to be assigned to an
-   *                                    xsl:for-each-group instruction's correct group.
-   * @param groupingKeyValue            A grouping key value having an atomic data type, for 
+   * @param nodeHandle                  An xdm node handle that needs to be associated with
+   *                                    xsl:for-each-group instruction's relevant group.
+   * @param groupingKeyValue            A grouping key value with an xdm atomic type, for 
    *                                    xsl:for-each-group instruction. 
    */
   private void addXdmNodeHandleToGroup(Map<Object, List<Integer>> xslForEachGroupByMap, 
@@ -1151,24 +1151,26 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Construct groups using xsl:for-each-group instruction, when 'group-starting-with' 
-   * attribute is present.
+   * Method definition, to construct XSL groups using xsl:for-each-group 
+   * instruction, when 'group-starting-with' attribute is present.
    * 
-   * @param xctxt								XPath context object
-   * @param sourceNodes							Iterator object for source document nodes that 
-   *                                  			have to be grouped. 
-   * @param xslForEachGroupStartingWith         A list that needs to be populated with groups
-   *                                            formed.
-   * @param isInpSeqAllAtomicValues             Boolean value indicating whether an XDM input
-   *                                            sequence to be grouped has all items as atomic
-   *                                            values.
-   * @param isReverse                           Boolean value indicating, whether nodeset has been
-		   *                                    constructed as a result of XPath function fn:reverse.                                            
+   * @param sourceNodes                                 An DTMCursorIterator object instance corresponding 
+   *                                                    to, XML document source nodes that have to be grouped.
+   * @param xslForEachGroupStartingWith                 A list that needs to be populated with groups
+   *                                                    formed.
+   * @param xctxt                                       An XPath context object
+   * @param isInpSeqAllAtomicValues                     The supplied boolean value to denote,
+   *                                                    whether an xdm sequence to be grouped,
+   *                                                    has all items as xdm atomic value.
+   * 
+   * @param isReverse                                   The supplied boolean value indicating, whether 
+   *                                                    an XML nodeset has been constructed as a result 
+   *                                                    of XPath function fn:reverse.
    * @throws TransformerException
    */
-  private void constructGroupsForGroupStartingWith(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		                                                                             List<List<Integer>> xslForEachGroupStartingWith, 
-		                                                                             boolean isInpSeqAllAtomicValues, boolean isReverse) throws TransformerException {	  
+  private void constructGroupsForGroupStartingWith(DTMCursorIterator sourceNodes, List<List<Integer>> xslForEachGroupStartingWith,
+		                                                                          XPathContext xctxt, boolean isInpSeqAllAtomicValues, 
+		                                                                          boolean isReverse) throws TransformerException {	  
 	  
 	  List<Integer> allNodeHandleList = new ArrayList<Integer>();	  
 	  
@@ -1308,24 +1310,28 @@ public class ElemForEachGroup extends ElemTemplateElement
 		  }
 	  }	  
   }
-
+  
   /**
-   * Construct groups using xsl:for-each-group instruction, when 'group-ending-with' 
-   * attribute is present.
+   * Method definition, to construct XSL groups using xsl:for-each-group 
+   * instruction, when 'group-ending-with' attribute is present.
    * 
-   * @param xctxt								XPath context object
-   * @param sourceNodes							Iterator object for source document nodes that 
-   *                                  			have to be grouped. 
-   * @param xslForEachGroupEndingWith           A list that needs to be populated with groups
-   *                                            formed.
-   * @param isReverse                           Boolean value indicating, whether nodeset has been
-   *                                            constructed as a result of XPath function fn:reverse.
+   * @param sourceNodes                                 An DTMCursorIterator object instance corresponding 
+   *                                                    to, XML document source nodes that have to be grouped.
+   * @param xslForEachGroupEndingWith                   A list that needs to be populated with groups
+   *                                                    formed.
+   * @param xctxt                                       An XPath context object
+   * @param isInpSeqAllAtomicValues                     The supplied boolean value to denote,
+   *                                                    whether an xdm sequence to be grouped,
+   *                                                    has all items as xdm atomic value.
+   * 
+   * @param isReverse                                   The supplied boolean value indicating, whether 
+   *                                                    an XML nodeset has been constructed as a result 
+   *                                                    of XPath function fn:reverse.
    * @throws TransformerException
    */
-  private void constructGroupsForGroupEndingWith(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		  									                                       List<List<Integer>> xslForEachGroupEndingWith, 
-		  									                                                     boolean isInpSeqAllAtomicValues, 
-		  									                                                     boolean isReverse) throws TransformerException {
+  private void constructGroupsForGroupEndingWith(DTMCursorIterator sourceNodes, List<List<Integer>> xslForEachGroupEndingWith, 
+		  									                                    XPathContext xctxt, boolean isInpSeqAllAtomicValues, 
+		  									                                    boolean isReverse) throws TransformerException {
 	  
 	  List<Integer> allNodeHandleList = new ArrayList<Integer>();
 	  
@@ -1443,20 +1449,22 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
 
   /**
-   * Construct groups using xsl:for-each-group instruction, when 'group-adjacent' 
-   * attribute is present.
+   * Method definition, to construct XSL groups using xsl:for-each-group 
+   * instruction, when 'group-adjacent' attribute is present.
    * 
-   * @param xctxt								XPath context object
-   * @param sourceNodes							Iterator object for source document nodes that 
-   *                                  			have to be grouped. 
+   * @param sourceNodes                         An DTMCursorIterator object instance corresponding 
+   *                                            to, XML document source nodes that have to be grouped. 
    * @param xslForEachGroupAdjacentList         A list that needs to be populated with groups
    *                                            formed.
-   * @param isInpSeqAllAtomicValues 
+   * @param xctxt								An XPath context object
+   * @param isInpSeqAllAtomicValues             The supplied boolean value to denote,
+   *                                            whether an xdm sequence to be grouped,
+   *                                            has all items as xdm atomic value.
    * @throws TransformerException
    */
-  private void constructGroupsForGroupAdjacent(XPathContext xctxt, DTMCursorIterator sourceNodes,
-		                                                                         List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList, 
-		                                                                         boolean isInpSeqAllAtomicValues) throws TransformerException {
+  private void constructGroupsForGroupAdjacent(DTMCursorIterator sourceNodes, List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList, 
+		                                                                      XPathContext xctxt, boolean isInpSeqAllAtomicValues) 
+		                                                                    		                                             throws TransformerException {
 	 
 	 Object prevGroupingKeyValue = null;
 	 
@@ -1524,7 +1532,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 	        }	        	        
 		 }
 	     
-	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xctxt, xpathEvalResult);
+	     Object groupingKeyValue = getNormalizedGroupingKeyValue(xpathEvalResult, xctxt);
 	     
 	     if (m_composite) {
 	    	 if (groupingKeyValue instanceof XslForEachGroupCompositeGroupingKey) {
@@ -1540,10 +1548,8 @@ public class ElemForEachGroup extends ElemTemplateElement
 	     
 	     Object currGroupingKeyValue = groupingKeyValue;
 	     
-	     //List<Integer> group = null;
-	     
 	     if (idx == 0) {
-	         // This is the first XDM node being iterated, within this loop
+	         // This is the first xdm node being iterated, within this loop
 	    	 List<Integer> group = new ArrayList<Integer>();
 	         group.add(nextNode);
 	         GroupingKeyAndGroupPair groupingKeyAndGroupPair = new GroupingKeyAndGroupPair(currGroupingKeyValue, group);
@@ -1574,9 +1580,10 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Class definition to implement, sorting of groups formed by xsl:for-each-group 
-   * instruction as per default sorted order as specified by XSLT 3.0 spec.
-  */
+   * Class definition to support, implementation of sorting of 
+   * groups formed by xsl:for-each-group instruction as per 
+   * default sorted order as specified by XSLT 3.0 spec.
+   */
   private class GroupingKeyAndNodeHandlePair implements Comparable<GroupingKeyAndNodeHandlePair> {
      
 	 /**
@@ -1633,41 +1640,51 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Method to support, validating the presence and count of xsl:for-each-group
-   * attributes "group-by", "group-adjacent", "group-starting-with", 
-   * "group-ending-with". 
+   * Method definition, to validate the presence and count of 
+   * xsl:for-each-group instruction attributes 'group-by', 
+   * 'group-adjacent', 'group-starting-with', 'group-ending-with'.
+   * 
+   * @return                            An integer valued result,
+   *                                    for the count of xsl:for-each-group
+   *                                    instruction attributes. 
+   * @throws TransformerException
    */
-  private int getForEachGroupGroupingAttributesCount() 
-                                          throws TransformerException {
+  private int getForEachGroupGroupingAttributesCount() throws TransformerException {
 
-        int forEachGroupGroupingAttributesCount = 0;
+        int result = 0;
         
         if (m_groupByExpression != null) {
-           forEachGroupGroupingAttributesCount++;    
+           result++;    
         }
         
         if (m_groupAdjacentExpression != null) {
-           forEachGroupGroupingAttributesCount++;    
+           result++;    
         }
         
         if (m_groupStartingWithExpression != null) {
-           forEachGroupGroupingAttributesCount++;    
+           result++;    
         }
         
         if (m_groupEndingWithExpression != null) {
-           forEachGroupGroupingAttributesCount++;    
+           result++;    
         }
         
-        return forEachGroupGroupingAttributesCount;
+        return result;
   }
   
   /**
    * Method definition, to transform xsl:for-each-group instruction's grouping 
    * key value (which is the result of evaluating xsl:for-each-group's 'group-by' or 
-   * 'group-adjacent' XPath expressions), into a normalized value of type 
+   * 'group-adjacent' XPath expressions), to a normalized grouping key value of type 
    * java.lang.Object.
+   * 
+   * @param groupingKeyValue                      An xsl:for-each-group instruction's
+   *                                              grouping key value.
+   * @param xctxt                                 An XPath context object 
+   * @return                                      Normalized value for grouping key
+   * @throws TransformerException
    */
-  private Object getNormalizedGroupingKeyValue(XPathContext xctxt, XObject groupingKeyValue) throws TransformerException {
+  private Object getNormalizedGroupingKeyValue(XObject groupingKeyValue, XPathContext xctxt) throws TransformerException {
       
 	  Object normalizedGroupingKeyValue = null;
 	  
@@ -1785,12 +1802,17 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Given a supplied ResultSequence object containing XDM nodes, construct
-   * and return a corresponding DTMCursorIterator object instance.     
+   * Method definition, to get Xalan-J DTMCursorIterator object instance,
+   * using the supplied sequence of xdm nodes.
+   *  
+   * @param resultSeq                     The supplied xdm sequence object
+   * @param xctxt                         An XPath context object
+   * @return                              An DTMCursorIterator object instance
+   * @throws TransformerException
    */
   private DTMCursorIterator getSourceNodesFromResultSequence(ResultSequence resultSeq, XPathContext xctxt) 
                                                                                           throws TransformerException {
-     DTMCursorIterator sourceNodes = null;
+     DTMCursorIterator result = null;
      
      NodeVector nodeVector = new NodeVector();
      
@@ -1804,14 +1826,14 @@ public class ElemForEachGroup extends ElemTemplateElement
      NodeCursor nodeSequence = new NodeCursor(nodeVector);
      
      try {
-        sourceNodes = nodeSequence.cloneWithReset();
+        result = nodeSequence.cloneWithReset();
      } 
      catch (CloneNotSupportedException ex) {
         throw new TransformerException("XTDE0555 : An error occured while performing grouping with XSL 'for-each-group' "
-                                                                                            + "instruction.", xctxt.getSAXLocator());
+                                                                                                      + "instruction.", xctxt.getSAXLocator());
      }
      
-     return sourceNodes; 
+     return result; 
   }
 
   public List<GroupingKeyAndGroupPair> getSortedGroups() {

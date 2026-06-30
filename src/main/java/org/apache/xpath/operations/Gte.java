@@ -156,9 +156,9 @@ public class Gte extends Operation
 		  result = ((dbl1 >= dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 	  }
       else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+    	  double dbl1 = ((XNumber)left).num();
     	  java.lang.String rStr = ((XSNumericType)right).stringValue();
-		  double dbl1 = (Double.valueOf(rStr)).doubleValue();
-		  double dbl2 = ((XNumber)left).num();
+		  double dbl2 = (Double.valueOf(rStr)).doubleValue();		  
 		  
 		  result = ((dbl1 >= dbl2) ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
 	  }

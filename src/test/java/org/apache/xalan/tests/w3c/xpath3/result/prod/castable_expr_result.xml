@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:00Z" fail="153" name="prod-CastableExpr" pass="695" run="848" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T10:57:39Z" fail="148" name="prod-CastableExpr" pass="700" run="848" statusUnknown="0">
    <testResult status="pass" testName="CastableAs001"/>
    <testResult status="pass" testName="CastableAs002"/>
    <testResult status="pass" testName="CastableAs003"/>
@@ -690,7 +690,7 @@
    <testResult status="fail" testName="K-SeqExprCastable-38"/>
    <testResult status="fail" testName="K2-SeqExprCastable-1"/>
    <testResult status="fail" testName="K2-SeqExprCastable-2"/>
-   <testResult status="fail" testName="K2-SeqExprCastable-3"/>
+   <testResult status="pass" testName="K2-SeqExprCastable-3"/>
    <testResult status="pass" testName="K2-SeqExprCastable-4"/>
    <testResult status="pass" testName="K2-SeqExprCastable-5"/>
    <testResult status="fail" testName="K2-SeqExprCastable-6"/>
@@ -783,10 +783,10 @@
    <testResult status="pass" testName="cbcl-castable-gYear-001"/>
    <testResult status="pass" testName="cbcl-castable-gYearMonth-001"/>
    <testResult status="pass" testName="cbcl-castable-gYearMonth-002"/>
-   <testResult status="fail" testName="cbcl-castable-gYear-002"/>
-   <testResult status="fail" testName="cbcl-castable-gYear-003"/>
-   <testResult status="fail" testName="cbcl-castable-gYearMonth-003"/>
-   <testResult status="fail" testName="cbcl-castable-gYearMonth-004"/>
+   <testResult status="pass" testName="cbcl-castable-gYear-002"/>
+   <testResult status="pass" testName="cbcl-castable-gYear-003"/>
+   <testResult status="pass" testName="cbcl-castable-gYearMonth-003"/>
+   <testResult status="pass" testName="cbcl-castable-gYearMonth-004"/>
    <testResult status="fail" testName="cbcl-castable-ENTITIES-001"/>
    <testResult status="fail" testName="cbcl-castable-ENTITIES-002"/>
    <testResult status="fail" testName="cbcl-castable-ENTITIES-003"/>

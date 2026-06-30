@@ -139,19 +139,18 @@ class Lexer
   {
 
 	  m_compiler.m_currentPattern = pat;
-	  m_patternMapSize = 0; 
+	  m_patternMapSize = 0;
+	  
+	  int nChars = pat.length();
 
-	  // Use a conservative estimate that the OpMapVector needs about 
-	  // five time the length of the input path expression, to a maximum 
-	  // of MAXTOKENQUEUESIZE*5. If the OpMapVector needs to grow, grow
-	  // it freely (second argument to constructor).
-	  int initTokQueueSize = ((pat.length() < OpMap.MAXTOKENQUEUESIZE)
-			  ? pat.length() :  OpMap.MAXTOKENQUEUESIZE) * 5;
-	  m_compiler.m_opMap = new OpMapVector(initTokQueueSize,
-			  OpMap.BLOCKTOKENQUEUESIZE * 5,
-			  OpMap.MAPINDEX_LENGTH);
-
-	  int nChars = pat.length();    
+	  /**
+	   * Use a conservative estimate that the OpMapVector needs about
+	   * five time the length of the input path expression, to a maximum
+	   * of MAXTOKENQUEUESIZE * 5. If the OpMapVector needs to grow, grow
+	   * it freely (second argument to constructor).
+	   */	  
+	  int initTokQueueSize = ((nChars < OpMap.MAXTOKENQUEUESIZE) ? nChars :  OpMap.MAXTOKENQUEUESIZE) * 5;
+	  m_compiler.m_opMap = new OpMapVector(initTokQueueSize, OpMap.BLOCKTOKENQUEUESIZE * 5, OpMap.MAPINDEX_LENGTH);   
 
 	  // Nesting of '[' so we can know if the given element should be
 	  // counted inside the m_patternMap.
@@ -227,13 +226,13 @@ class Lexer
 			  }
 			  else
 			  {
-				  m_processor.error(XPATHErrorResources.ER_EXPECTED_SINGLE_QUOTE,
-						  null);  //"misquoted literal... expected single quote!");
+				  m_processor.error(XPATHErrorResources.ER_EXPECTED_SINGLE_QUOTE, null);  //"misquoted literal... expected single quote!");
 			  }
+			  
 			  break;
 		  case 0x0A :
 		  case 0x0D :
-		  case ' ' :			  
+		  case ' ' :		  
 		  case '\t' :
 			  if (startSubstring != -1)
 			  {

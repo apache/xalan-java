@@ -28,7 +28,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of XPath 3.1 function fn:empty.
+ * Implementation of an XPath 3.1 function fn:empty.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

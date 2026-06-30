@@ -19,16 +19,26 @@ package org.apache.xpath.functions.string;
 
 import java.math.BigInteger;
 
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.FunctionDef1Arg;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 
 import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the string-to-codepoints() function.
+ * Implementation of an XPath 3.1 function fn:string-to-codepoints.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -56,8 +66,31 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
     */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-
 	   XObject result = null;
+	   
+	   SourceLocator srcLocator = xctxt.getSAXLocator();
+	   
+	   final int sourceNode = xctxt.getCurrentNode(); 
+	   
+	   if (m_arg0 == null) {
+		  if ((xctxt.getXPath3ContextItem() == null) && (sourceNode == DTM.NULL)) {
+			  throw new TransformerException("XPST0017 : An XPath 3.1 function 'string-to-codepoints' is supplied "
+			  		                                                           + "with no arguments, and XPath context "
+			  		                                                           + "item is absent.", srcLocator);   
+		  }
+	   }
+	   
+	   if (m_arg0 != null) {
+		   XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		   
+		   if ((xObj0 instanceof XNumber) || (xObj0 instanceof XSNumericType) || (xObj0 instanceof XPathMap)
+				                                                              || (xObj0 instanceof XPathArray)
+				                                                              || (m_arg0 instanceof XPathInlineFunction)
+				                                                              || (m_arg0 instanceof XPathNamedFunctionReference)) {
+			   throw new TransformerException("XPTY0004 : An XPath 3.1 function 'string-to-codepoints' requires an "
+			   		                                                                               + "argument of type string.", srcLocator);   
+		   }
+	   }
 
 	   String inpStr = (getArg0AsString(xctxt)).toString();
 
@@ -65,14 +98,14 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
 
 	   int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
 
-	   ResultSequence resultSeq = new ResultSequence();
+	   ResultSequence rSeq = new ResultSequence();
 
 	   for (int idx=0; idx < codePointsArr.length; idx++) {
 		   long codepointVal = codePointsArr[idx]; 
-		   resultSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
+		   rSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
 	   }
 
-	   result = resultSeq; 
+	   result = rSeq; 
 
 	   return result;
     }

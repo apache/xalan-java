@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T11:41:38Z" fail="4" name="fn-string" pass="65" run="69" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:00:27Z" fail="3" name="fn-string" pass="67" run="70" statusUnknown="0">
    <testResult status="pass" testName="fn-stringint1args-1"/>
    <testResult status="pass" testName="fn-stringint1args-2"/>
    <testResult status="pass" testName="fn-stringint1args-3"/>
@@ -41,11 +41,12 @@
    <testResult status="pass" testName="fn-string-1"/>
    <testResult status="pass" testName="fn-string-2"/>
    <testResult status="pass" testName="fn-string-3"/>
+   <testResult status="pass" testName="fn-string-4"/>
    <testResult status="pass" testName="fn-string-5"/>
    <testResult status="pass" testName="fn-string-6"/>
    <testResult status="pass" testName="fn-string-7"/>
    <testResult status="pass" testName="fn-string-8"/>
-   <testResult status="fail" testName="fn-string-9"/>
+   <testResult status="pass" testName="fn-string-9"/>
    <testResult status="pass" testName="fn-string-23"/>
    <testResult status="pass" testName="fn-string-24"/>
    <testResult status="pass" testName="fn-string-25"/>

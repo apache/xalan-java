@@ -34,12 +34,12 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An instance of this class, shall sort xsl:for-each-group's groups, 
- * according to xsl:sort elements contained within xsl:for-each-group
- * instruction.
+ * A Class definition, that sorts groups formed by xsl:for-each-group 
+ * instruction, as per XSL xsl:sort elements contained within 
+ * xsl:for-each-group instruction.
  * 
- *  An implementation of this class, follows design of xsl:for-each 
- *  instruction's xsl:sort element.
+ * This class implementation, follows design of xsl:for-each instruction 
+ * sorting.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -56,7 +56,6 @@ public class ForEachGroupXslSortSorter
 
   /** Vector of NodeSortKeys */
   private Vector m_keys;
-
   
   /**
    * Class constructor.
@@ -116,24 +115,23 @@ public class ForEachGroupXslSortSorter
             }
         }
     
-        int numberOfGroups = groupingKeyAndGroupPairList.size();
+        int groupCount = groupingKeyAndGroupPairList.size();
         
         // Populate a vector of node compare elements, based on an input list of 
         // xsl:for-each-group groups.
         Vector nodeCompareElements = new Vector();
     
-        for (int idx = 0; idx < numberOfGroups; idx++) {
+        for (int idx = 0; idx < groupCount; idx++) {
             XslForEachGroupNodeCompareElem elem = new XslForEachGroupNodeCompareElem(m_elemForEachGroup, 
-            		                                                                 groupingKeyAndGroupPairList.get(idx),
-            		                                                                 m_keys,
-            		                                                                 xctxt);
+            		                                                                 groupingKeyAndGroupPairList.get(idx), 
+            		                                                                 m_keys, xctxt);
     
             nodeCompareElements.addElement(elem);
         }
     
         Vector scratchVector = new Vector();
     
-        mergesort(nodeCompareElements, scratchVector, 0, numberOfGroups - 1, xctxt);
+        mergesort(nodeCompareElements, scratchVector, 0, groupCount - 1, xctxt);
         
         groupingKeyAndGroupPairList.clear();
         

@@ -4,9 +4,9 @@
  */
 package xml.xpath31.processor.types;
 
-import org.apache.xpath.objects.ResultSequence;
-
 import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.objects.ResultSequence;
 
 /**
  * A representation of the xs:token datatype.
@@ -71,39 +71,16 @@ public class XSToken extends XSNormalizedString {
 
 		String srcString = xsAnyType.stringValue();
 		
-		if (!isSatisfiesConstraints(srcString)) {
-			throw new javax.xml.transform.TransformerException("FORG0006 : The supplied string value cannot be used to construct "
-                                                                             + "xs:token value, since the input string contains prohibited "
-                                                                             + "characters for a xs:token value.");	
-		}
-		else {
-			resultSeq.add(new XSToken(srcString));
-		}
+		srcString = srcString.replace("\r", "");
+		srcString = srcString.replace("\n", "");
+		srcString = srcString.replace("\t", "");
+		srcString = srcString.trim();
+		srcString = srcString.replaceAll("[ ]{2,}", " ");
+		
+		resultSeq.add(new XSToken(srcString));
 
 		return resultSeq;
 	}
-	
-	/*
-	 * Determine whether, the supplied string value satisfies constraints for 
-	 * the datatype, xs:token. 
-	 */
-	protected boolean isSatisfiesConstraints(String srcString) {
-	   
-		boolean isXsToken = true;
-		
-		// Satisfies constraints for the data type xs:normalizedString, and additionally 
-		// must also satisfy following constraints,
-		// The string must not have leading or trailing spaces and that have no internal 
-		// sequences of two or more spaces.
-		if (!super.isSatisfiesConstraints(srcString) || srcString.startsWith(" ") || 
-				                                        srcString.endsWith(" ")   || 
-				                                        srcString.indexOf("  ") != -1) {
-			isXsToken = false;
-		}
-		
-		return isXsToken;
-		  
-	} // isSatisfiesConstraints
 	
     public int getType() {
         return CLASS_XS_TOKEN;
