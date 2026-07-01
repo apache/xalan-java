@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -91,12 +92,14 @@ import org.xml.sax.InputSource;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
@@ -1073,6 +1076,59 @@ public class XslTransformEvaluationHelper {
 
     	return result;
     }
+    
+    /**
+	 * Method definition, to normalize an xdm map key values.
+	 * 
+	 * An xdm map keys with types xs:untypedAtomic, xs:anyURI
+	 * are normalized to xs:string values. XML namespace strings
+	 * like 'a : b' (produced various times by Xalan-J, 
+	 * XPath 3.1 parse) are normalized to 'a:b'.
+	 * 
+	 * A java.util.Map object returned by this method, is a clone
+	 * of the supplied map with required modifications to map keys.
+	 * 
+	 * @param map1                       The supplied xdm native map
+	 * @return                           An xdm normalized, native map
+	 */
+	public static Map<XObject,XObject> getNormalizedClonedMap(Map<XObject,XObject> map1) {
+		
+		Map<XObject,XObject> result = new HashMap<XObject,XObject>();
+		
+		Set<XObject> keySet1 = map1.keySet();
+		Iterator<XObject> iter1 = keySet1.iterator();
+		
+		while (iter1.hasNext()) {
+		   XObject key1 = iter1.next();
+		   XObject value1 = map1.get(key1);
+		   XObject newKey1 = null;
+		   if (key1 instanceof XString) {
+			   String str1 = ((XString)key1).str();
+			   str1 = str1.replace(" : ", ":");
+			   newKey1 = new XSString(str1);
+		   }
+		   else if (key1 instanceof XSString) {
+			  String str1 = ((XSString)key1).stringValue();
+			  str1 = str1.replace(" : ", ":");
+			  newKey1 = new XSString(str1);
+		   }		   
+		   else if (key1 instanceof XSUntypedAtomic) {
+			  newKey1 = new XSString(((XSUntypedAtomic)key1).stringValue());			  
+		   }
+		   else if (key1 instanceof XSAnyURI) {
+			  String str1 = ((XSAnyURI)key1).stringValue();
+			  str1 = str1.replace(" : ", ":");
+			  newKey1 = new XSString(str1);
+		   }
+		   else {
+			  newKey1 = key1;  
+		   }
+		   
+		   result.put(newKey1, value1);
+		}
+		
+		return result;
+	}
     
     /**
      * Method definition, to get numerical sum from xdm sequence items.

@@ -2790,25 +2790,27 @@ public class XPathParser
    */
   private String getXPathMapConstructorStrValue() throws TransformerException {
 	 
-	 StringBuffer resultStrBuff = new StringBuffer();
+	 String result = null;
 	 
-	 resultStrBuff.append(m_token);
+	 StringBuffer strBuff = new StringBuffer();
+	 
+	 strBuff.append(m_token);
 	 
 	 consumeExpected("map");
 	 
 	 while (m_token != null) {
 		if (tokenIs('}')) {
-		   resultStrBuff.append(m_token);
+		   strBuff.append(m_token);
 		   consumeExpected('}');
-		   if (getCharCount(resultStrBuff.toString(), '{') == getCharCount(resultStrBuff.toString(), '}')) {
+		   if (getCharCount(strBuff.toString(), '{') == getCharCount(strBuff.toString(), '}')) {
 			   break; 
 		   }
 		   else {
 			   if (tokenIs(':')) {
-				   resultStrBuff.append(" " + m_token + " "); 
+				   strBuff.append(" " + m_token + " "); 
 			   }
 			   else {
-				   resultStrBuff.append(m_token);   
+				   strBuff.append(m_token);   
 			   }
 			   
 			   nextToken(); 
@@ -2816,17 +2818,19 @@ public class XPathParser
 		}
 		else {
 		   if (tokenIs(':')) {
-			  resultStrBuff.append(" " + m_token + " "); 
+			  strBuff.append(" " + m_token + " "); 
 		   }
 		   else {
-			  resultStrBuff.append(m_token);   
+			  strBuff.append(m_token);   
 		   }
 		   
 		   nextToken();
 		}			 
      }
 	 
-	 return resultStrBuff.toString(); 
+	 result = strBuff.toString(); 
+	 
+	 return result; 
   }
   
   /**
@@ -5457,6 +5461,10 @@ public class XPathParser
            return;
     	}
     }
+    else if (tokenIs("map")) {
+    	// XPath literal map expression as, function argument    	
+    	mapFuncArg();	
+    }
     else if (tokenIs('[')) {
     	// XPath literal square array as, function argument
     	
@@ -5507,11 +5515,7 @@ public class XPathParser
     	m_isFunctionArgumentParse = false;
 
         return;
-    }
-    else if (tokenIs("map")) {
-       // XPath literal map expression as, function argument    	
-  	   mapFuncArg();	
-    }
+    }    
     else if (tokenIs('?')) {
        // A function argument placeholder, for a function call partial 
        // function application.    	
@@ -7264,8 +7268,67 @@ public class XPathParser
  	  if (!tokenIs('}')) {
  		  while (!tokenIs('}')) {        	 
  			  String mapEntryKeyXPathExprStr = m_token;
- 			  nextToken();
- 			  consumeExpected(':');
+ 			  
+ 			  TokenQueueScanPosition prevTokenQueueScanPos = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+ 			 
+ 			  if (lookahead(':', 1) && lookahead('(', 3)) {
+ 				 /**
+ 				  * There's likely an, xdm map key XPath string as,
+ 				  * XML namespace qualified single argument function 
+ 				  * call. This could be an XML Schema type constructor,
+ 				  * function call as well.
+ 				  */ 				   				 
+ 				  
+ 				 nextToken(); 				  				  				  				  				 
+ 				 mapEntryKeyXPathExprStr += m_token;
+ 				 nextToken();
+ 				 mapEntryKeyXPathExprStr += m_token;
+ 				 nextToken();
+				 mapEntryKeyXPathExprStr += m_token;
+				 nextToken();
+				 mapEntryKeyXPathExprStr += m_token;
+				 nextToken();
+				 mapEntryKeyXPathExprStr += m_token;				 
+				 if (tokenIs(')') && lookahead(':', 1)) {
+				    consumeExpected(')');
+				    consumeExpected(':');
+				 }
+				 else {
+					restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+					
+					nextToken();
+	 	 			consumeExpected(':'); 
+				 }
+ 			  }
+ 			  else if (lookahead('(', 1)) {
+ 				 /**
+  				  * There's likely an, xdm map key XPath string as,
+  				  * XPath built-in function call implicitly for XML 
+  				  * namespace http://www.w3.org/2005/xpath-functions.
+  				  */
+ 				  
+ 				 nextToken(); 				  				  				  				  				 
+ 				 mapEntryKeyXPathExprStr += m_token;
+ 				 nextToken();
+ 				 mapEntryKeyXPathExprStr += m_token;
+ 				 nextToken();
+ 				 mapEntryKeyXPathExprStr += m_token;
+ 				if (tokenIs(')') && lookahead(':', 1)) {
+ 					 consumeExpected(')');
+ 					 consumeExpected(':');
+ 				 }
+ 				 else {
+ 					 restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+
+ 					 nextToken();
+ 					 consumeExpected(':'); 
+ 				 }
+ 			  }
+ 			  else {
+ 				 nextToken();
+ 	 			 consumeExpected(':');  
+ 			  }
+ 			  
  			  String mapEntryValueXPathExprStr = null;
  			  if (tokenIs("map")) {
  				  // There's likely an XPath map constructor here, 
@@ -7311,11 +7374,13 @@ public class XPathParser
  				  }
  				  else if (tokenIs('}')) {
  					  consumeExpected('}');
+ 					  
  					  break;
  				  }
  			  }
  			  else if (tokenIs('}')) {
  				  consumeExpected('}');
+ 				  
  				  break;
  			  }
  		  }
@@ -7327,7 +7392,7 @@ public class XPathParser
  	  m_xpathMapConstructor.setNativeMap(nativeMapObj);
  	  
  	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
- 			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
+ 			                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
    }
    
    /**

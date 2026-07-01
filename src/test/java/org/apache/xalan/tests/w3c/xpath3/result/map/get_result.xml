@@ -1,34 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:15Z" fail="19" name="map-get" pass="13" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-01T11:38:42Z" fail="4" name="map-get" pass="28" run="32" statusUnknown="0">
    <testResult status="pass" testName="map-get-001"/>
    <testResult status="pass" testName="map-get-002"/>
    <testResult status="pass" testName="map-get-003"/>
    <testResult status="pass" testName="map-get-004"/>
    <testResult status="pass" testName="map-get-005"/>
-   <testResult status="fail" testName="map-get-006"/>
-   <testResult status="fail" testName="map-get-007"/>
+   <testResult status="pass" testName="map-get-006"/>
+   <testResult status="pass" testName="map-get-007"/>
    <testResult status="pass" testName="map-get-008"/>
    <testResult status="pass" testName="map-get-009"/>
    <testResult status="pass" testName="map-get-010"/>
    <testResult status="pass" testName="map-get-011"/>
-   <testResult status="fail" testName="map-get-012"/>
-   <testResult status="fail" testName="map-get-013"/>
-   <testResult status="fail" testName="map-get-014"/>
-   <testResult status="fail" testName="map-get-015"/>
+   <testResult status="pass" testName="map-get-012"/>
+   <testResult status="pass" testName="map-get-013"/>
+   <testResult status="pass" testName="map-get-014"/>
+   <testResult status="pass" testName="map-get-015"/>
    <testResult status="fail" testName="map-get-016"/>
-   <testResult status="fail" testName="map-get-017"/>
-   <testResult status="fail" testName="map-get-018"/>
+   <testResult status="pass" testName="map-get-017"/>
+   <testResult status="pass" testName="map-get-018"/>
    <testResult status="pass" testName="map-get-019"/>
    <testResult status="pass" testName="map-get-020"/>
-   <testResult status="fail" testName="map-get-021"/>
-   <testResult status="fail" testName="map-get-022"/>
+   <testResult status="pass" testName="map-get-021"/>
+   <testResult status="pass" testName="map-get-022"/>
    <testResult status="fail" testName="map-get-023"/>
    <testResult status="fail" testName="map-get-024"/>
    <testResult status="fail" testName="map-get-025"/>
    <testResult status="pass" testName="map-get-100"/>
-   <testResult status="fail" testName="map-get-901"/>
-   <testResult status="fail" testName="map-get-902"/>
-   <testResult status="fail" testName="map-get-903"/>
+   <testResult status="pass" testName="map-get-901"/>
+   <testResult status="pass" testName="map-get-902"/>
+   <testResult status="pass" testName="map-get-903"/>
    <testResult status="pass" testName="map-get-904"/>
-   <testResult status="fail" testName="map-get-905"/>
-   <testResult status="fail" testName="map-get-906"/>
+   <testResult status="pass" testName="map-get-905"/>
+   <testResult status="pass" testName="map-get-906"/>
 </testrun>

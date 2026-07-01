@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-01T11:38:42Z" fail="2" name="map-size" pass="11" run="13" statusUnknown="0">
+   <testResult status="pass" testName="map-size-001"/>
+   <testResult status="pass" testName="map-size-002"/>
+   <testResult status="pass" testName="map-size-003"/>
+   <testResult status="pass" testName="map-size-004"/>
+   <testResult status="pass" testName="map-size-006"/>
+   <testResult status="pass" testName="map-size-007"/>
+   <testResult status="pass" testName="map-size-009"/>
+   <testResult status="pass" testName="map-size-010"/>
+   <testResult status="pass" testName="map-size-011"/>
+   <testResult status="pass" testName="map-size-012"/>
+   <testResult status="pass" testName="map-size-013"/>
+   <testResult status="fail" testName="map-size-014"/>
+   <testResult status="fail" testName="map-size-015"/>
+</testrun>

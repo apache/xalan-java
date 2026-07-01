@@ -1,28 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:15Z" fail="14" name="map-contains" pass="12" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-01T11:38:42Z" fail="1" name="map-contains" pass="25" run="26" statusUnknown="0">
    <testResult status="pass" testName="map-contains-001"/>
    <testResult status="pass" testName="map-contains-002"/>
    <testResult status="pass" testName="map-contains-003"/>
    <testResult status="pass" testName="map-contains-004"/>
    <testResult status="pass" testName="map-contains-005"/>
-   <testResult status="fail" testName="map-contains-006"/>
-   <testResult status="fail" testName="map-contains-007"/>
+   <testResult status="pass" testName="map-contains-006"/>
+   <testResult status="pass" testName="map-contains-007"/>
    <testResult status="pass" testName="map-contains-008"/>
    <testResult status="pass" testName="map-contains-009"/>
    <testResult status="pass" testName="map-contains-010"/>
    <testResult status="pass" testName="map-contains-011"/>
-   <testResult status="fail" testName="map-contains-012"/>
-   <testResult status="fail" testName="map-contains-013"/>
-   <testResult status="fail" testName="map-contains-014"/>
-   <testResult status="fail" testName="map-contains-015"/>
+   <testResult status="pass" testName="map-contains-012"/>
+   <testResult status="pass" testName="map-contains-013"/>
+   <testResult status="pass" testName="map-contains-014"/>
+   <testResult status="pass" testName="map-contains-015"/>
    <testResult status="fail" testName="map-contains-016"/>
-   <testResult status="fail" testName="map-contains-017"/>
-   <testResult status="fail" testName="map-contains-018"/>
+   <testResult status="pass" testName="map-contains-017"/>
+   <testResult status="pass" testName="map-contains-018"/>
    <testResult status="pass" testName="map-contains-019"/>
    <testResult status="pass" testName="map-contains-020"/>
-   <testResult status="fail" testName="map-contains-901"/>
-   <testResult status="fail" testName="map-contains-902"/>
-   <testResult status="fail" testName="map-contains-903"/>
+   <testResult status="pass" testName="map-contains-901"/>
+   <testResult status="pass" testName="map-contains-902"/>
+   <testResult status="pass" testName="map-contains-903"/>
    <testResult status="pass" testName="map-contains-904"/>
-   <testResult status="fail" testName="map-contains-905"/>
-   <testResult status="fail" testName="map-contains-906"/>
+   <testResult status="pass" testName="map-contains-905"/>
+   <testResult status="pass" testName="map-contains-906"/>
 </testrun>

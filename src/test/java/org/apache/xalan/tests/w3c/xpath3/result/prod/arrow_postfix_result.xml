@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:00Z" fail="31" name="prod-ArrowPostfix" pass="9" run="40" statusUnknown="0">
-   <testResult status="fail" testName="ArrowPostfix-001"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-01T11:38:26Z" fail="24" name="prod-ArrowPostfix" pass="16" run="40" statusUnknown="0">
+   <testResult status="pass" testName="ArrowPostfix-001"/>
    <testResult status="pass" testName="ArrowPostfix-002"/>
-   <testResult status="fail" testName="ArrowPostfix-003"/>
-   <testResult status="fail" testName="ArrowPostfix-004"/>
-   <testResult status="fail" testName="ArrowPostfix-005"/>
-   <testResult status="fail" testName="ArrowPostfix-006"/>
+   <testResult status="pass" testName="ArrowPostfix-003"/>
+   <testResult status="pass" testName="ArrowPostfix-004"/>
+   <testResult status="pass" testName="ArrowPostfix-005"/>
+   <testResult status="pass" testName="ArrowPostfix-006"/>
    <testResult status="pass" testName="ArrowPostfix-007"/>
    <testResult status="pass" testName="ArrowPostfix-008"/>
    <testResult status="pass" testName="ArrowPostfix-009"/>
@@ -16,8 +16,8 @@
    <testResult status="fail" testName="ArrowPostfix-015"/>
    <testResult status="fail" testName="ArrowPostfix-016"/>
    <testResult status="pass" testName="ArrowPostfix-017"/>
-   <testResult status="fail" testName="ArrowPostfix-018"/>
-   <testResult status="fail" testName="ArrowPostfix-019"/>
+   <testResult status="pass" testName="ArrowPostfix-018"/>
+   <testResult status="pass" testName="ArrowPostfix-019"/>
    <testResult status="fail" testName="ArrowPostfix-020"/>
    <testResult status="fail" testName="ArrowPostfix-021"/>
    <testResult status="fail" testName="ArrowPostfix-022"/>

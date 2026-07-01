@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-25T16:49:25Z" fail="2" name="array-fold-right" pass="6" run="8" statusUnknown="0">
-   <testResult status="fail" testName="array-fold-right-001"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-01T11:38:43Z" fail="0" name="array-fold-right" pass="8" run="8" statusUnknown="0">
+   <testResult status="pass" testName="array-fold-right-001"/>
    <testResult status="pass" testName="array-fold-right-003"/>
    <testResult status="pass" testName="array-fold-right-004"/>
-   <testResult status="fail" testName="array-fold-right-005"/>
+   <testResult status="pass" testName="array-fold-right-005"/>
    <testResult status="pass" testName="array-fold-right-006"/>
    <testResult status="pass" testName="array-fold-right-007"/>
    <testResult status="pass" testName="array-fold-right-008"/>

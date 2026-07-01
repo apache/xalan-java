@@ -37,12 +37,13 @@ public class XPath3MapTests extends W3CXPath3TestsUtil {
         m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "map/";
     	
         m_test_set_fileArr = new String[] { "contains.xml", "get.xml", "keys.xml", "remove.xml", "for-each.xml",
-        		                            "remove.xml" };
+        		                            "remove.xml", "size.xml" };
         
         m_resultSubFolderName = "map";
         
         m_test_set_result_fileArr = new String[] { "contains_result.xml", "get_result.xml", "keys_result.xml", 
-                                                   "remove_result.xml", "for-each_result.xml", "remove_result.xml" };
+                                                   "remove_result.xml", "for-each_result.xml", "remove_result.xml",
+                                                   "size_result.xml" };
     }
 
     @AfterClass
