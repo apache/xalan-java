@@ -50,7 +50,7 @@ public class FuncResolveQName extends Function2Args
      * Class constructor.
      */
     public FuncResolveQName() {
-    	m_defined_arity = new Short[] { 2 };
+    	m_arity = new Short[] { 2 };
     }
 
     /**

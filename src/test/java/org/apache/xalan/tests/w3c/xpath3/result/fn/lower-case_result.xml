@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T05:06:16Z" fail="2" name="fn-lower-case" pass="26" run="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:16Z" fail="0" name="fn-lower-case" pass="28" run="28" statusUnknown="0">
    <testResult status="pass" testName="fn-lower-case1args-1"/>
    <testResult status="pass" testName="fn-lower-case1args-2"/>
    <testResult status="pass" testName="fn-lower-case1args-3"/>
@@ -20,10 +20,10 @@
    <testResult status="pass" testName="fn-lower-case-16"/>
    <testResult status="pass" testName="fn-lower-case-17"/>
    <testResult status="pass" testName="fn-lower-case-18"/>
-   <testResult status="fail" testName="fn-lower-case-19"/>
+   <testResult status="pass" testName="fn-lower-case-19"/>
    <testResult status="pass" testName="fn-lower-case-20"/>
    <testResult status="pass" testName="fn-lower-case-21"/>
-   <testResult status="fail" testName="K-LowerCaseFunc-1"/>
+   <testResult status="pass" testName="K-LowerCaseFunc-1"/>
    <testResult status="pass" testName="K-LowerCaseFunc-2"/>
    <testResult status="pass" testName="K-LowerCaseFunc-3"/>
    <testResult status="pass" testName="K-LowerCaseFunc-4"/>

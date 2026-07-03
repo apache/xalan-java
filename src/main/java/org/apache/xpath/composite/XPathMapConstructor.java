@@ -398,6 +398,7 @@ public class XPathMapConstructor extends Expression {
 					if (arg0 != null) {
 						funcThreeArgs.setArg(arg0, 1);
 					}
+					
 					if (arg1 != null) {
 						funcThreeArgs.setArg(arg1, 2);
 					}
@@ -414,8 +415,8 @@ public class XPathMapConstructor extends Expression {
 
 				if (arg1 != null) {
 					throw new javax.xml.transform.TransformerException("FORX0003 : The function's second argument cannot be provided "
-							+ "lexically for an XPath function of arity two with evaluation using "
-							+ "XPath operator =>.", srcLocator); 
+																										+ "lexically for an XPath function of arity two with evaluation using "
+																										+ "XPath operator =>.", srcLocator); 
 				}
 				else {     		
 					Expression arg0 = funcTwoArgs.getArg0();
@@ -436,8 +437,8 @@ public class XPathMapConstructor extends Expression {
 
 				if (arg0 != null) {
 					throw new javax.xml.transform.TransformerException("FORX0003 : The function's 1st argument cannot be provided lexically "
-							+ "for an XPath function of arity 1 with evaluation using "
-							+ "operator =>.", srcLocator); 
+																									   + "for an XPath function of arity 1 with evaluation using "
+																									   + "operator =>.", srcLocator); 
 				}
 				else {
 					funcOneArg.setArg0(xdmMap);

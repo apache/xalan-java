@@ -39,15 +39,22 @@ import org.apache.xpath.regex.Matcher;
 public class FuncRegexGroup extends FunctionOneArg
 {
     private static final long serialVersionUID = 2690898828342290061L;
+    
+    /**
+     * Class constructor.
+     */
+    public FuncRegexGroup() {
+ 	   m_arity = new Short[] { 1 };
+    }
 
     /**
-      * Evaluate the function. The function must return a valid object.
-      * 
-      * @param xctxt The current execution context.
-      * @return a valid XObject.
-      *
-      * @throws javax.xml.transform.TransformerException
-    */
+     * Evaluate the function. The function must return a valid object.
+     * 
+     * @param xctxt The current execution context.
+     * @return a valid XObject.
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
         
         XObject result = null;

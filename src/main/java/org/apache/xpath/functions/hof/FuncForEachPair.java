@@ -59,7 +59,7 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
      * Class constructor.
      */
     public FuncForEachPair() {
- 	   m_defined_arity = new Short[] { 3 };
+ 	   m_arity = new Short[] { 3 };
     }
 
     /**
@@ -145,30 +145,38 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
            FunctionTable funcTable = xctxt.getFunctionTable();
            
            Object funcIdObj = null;
-           if (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
-              funcIdObj = funcTable.getFunctionId(funcLocalName);
+           if ((funcNamespace == null) || (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace))) {
+        	   funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
            }
            else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
-              funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+        	   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
            }
            else if (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
-              funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+        	   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
            }
            else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
-              funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+        	   funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
            }
-           
+
+           String funcExpandedName = null;
+           if (funcNamespace != null) {
+        	   funcExpandedName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
+           }
+           else {
+        	   funcExpandedName = "{" + funcLocalName + "}#" + funcArity;
+           }
+
            if (funcIdObj != null) {
-              String funcIdStr = funcIdObj.toString();
-              Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));               
-              try {
-            	 evalResult = evaluateForEachPairNamedFuncReference(function, inpSeq1, inpSeq2, xctxt);
-			  } 
-              catch (WrongNumberArgsException ex) {				
-            	  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;  
-    			  throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
-    					                                           										+ "during function call " + expandedFuncName + ".", srcLocator);
-			  }               
+        	   String funcIdStr = funcIdObj.toString();
+        	   Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));               
+        	   try {
+        		   evalResult = evaluateForEachPairNamedFuncReference(function, inpSeq1, inpSeq2, xctxt);
+        	   } 
+        	   catch (WrongNumberArgsException ex) {				 
+        		   throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
+        				   																					  + "during function call " 
+        				                                                                                      + funcExpandedName + ".", srcLocator);
+        	   }               
            }
         }
         else if ((elemFunction != null) && (transformerImpl != null)) {

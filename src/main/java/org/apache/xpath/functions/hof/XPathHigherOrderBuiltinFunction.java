@@ -92,17 +92,17 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
                     if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
                         XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
                         XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                                  xsUntyped, true);
+                                                                                  xsUntyped, true, xctxt);
                     }
                     else if (dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) {
                         XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                         XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                                  xsUntypedAtomic, true);
+                                                                                  xsUntypedAtomic, true, xctxt);
                     }
                     else {
                         XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                         XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                                  xsUntypedAtomic, true);
+                                                                                  xsUntypedAtomic, true, xctxt);
                     }
                 }       
             }

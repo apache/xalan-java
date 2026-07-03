@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:19Z" fail="6" name="op-multiply-dayTimeDuration" pass="27" run="33" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:03Z" fail="5" name="op-multiply-dayTimeDuration" pass="28" run="33" statusUnknown="0">
    <testResult status="pass" testName="op-multiply-dayTimeDuration2args-1"/>
    <testResult status="pass" testName="op-multiply-dayTimeDuration2args-2"/>
    <testResult status="pass" testName="op-multiply-dayTimeDuration2args-3"/>
@@ -12,7 +12,7 @@
    <testResult status="pass" testName="op-multiply-dayTimeDuration-6"/>
    <testResult status="pass" testName="op-multiply-dayTimeDuration-7"/>
    <testResult status="pass" testName="op-multiply-dayTimeDuration-8"/>
-   <testResult status="fail" testName="op-multiply-dayTimeDuration-9"/>
+   <testResult status="pass" testName="op-multiply-dayTimeDuration-9"/>
    <testResult status="pass" testName="op-multiply-dayTimeDuration-10"/>
    <testResult status="pass" testName="op-multiply-dayTimeDuration-11"/>
    <testResult status="fail" testName="op-multiply-dayTimeDuration-12"/>

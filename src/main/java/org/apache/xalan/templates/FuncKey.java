@@ -45,6 +45,13 @@ public class FuncKey extends Function2Args
 
   /** Dummy value to be used in usedrefs hashtable           */
   static private Boolean ISTRUE = Boolean.TRUE;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncKey() {
+	  m_arity = new Short[] { 2, 3 };
+  }
 
   /**
    * Evaluate the function. The function must return

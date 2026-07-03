@@ -61,7 +61,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncFunctionName() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**
@@ -188,113 +188,118 @@ public class FuncFunctionName extends FunctionDef1Arg
 		XObject result = null;
 		
 		String localName = xpathNamedFunctionReference.getFuncName();
-		String namespace = xpathNamedFunctionReference.getFuncNamespace();
+		String fNamespace = xpathNamedFunctionReference.getFuncNamespace();
 		String prefix = null;
 		Short arity = xpathNamedFunctionReference.getArity();
-		if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace)) {
+		
+		if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) {
 			prefix = "fn";
-			Object funcId = funcTable.getFunctionId(localName);
+			Object funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
-				Short[] definedArity = function.getDefinedArity();
+				Short[] definedArity = function.getArity();
 				List<Short> arityList = Arrays.asList(definedArity);
 				if (!arityList.contains(arity)) {
 					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									  + "reference {" + namespace + "}" + localName + "#" 
-																									  + arity + " not found.", srcLocator); 
+																									          + "reference {" + fNamespace + "}" + localName + "#" 
+																									          + arity + " not found.", srcLocator); 
 				}
 			}
 			if (funcId == null) {
 				throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																								      + "reference {" + namespace + "}" + localName + "#" 
-																								      + arity + " not found.", srcLocator);  
+																								              + "reference {" + fNamespace + "}" + localName + "#" 
+																								              + arity + " not found.", srcLocator);  
 			}
 
-			result = new XSQName(prefix, localName, namespace);
+			result = new XSQName(prefix, localName, fNamespace);
 		}
-		else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace)) {
+		else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {
 			prefix = "math";
-			Object funcId = funcTable.getFunctionId(localName);
+			Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
-				Short[] definedArity = function.getDefinedArity();
+				Short[] definedArity = function.getArity();
 				List<Short> arityList = Arrays.asList(definedArity);
 				if (!arityList.contains(arity)) {
 					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									 + "reference {" + namespace + "}" + localName + "#" 
-																									 + arity + " not found.", srcLocator); 
+																									           + "reference {" + fNamespace + "}" + localName + "#" 
+																									           + arity + " not found.", srcLocator); 
 				}
 			}
 			if (funcId == null) {
 				throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									 + "reference {" + namespace + "}" + localName + "#" 
-																									 + arity + " not found.", srcLocator);  
+																									           + "reference {" + fNamespace + "}" + localName + "#" 
+																									           + arity + " not found.", srcLocator);  
 			}
 
-			result = new XSQName(prefix, localName, namespace);
+			result = new XSQName(prefix, localName, fNamespace);
 		}
-		else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace)) {
+		else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {
 			prefix = "map";
-			Object funcId = funcTable.getFunctionId(localName);
+			Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
-				Short[] definedArity = function.getDefinedArity();
+				Short[] definedArity = function.getArity();
 				List<Short> arityList = Arrays.asList(definedArity);
 				if (!arityList.contains(arity)) {
 					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									+ "reference {" + namespace + "}" + localName + "#" 
-																									+ arity + " not found.", srcLocator); 
+																											   + "reference {" + fNamespace + "}" + localName + "#" 
+																											   + arity + " not found.", srcLocator); 
 				}
 			}
 			if (funcId == null) {
 					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									+ "reference {" + namespace + "}" + localName + "#" 
+																									+ "reference {" + fNamespace + "}" + localName + "#" 
 																									+ arity + " not found.", srcLocator);  
 			}
 
-			result = new XSQName(prefix, localName, namespace);
+			result = new XSQName(prefix, localName, fNamespace);
 		}
-		else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
+		else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {
 			prefix = "array";
-			Object funcId = funcTable.getFunctionId(localName);
+			Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
-				Short[] definedArity = function.getDefinedArity();
+				Short[] definedArity = function.getArity();
 				List<Short> arityList = Arrays.asList(definedArity);
 				if (!arityList.contains(arity)) {
 					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									+ "reference {" + namespace + "}" + localName + "#" 
+																									+ "reference {" + fNamespace + "}" + localName + "#" 
 																									+ arity + " not found.", srcLocator); 
 				}
 			}
 			if (funcId == null) {
 				throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									+ "reference {" + namespace + "}" + localName + "#" 
+																									+ "reference {" + fNamespace + "}" + localName + "#" 
 																									+ arity + " not found.", srcLocator);  
 			}
 
-			result = new XSQName(prefix, localName, namespace);
+			result = new XSQName(prefix, localName, fNamespace);
 		}
-		else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespace)) {
+		else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(fNamespace)) {
 			prefix = "xs";            	   
 			XSL3FunctionService xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
 			if (xsl3FunctionService.isXmlSchemaBuiltInAtomicTypeName(localName)) {
 				if (arity != 1) {
 					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									+ "reference {" + namespace + "}" + localName + "#" 
+																									+ "reference {" + fNamespace + "}" + localName + "#" 
 																									+ arity + " not found.", srcLocator);
 				}
 			}
 			else {
 				throw new javax.xml.transform.TransformerException("XPST0017 : An XPath function definition for function "
-																									+ "reference {" + namespace + "}" + localName + "#" 
+																									+ "reference {" + fNamespace + "}" + localName + "#" 
 																									+ arity + " not found.", srcLocator); 
 			}
 
-			result = new XSQName(prefix, localName, namespace);
+			result = new XSQName(prefix, localName, fNamespace);
 		}
 		else {
-			result = new XSQName(prefix, localName, namespace);
+			result = new XSQName(prefix, localName, fNamespace);
 		}
 		
 		return result;

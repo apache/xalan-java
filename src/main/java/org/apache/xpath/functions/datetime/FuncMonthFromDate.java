@@ -42,7 +42,7 @@ public class FuncMonthFromDate extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMonthFromDate() {
-		m_defined_arity = new Short[] { 1 };	
+		m_arity = new Short[] { 1 };	
 	}
 
 	/**

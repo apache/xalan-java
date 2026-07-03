@@ -47,7 +47,7 @@ public class FuncDocumentUri extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncDocumentUri() {
-		m_defined_arity = new Short[] {0, 1}; 
+		m_arity = new Short[] {0, 1}; 
 	}
 
 	/**

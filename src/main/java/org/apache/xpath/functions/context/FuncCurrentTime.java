@@ -46,7 +46,7 @@ public class FuncCurrentTime extends Function {
 	 * Default constructor.
 	 */
 	public FuncCurrentTime() {
-		m_defined_arity = new Short[] { 0 };	
+		m_arity = new Short[] { 0 };	
 	}
 
 	/**

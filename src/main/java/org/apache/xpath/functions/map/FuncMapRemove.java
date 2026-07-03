@@ -47,7 +47,7 @@ public class FuncMapRemove extends Function2Args {
 	 * Class constructor.
 	 */
 	public FuncMapRemove() {
-		m_defined_arity = new Short[] { 2 };	
+		m_arity = new Short[] { 2 };	
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class FuncMapRemove extends Function2Args {
 	    XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
 	    while (iter.hasNext()) {
 	    	XObject key = iter.next();
-	    	if (!XslTransformEvaluationHelper.contains(inpSeq1, key, xpathDefaultCollation, xpathCollationSupport)) {
+	    	if (!XslTransformEvaluationHelper.contains(inpSeq1, key, xpathDefaultCollation, xpathCollationSupport, xctxt)) {
 	    	   XObject xObj = nativeMapArg0.get(key);
 	    	   nativeResultMap.put(key, xObj);
 	    	}

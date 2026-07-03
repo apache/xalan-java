@@ -36,7 +36,7 @@ public class FuncNot extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncNot() {
-		m_defined_arity = new Short[] { 1 };	
+		m_arity = new Short[] { 1 };	
 	}
 
 	/**

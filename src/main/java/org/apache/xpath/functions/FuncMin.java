@@ -58,7 +58,7 @@ public class FuncMin extends FunctionMultiArgs
    * Class constructor.
    */
   public FuncMin() {
-	  m_defined_arity = new Short[] { 1, 2 };
+	  m_arity = new Short[] { 1, 2 };
   }
   
   /**
@@ -222,12 +222,14 @@ public class FuncMin extends FunctionMultiArgs
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-      if (!((argNum == 1) || (argNum == 2))) {
+      /*if (!((argNum == 1) || (argNum == 2))) {
          reportWrongNumberArgs();
       }
       else {
          numOfArgs = argNum;   
-      }
+      }*/
+      
+      numOfArgs = argNum;
   }
   
   /**

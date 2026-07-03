@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:00:27Z" fail="3" name="fn-string" pass="67" run="70" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:16Z" fail="3" name="fn-string" pass="67" run="70" statusUnknown="0">
    <testResult status="pass" testName="fn-stringint1args-1"/>
    <testResult status="pass" testName="fn-stringint1args-2"/>
    <testResult status="pass" testName="fn-stringint1args-3"/>

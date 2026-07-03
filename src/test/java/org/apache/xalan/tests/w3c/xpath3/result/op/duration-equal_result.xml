@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:34:19Z" fail="24" name="op-duration-equal" pass="120" run="144" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:03Z" fail="24" name="op-duration-equal" pass="120" run="144" statusUnknown="0">
    <testResult status="pass" testName="op-duration-equal-1"/>
    <testResult status="pass" testName="op-duration-equal-2"/>
    <testResult status="pass" testName="op-duration-equal-3"/>

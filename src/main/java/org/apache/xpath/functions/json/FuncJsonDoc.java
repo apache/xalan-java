@@ -70,7 +70,7 @@ public class FuncJsonDoc extends JsonFunction {
        OPTION_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
        OPTION_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
        
-       m_defined_arity = new Short[] { 1, 2 };
+       m_arity = new Short[] { 1, 2 };
     }
     
     /**
@@ -176,12 +176,14 @@ public class FuncJsonDoc extends JsonFunction {
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
     {
-       if (!((argNum == 1) || (argNum == 2))) {
+       /*if (!((argNum == 1) || (argNum == 2))) {
           reportWrongNumberArgs();
        }
        else {
           fNumOfArgs = argNum;   
-       }
+       }*/       
+
+    	fNumOfArgs = argNum;
     }
     
     /**

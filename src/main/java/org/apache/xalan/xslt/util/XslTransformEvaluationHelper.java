@@ -76,6 +76,7 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.VcEquals;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.Attr;
@@ -96,7 +97,6 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
-import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
@@ -258,12 +258,12 @@ public class XslTransformEvaluationHelper {
      * @throws TransformerException 
      */
     public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
-                                                                     boolean cardinalityCheck) throws TransformerException {
+                                                                     boolean cardinalityCheck, XPathContext xctxt) throws TransformerException {
         if (cardinalityCheck) {
             if (resultSeq.size() == 0) {                     
                 resultSeq.add(inpItem);    
             }
-            else if (!contains(resultSeq, inpItem, null, null)) {
+            else if (!contains(resultSeq, inpItem, null, null, xctxt)) {
                 resultSeq.add(inpItem);
             }   
         }
@@ -282,13 +282,13 @@ public class XslTransformEvaluationHelper {
     public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
                                                                      boolean cardinalityCheck,
                                                                      String collationUri,
-                                                                     XPathCollationSupport xpathCollationSupport) 
-                                                                    		                  throws TransformerException {
+                                                                     XPathCollationSupport xpathCollationSupport,
+                                                                     XPathContext xctxt) throws TransformerException {
         if (cardinalityCheck) {
             if (resultSeq.size() == 0) {                     
                 resultSeq.add(inpItem);    
             }
-            else if (!contains(resultSeq, inpItem, collationUri, xpathCollationSupport)) {
+            else if (!contains(resultSeq, inpItem, collationUri, xpathCollationSupport, xctxt)) {
                 resultSeq.add(inpItem);
             }   
         }
@@ -583,14 +583,15 @@ public class XslTransformEvaluationHelper {
      * contains a specified xdm item.
      */
     public static boolean contains(ResultSequence resultSeq, XObject srch, String collationUri,
-    		                                                                   XPathCollationSupport xpathCollationSupport) 
-    		                                                                		               throws TransformerException {
+    		                                                                   XPathCollationSupport xpathCollationSupport,
+    		                                                                   XPathContext xctxt) throws TransformerException {
        
     	boolean result = false;
 
     	int size1 = resultSeq.size();
     	for (int idx = 0; idx < size1; idx++) {
     		XObject resultSeqItem = resultSeq.item(idx);
+    		
     		if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntyped)) {
     			if (((XSUntyped)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
     				result = true;
@@ -615,54 +616,69 @@ public class XslTransformEvaluationHelper {
     				break;    
     			}
     		}
-    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XSNumericType)) {
-    			// When comparing numeric values, collationUri is not used
-    			String lStr = ((XSNumericType)resultSeqItem).stringValue();
-    			XSDouble lDouble = new XSDouble(lStr);
+    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XSNumericType)) {   			
+    			VcEquals vcEquals = new VcEquals();
+        		vcEquals.setLeftRight(resultSeqItem, srch);
+        		
+        		try {
+        			XObject xObj1 = vcEquals.execute(xctxt);
+        			if (xObj1.bool()) {
+        				result = true;
 
-    			String rStr = ((XSNumericType)srch).stringValue();
-    			XSDouble rDouble = new XSDouble(rStr);
-
-    			if (lDouble.equals(rDouble)) {
-    				result = true;
-    				break;  
-    			}
+        				break;    			
+        			}
+        		}
+        		catch (TransformerException ex) {
+        		   // no op
+        		}
     		}
-    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {
-    			// When comparing numeric values, collationUri is not used
-    			String lStr = ((XSNumericType)resultSeqItem).stringValue();
-    			XSDouble lDouble = new XSDouble(lStr);
+    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {    			
+    			VcEquals vcEquals = new VcEquals();
+        		vcEquals.setLeftRight(resultSeqItem, srch);
+        		
+        		try {
+        			XObject xObj1 = vcEquals.execute(xctxt);
+        			if (xObj1.bool()) {
+        				result = true;
 
-    			double rdbl = ((XNumber)srch).num();
-    			XSDouble rDouble = new XSDouble(rdbl);
-
-    			if (lDouble.equals(rDouble)) {
-    				result = true;
-    				break;  
-    			}
+        				break;    			
+        			}
+        		}
+        		catch (TransformerException ex) {
+        		   // no op
+        		}
     		}
-    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {
-    			// When comparing numeric values, collationUri is not used
-    			double ldbl = ((XNumber)resultSeqItem).num();
-    			XSDouble lDouble = new XSDouble(ldbl);
+    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {    			
+    			VcEquals vcEquals = new VcEquals();
+        		vcEquals.setLeftRight(resultSeqItem, srch);
+        		
+        		try {
+        			XObject xObj1 = vcEquals.execute(xctxt);
+        			if (xObj1.bool()) {
+        				result = true;
 
-    			String rStr = ((XSNumericType)srch).stringValue();
-    			XSDouble rDouble = new XSDouble(rStr);
-
-    			if (lDouble.equals(rDouble)) {
-    				result = true;
-    				break;  
-    			} 
+        				break;    			
+        			}
+        		}
+        		catch (TransformerException ex) {
+        		   // no op
+        		}
     		}
-    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {
-    			// When comparing numeric values, collationUri is not used
-    			double num1 = ((XNumber)resultSeqItem).num();
-    			double num2 = ((XNumber)srch).num();
+    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {    			
+    			VcEquals vcEquals = new VcEquals();
+        		vcEquals.setLeftRight(resultSeqItem, srch);
+        		
+        		try {
+        			XObject xObj1 = vcEquals.execute(xctxt);
+        			if (xObj1.bool()) {
+        				result = true;
 
-    			if ((num1 == num2) || (Double.isNaN(num1) && Double.isNaN(num2))) {
-    				result = true;
-    				break; 
-    			}
+        				break;    			
+        			}
+        		}
+        		catch (TransformerException ex) {
+        		   // no op
+        		}
     		}
     		else if ((resultSeqItem instanceof XSAnyType) && (srch instanceof XSAnyType)) {
     			if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
@@ -670,9 +686,21 @@ public class XslTransformEvaluationHelper {
     				break;    
     			}   
     		}
-    		else if (resultSeqItem.equals(srch, collationUri, xpathCollationSupport)) {
-    			result = true;
-    			break;    
+    		else {
+    			VcEquals vcEquals = new VcEquals();
+        		vcEquals.setLeftRight(resultSeqItem, srch);
+        		
+        		try {
+        			XObject xObj1 = vcEquals.execute(xctxt);
+        			if (xObj1.bool()) {
+        				result = true;
+
+        				break;    			
+        			}
+        		}
+        		catch (TransformerException ex) {
+        		   // no op
+        		}
     		}
     	}
 

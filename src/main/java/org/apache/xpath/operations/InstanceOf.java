@@ -22,6 +22,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
@@ -1189,21 +1192,64 @@ public class InstanceOf extends Operation
    * Method definition, to checks whether, an xdm map conforms with 
    * the supplied sequence type.
    * 
-   * @param map								The supplied xdm map object
+   * @param xpathMap						The supplied xdm map object
    * @param seqTypeData						An xdm sequence type information
    * @return                                Boolean value true or false
    */
-  private boolean isXdmMapConformsWithSeqType(XPathMap map, XPathSequenceTypeData seqTypeData) {
-	  boolean isInstanceOf = false;
+  private boolean isXdmMapConformsWithSeqType(XPathMap xpathMap, XPathSequenceTypeData seqTypeData) {
+	  
+	  boolean result = false;
 	  
 	  XPathSequenceTypeMapTest sequenceTypeMapTest = seqTypeData.getSequenceTypeMapTest();
+	  
 	  if (sequenceTypeMapTest != null) {
 		 if (sequenceTypeMapTest.isAnyMapTest()) {
-		    isInstanceOf = true;
+		    result = true;
+		 }
+		 else {
+			Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+			Set<Entry<XObject, XObject>> entrySet = nativeMap.entrySet();
+			
+			// We check below each of an xdm map items, with an expected type
+			
+			result = true;
+			
+			XPathSequenceTypeData mapKeyTypeInfo = sequenceTypeMapTest.getKeySequenceTypeData();
+			XPathSequenceTypeData mapValueTypeInfo = sequenceTypeMapTest.getValueSequenceTypeData();
+			
+			Iterator<Entry<XObject, XObject>> iter1 = entrySet.iterator();
+			while (iter1.hasNext()) {
+			   Entry<XObject, XObject> entry = iter1.next();
+			   XObject key1 = entry.getKey();
+			   XObject value1 = entry.getValue();
+			   
+			   try {
+				   XObject keyTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(
+						                                                                          key1, null, mapKeyTypeInfo, null);
+				   if (keyTypeCheckResult == null) {             				
+					   result = false;
+
+					   break;
+				   }
+
+				   XObject valueTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(
+						                                                                            value1, null, mapValueTypeInfo, null);
+				   if (valueTypeCheckResult == null) {             				
+					   result = false;
+
+					   break;
+				   }
+			   }
+			   catch (TransformerException ex) {
+				   result = false;
+
+				   break; 
+			   }
+			}
 		 }
 	  }
 	  
-	  return isInstanceOf; 
+	  return result; 
   }
   
   /**
@@ -1216,35 +1262,42 @@ public class InstanceOf extends Operation
    */
   private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, XPathSequenceTypeData seqTypeData) {
 	  
-	  boolean isInstanceOf = false;
+	  boolean result = false;
 	  
 	  XPathSequenceTypeArrayTest sequenceTypeArrayTest = seqTypeData.getSequenceTypeArrayTest();
+	  
 	  if (sequenceTypeArrayTest != null) {
 		  if (sequenceTypeArrayTest.isAnyArrayTest()) {
-			  isInstanceOf = true;
+			  result = true;
 		  }
 		  else {
 			  List<XObject> nativeArr = xpathArr.getNativeArray();
 			  Iterator<XObject> arrIter = nativeArr.iterator();
+			  
 			  // We check below each of array items, with an expected type
-			  isInstanceOf = true; 
+			  
+			  result = true;
+			  
+			  XPathSequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
+			  
 			  while (arrIter.hasNext()) {
 				  XObject arrItem = arrIter.next();
+				  
 				  if (arrItem instanceof ResultSequence) {
 					  arrItem = ((ResultSequence)arrItem).item(0);
-				  }
-				  XPathSequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
+				  }				  
+				  				  
 				  try {
 					  XObject arrayItemTypeCheckResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(
 							                                                                          arrItem, null, arrayItemTypeInfo, null);
 					  if (arrayItemTypeCheckResult == null) {             				
-						  isInstanceOf = false;
+						  result = false;
 						  
 						  break;
 					  }
 				  }
 				  catch (TransformerException ex) {
-					  isInstanceOf = false;
+					  result = false;
 					  
 					  break; 
 				  }
@@ -1252,7 +1305,8 @@ public class InstanceOf extends Operation
 		  }
 	  }
 	  
-	  return isInstanceOf;
+	  return result;
+	  
   }
   
 }

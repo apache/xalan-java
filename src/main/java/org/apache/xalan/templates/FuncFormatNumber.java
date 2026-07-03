@@ -55,7 +55,7 @@ public class FuncFormatNumber extends Function3Args
      * Class constructor.
      */
     public FuncFormatNumber() {
-  	   m_defined_arity = new Short[] {2, 3}; 
+  	   m_arity = new Short[] {2, 3}; 
     }
 
     /**

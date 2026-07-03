@@ -50,7 +50,7 @@ public class FuncStringJoin extends Function2Args {
 	* Class constructor.
 	*/
    public FuncStringJoin() {
-	   m_defined_arity = new Short[] { 1, 2 };
+	   m_arity = new Short[] { 1, 2 };
    }
 
    /**

@@ -55,12 +55,12 @@ public class Or extends Operation
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-	  XObject expr1 = m_left.execute(xctxt);
+	  XObject xObjL = m_left.execute(xctxt);
 
 	  boolean lBool = false;
 
-	  if ((expr1 instanceof ResultSequence) && (((ResultSequence)expr1).size() > 0)) {
-		  XObject xObj = ((ResultSequence)expr1).item(0);
+	  if ((xObjL instanceof ResultSequence) && (((ResultSequence)xObjL).size() > 0)) {
+		  XObject xObj = ((ResultSequence)xObjL).item(0);
 		  if ((xObj instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)xObj).getLength() > 0)) {
 			  return XBoolean.S_TRUE; 
 		  }
@@ -70,28 +70,28 @@ public class Or extends Operation
 			  }
 		  }
 	  }
-	  else if ((expr1 instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)expr1).getLength() > 0)) {
+	  else if ((xObjL instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)xObjL).getLength() > 0)) {
 		  return XBoolean.S_TRUE;
 	  }
-	  else if ((expr1 instanceof XSBoolean) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic)) {
-		  if (expr1.bool()) {
+	  else if ((xObjL instanceof XSBoolean) || (xObjL instanceof XBoolean) || (xObjL instanceof XBooleanStatic)) {
+		  if (xObjL.bool()) {
 			  return XBoolean.S_TRUE; 
 		  }
 	  }
-	  else if ((expr1 instanceof XSString) || (expr1 instanceof XString)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr1);
+	  else if ((xObjL instanceof XSString) || (xObjL instanceof XString)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjL);
 		  if (str1.length() > 0) {
 			  return XBoolean.S_TRUE; 
 		  }
 	  }
-	  else if ((expr1 instanceof XSAnyURI) || (expr1 instanceof XSUntypedAtomic)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr1);
+	  else if ((xObjL instanceof XSAnyURI) || (xObjL instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjL);
 		  if (str1.length() > 0) {
 			  return XBoolean.S_TRUE; 
 		  }
 	  }
-	  else if (expr1 instanceof XSFloat) {
-		  XSFloat xsFloat = (XSFloat)expr1;
+	  else if (xObjL instanceof XSFloat) {
+		  XSFloat xsFloat = (XSFloat)xObjL;
 		  if (!xsFloat.nan()) {
 			  float flt1 = xsFloat.floatValue();
 			  if (flt1 != 0) {
@@ -99,8 +99,8 @@ public class Or extends Operation
 			  }
 		  }
 	  }
-	  else if (expr1 instanceof XSDouble) {
-		  XSDouble xsDouble = (XSDouble)expr1;
+	  else if (xObjL instanceof XSDouble) {
+		  XSDouble xsDouble = (XSDouble)xObjL;
 		  if (!xsDouble.nan()) {
 			  double dbl1 = xsDouble.doubleValue();
 			  if (dbl1 != 0) {
@@ -108,25 +108,25 @@ public class Or extends Operation
 			  }
 		  }
 	  }	  
-	  else if (expr1 instanceof XNumber) {
-		  XNumber xNumber = (XNumber)expr1;
+	  else if (xObjL instanceof XNumber) {
+		  XNumber xNumber = (XNumber)xObjL;
 		  Double dbl1 = xNumber.num();
 		  if (!(dbl1.isNaN() || (dbl1 == 0))) {
 			  return XBoolean.S_TRUE; 
 		  }
 	  }
 	  else {
-		  lBool = expr1.bool(); 
+		  lBool = xObjL.bool(); 
 	  }
 
 	  if (!lBool)
 	  {
-		  XObject expr2 = m_right.execute(xctxt);
+		  XObject xObjR = m_right.execute(xctxt);
 		  
 		  boolean rBool = false;
 
-		  if ((expr2 instanceof ResultSequence) && (((ResultSequence)expr2).size() > 0)) {
-			  XObject xObj = ((ResultSequence)expr2).item(0);
+		  if ((xObjR instanceof ResultSequence) && (((ResultSequence)xObjR).size() > 0)) {
+			  XObject xObj = ((ResultSequence)xObjR).item(0);
 			  if ((xObj instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)xObj).getLength() > 0)) {
 				 return XBoolean.S_TRUE; 
 			  }
@@ -136,28 +136,28 @@ public class Or extends Operation
 				  }
 			  }
 		  }
-		  else if ((expr2 instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)expr2).getLength() > 0)) {
+		  else if ((xObjR instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)xObjR).getLength() > 0)) {
 			  return XBoolean.S_TRUE;
 		  }
-		  else if ((expr2 instanceof XSBoolean) || (expr2 instanceof XBoolean) || (expr2 instanceof XBooleanStatic)) {
-			  if (expr2.bool()) {
+		  else if ((xObjR instanceof XSBoolean) || (xObjR instanceof XBoolean) || (xObjR instanceof XBooleanStatic)) {
+			  if (xObjR.bool()) {
 				 return XBoolean.S_TRUE; 
 			  }
 		  }
-		  else if ((expr2 instanceof XSString) || (expr2 instanceof XString)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr2);
+		  else if ((xObjR instanceof XSString) || (xObjR instanceof XString)) {
+			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjR);
 			  if (str1.length() > 0) {
 				 return XBoolean.S_TRUE; 
 			  }
 		  }
-		  else if ((expr2 instanceof XSAnyURI) || (expr2 instanceof XSUntypedAtomic)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr2);
+		  else if ((xObjR instanceof XSAnyURI) || (xObjR instanceof XSUntypedAtomic)) {
+			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjR);
 			  if (str1.length() > 0) {
 				 return XBoolean.S_TRUE; 
 			  }
 		  }
-		  else if (expr2 instanceof XSFloat) {
-			  XSFloat xsFloat = (XSFloat)expr2;
+		  else if (xObjR instanceof XSFloat) {
+			  XSFloat xsFloat = (XSFloat)xObjR;
 			  if (!xsFloat.nan()) {
 				  float flt1 = xsFloat.floatValue();
 				  if (flt1 != 0) {
@@ -165,8 +165,8 @@ public class Or extends Operation
 				  }
 			  }
 		  }
-		  else if (expr2 instanceof XSDouble) {
-			  XSDouble xsDouble = (XSDouble)expr2;
+		  else if (xObjR instanceof XSDouble) {
+			  XSDouble xsDouble = (XSDouble)xObjR;
 			  if (!xsDouble.nan()) {
 				  double dbl1 = xsDouble.doubleValue();
 				  if (dbl1 != 0) {
@@ -174,15 +174,15 @@ public class Or extends Operation
 				  }
 			  }
 		  }	  
-		  else if (expr2 instanceof XNumber) {
-			  XNumber xNumber = (XNumber)expr2;
+		  else if (xObjR instanceof XNumber) {
+			  XNumber xNumber = (XNumber)xObjR;
 			  Double dbl1 = xNumber.num();
 			  if (!(dbl1.isNaN() || (dbl1 == 0))) {
 				  return XBoolean.S_TRUE; 
 			  }
 		  }
 		  else {
-			  rBool = expr2.bool(); 
+			  rBool = xObjR.bool(); 
 		  }
 
 		  return rBool ? XBoolean.S_TRUE : XBoolean.S_FALSE;

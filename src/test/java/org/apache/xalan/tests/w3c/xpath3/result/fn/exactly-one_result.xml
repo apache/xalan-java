@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:36:16Z" fail="4" name="fn-exactly-one" pass="46" run="50" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:00Z" fail="3" name="fn-exactly-one" pass="47" run="50" statusUnknown="0">
    <testResult status="pass" testName="fn-exactly-oneint1args-1"/>
    <testResult status="pass" testName="fn-exactly-oneint1args-2"/>
    <testResult status="pass" testName="fn-exactly-oneint1args-3"/>
@@ -40,7 +40,7 @@
    <testResult status="pass" testName="fn-exactly-onesht1args-3"/>
    <testResult status="pass" testName="fn-exactly-one-1"/>
    <testResult status="pass" testName="K-SeqExactlyOneFunc-1"/>
-   <testResult status="fail" testName="K-SeqExactlyOneFunc-2"/>
+   <testResult status="pass" testName="K-SeqExactlyOneFunc-2"/>
    <testResult status="pass" testName="K-SeqExactlyOneFunc-3"/>
    <testResult status="pass" testName="K-SeqExactlyOneFunc-4"/>
    <testResult status="pass" testName="K-SeqExactlyOneFunc-5"/>

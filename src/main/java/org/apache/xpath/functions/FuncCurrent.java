@@ -43,7 +43,7 @@ public class FuncCurrent extends Function
 	 * Default constructor.
 	 */
 	public FuncCurrent() {
-		m_defined_arity = new Short[] { 0 };	
+		m_arity = new Short[] { 0 };	
 	}
 
 	/**

@@ -51,7 +51,7 @@ public class FuncFormatTime extends FunctionMultiArgs {
      * Class constructor.
      */
     public FuncFormatTime() {
-  	   m_defined_arity = new Short[] {2, 5}; 
+  	   m_arity = new Short[] {2, 5}; 
     }
     
     /**

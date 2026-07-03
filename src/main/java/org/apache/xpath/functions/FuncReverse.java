@@ -36,7 +36,7 @@ public class FuncReverse extends FunctionOneArg {
      * Class constructor.
      */
     public FuncReverse() {
-    	m_defined_arity = new Short[] { 1 };
+    	m_arity = new Short[] { 1 };
     }
 
     /**

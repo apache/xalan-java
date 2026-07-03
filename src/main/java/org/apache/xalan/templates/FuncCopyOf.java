@@ -28,7 +28,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of XSLT 3.0 function copy-of.
+ * Implementation of an XSLT 3.0 function copy-of.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -42,7 +42,7 @@ public class FuncCopyOf extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncCopyOf() {
-		m_defined_arity = new Short[] { 0, 1 };
+		m_arity = new Short[] { 0, 1 };
 	}
 	
 	/**

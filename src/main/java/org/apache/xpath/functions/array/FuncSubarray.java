@@ -42,7 +42,7 @@ public class FuncSubarray extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncSubarray() {
-		m_defined_arity = new Short[] { 2, 3 };
+		m_arity = new Short[] { 2, 3 };
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class FuncMapKeys extends FunctionOneArg {
 	 * Class constructor.
 	 */
 	public FuncMapKeys() {
-		m_defined_arity = new Short[] { 1 };	
+		m_arity = new Short[] { 1 };	
 	}
 
 	/**

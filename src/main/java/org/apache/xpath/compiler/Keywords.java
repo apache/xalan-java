@@ -820,6 +820,12 @@ public class Keywords
   /** path function string. */
   public static final String FUNC_PATH = "path";
   
+  /** document function string (XSLT). */
+  public static final String FUNC_DOCUMENT = "document";
+  
+  /** format-number function string. */
+  public static final String FUNC_FORMAT_NUMBER = "format-number";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

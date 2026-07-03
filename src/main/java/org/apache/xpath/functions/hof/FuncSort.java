@@ -26,7 +26,6 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.ElemFunction;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -68,7 +67,7 @@ public class FuncSort extends FunctionMultiArgs
      * Class constructor.
      */
     public FuncSort() {
- 	   m_defined_arity = new Short[] { 1, 2, 3 };
+ 	   m_arity = new Short[] { 1, 2, 3 };
     }
     
     /**
@@ -213,30 +212,41 @@ public class FuncSort extends FunctionMultiArgs
                       FunctionTable funcTable = xctxt.getFunctionTable();
                       
                       Object funcIdObj = null;
-                      if (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
-                         funcIdObj = funcTable.getFunctionId(funcLocalName);
+                      if ((funcNamespace == null) || (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace))) {
+                    	  funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
                       }
                       else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
-                         funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+                    	  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
                       }
                       else if (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
-                         funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+                    	  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
                       }
                       else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
-                         funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+                    	  funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
                       }
-                      
+
+                      String funcExpandedName = null;
+                      if (funcNamespace != null) {
+                    	  funcExpandedName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
+                      }
+                      else {
+                    	  funcExpandedName = "{" + funcLocalName + "}#" + funcArity;
+                      }
+
                       if (funcIdObj != null) {
                     	  String funcIdStr = funcIdObj.toString();
                     	  Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
                     	  try {
                     		  function.setArg(xNodeSetItem, 0);
-                    	  } catch (WrongNumberArgsException ex) {
-                    		  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;  
+                    	  } 
+                    	  catch (WrongNumberArgsException ex) {  
                     		  throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
-                    				                                          + "during function call " + expandedFuncName + ".", srcLocator);
+                    				  																				+ "during function call " 
+                    				  																				+ funcExpandedName + ".", srcLocator);
                     	  }
+                    	  
                     	  XObject sortKeyVal = function.execute(xctxt);
+                    	  
                     	  inpSeqItemWithSortKeyValueList.add(new InpSeqItemWithSortKeyValue(xNodeSetItem, sortKeyVal));               
                       } 
              	   }            	  
@@ -322,31 +332,41 @@ public class FuncSort extends FunctionMultiArgs
                      FunctionTable funcTable = xctxt.getFunctionTable();
                      
                      Object funcIdObj = null;
-                     if (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
-                        funcIdObj = funcTable.getFunctionId(funcLocalName);
+                     if ((funcNamespace == null) || (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace))) {
+                    	 funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
                      }
                      else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
-                        funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+                    	 funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
                      }
                      else if (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
-                        funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+                    	 funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
                      }
                      else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
-                        funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+                    	 funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
                      }
-                     
+
+                     String funcExpandedName = null;
+                     if (funcNamespace != null) {
+                    	 funcExpandedName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
+                     }
+                     else {
+                    	 funcExpandedName = "{" + funcLocalName + "}#" + funcArity;
+                     }
+
                      if (funcIdObj != null) {
-                        String funcIdStr = funcIdObj.toString();
-                        Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
-            			try {
-							function.setArg(inputSeqItem, 0);
-						} catch (WrongNumberArgsException ex) {
-							String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;  
- 							throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
- 									                                           + "during function call " + expandedFuncName + ".", srcLocator);
-						}
-            			XObject sortKeyVal = function.execute(xctxt);
-            			inpSeqItemWithSortKeyValueList.add(new InpSeqItemWithSortKeyValue(inputSeqItem, sortKeyVal));               
+                    	 String funcIdStr = funcIdObj.toString();
+                    	 Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
+                    	 try {
+                    		 function.setArg(inputSeqItem, 0);
+                    	 } 
+                    	 catch (WrongNumberArgsException ex) {  
+                    		 throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
+                    				 																				+ "during function call " 
+                    				 																				+ funcExpandedName + ".", srcLocator);
+                    	 }
+
+                    	 XObject sortKeyVal = function.execute(xctxt);
+                    	 inpSeqItemWithSortKeyValueList.add(new InpSeqItemWithSortKeyValue(inputSeqItem, sortKeyVal));               
                      } 
             	 }
             	 else if (m_arg2 instanceof NodeTest) {
@@ -399,12 +419,14 @@ public class FuncSort extends FunctionMultiArgs
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
     {
-       if (!(argNum > 0 && argNum <= 3)) {
+       /*if (!(argNum > 0 && argNum <= 3)) {
           reportWrongNumberArgs();
        }
        else {
           numOfArgs = argNum;   
-       }
+       }*/       
+
+       numOfArgs = argNum;
     }
 
     /**

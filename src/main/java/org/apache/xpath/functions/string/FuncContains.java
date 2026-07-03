@@ -47,7 +47,7 @@ public class FuncContains extends XSL3StringCollationAwareFunction
    * Class constructor.
    */
   public FuncContains() {
-	 m_defined_arity = new Short[] { 2, 3 };
+	 m_arity = new Short[] { 2, 3 };
   }
   
   /**
@@ -242,12 +242,14 @@ public class FuncContains extends XSL3StringCollationAwareFunction
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-	  if (!(argNum > 1 && argNum <= 3)) {
+	  /*if (!(argNum > 1 && argNum <= 3)) {
 		  reportWrongNumberArgs();
 	  }
 	  else {
 		  numOfArgs = argNum;   
-	  }
+	  }*/
+	  
+	  numOfArgs = argNum; 
   }
   
   /**

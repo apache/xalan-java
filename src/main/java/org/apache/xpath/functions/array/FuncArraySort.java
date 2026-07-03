@@ -58,7 +58,7 @@ public class FuncArraySort extends FunctionMultiArgs
 	 * Class constructor.
 	 */
 	public FuncArraySort() {
-		m_defined_arity = new Short[] { 1, 2, 3 };
+		m_arity = new Short[] { 1, 2, 3 };
 	}
 	
 	/**
@@ -183,12 +183,14 @@ public class FuncArraySort extends FunctionMultiArgs
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
     {
-       if (!(argNum > 0 && argNum <= 3)) {
+       /*if (!(argNum > 0 && argNum <= 3)) {
           reportWrongNumberArgs();
        }
        else {
           numOfArgs = argNum;   
-       }
+       }*/
+       
+       numOfArgs = argNum;
     }
 
     /**

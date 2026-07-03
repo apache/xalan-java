@@ -40,7 +40,7 @@ public class FuncExactlyOne extends FunctionDef1Arg {
 	 * Class constructor.
 	 */
 	public FuncExactlyOne() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 	
 	/**

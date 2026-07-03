@@ -17,15 +17,14 @@
  */
 package org.apache.xpath.compiler;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.functions.FuncDoc;
 import org.apache.xpath.functions.Function;
 
 /**
@@ -618,51 +617,25 @@ public class FunctionTable
   
   /** The 'path()' id. */
   public static final int FUNC_PATH = 198;
+  
+  /** The 'document()' id (XSLT). */
+  public static final int FUNC_DOCUMENT = 199;
+  
+  /** The 'format-number()' id. */
+  public static final int FUNC_FORMAT_NUMBER = 200;
 
   // Proprietary
 
   /** The 'document-location()' id (Proprietary). */
   public static final int FUNC_DOCLOCATION = 35;
-  
-  static final Integer[] XPATH_MATH_FUNC_IDS = new Integer[] { Integer.valueOf(FUNC_MATH_PI), Integer.valueOf(FUNC_MATH_EXP),
-                                                               Integer.valueOf(FUNC_MATH_EXP10), Integer.valueOf(FUNC_MATH_LOG),
-                                                               Integer.valueOf(FUNC_MATH_LOG10), Integer.valueOf(FUNC_MATH_POW),
-                                                               Integer.valueOf(FUNC_MATH_SQRT), Integer.valueOf(FUNC_MATH_SIN),
-                                                               Integer.valueOf(FUNC_MATH_COS), Integer.valueOf(FUNC_MATH_TAN),
-                                                               Integer.valueOf(FUNC_MATH_ASIN), Integer.valueOf(FUNC_MATH_ACOS),
-                                                               Integer.valueOf(FUNC_MATH_ATAN), Integer.valueOf(FUNC_MATH_ATAN2) };
-  
-  static final List<Integer> XPATH_MATH_FUNC_IDS_ARR = Arrays.asList(XPATH_MATH_FUNC_IDS);
-  
-    
-  static final Integer[] XPATH_MAP_FUNC_IDS = new Integer[] { Integer.valueOf(FUNC_MAP_MERGE), Integer.valueOf(FUNC_MAP_SIZE), 
-		                                                      Integer.valueOf(FUNC_MAP_KEYS), Integer.valueOf(FUNC_MAP_CONTAINS), 
-		                                                      Integer.valueOf(FUNC_MAP_GET), Integer.valueOf(FUNC_MAP_PUT), 
-		                                                      Integer.valueOf(FUNC_MAP_ENTRY), Integer.valueOf(FUNC_MAP_FOREACH),
-		                                                      Integer.valueOf(FUNC_MAP_REMOVE), Integer.valueOf(FUNC_MAP_FIND) };
-  
-  static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
-  
-    
-  static final Integer[] XPATH_ARRAY_FUNC_IDS = new Integer[] { Integer.valueOf(FUNC_ARRAY_SIZE), Integer.valueOf(FUNC_ARRAY_GET),
-		                                                        Integer.valueOf(FUNC_ARRAY_PUT), Integer.valueOf(FUNC_ARRAY_APPEND),
-		                                                        Integer.valueOf(FUNC_ARRAY_SUBARRAY), Integer.valueOf(FUNC_ARRAY_REMOVE),
-		                                                        Integer.valueOf(FUNC_ARRAY_INSERT_BEFORE),Integer.valueOf(FUNC_ARRAY_HEAD),
-		                                                        Integer.valueOf(FUNC_ARRAY_TAIL),Integer.valueOf(FUNC_ARRAY_REVERSE), 
-		                                                        Integer.valueOf(FUNC_ARRAY_JOIN), Integer.valueOf(FUNC_ARRAY_FOR_EACH),
-		                                                        Integer.valueOf(FUNC_ARRAY_FILTER), Integer.valueOf(FUNC_ARRAY_FOR_EACH_PAIR),
-		                                                        Integer.valueOf(FUNC_ARRAY_FOLD_LEFT), Integer.valueOf(FUNC_ARRAY_FOLD_RIGHT),
-		                                                        Integer.valueOf(FUNC_ARRAY_SORT), Integer.valueOf(FUNC_ARRAY_FLATTEN)};
-  
-  static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
 
   /**
    * The function table.
    */
   private static Class m_functions[];
 
-  /** Table of function name to function ID associations. */
-  private static Map<String, Integer> m_functionId = new HashMap<String, Integer>();
+  /** Table of function ID to function name associations. */
+  private static Map<Integer, String> m_functionId = new HashMap<Integer, String>();
     
   /**
    * The function table contains customized functions
@@ -672,13 +645,13 @@ public class FunctionTable
   /**
    * Table of function name to function ID associations for customized functions
    */
-  private Map<String, Integer> m_functionId_customer = new HashMap<String, Integer>();
+  // private Map<String, Integer> m_functionId_customer = new HashMap<String, Integer>();
   
   /**
    * Number of built in functions. Please update this, as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 199;
+  private static final int NUM_BUILT_IN_FUNCS = 201;
 
   /**
    * Number of built-in functions that may be added.
@@ -936,248 +909,255 @@ public class FunctionTable
 	   m_functions[FUNC_EXACTLY_ONE] = org.apache.xpath.functions.FuncExactlyOne.class;
 	   
 	   m_functions[FUNC_PATH] = org.apache.xpath.functions.FuncPath.class;
+	   
+	   m_functions[FUNC_DOCUMENT] = org.apache.xalan.templates.FuncDocument.class;
+	   m_functions[FUNC_FORMAT_NUMBER] = org.apache.xalan.templates.FuncFormatNumber.class;
   }
 
   static {
-	  m_functionId.put(Keywords.FUNC_CURRENT_STRING, Integer.valueOf(FunctionTable.FUNC_CURRENT));
-	  m_functionId.put(Keywords.FUNC_LAST_STRING, Integer.valueOf(FunctionTable.FUNC_LAST));
-	  m_functionId.put(Keywords.FUNC_POSITION_STRING, Integer.valueOf(FunctionTable.FUNC_POSITION));
-	  m_functionId.put(Keywords.FUNC_COUNT_STRING, Integer.valueOf(FunctionTable.FUNC_COUNT));
-	  m_functionId.put(Keywords.FUNC_ID_STRING, Integer.valueOf(FunctionTable.FUNC_ID));
-	  m_functionId.put(Keywords.FUNC_KEY_STRING, Integer.valueOf(FunctionTable.FUNC_KEY));
-	  m_functionId.put(Keywords.FUNC_LOCAL_NAME_STRING, Integer.valueOf(FunctionTable.FUNC_LOCAL_NAME));
-	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_STRING, Integer.valueOf(FunctionTable.FUNC_NAMESPACE_URI));          
-	  m_functionId.put(Keywords.FUNC_GENERATE_ID_STRING, Integer.valueOf(FunctionTable.FUNC_GENERATE_ID));
-	  m_functionId.put(Keywords.FUNC_NOT_STRING, Integer.valueOf(FunctionTable.FUNC_NOT));
-	  m_functionId.put(Keywords.FUNC_TRUE_STRING, Integer.valueOf(FunctionTable.FUNC_TRUE));
-	  m_functionId.put(Keywords.FUNC_FALSE_STRING, Integer.valueOf(FunctionTable.FUNC_FALSE));
-	  m_functionId.put(Keywords.FUNC_BOOLEAN_STRING, Integer.valueOf(FunctionTable.FUNC_BOOLEAN));
-	  m_functionId.put(Keywords.FUNC_LANG_STRING, Integer.valueOf(FunctionTable.FUNC_LANG));
-	  m_functionId.put(Keywords.FUNC_ROOT_STRING, Integer.valueOf(FunctionTable.FUNC_ROOT));
-	  m_functionId.put(Keywords.FUNC_NUMBER_STRING, Integer.valueOf(FunctionTable.FUNC_NUMBER));
-	  m_functionId.put(Keywords.FUNC_FLOOR_STRING, Integer.valueOf(FunctionTable.FUNC_FLOOR));
-	  m_functionId.put(Keywords.FUNC_CEILING_STRING, Integer.valueOf(FunctionTable.FUNC_CEILING));
-	  m_functionId.put(Keywords.FUNC_ROUND_STRING, Integer.valueOf(FunctionTable.FUNC_ROUND));
-	  m_functionId.put(Keywords.FUNC_ROUND_HALF_TO_EVEN_STRING, Integer.valueOf(FunctionTable.FUNC_ROUND_HALF_TO_EVEN));
-	  m_functionId.put(Keywords.FUNC_SUM_STRING, Integer.valueOf(FunctionTable.FUNC_SUM));
-	  m_functionId.put(Keywords.FUNC_STRING_STRING, Integer.valueOf(FunctionTable.FUNC_STRING));
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT), Keywords.FUNC_CURRENT_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_LAST), Keywords.FUNC_LAST_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_POSITION), Keywords.FUNC_POSITION_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_COUNT), Keywords.FUNC_COUNT_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_ID), Keywords.FUNC_ID_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_KEY), Keywords.FUNC_KEY_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_LOCAL_NAME), Keywords.FUNC_LOCAL_NAME_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_NAMESPACE_URI), Keywords.FUNC_NAMESPACE_URI_STRING);          
+	  m_functionId.put(Integer.valueOf(FUNC_GENERATE_ID), Keywords.FUNC_GENERATE_ID_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_NOT), Keywords.FUNC_NOT_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_TRUE), Keywords.FUNC_TRUE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_FALSE), Keywords.FUNC_FALSE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_BOOLEAN), Keywords.FUNC_BOOLEAN_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_LANG), Keywords.FUNC_LANG_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_ROOT), Keywords.FUNC_ROOT_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_NUMBER), Keywords.FUNC_NUMBER_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_FLOOR), Keywords.FUNC_FLOOR_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_CEILING), Keywords.FUNC_CEILING_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_ROUND), Keywords.FUNC_ROUND_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_ROUND_HALF_TO_EVEN), Keywords.FUNC_ROUND_HALF_TO_EVEN_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_SUM), Keywords.FUNC_SUM_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_STRING), Keywords.FUNC_STRING_STRING);
 
-	  m_functionId.put(Keywords.FUNC_DATA_STRING, Integer.valueOf(FunctionTable.FUNC_DATA));
+	  m_functionId.put(Integer.valueOf(FUNC_DATA), Keywords.FUNC_DATA_STRING);
 
-	  m_functionId.put(Keywords.FUNC_CONTAINS_STRING, Integer.valueOf(FunctionTable.FUNC_CONTAINS));
-	  m_functionId.put(Keywords.FUNC_STARTS_WITH_STRING, Integer.valueOf(FunctionTable.FUNC_STARTS_WITH));
-	  m_functionId.put(Keywords.FUNC_ENDS_WITH_STRING, Integer.valueOf(FunctionTable.FUNC_ENDS_WITH));
-	  m_functionId.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING, Integer.valueOf(FunctionTable.FUNC_SUBSTRING_BEFORE));
-	  m_functionId.put(Keywords.FUNC_SUBSTRING_AFTER_STRING, Integer.valueOf(FunctionTable.FUNC_SUBSTRING_AFTER));
-	  m_functionId.put(Keywords.FUNC_NORMALIZE_SPACE_STRING, Integer.valueOf(FunctionTable.FUNC_NORMALIZE_SPACE));
-	  m_functionId.put(Keywords.FUNC_NORMALIZE_UNICODE, Integer.valueOf(FunctionTable.FUNC_NORMALIZE_UNICODE));
-	  m_functionId.put(Keywords.FUNC_TRANSLATE_STRING, Integer.valueOf(FunctionTable.FUNC_TRANSLATE));
-	  m_functionId.put(Keywords.FUNC_CONCAT_STRING, Integer.valueOf(FunctionTable.FUNC_CONCAT));
-	  m_functionId.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING, Integer.valueOf(FunctionTable.FUNC_SYSTEM_PROPERTY));
-	  m_functionId.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING, Integer.valueOf(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
-	  m_functionId.put(Keywords.FUNC_ELEM_AVAILABLE_STRING, Integer.valueOf(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
-	  m_functionId.put(Keywords.FUNC_SUBSTRING_STRING, Integer.valueOf(FunctionTable.FUNC_SUBSTRING));
-	  m_functionId.put(Keywords.FUNC_STRING_LENGTH_STRING, Integer.valueOf(FunctionTable.FUNC_STRING_LENGTH));
-	  m_functionId.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING, Integer.valueOf(FunctionTable.FUNC_UNPARSED_ENTITY_URI));
-	  m_functionId.put(Keywords.FUNC_MATCHES_STRING, Integer.valueOf(FunctionTable.FUNC_MATCHES));
-	  m_functionId.put(Keywords.FUNC_REPLACE_STRING, Integer.valueOf(FunctionTable.FUNC_REPLACE));
-	  m_functionId.put(Keywords.FUNC_DOCLOCATION_STRING, Integer.valueOf(FunctionTable.FUNC_DOCLOCATION));
+	  m_functionId.put(Integer.valueOf(FUNC_CONTAINS), Keywords.FUNC_CONTAINS_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_STARTS_WITH), Keywords.FUNC_STARTS_WITH_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_ENDS_WITH), Keywords.FUNC_ENDS_WITH_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_SUBSTRING_BEFORE), Keywords.FUNC_SUBSTRING_BEFORE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_SUBSTRING_AFTER), Keywords.FUNC_SUBSTRING_AFTER_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_NORMALIZE_SPACE), Keywords.FUNC_NORMALIZE_SPACE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_NORMALIZE_UNICODE), Keywords.FUNC_NORMALIZE_UNICODE);
+	  m_functionId.put(Integer.valueOf(FUNC_TRANSLATE), Keywords.FUNC_TRANSLATE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_CONCAT), Keywords.FUNC_CONCAT_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_SYSTEM_PROPERTY), Keywords.FUNC_SYSTEM_PROPERTY_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_EXT_FUNCTION_AVAILABLE), Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_EXT_ELEM_AVAILABLE), Keywords.FUNC_ELEM_AVAILABLE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_SUBSTRING), Keywords.FUNC_SUBSTRING_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_STRING_LENGTH), Keywords.FUNC_STRING_LENGTH_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_UNPARSED_ENTITY_URI), Keywords.FUNC_UNPARSED_ENTITY_URI_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_MATCHES), Keywords.FUNC_MATCHES_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_REPLACE), Keywords.FUNC_REPLACE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_DOCLOCATION), Keywords.FUNC_DOCLOCATION_STRING);
 
-	  m_functionId.put(Keywords.FUNC_CURRENT_GROUP, Integer.valueOf(FunctionTable.FUNC_CURRENT_GROUP));
-	  m_functionId.put(Keywords.FUNC_CURRENT_GROUPING_KEY, Integer.valueOf(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_GROUP), Keywords.FUNC_CURRENT_GROUP);
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_GROUPING_KEY), Keywords.FUNC_CURRENT_GROUPING_KEY);
 
-	  m_functionId.put(Keywords.FUNC_CURRENT_MERGE_GROUP, Integer.valueOf(FunctionTable.FUNC_CURRENT_MERGE_GROUP));
-	  m_functionId.put(Keywords.FUNC_CURRENT_MERGE_KEY, Integer.valueOf(FunctionTable.FUNC_CURRENT_MERGE_KEY));
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_MERGE_GROUP), Keywords.FUNC_CURRENT_MERGE_GROUP);
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_MERGE_KEY), Keywords.FUNC_CURRENT_MERGE_KEY);
 
-	  m_functionId.put(Keywords.FUNC_ABS, Integer.valueOf(FunctionTable.FUNC_ABS));
-	  m_functionId.put(Keywords.FUNC_REGEX_GROUP, Integer.valueOf(FunctionTable.FUNC_REGEX_GROUP));
-	  m_functionId.put(Keywords.FUNC_TOKENIZE, Integer.valueOf(FunctionTable.FUNC_TOKENIZE));
-	  m_functionId.put(Keywords.FUNC_ANALYZE_STRING, Integer.valueOf(FunctionTable.FUNC_ANALYZE_STRING));
-	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT, Integer.valueOf(FunctionTable.FUNC_UNPARSED_TEXT));
-	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_LINES, Integer.valueOf(FunctionTable.FUNC_UNPARSED_TEXT_LINES));
-	  m_functionId.put(Keywords.FUNC_COLLECTION, Integer.valueOf(FunctionTable.FUNC_COLLECTION));
-	  m_functionId.put(Keywords.FUNC_STRING_JOIN, Integer.valueOf(FunctionTable.FUNC_STRING_JOIN));
-	  m_functionId.put(Keywords.FUNC_CURRENT_DATETIME, Integer.valueOf(FunctionTable.FUNC_CURRENT_DATETIME));
-	  m_functionId.put(Keywords.FUNC_CURRENT_DATE, Integer.valueOf(FunctionTable.FUNC_CURRENT_DATE));
-	  m_functionId.put(Keywords.FUNC_CURRENT_TIME, Integer.valueOf(FunctionTable.FUNC_CURRENT_TIME));
-	  m_functionId.put(Keywords.FUNC_UPPER_CASE, Integer.valueOf(FunctionTable.FUNC_UPPER_CASE));
-	  m_functionId.put(Keywords.FUNC_LOWER_CASE, Integer.valueOf(FunctionTable.FUNC_LOWER_CASE));
-	  m_functionId.put(Keywords.FUNC_IMPLICIT_TIMEZONE, Integer.valueOf(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
-	  m_functionId.put(Keywords.FUNC_INDEX_OF, Integer.valueOf(FunctionTable.FUNC_INDEX_OF));          
-	  m_functionId.put(Keywords.FUNC_DISTINCT_VALUES, Integer.valueOf(FunctionTable.FUNC_DISTINCT_VALUES));
+	  m_functionId.put(Integer.valueOf(FUNC_ABS), Keywords.FUNC_ABS);
+	  m_functionId.put(Integer.valueOf(FUNC_REGEX_GROUP), Keywords.FUNC_REGEX_GROUP);
+	  m_functionId.put(Integer.valueOf(FUNC_TOKENIZE), Keywords.FUNC_TOKENIZE);
+	  m_functionId.put(Integer.valueOf(FUNC_ANALYZE_STRING), Keywords.FUNC_ANALYZE_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_UNPARSED_TEXT), Keywords.FUNC_UNPARSED_TEXT);
+	  m_functionId.put(Integer.valueOf(FUNC_UNPARSED_TEXT_LINES), Keywords.FUNC_UNPARSED_TEXT_LINES);
+	  m_functionId.put(Integer.valueOf(FUNC_COLLECTION), Keywords.FUNC_COLLECTION);
+	  m_functionId.put(Integer.valueOf(FUNC_STRING_JOIN), Keywords.FUNC_STRING_JOIN);
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_DATETIME), Keywords.FUNC_CURRENT_DATETIME);
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_DATE), Keywords.FUNC_CURRENT_DATE);
+	  m_functionId.put(Integer.valueOf(FUNC_CURRENT_TIME), Keywords.FUNC_CURRENT_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_UPPER_CASE), Keywords.FUNC_UPPER_CASE);
+	  m_functionId.put(Integer.valueOf(FUNC_LOWER_CASE), Keywords.FUNC_LOWER_CASE);
+	  m_functionId.put(Integer.valueOf(FUNC_IMPLICIT_TIMEZONE), Keywords.FUNC_IMPLICIT_TIMEZONE);
+	  m_functionId.put(Integer.valueOf(FUNC_INDEX_OF), Keywords.FUNC_INDEX_OF);          
+	  m_functionId.put(Integer.valueOf(FUNC_DISTINCT_VALUES), Keywords.FUNC_DISTINCT_VALUES);
 
-	  m_functionId.put(Keywords.FUNC_FOR_EACH, Integer.valueOf(FunctionTable.FUNC_FOR_EACH));
-	  m_functionId.put(Keywords.FUNC_FILTER, Integer.valueOf(FunctionTable.FUNC_FILTER));
-	  m_functionId.put(Keywords.FUNC_FOLD_LEFT, Integer.valueOf(FunctionTable.FUNC_FOLD_LEFT));
-	  m_functionId.put(Keywords.FUNC_FOLD_RIGHT, Integer.valueOf(FunctionTable.FUNC_FOLD_RIGHT));
-	  m_functionId.put(Keywords.FUNC_FOR_EACH_PAIR, Integer.valueOf(FunctionTable.FUNC_FOR_EACH_PAIR));
-	  m_functionId.put(Keywords.FUNC_SORT, Integer.valueOf(FunctionTable.FUNC_SORT));
-	  m_functionId.put(Keywords.FUNC_APPLY, Integer.valueOf(FunctionTable.FUNC_APPLY));
+	  m_functionId.put(Integer.valueOf(FUNC_FOR_EACH), Keywords.FUNC_FOR_EACH);
+	  m_functionId.put(Integer.valueOf(FUNC_FILTER), Keywords.FUNC_FILTER);
+	  m_functionId.put(Integer.valueOf(FUNC_FOLD_LEFT), Keywords.FUNC_FOLD_LEFT);
+	  m_functionId.put(Integer.valueOf(FUNC_FOLD_RIGHT), Keywords.FUNC_FOLD_RIGHT);
+	  m_functionId.put(Integer.valueOf(FUNC_FOR_EACH_PAIR), Keywords.FUNC_FOR_EACH_PAIR);
+	  m_functionId.put(Integer.valueOf(FUNC_SORT), Keywords.FUNC_SORT);
+	  m_functionId.put(Integer.valueOf(FUNC_APPLY), Keywords.FUNC_APPLY);
 
 	  /**
 	   * XPath 3.1 functions configurations for the math functions
 	   * namespace http://www.w3.org/2005/xpath-functions/math
 	   */
-	  m_functionId.put(Keywords.FUNC_MATH_PI, Integer.valueOf(FunctionTable.FUNC_MATH_PI));
-	  m_functionId.put(Keywords.FUNC_MATH_EXP, Integer.valueOf(FunctionTable.FUNC_MATH_EXP));
-	  m_functionId.put(Keywords.FUNC_MATH_EXP10, Integer.valueOf(FunctionTable.FUNC_MATH_EXP10));
-	  m_functionId.put(Keywords.FUNC_MATH_LOG, Integer.valueOf(FunctionTable.FUNC_MATH_LOG));
-	  m_functionId.put(Keywords.FUNC_MATH_LOG10, Integer.valueOf(FunctionTable.FUNC_MATH_LOG10));
-	  m_functionId.put(Keywords.FUNC_MATH_POW, Integer.valueOf(FunctionTable.FUNC_MATH_POW));
-	  m_functionId.put(Keywords.FUNC_MATH_SQRT, Integer.valueOf(FunctionTable.FUNC_MATH_SQRT));
-	  m_functionId.put(Keywords.FUNC_MATH_SIN, Integer.valueOf(FunctionTable.FUNC_MATH_SIN));
-	  m_functionId.put(Keywords.FUNC_MATH_COS, Integer.valueOf(FunctionTable.FUNC_MATH_COS));
-	  m_functionId.put(Keywords.FUNC_MATH_TAN, Integer.valueOf(FunctionTable.FUNC_MATH_TAN));
-	  m_functionId.put(Keywords.FUNC_MATH_ASIN, Integer.valueOf(FunctionTable.FUNC_MATH_ASIN));
-	  m_functionId.put(Keywords.FUNC_MATH_ACOS, Integer.valueOf(FunctionTable.FUNC_MATH_ACOS));
-	  m_functionId.put(Keywords.FUNC_MATH_ATAN, Integer.valueOf(FunctionTable.FUNC_MATH_ATAN));
-	  m_functionId.put(Keywords.FUNC_MATH_ATAN2, Integer.valueOf(FunctionTable.FUNC_MATH_ATAN2));
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_PI), Keywords.FUNC_MATH_PI);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_EXP), Keywords.FUNC_MATH_EXP);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_EXP10), Keywords.FUNC_MATH_EXP10);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_LOG), Keywords.FUNC_MATH_LOG);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_LOG10), Keywords.FUNC_MATH_LOG10);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_POW), Keywords.FUNC_MATH_POW);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_SQRT), Keywords.FUNC_MATH_SQRT);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_SIN), Keywords.FUNC_MATH_SIN);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_COS), Keywords.FUNC_MATH_COS);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_TAN), Keywords.FUNC_MATH_TAN);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_ASIN), Keywords.FUNC_MATH_ASIN);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_ACOS), Keywords.FUNC_MATH_ACOS);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_ATAN), Keywords.FUNC_MATH_ATAN);
+	  m_functionId.put(Integer.valueOf(FUNC_MATH_ATAN2), Keywords.FUNC_MATH_ATAN2);
 
-	  m_functionId.put(Keywords.FUNC_YEARS_FROM_DURATION, Integer.valueOf(FunctionTable.FUNC_YEARS_FROM_DURATION));
-	  m_functionId.put(Keywords.FUNC_MONTHS_FROM_DURATION, Integer.valueOf(FunctionTable.FUNC_MONTHS_FROM_DURATION));
-	  m_functionId.put(Keywords.FUNC_DAYS_FROM_DURATION, Integer.valueOf(FunctionTable.FUNC_DAYS_FROM_DURATION));
-	  m_functionId.put(Keywords.FUNC_HOURS_FROM_DURATION, Integer.valueOf(FunctionTable.FUNC_HOURS_FROM_DURATION));
-	  m_functionId.put(Keywords.FUNC_MINUTES_FROM_DURATION, Integer.valueOf(FunctionTable.FUNC_MINUTES_FROM_DURATION));
-	  m_functionId.put(Keywords.FUNC_SECONDS_FROM_DURATION, Integer.valueOf(FunctionTable.FUNC_SECONDS_FROM_DURATION));
+	  m_functionId.put(Integer.valueOf(FUNC_YEARS_FROM_DURATION), Keywords.FUNC_YEARS_FROM_DURATION);
+	  m_functionId.put(Integer.valueOf(FUNC_MONTHS_FROM_DURATION), Keywords.FUNC_MONTHS_FROM_DURATION);
+	  m_functionId.put(Integer.valueOf(FUNC_DAYS_FROM_DURATION), Keywords.FUNC_DAYS_FROM_DURATION);
+	  m_functionId.put(Integer.valueOf(FUNC_HOURS_FROM_DURATION), Keywords.FUNC_HOURS_FROM_DURATION);
+	  m_functionId.put(Integer.valueOf(FUNC_MINUTES_FROM_DURATION), Keywords.FUNC_MINUTES_FROM_DURATION);
+	  m_functionId.put(Integer.valueOf(FUNC_SECONDS_FROM_DURATION), Keywords.FUNC_SECONDS_FROM_DURATION);
 
-	  m_functionId.put(Keywords.FUNC_CODE_POINTS_TO_STRING, Integer.valueOf(FunctionTable.FUNC_CODE_POINTS_TO_STRING));
-	  m_functionId.put(Keywords.FUNC_STRING_TO_CODE_POINTS, Integer.valueOf(FunctionTable.FUNC_STRING_TO_CODE_POINTS));
-	  m_functionId.put(Keywords.FUNC_COMPARE, Integer.valueOf(FunctionTable.FUNC_COMPARE));
-	  m_functionId.put(Keywords.FUNC_CODEPOINT_EQUAL, Integer.valueOf(FunctionTable.FUNC_CODEPOINT_EQUAL));
-	  m_functionId.put(Keywords.FUNC_CONTAINS_TOKEN, Integer.valueOf(FunctionTable.FUNC_CONTAINS_TOKEN));
+	  m_functionId.put(Integer.valueOf(FUNC_CODE_POINTS_TO_STRING), Keywords.FUNC_CODE_POINTS_TO_STRING);
+	  m_functionId.put(Integer.valueOf(FUNC_STRING_TO_CODE_POINTS), Keywords.FUNC_STRING_TO_CODE_POINTS);
+	  m_functionId.put(Integer.valueOf(FUNC_COMPARE), Keywords.FUNC_COMPARE);
+	  m_functionId.put(Integer.valueOf(FUNC_CODEPOINT_EQUAL), Keywords.FUNC_CODEPOINT_EQUAL);
+	  m_functionId.put(Integer.valueOf(FUNC_CONTAINS_TOKEN), Keywords.FUNC_CONTAINS_TOKEN);
 
-	  m_functionId.put(Keywords.FUNC_EMPTY, Integer.valueOf(FunctionTable.FUNC_EMPTY));
-	  m_functionId.put(Keywords.FUNC_EXISTS, Integer.valueOf(FunctionTable.FUNC_EXISTS));
-	  m_functionId.put(Keywords.FUNC_HEAD, Integer.valueOf(FunctionTable.FUNC_HEAD));
-	  m_functionId.put(Keywords.FUNC_TAIL, Integer.valueOf(FunctionTable.FUNC_TAIL));
-	  m_functionId.put(Keywords.FUNC_INSERT_BEFORE, Integer.valueOf(FunctionTable.FUNC_INSERT_BEFORE));
-	  m_functionId.put(Keywords.FUNC_REMOVE, Integer.valueOf(FunctionTable.FUNC_REMOVE));
-	  m_functionId.put(Keywords.FUNC_REVERSE, Integer.valueOf(FunctionTable.FUNC_REVERSE));
-	  m_functionId.put(Keywords.FUNC_SUBSEQUENCE, Integer.valueOf(FunctionTable.FUNC_SUBSEQUENCE));
-	  m_functionId.put(Keywords.FUNC_UNORDERED, Integer.valueOf(FunctionTable.FUNC_UNORDERED));
+	  m_functionId.put(Integer.valueOf(FUNC_EMPTY), Keywords.FUNC_EMPTY);
+	  m_functionId.put(Integer.valueOf(FUNC_EXISTS), Keywords.FUNC_EXISTS);
+	  m_functionId.put(Integer.valueOf(FUNC_HEAD), Keywords.FUNC_HEAD);
+	  m_functionId.put(Integer.valueOf(FUNC_TAIL), Keywords.FUNC_TAIL);
+	  m_functionId.put(Integer.valueOf(FUNC_INSERT_BEFORE), Keywords.FUNC_INSERT_BEFORE);
+	  m_functionId.put(Integer.valueOf(FUNC_REMOVE), Keywords.FUNC_REMOVE);
+	  m_functionId.put(Integer.valueOf(FUNC_REVERSE), Keywords.FUNC_REVERSE);
+	  m_functionId.put(Integer.valueOf(FUNC_SUBSEQUENCE), Keywords.FUNC_SUBSEQUENCE);
+	  m_functionId.put(Integer.valueOf(FUNC_UNORDERED), Keywords.FUNC_UNORDERED);
 
-	  m_functionId.put(Keywords.FUNC_PARSE_XML, Integer.valueOf(FunctionTable.FUNC_PARSE_XML));
-	  m_functionId.put(Keywords.FUNC_PARSE_XML_FRAGMENT, Integer.valueOf(FunctionTable.FUNC_PARSE_XML_FRAGMENT));
-	  m_functionId.put(Keywords.FUNC_SERIALIZE, Integer.valueOf(FunctionTable.FUNC_SERIALIZE));
+	  m_functionId.put(Integer.valueOf(FUNC_PARSE_XML), Keywords.FUNC_PARSE_XML);
+	  m_functionId.put(Integer.valueOf(FUNC_PARSE_XML_FRAGMENT), Keywords.FUNC_PARSE_XML_FRAGMENT);
+	  m_functionId.put(Integer.valueOf(FUNC_SERIALIZE), Keywords.FUNC_SERIALIZE);
 
-	  m_functionId.put(Keywords.FUNC_AVG, Integer.valueOf(FunctionTable.FUNC_AVG));
-	  m_functionId.put(Keywords.FUNC_MAX, Integer.valueOf(FunctionTable.FUNC_MAX));
-	  m_functionId.put(Keywords.FUNC_MIN, Integer.valueOf(FunctionTable.FUNC_MIN));
+	  m_functionId.put(Integer.valueOf(FUNC_AVG), Keywords.FUNC_AVG);
+	  m_functionId.put(Integer.valueOf(FUNC_MAX), Keywords.FUNC_MAX);
+	  m_functionId.put(Integer.valueOf(FUNC_MIN), Keywords.FUNC_MIN);
 
-	  m_functionId.put(Keywords.FUNC_DOC, Integer.valueOf(FunctionTable.FUNC_DOC));
-	  m_functionId.put(Keywords.FUNC_DOC_AVAILABLE, Integer.valueOf(FunctionTable.FUNC_DOC_AVAILABLE));
+	  m_functionId.put(Integer.valueOf(FUNC_DOC), Keywords.FUNC_DOC);
+	  m_functionId.put(Integer.valueOf(FUNC_DOC_AVAILABLE), Keywords.FUNC_DOC_AVAILABLE);
 
-	  m_functionId.put(Keywords.FUNC_NODE_NAME, Integer.valueOf(FunctionTable.FUNC_NODE_NAME));
-	  m_functionId.put(Keywords.FUNC_DEEP_EQUAL, Integer.valueOf(FunctionTable.FUNC_DEEP_EQUAL));
+	  m_functionId.put(Integer.valueOf(FUNC_NODE_NAME), Keywords.FUNC_NODE_NAME);
+	  m_functionId.put(Integer.valueOf(FUNC_DEEP_EQUAL), Keywords.FUNC_DEEP_EQUAL);
 
-	  m_functionId.put(Keywords.FUNC_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_YEAR_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_MONTH_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_DAY_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_DAY_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_HOURS_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_HOURS_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_MINUTES_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_MINUTES_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_SECONDS_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE_TIME, Integer.valueOf(FunctionTable.FUNC_TIMEZONE_FROM_DATE_TIME));
-	  m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE, Integer.valueOf(FunctionTable.FUNC_YEAR_FROM_DATE));
-	  m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE, Integer.valueOf(FunctionTable.FUNC_MONTH_FROM_DATE));
-	  m_functionId.put(Keywords.FUNC_DAY_FROM_DATE, Integer.valueOf(FunctionTable.FUNC_DAY_FROM_DATE));
-	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE, Integer.valueOf(FunctionTable.FUNC_TIMEZONE_FROM_DATE));
-	  m_functionId.put(Keywords.FUNC_HOURS_FROM_TIME, Integer.valueOf(FunctionTable.FUNC_HOURS_FROM_TIME));
-	  m_functionId.put(Keywords.FUNC_MINUTES_FROM_TIME, Integer.valueOf(FunctionTable.FUNC_MINUTES_FROM_TIME));
-	  m_functionId.put(Keywords.FUNC_SECONDS_FROM_TIME, Integer.valueOf(FunctionTable.FUNC_SECONDS_FROM_TIME));
-	  m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_TIME, Integer.valueOf(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
+	  m_functionId.put(Integer.valueOf(FUNC_DATE_TIME), Keywords.FUNC_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_YEAR_FROM_DATE_TIME), Keywords.FUNC_YEAR_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_MONTH_FROM_DATE_TIME), Keywords.FUNC_MONTH_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_DAY_FROM_DATE_TIME), Keywords.FUNC_DAY_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_HOURS_FROM_DATE_TIME), Keywords.FUNC_HOURS_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_MINUTES_FROM_DATE_TIME), Keywords.FUNC_MINUTES_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_SECONDS_FROM_DATE_TIME), Keywords.FUNC_SECONDS_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_TIMEZONE_FROM_DATE_TIME), Keywords.FUNC_TIMEZONE_FROM_DATE_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_YEAR_FROM_DATE), Keywords.FUNC_YEAR_FROM_DATE);
+	  m_functionId.put(Integer.valueOf(FUNC_MONTH_FROM_DATE), Keywords.FUNC_MONTH_FROM_DATE);
+	  m_functionId.put(Integer.valueOf(FUNC_DAY_FROM_DATE), Keywords.FUNC_DAY_FROM_DATE);
+	  m_functionId.put(Integer.valueOf(FUNC_TIMEZONE_FROM_DATE), Keywords.FUNC_TIMEZONE_FROM_DATE);
+	  m_functionId.put(Integer.valueOf(FUNC_HOURS_FROM_TIME), Keywords.FUNC_HOURS_FROM_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_MINUTES_FROM_TIME), Keywords.FUNC_MINUTES_FROM_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_SECONDS_FROM_TIME), Keywords.FUNC_SECONDS_FROM_TIME);
+	  m_functionId.put(Integer.valueOf(FUNC_TIMEZONE_FROM_TIME), Keywords.FUNC_TIMEZONE_FROM_TIME);
 	  
-	  m_functionId.put(Keywords.FUNC_ADJUST_DATETIME_TO_TIMEZONE, Integer.valueOf(FunctionTable.FUNC_ADJUST_DATETIME_TO_TIMEZONE));
-	  m_functionId.put(Keywords.FUNC_ADJUST_DATE_TO_TIMEZONE, Integer.valueOf(FunctionTable.FUNC_ADJUST_DATE_TO_TIMEZONE));
-	  m_functionId.put(Keywords.FUNC_ADJUST_TIME_TO_TIMEZONE, Integer.valueOf(FunctionTable.FUNC_ADJUST_TIME_TO_TIMEZONE));
+	  m_functionId.put(Integer.valueOf(FUNC_ADJUST_DATETIME_TO_TIMEZONE), Keywords.FUNC_ADJUST_DATETIME_TO_TIMEZONE);
+	  m_functionId.put(Integer.valueOf(FUNC_ADJUST_DATE_TO_TIMEZONE), Keywords.FUNC_ADJUST_DATE_TO_TIMEZONE);
+	  m_functionId.put(Integer.valueOf(FUNC_ADJUST_TIME_TO_TIMEZONE), Keywords.FUNC_ADJUST_TIME_TO_TIMEZONE);
 	  
-	  m_functionId.put(Keywords.FUNC_FORMAT_DATETIME, Integer.valueOf(FunctionTable.FUNC_FORMAT_DATETIME));
-	  m_functionId.put(Keywords.FUNC_FORMAT_DATE, Integer.valueOf(FunctionTable.FUNC_FORMAT_DATE));
-	  m_functionId.put(Keywords.FUNC_FORMAT_TIME, Integer.valueOf(FunctionTable.FUNC_FORMAT_TIME));
+	  m_functionId.put(Integer.valueOf(FUNC_FORMAT_DATETIME), Keywords.FUNC_FORMAT_DATETIME);
+	  m_functionId.put(Integer.valueOf(FUNC_FORMAT_DATE), Keywords.FUNC_FORMAT_DATE);
+	  m_functionId.put(Integer.valueOf(FUNC_FORMAT_TIME), Keywords.FUNC_FORMAT_TIME);
 	  
-	  m_functionId.put(Keywords.FUNC_PARSE_IETF_DATE, Integer.valueOf(FunctionTable.FUNC_PARSE_IETF_DATE));
+	  m_functionId.put(Integer.valueOf(FUNC_PARSE_IETF_DATE), Keywords.FUNC_PARSE_IETF_DATE);
 	  
-	  m_functionId.put(Keywords.FUNC_FORMAT_INTEGER, Integer.valueOf(FunctionTable.FUNC_FORMAT_INTEGER));
+	  m_functionId.put(Integer.valueOf(FUNC_FORMAT_INTEGER), Keywords.FUNC_FORMAT_INTEGER);
 
-	  m_functionId.put(Keywords.FUNC_DEFAULT_COLLATION, Integer.valueOf(FunctionTable.FUNC_DEFAULT_COLLATION));
-	  m_functionId.put(Keywords.FUNC_BASE_URI, Integer.valueOf(FunctionTable.FUNC_BASE_URI));
-	  m_functionId.put(Keywords.FUNC_DOCUMENT_URI, Integer.valueOf(FunctionTable.FUNC_DOCUMENT_URI));
+	  m_functionId.put(Integer.valueOf(FUNC_DEFAULT_COLLATION), Keywords.FUNC_DEFAULT_COLLATION);
+	  m_functionId.put(Integer.valueOf(FUNC_BASE_URI), Keywords.FUNC_BASE_URI);
+	  m_functionId.put(Integer.valueOf(FUNC_DOCUMENT_URI), Keywords.FUNC_DOCUMENT_URI);
 
 	  /**
 	   * XPath 3.1 functions configurations for the map functions
 	   * namespace http://www.w3.org/2005/xpath-functions/map
 	   */
-	  m_functionId.put(Keywords.FUNC_MAP_MERGE, Integer.valueOf(FunctionTable.FUNC_MAP_MERGE));
-	  m_functionId.put(Keywords.FUNC_MAP_SIZE, Integer.valueOf(FunctionTable.FUNC_MAP_SIZE));
-	  m_functionId.put(Keywords.FUNC_MAP_KEYS, Integer.valueOf(FunctionTable.FUNC_MAP_KEYS));
-	  m_functionId.put(Keywords.FUNC_MAP_CONTAINS, Integer.valueOf(FunctionTable.FUNC_MAP_CONTAINS));
-	  m_functionId.put(Keywords.FUNC_MAP_GET, Integer.valueOf(FunctionTable.FUNC_MAP_GET));
-	  m_functionId.put(Keywords.FUNC_MAP_PUT, Integer.valueOf(FunctionTable.FUNC_MAP_PUT));
-	  m_functionId.put(Keywords.FUNC_MAP_ENTRY, Integer.valueOf(FunctionTable.FUNC_MAP_ENTRY));
-	  m_functionId.put(Keywords.FUNC_MAP_FOREACH, Integer.valueOf(FunctionTable.FUNC_MAP_FOREACH));
-	  m_functionId.put(Keywords.FUNC_MAP_REMOVE, Integer.valueOf(FunctionTable.FUNC_MAP_REMOVE));
-	  m_functionId.put(Keywords.FUNC_MAP_FIND, Integer.valueOf(FunctionTable.FUNC_MAP_FIND));
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_MERGE), Keywords.FUNC_MAP_MERGE);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_SIZE), Keywords.FUNC_MAP_SIZE);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_KEYS), Keywords.FUNC_MAP_KEYS);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_CONTAINS), Keywords.FUNC_MAP_CONTAINS);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_GET), Keywords.FUNC_MAP_GET);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_FIND), Keywords.FUNC_MAP_FIND);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_PUT), Keywords.FUNC_MAP_PUT);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_ENTRY), Keywords.FUNC_MAP_ENTRY);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_REMOVE), Keywords.FUNC_MAP_REMOVE);
+	  m_functionId.put(Integer.valueOf(FUNC_MAP_FOREACH), Keywords.FUNC_MAP_FOREACH);	  	  
 
 	  /**
 	   * XPath 3.1 functions configurations for the array functions
 	   * namespace http://www.w3.org/2005/xpath-functions/array
 	   */
-	  m_functionId.put(Keywords.FUNC_ARRAY_SIZE, Integer.valueOf(FunctionTable.FUNC_ARRAY_SIZE));
-	  m_functionId.put(Keywords.FUNC_ARRAY_GET, Integer.valueOf(FunctionTable.FUNC_ARRAY_GET));
-	  m_functionId.put(Keywords.FUNC_ARRAY_PUT, Integer.valueOf(FunctionTable.FUNC_ARRAY_PUT));
-	  m_functionId.put(Keywords.FUNC_ARRAY_APPEND, Integer.valueOf(FunctionTable.FUNC_ARRAY_APPEND));
-	  m_functionId.put(Keywords.FUNC_ARRAY_SUBARRAY, Integer.valueOf(FunctionTable.FUNC_ARRAY_SUBARRAY));
-	  m_functionId.put(Keywords.FUNC_ARRAY_REMOVE, Integer.valueOf(FunctionTable.FUNC_ARRAY_REMOVE));
-	  m_functionId.put(Keywords.FUNC_ARRAY_INSERT_BEFORE, Integer.valueOf(FunctionTable.FUNC_ARRAY_INSERT_BEFORE));
-	  m_functionId.put(Keywords.FUNC_ARRAY_HEAD, Integer.valueOf(FunctionTable.FUNC_ARRAY_HEAD));
-	  m_functionId.put(Keywords.FUNC_ARRAY_TAIL, Integer.valueOf(FunctionTable.FUNC_ARRAY_TAIL));
-	  m_functionId.put(Keywords.FUNC_ARRAY_REVERSE, Integer.valueOf(FunctionTable.FUNC_ARRAY_REVERSE));
-	  m_functionId.put(Keywords.FUNC_ARRAY_JOIN, Integer.valueOf(FunctionTable.FUNC_ARRAY_JOIN));
-	  m_functionId.put(Keywords.FUNC_ARRAY_FILTER, Integer.valueOf(FunctionTable.FUNC_ARRAY_FILTER));
-	  m_functionId.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR, Integer.valueOf(FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR));
-	  m_functionId.put(Keywords.FUNC_ARRAY_FOLD_LEFT, Integer.valueOf(FunctionTable.FUNC_ARRAY_FOLD_LEFT));
-	  m_functionId.put(Keywords.FUNC_ARRAY_FOLD_RIGHT, Integer.valueOf(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
-	  m_functionId.put(Keywords.FUNC_ARRAY_SORT, Integer.valueOf(FunctionTable.FUNC_ARRAY_SORT));
-	  m_functionId.put(Keywords.FUNC_ARRAY_FLATTEN, Integer.valueOf(FunctionTable.FUNC_ARRAY_FLATTEN));
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_SIZE), Keywords.FUNC_ARRAY_SIZE);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_GET), Keywords.FUNC_ARRAY_GET);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_PUT), Keywords.FUNC_ARRAY_PUT);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_APPEND), Keywords.FUNC_ARRAY_APPEND);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_SUBARRAY), Keywords.FUNC_ARRAY_SUBARRAY);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_REMOVE), Keywords.FUNC_ARRAY_REMOVE);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_INSERT_BEFORE), Keywords.FUNC_ARRAY_INSERT_BEFORE);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_HEAD), Keywords.FUNC_ARRAY_HEAD);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_TAIL), Keywords.FUNC_ARRAY_TAIL);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_REVERSE), Keywords.FUNC_ARRAY_REVERSE);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_JOIN), Keywords.FUNC_ARRAY_JOIN);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_FOR_EACH), Keywords.FUNC_ARRAY_FOR_EACH);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_FILTER), Keywords.FUNC_ARRAY_FILTER);	  
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_FOLD_LEFT), Keywords.FUNC_ARRAY_FOLD_LEFT);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_FOLD_RIGHT), Keywords.FUNC_ARRAY_FOLD_RIGHT);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_FOR_EACH_PAIR), Keywords.FUNC_ARRAY_FOR_EACH_PAIR);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_SORT), Keywords.FUNC_ARRAY_SORT);
+	  m_functionId.put(Integer.valueOf(FUNC_ARRAY_FLATTEN), Keywords.FUNC_ARRAY_FLATTEN);
 
-	  m_functionId.put(Keywords.FUNC_NAME_STRING, Integer.valueOf(FunctionTable.FUNC_NAME));
+	  m_functionId.put(Integer.valueOf(FUNC_NAME), Keywords.FUNC_NAME_STRING);
 
-	  m_functionId.put(Keywords.FUNC_RESOLVE_QNAME, Integer.valueOf(FunctionTable.FUNC_RESOLVE_QNAME));
-	  m_functionId.put(Keywords.FUNC_QNAME, Integer.valueOf(FunctionTable.FUNC_QNAME));
-	  m_functionId.put(Keywords.FUNC_PREFIX_FROM_QNAME, Integer.valueOf(FunctionTable.FUNC_PREFIX_FROM_QNAME));
-	  m_functionId.put(Keywords.FUNC_LOCAL_NAME_FROM_QNAME, Integer.valueOf(FunctionTable.FUNC_LOCAL_NAME_FROM_QNAME));
-	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME, Integer.valueOf(FunctionTable.FUNC_NAMESPACE_URI_FROM_QNAME));
-	  m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX, Integer.valueOf(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
-	  m_functionId.put(Keywords.FUNC_IN_SCOPE_PREFIXES, Integer.valueOf(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
+	  m_functionId.put(Integer.valueOf(FUNC_RESOLVE_QNAME), Keywords.FUNC_RESOLVE_QNAME);
+	  m_functionId.put(Integer.valueOf(FUNC_QNAME), Keywords.FUNC_QNAME);
+	  m_functionId.put(Integer.valueOf(FUNC_PREFIX_FROM_QNAME), Keywords.FUNC_PREFIX_FROM_QNAME);
+	  m_functionId.put(Integer.valueOf(FUNC_LOCAL_NAME_FROM_QNAME), Keywords.FUNC_LOCAL_NAME_FROM_QNAME);
+	  m_functionId.put(Integer.valueOf(FUNC_NAMESPACE_URI_FROM_QNAME), Keywords.FUNC_NAMESPACE_URI_FROM_QNAME);
+	  m_functionId.put(Integer.valueOf(FUNC_NAMESPACE_URI_FOR_PREFIX), Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX);
+	  m_functionId.put(Integer.valueOf(FUNC_IN_SCOPE_PREFIXES), Keywords.FUNC_IN_SCOPE_PREFIXES);
 	  
-	  m_functionId.put(Keywords.FUNC_TRANSFORM, Integer.valueOf(FunctionTable.FUNC_TRANSFORM));
+	  m_functionId.put(Integer.valueOf(FUNC_TRANSFORM), Keywords.FUNC_TRANSFORM);
 
-	  m_functionId.put(Keywords.FUNC_PARSE_JSON, Integer.valueOf(FunctionTable.FUNC_PARSE_JSON));
-	  m_functionId.put(Keywords.FUNC_JSON_DOC, Integer.valueOf(FunctionTable.FUNC_JSON_DOC));
-	  m_functionId.put(Keywords.FUNC_JSON_TO_XML, Integer.valueOf(FunctionTable.FUNC_JSON_TO_XML));
-	  m_functionId.put(Keywords.FUNC_XML_TO_JSON, Integer.valueOf(FunctionTable.FUNC_XML_TO_JSON));
+	  m_functionId.put(Integer.valueOf(FUNC_PARSE_JSON), Keywords.FUNC_PARSE_JSON);
+	  m_functionId.put(Integer.valueOf(FUNC_JSON_DOC), Keywords.FUNC_JSON_DOC);
+	  m_functionId.put(Integer.valueOf(FUNC_JSON_TO_XML), Keywords.FUNC_JSON_TO_XML);
+	  m_functionId.put(Integer.valueOf(FUNC_XML_TO_JSON), Keywords.FUNC_XML_TO_JSON);
 	  
-	  m_functionId.put(Keywords.FUNC_FUNCTION_ARITY, Integer.valueOf(FunctionTable.FUNC_FUNCTION_ARITY));
-	  m_functionId.put(Keywords.FUNC_FUNCTION_NAME, Integer.valueOf(FunctionTable.FUNC_FUNCTION_NAME));
+	  m_functionId.put(Integer.valueOf(FUNC_FUNCTION_ARITY), Keywords.FUNC_FUNCTION_ARITY);
+	  m_functionId.put(Integer.valueOf(FUNC_FUNCTION_NAME), Keywords.FUNC_FUNCTION_NAME);
 	  
-	  m_functionId.put(Keywords.FUNC_ERROR, Integer.valueOf(FunctionTable.FUNC_ERROR));
+	  m_functionId.put(Integer.valueOf(FUNC_ERROR), Keywords.FUNC_ERROR);
 	  
-	  m_functionId.put(Keywords.FUNC_RANDOM_NUMBER_GENERATOR, Integer.valueOf(FunctionTable.FUNC_RANDOM_NUMBER_GENERATOR));
+	  m_functionId.put(Integer.valueOf(FUNC_RANDOM_NUMBER_GENERATOR), Keywords.FUNC_RANDOM_NUMBER_GENERATOR);
 	  
-	  m_functionId.put(Keywords.FUNC_ENVIRONMENT_VARIABLE, Integer.valueOf(FunctionTable.FUNC_ENVIRONMENT_VARIABLE));
-	  m_functionId.put(Keywords.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES, Integer.valueOf(FunctionTable.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES));
+	  m_functionId.put(Integer.valueOf(FUNC_ENVIRONMENT_VARIABLE), Keywords.FUNC_ENVIRONMENT_VARIABLE);
+	  m_functionId.put(Integer.valueOf(FUNC_AVAILABLE_ENVIRONMENT_VARIABLES), Keywords.FUNC_AVAILABLE_ENVIRONMENT_VARIABLES);
 	  
-	  m_functionId.put(Keywords.FUNC_UNPARSED_TEXT_AVAILABLE, Integer.valueOf(FunctionTable.FUNC_UNPARSED_TEXT_AVAILABLE));
+	  m_functionId.put(Integer.valueOf(FUNC_UNPARSED_TEXT_AVAILABLE), Keywords.FUNC_UNPARSED_TEXT_AVAILABLE);
 	  
-	  m_functionId.put(Keywords.FUNC_COPY_OF, Integer.valueOf(FunctionTable.FUNC_COPY_OF));
+	  m_functionId.put(Integer.valueOf(FUNC_COPY_OF), Keywords.FUNC_COPY_OF);
 	  
-	  m_functionId.put(Keywords.FROM_SELF_ABBREVIATED_STRING, Integer.valueOf(FunctionTable.FUNC_PERIOD));
+	  m_functionId.put(Integer.valueOf(FUNC_PERIOD), Keywords.FROM_SELF_ABBREVIATED_STRING);
 	  
-	  m_functionId.put(Keywords.FUNC_ZERO_OR_ONE, Integer.valueOf(FunctionTable.FUNC_ZERO_OR_ONE));
-	  m_functionId.put(Keywords.FUNC_ONE_OR_MORE, Integer.valueOf(FunctionTable.FUNC_ONE_OR_MORE));
-	  m_functionId.put(Keywords.FUNC_EXACTLY_ONE, Integer.valueOf(FunctionTable.FUNC_EXACTLY_ONE));
+	  m_functionId.put(Integer.valueOf(FUNC_ZERO_OR_ONE), Keywords.FUNC_ZERO_OR_ONE);
+	  m_functionId.put(Integer.valueOf(FUNC_ONE_OR_MORE), Keywords.FUNC_ONE_OR_MORE);
+	  m_functionId.put(Integer.valueOf(FUNC_EXACTLY_ONE), Keywords.FUNC_EXACTLY_ONE);
 	  
-	  m_functionId.put(Keywords.FUNC_PATH, Integer.valueOf(FunctionTable.FUNC_PATH));
+	  m_functionId.put(Integer.valueOf(FUNC_PATH), Keywords.FUNC_PATH);
+	  
+	  m_functionId.put(Integer.valueOf(FUNC_DOCUMENT), Keywords.FUNC_DOCUMENT);
+	  m_functionId.put(Integer.valueOf(FUNC_FORMAT_NUMBER), Keywords.FUNC_FORMAT_NUMBER);
   }
   
   /**
@@ -1191,17 +1171,22 @@ public class FunctionTable
    * Return an XPath function's name in the static table. Needed to avoid
    * making the table publicly available.
    */
-  String getFunctionName(int funcID) {
+  public String getFunctionName(int funcID) {
 	  
 	  String result = null;
 
-	  if (funcID < NUM_BUILT_IN_FUNCS) {
-		  for (Map.Entry<String, Integer> entry : m_functionId.entrySet()) {
-			  if (Objects.equals(entry.getValue(), Integer.valueOf(funcID))) {
-				  result = entry.getKey();
-
-				  break;
-			  }
+	  if (funcID < NUM_BUILT_IN_FUNCS) {		  		  
+		  Set<Entry<Integer, String>> entrySet = m_functionId.entrySet();
+		  Iterator<Entry<Integer, String>> iter1 = entrySet.iterator();
+		  while (iter1.hasNext()) {
+			 Entry<Integer, String> entry = iter1.next();
+			 Integer funcId = entry.getKey();
+			 String funcName = entry.getValue();
+			 if (funcId.intValue() == funcID) {
+				 result = funcName;
+				 
+				 break;
+			 }
 		  }
 	  }
 
@@ -1228,15 +1213,10 @@ public class FunctionTable
           throws javax.xml.transform.TransformerException
   {
 	  try {
-		  if (which < NUM_BUILT_IN_FUNCS) {
-			  if (which == FunctionTable.FUNC_DOC) {
-				  return new FuncDoc(); 
-			  }
-			  else {
-				  return (Function) m_functions[which].newInstance();
-			  }
+		  if (which < NUM_BUILT_IN_FUNCS) {			  			  
+			  return (Function) m_functions[which].newInstance();
 		  }
-		  else 
+		  else
 			  return (Function) m_functions_customer[which-NUM_BUILT_IN_FUNCS].newInstance();                  
 	  } 
 	  catch (IllegalAccessException ex){
@@ -1248,121 +1228,593 @@ public class FunctionTable
   }
   
   /**
-   * Obtain a function id from a given function name
-   * @param key the function name in a java.lang.String format.
-   * @return a function id, which may correspond to one of the FUNC_XXX values
-   * found in {@link org.apache.xpath.compiler.FunctionTable}, but may be a 
-   * value installed by an external module.
+   * Method definition, to get function id from the supplied function 
+   * name, for XPath 3.1 & XSLT 3 built-in functions from namespace 
+   * http://www.w3.org/2005/xpath-functions. 
+   * 
+   * @param localName                  The supplied string value, for
+   *                                   an XSL function local name.
+   * @return                           Function id, for an XSL built-in
+   *                                   function.
    */
-  public Object getFunctionId(String funcName){
-	  Object id = m_functionId_customer.get(funcName);
-	  if (null == id) id = m_functionId.get(funcName);
-	  return id;
-  }
-  
-  /**
-   * Obtain a function id from a given function name, for XPath built-in 
-   * functions from namespace http://www.w3.org/2005/xpath-functions.
-   * This method serves a different purpose than the method, 'getFunctionID'.   
-   */
-  public Object getFunctionIdForXPathBuiltinFuncs(String funcName) {
+  public Object getFunctionIdForXSLBuiltinFuncs(String localName) {
 	  
 	    Object id = null;
 		
-		switch (funcName) {
-		      case "contains":
-			     id = FunctionTable.FUNC_CONTAINS;
+		switch (localName) {
+		      case "abs":
+			     id = FUNC_ABS;			     			     
 			     break;
-		      case "remove":
-			     id = FunctionTable.FUNC_REMOVE;
+		      case "adjust-dateTime-to-timezone":
+			     id = FUNC_ADJUST_DATETIME_TO_TIMEZONE;			     
 			     break;		      
-		      case "insert-before":
-			     id = FunctionTable.FUNC_INSERT_BEFORE;
+		      case "adjust-date-to-timezone":
+			     id = FUNC_ADJUST_DATE_TO_TIMEZONE;
 			     break;
-		      case "head":
-			     id = FunctionTable.FUNC_HEAD;
-			     break;
-		      case "tail":
-			     id = FunctionTable.FUNC_TAIL;
-			     break;
-		      case "reverse":
-				 id = FunctionTable.FUNC_REVERSE;
+		      case "adjust-time-to-timezone":
+				 id = FUNC_ADJUST_TIME_TO_TIMEZONE;
 				 break;
-		      case "for-each":
-				 id = FunctionTable.FUNC_FOR_EACH;
+		      case "analyze-string":
+			     id = FUNC_ANALYZE_STRING;
+			     break;
+		      case "apply":
+				 id = FUNC_APPLY;
 				 break;
+		      case "available-environment-variables":
+				 id = FUNC_AVAILABLE_ENVIRONMENT_VARIABLES;
+				 break;
+		      case "avg":
+				 id = FUNC_AVG;
+				 break;
+		      case "base-uri":
+				 id = FUNC_BASE_URI;
+				 break;
+		      case "boolean":
+				 id = FUNC_BOOLEAN;
+				 break;
+		      case "ceiling":
+			     id = FUNC_CEILING;
+			     break;
+		      case "codepoint-equal":
+				 id = FUNC_CODEPOINT_EQUAL;
+				 break;
+		      case "codepoints-to-string":
+			     id = FUNC_CODE_POINTS_TO_STRING;
+				 break;
+		      case "collation-key":
+		    	 // Not implemented
+				 break;
+		      case "collection":
+				 id = FUNC_COLLECTION;
+				 break;
+		      case "compare":
+				 id = FUNC_COMPARE;
+				 break;
+		      case "concat":
+				 id = FUNC_CONCAT;
+				 break;
+		      case "contains":
+				 id = FUNC_CONTAINS;
+				 break;
+		      case "contains-token":
+		    	  id = FUNC_CONTAINS_TOKEN;
+		    	  break;
+		      case "copy-of":
+		    	  id = FUNC_COPY_OF;
+		    	  break;
+		      case "count":
+		    	  id = FUNC_COUNT;
+		    	  break;
+		      case "current":
+		    	  id = FUNC_CURRENT;
+		    	  break;
+		      case "current-date":
+		    	  id = FUNC_CURRENT_DATE;
+		    	  break;
+		      case "current-dateTime":
+		    	  id = FUNC_CURRENT_DATETIME;
+		    	  break;
+		      case "current-group":
+		    	  id = FUNC_CURRENT_GROUP;
+		    	  break;
+		      case "current-grouping-key":
+		    	  id = FUNC_CURRENT_GROUPING_KEY;
+		    	  break;
+		      case "current-merge-group":
+		    	  id = FUNC_CURRENT_MERGE_GROUP;
+		    	  break;
+		      case "current-merge-key":
+		    	  id = FUNC_CURRENT_MERGE_KEY;
+		    	  break;
+		      case "current-time":
+		    	  id = FUNC_CURRENT_TIME;
+		    	  break;
+		      case "data":
+		    	  id = FUNC_DATA;
+		    	  break;
+		      case "dateTime":
+		    	  id = FUNC_DATE_TIME;
+		    	  break;
+		      case "day-from-date":
+		    	  id = FUNC_DAY_FROM_DATE;
+		    	  break;
+		      case "day-from-dateTime":
+		    	  id = FUNC_DAY_FROM_DATE_TIME;
+		    	  break;
+		      case "days-from-duration":
+		    	  id = FUNC_DAYS_FROM_DURATION;
+		    	  break;
+		      case "deep-equal":
+		    	  id = FUNC_DEEP_EQUAL;
+		    	  break;
+		      case "default-collation":
+		    	  id = FUNC_DEFAULT_COLLATION;
+		    	  break;
+		      case "default-language":
+		    	  // Not implemented
+		    	  break;
+		      case "distinct-values":
+		    	  id = FUNC_DISTINCT_VALUES;
+		    	  break;
+		      case "doc":
+		    	  id = FUNC_DOC;
+		    	  break;
+		      case "doc-available":
+		    	  id = FUNC_DOC_AVAILABLE;
+		    	  break;
+		      case "document":
+		    	  id = FUNC_DOCUMENT;
+		    	  break;
+		      case "document-uri":
+		    	  id = FUNC_DOCUMENT_URI;
+		    	  break;
+		      case "element-available":
+		    	  id = FUNC_EXT_ELEM_AVAILABLE;
+		    	  break;
+		      case "element-with-id":
+		    	  // Not implemented
+		    	  break;
+		      case "empty":
+		    	  id = FUNC_EMPTY;
+		    	  break;
+		      case "encode-for-uri":
+		    	  // Not implemented
+		    	  break;
+		      case "ends-with":
+		    	  id = FUNC_ENDS_WITH;
+		    	  break;
+		      case "environment-variable":
+		    	  id = FUNC_ENVIRONMENT_VARIABLE;
+		    	  break;
+		      case "error":
+		    	  id = FUNC_ERROR;
+		    	  break;
+		      case "escape-html-uri":
+		    	  // Not implemented
+		    	  break;
+		      case "exactly-one":
+		    	  id = FUNC_EXACTLY_ONE;
+		    	  break;
+		      case "exists":
+		    	  id = FUNC_EXISTS;
+		    	  break;
+		      case "false":
+		    	  id = FUNC_FALSE;
+		    	  break;
 		      case "filter":
-				 id = FunctionTable.FUNC_FILTER;
-				 break;
-		      case "for-each-pair":
-				 id = FunctionTable.FUNC_FOR_EACH_PAIR;
-				 break;
+		    	  id = FUNC_FILTER;
+		    	  break;
+		      case "floor":
+		    	  id = FUNC_FLOOR;
+		    	  break;
 		      case "fold-left":
-				 id = FunctionTable.FUNC_FOLD_LEFT;
-				 break;
+		    	  id = FUNC_FOLD_LEFT;
+		    	  break;
 		      case "fold-right":
-			     id = FunctionTable.FUNC_FOLD_RIGHT;
-			     break;
+		    	  id = FUNC_FOLD_RIGHT;
+		    	  break;
+		      case "for-each":
+		    	  id = FUNC_FOR_EACH;
+		    	  break;
+		      case "for-each-pair":
+		    	  id = FUNC_FOR_EACH_PAIR;
+		    	  break;
+		      case "format-date":
+		    	  id = FUNC_FORMAT_DATE;
+		    	  break;
+		      case "format-dateTime":
+		    	  id = FUNC_FORMAT_DATETIME;
+		    	  break;
+		      case "format-integer":
+		    	  id = FUNC_FORMAT_INTEGER;
+		    	  break;
+		      case "format-number":
+		    	  id = FUNC_FORMAT_NUMBER;
+		    	  break;
+		      case "format-time":
+		    	  id = FUNC_FORMAT_TIME;
+		    	  break;
+		      case "function-arity":
+		    	  id = FUNC_FUNCTION_ARITY;
+		    	  break;
+		      case "function-lookup":
+		    	  // Not implemented
+		    	  break;
+		      case "function-name":
+		    	  id = FUNC_FUNCTION_NAME;
+		    	  break;
+		      case "function-available":
+		    	  id = FUNC_EXT_FUNCTION_AVAILABLE;
+		    	  break;
+		      case "generate-id":
+		    	  id = FUNC_GENERATE_ID;
+		    	  break;
+		      case "has-children":
+		    	  // Not implemented
+		    	  break;
+		      case "head":
+		    	  id = FUNC_HEAD;
+		    	  break;
+		      case "hours-from-dateTime":
+		    	  id = FUNC_HOURS_FROM_DATE_TIME;
+		    	  break;
+		      case "hours-from-duration":
+		    	  id = FUNC_HOURS_FROM_DURATION;
+		    	  break;
+		      case "hours-from-time":
+		    	  id = FUNC_HOURS_FROM_TIME;
+		    	  break;
+		      case "id":
+		    	  id = FUNC_ID;
+		    	  break;
+		      case "idref":
+		    	  // Not implemented
+		    	  break;
+		      case "implicit-timezone":
+		    	  id = FUNC_IMPLICIT_TIMEZONE;
+		    	  break;
+		      case "index-of":
+		    	  id = FUNC_INDEX_OF;
+		    	  break;
+		      case "innermost":
+		    	  // Not implemented
+		    	  break;
+		      case "in-scope-prefixes":
+		    	  id = FUNC_IN_SCOPE_PREFIXES;
+		    	  break;
+		      case "insert-before":
+		    	  id = FUNC_INSERT_BEFORE;
+		    	  break;
+		      case "iri-to-uri":
+		    	  // Not implemented
+		    	  break;
+		      case "json-doc":
+		    	  id = FUNC_JSON_DOC;
+		    	  break;
+		      case "json-to-xml":
+		    	  id = FUNC_JSON_TO_XML;
+		    	  break;
+		      case "key":
+		    	  id = FUNC_KEY;
+		    	  break;
+		      case "lang":
+		    	  id = FUNC_LANG;
+		    	  break;
+		      case "last":
+		    	  id = FUNC_LAST;
+		    	  break;
+		      case "local-name":
+		    	  id = FUNC_LOCAL_NAME;
+		    	  break;
+		      case "local-name-from-QName":
+		    	  id = FUNC_LOCAL_NAME_FROM_QNAME;
+		    	  break;
+		      case "lower-case":
+		    	  id = FUNC_LOWER_CASE;
+		    	  break;
+		      case "matches":
+		    	  id = FUNC_MATCHES;
+		    	  break;
+		      case "max":
+		    	  id = FUNC_MAX;
+		    	  break;
+		      case "min":
+		    	  id = FUNC_MIN;
+		    	  break;
+		      case "minutes-from-dateTime":
+		    	  id = FUNC_MINUTES_FROM_DATE_TIME;
+		    	  break;
+		      case "minutes-from-duration":
+		    	  id = FUNC_MINUTES_FROM_DURATION;
+		    	  break;
+		      case "minutes-from-time":
+		    	  id = FUNC_MINUTES_FROM_TIME;
+		    	  break;
+		      case "month-from-date":
+		    	  id = FUNC_MONTH_FROM_DATE;
+		    	  break;
+		      case "month-from-dateTime":
+		    	  id = FUNC_MONTH_FROM_DATE_TIME;
+		    	  break;
+		      case "months-from-duration":
+		    	  id = FUNC_MONTHS_FROM_DURATION;
+		    	  break;
+		      case "name":
+		    	  id = FUNC_NAME;
+		    	  break;
+		      case "namespace-uri":
+		    	  id = FUNC_NAMESPACE_URI;
+		    	  break;
+		      case "namespace-uri-for-prefix":
+		    	  id = FUNC_NAMESPACE_URI_FOR_PREFIX;
+		    	  break;
+		      case "namespace-uri-from-QName":
+		    	  id = FUNC_NAMESPACE_URI_FROM_QNAME;
+		    	  break;
+		      case "nilled":
+		    	  // Not implemented
+		    	  break;
+		      case "node-name":
+		    	  id = FUNC_NODE_NAME;
+		    	  break;
+		      case "normalize-space":
+		    	  id = FUNC_NORMALIZE_SPACE;
+		    	  break;
+		      case "normalize-unicode":
+		    	  id = FUNC_NORMALIZE_UNICODE;
+		    	  break;
+		      case "not":
+		    	  id = FUNC_NOT;
+		    	  break;
+		      case "number":
+		    	  id = FUNC_NUMBER;
+		    	  break;
+		      case "one-or-more":
+		    	  id = FUNC_ONE_OR_MORE;
+		    	  break;
+		      case "outermost":
+		    	  // Not implemented
+		    	  break;
+		      case "parse-ietf-date":
+		    	  id = FUNC_PARSE_IETF_DATE;
+		    	  break;
+		      case "parse-json":
+		    	  id = FUNC_PARSE_JSON;
+		    	  break;
+		      case "parse-xml":
+		    	  id = FUNC_PARSE_XML;
+		    	  break;
+		      case "parse-xml-fragment":
+		    	  id = FUNC_PARSE_XML_FRAGMENT;
+		    	  break;
+		      case "path":
+		    	  id = FUNC_PATH;
+		    	  break;
+		      case "position":
+		    	  id = FUNC_POSITION;
+		    	  break;
+		      case "prefix-from-QName":
+		    	  id = FUNC_PREFIX_FROM_QNAME;
+		    	  break;
+		      case "QName":
+		    	  id = FUNC_QNAME;
+		    	  break;
+		      case "random-number-generator":
+		    	  id = FUNC_RANDOM_NUMBER_GENERATOR;
+		    	  break;
+		      case "regex-group":
+		    	  id = FUNC_REGEX_GROUP;
+		    	  break;
+		      case "remove":
+		    	  id = FUNC_REMOVE;
+		    	  break;
+		      case "replace":
+		    	  id = FUNC_REPLACE;
+		    	  break;
+		      case "resolve-QName":
+		    	  id = FUNC_RESOLVE_QNAME;
+		    	  break;
+		      case "resolve-uri":
+		    	  // Not implemented
+		    	  break;
+		      case "reverse":
+		    	  id = FUNC_REVERSE;
+		    	  break;
+		      case "root":
+		    	  id = FUNC_ROOT;
+		    	  break;
+		      case "round":
+		    	  id = FUNC_ROUND;
+		    	  break;
+		      case "round-half-to-even":
+		    	  id = FUNC_ROUND_HALF_TO_EVEN;
+		    	  break;
+		      case "seconds-from-dateTime":
+		    	  id = FUNC_SECONDS_FROM_DATE_TIME;
+		    	  break;
+		      case "seconds-from-duration":
+		    	  id = FUNC_SECONDS_FROM_DURATION;
+		    	  break;
+		      case "seconds-from-time":
+		    	  id = FUNC_SECONDS_FROM_TIME;
+		    	  break;
+		      case "serialize":
+		    	  id = FUNC_SERIALIZE;
+		    	  break;
 		      case "sort":
-				 id = FunctionTable.FUNC_SORT;
-				 break;
+		    	  id = FUNC_SORT;
+		    	  break;
+		      case "starts-with":
+		    	  id = FUNC_STARTS_WITH;
+		    	  break;
+		      case "static-base-uri":
+		    	  // Not implemented
+		    	  break;
+		      case "string":
+		    	  id = FUNC_STRING;
+		    	  break;
+		      case "string-join":
+		    	  id = FUNC_STRING_JOIN;
+		    	  break;
+		      case "string-length":
+		    	  id = FUNC_STRING_LENGTH;
+		    	  break;
+		      case "string-to-codepoints":
+		    	  id = FUNC_STRING_TO_CODE_POINTS;
+		    	  break;
+		      case "subsequence":
+		    	  id = FUNC_SUBSEQUENCE;
+		    	  break;
+		      case "substring":
+		    	  id = FUNC_SUBSTRING;
+		    	  break;
+		      case "substring-after":
+		    	  id = FUNC_SUBSTRING_AFTER;
+		    	  break;
+		      case "substring-before":
+		    	  id = FUNC_SUBSTRING_BEFORE;
+		    	  break;
+		      case "sum":
+		    	  id = FUNC_SUM;
+		    	  break;
+		      case "system-property":
+		    	  id = FUNC_SYSTEM_PROPERTY;
+		    	  break;
+		      case "available-system-properties":
+		    	  // Not implemented
+		    	  break;
+		      case "tail":
+		    	  id = FUNC_TAIL;
+		    	  break;
+		      case "timezone-from-date":
+		    	  id = FUNC_TIMEZONE_FROM_DATE;
+		    	  break;
+		      case "timezone-from-dateTime":
+		    	  id = FUNC_TIMEZONE_FROM_DATE_TIME;
+		    	  break;
+		      case "timezone-from-time":
+		    	  id = FUNC_TIMEZONE_FROM_TIME;
+		    	  break;
+		      case "tokenize":
+		    	  id = FUNC_TOKENIZE;
+		    	  break;
+		      case "trace":
+		    	  // Not implemented
+		    	  break;
+		      case "transform":
+		    	  id = FUNC_TRANSFORM;
+		    	  break;
+		      case "translate":
+		    	  id = FUNC_TRANSLATE;
+		    	  break;
+		      case "true":
+		    	  id = FUNC_TRUE;
+		    	  break;
+		      case "unordered":
+		    	  id = FUNC_UNORDERED;
+		    	  break;
+		      case "unparsed-entity-public-id":
+		    	  // Not implemented
+		    	  break;
+		      case "unparsed-entity-uri":
+		    	  id = FUNC_UNPARSED_ENTITY_URI;
+		    	  break;
+		      case "unparsed-text":
+		    	  id = FUNC_UNPARSED_TEXT;
+		    	  break;
+		      case "unparsed-text-available":
+		    	  id = FUNC_UNPARSED_TEXT_AVAILABLE;
+		    	  break;
+		      case "unparsed-text-lines":
+		    	  id = FUNC_UNPARSED_TEXT_LINES;
+		    	  break;
+		      case "upper-case":
+		    	  id = FUNC_UPPER_CASE;
+		    	  break;
+		      case "uri-collection":
+		    	  // Not implemented
+		    	  break;
+		      case "xml-to-json":
+		    	  id = FUNC_XML_TO_JSON;
+		    	  break;
+		      case "year-from-date":
+		    	  id = FUNC_YEAR_FROM_DATE;
+		    	  break;
+		      case "year-from-dateTime":
+		    	  id = FUNC_YEAR_FROM_DATE_TIME;
+		    	  break;
+		      case "years-from-duration":
+		    	  id = FUNC_YEARS_FROM_DURATION;
+		    	  break;
+		      case "zero-or-one":
+		    	  id = FUNC_ZERO_OR_ONE;
+		    	  break;
+		      case ".":
+		    	  id = FUNC_PERIOD;
+		    	  break;
 			  default:
-				 id = getFunctionId(funcName); 
+				 // no op 
 		}
 		
 		return id;	
   }
   
   /**
-   * Obtain a function id from a given function name, for XPath built-in 
-   * functions from namespace http://www.w3.org/2005/xpath-functions/math.   
+   * Method definition, to get function id from the supplied function 
+   * name, for XPath 3.1 built-in functions from namespace 
+   * http://www.w3.org/2005/xpath-functions/math. 
+   * 
+   * @param localName                  The supplied string value, for
+   *                                   an XSL function local name.
+   * @return                           Function id, for an XSL built-in
+   *                                   function.
    */
-  public Object getFunctionIdForXPathBuiltinMathFuncs(String funcName) {	    
+  public Object getFunctionIdForXPathBuiltinMathFuncs(String localName) {	    
 	    
 	    Object id = null;
 		
-		switch (funcName) {
+		switch (localName) {
 		      case Keywords.FUNC_MATH_ACOS:
-		        id = FunctionTable.FUNC_MATH_ACOS;
+		        id = FUNC_MATH_ACOS;
 		        break;
 		      case Keywords.FUNC_MATH_ASIN:
-			     id = FunctionTable.FUNC_MATH_ASIN;
+			     id = FUNC_MATH_ASIN;
 			     break;
 		      case Keywords.FUNC_MATH_ATAN:
-				 id = FunctionTable.FUNC_MATH_ATAN;
+				 id = FUNC_MATH_ATAN;
 				 break;
 		      case Keywords.FUNC_MATH_ATAN2:
-				 id = FunctionTable.FUNC_MATH_ATAN2;
+				 id = FUNC_MATH_ATAN2;
 				 break;
 		      case Keywords.FUNC_MATH_COS:
-			     id = FunctionTable.FUNC_MATH_COS;
+			     id = FUNC_MATH_COS;
 			     break;
 		      case Keywords.FUNC_MATH_EXP:
-			     id = FunctionTable.FUNC_MATH_EXP;
+			     id = FUNC_MATH_EXP;
 			     break;		      		      
 		      case Keywords.FUNC_MATH_EXP10:
-			     id = FunctionTable.FUNC_MATH_EXP10;
+			     id = FUNC_MATH_EXP10;
 			     break;
 		      case Keywords.FUNC_MATH_LOG:
-				 id = FunctionTable.FUNC_MATH_LOG;
+				 id = FUNC_MATH_LOG;
 				 break;
 		      case Keywords.FUNC_MATH_LOG10:
-			     id = FunctionTable.FUNC_MATH_LOG10;
+			     id = FUNC_MATH_LOG10;
 			     break;
 		      case Keywords.FUNC_MATH_PI:
-				 id = FunctionTable.FUNC_MATH_PI;
+				 id = FUNC_MATH_PI;
 				 break;
 		      case Keywords.FUNC_MATH_POW:
-			     id = FunctionTable.FUNC_MATH_POW;
+			     id = FUNC_MATH_POW;
 				 break;
 		      case Keywords.FUNC_MATH_SIN:
-				 id = FunctionTable.FUNC_MATH_SIN;
+				 id = FUNC_MATH_SIN;
 				 break;
 		      case Keywords.FUNC_MATH_SQRT:
-				 id = FunctionTable.FUNC_MATH_SQRT;
+				 id = FUNC_MATH_SQRT;
 				 break;
 		      case Keywords.FUNC_MATH_TAN:
-				 id = FunctionTable.FUNC_MATH_TAN;
+				 id = FUNC_MATH_TAN;
 				 break;
 			  default:
 				 // no op 
@@ -1372,43 +1824,49 @@ public class FunctionTable
   }
   
   /**
-   * Obtain a function id from a given function name, for XPath built-in 
-   * functions from namespace http://www.w3.org/2005/xpath-functions/map.   
+   * Method definition, to get function id from the supplied function 
+   * name, for XPath 3.1 built-in functions from namespace 
+   * http://www.w3.org/2005/xpath-functions/map. 
+   * 
+   * @param localName                  The supplied string value, for
+   *                                   an XSL function local name.
+   * @return                           Function id, for an XSL built-in
+   *                                   function.
    */
-  public Object getFunctionIdForXPathBuiltinMapFuncs(String funcName) {		
+  public Object getFunctionIdForXPathBuiltinMapFuncs(String localName) {		
 		
 	    Object id = null;
 		
-		switch (funcName) {
-		      case Keywords.FUNC_MAP_MERGE:
-		        id = FunctionTable.FUNC_MAP_MERGE;
-		        break;
-		      case Keywords.FUNC_MAP_SIZE:
-			     id = FunctionTable.FUNC_MAP_SIZE;
-			     break;
-		      case Keywords.FUNC_MAP_KEYS:
-				 id = FunctionTable.FUNC_MAP_KEYS;
-				 break;
+		switch (localName) {
 		      case Keywords.FUNC_MAP_CONTAINS:
-				 id = FunctionTable.FUNC_MAP_CONTAINS;
-				 break;
-		      case Keywords.FUNC_MAP_GET:
-			     id = FunctionTable.FUNC_MAP_GET;
+			     id = FUNC_MAP_CONTAINS;
 			     break;
+	          case Keywords.FUNC_MAP_ENTRY:
+				 id = FUNC_MAP_ENTRY;
+				 break;
+	          case Keywords.FUNC_MAP_FIND:
+				 id = FUNC_MAP_FIND;
+				 break;
+	          case Keywords.FUNC_MAP_FOREACH:
+				 id = FUNC_MAP_FOREACH;
+				 break;
+	          case Keywords.FUNC_MAP_GET:
+				 id = FUNC_MAP_GET;
+				 break;
+	          case Keywords.FUNC_MAP_KEYS:
+				 id = FUNC_MAP_KEYS;
+				 break;
+		      case Keywords.FUNC_MAP_MERGE:
+		         id = FUNC_MAP_MERGE;
+		         break;		      		      		      		      
 		      case Keywords.FUNC_MAP_PUT:
-			     id = FunctionTable.FUNC_MAP_PUT;
-			     break;		      		      
-		      case Keywords.FUNC_MAP_ENTRY:
-			     id = FunctionTable.FUNC_MAP_ENTRY;
-			     break;
+			     id = FUNC_MAP_PUT;
+			     break;		      		      		      
 		      case Keywords.FUNC_MAP_REMOVE:
-				 id = FunctionTable.FUNC_MAP_REMOVE;
+				 id = FUNC_MAP_REMOVE;
 				 break;
-		      case Keywords.FUNC_MAP_FOREACH:
-			     id = FunctionTable.FUNC_MAP_FOREACH;
-			     break;
-		      case Keywords.FUNC_MAP_FIND:
-				 id = FunctionTable.FUNC_MAP_FIND;
+		      case Keywords.FUNC_MAP_SIZE:
+				 id = FUNC_MAP_SIZE;
 				 break;
 			  default:
 				 // no op 
@@ -1418,108 +1876,80 @@ public class FunctionTable
   }
   
   /**
-   * Obtain a function id from a given function name, for XPath built-in 
-   * functions from namespace http://www.w3.org/2005/xpath-functions/array.   
+   * Method definition, to get function id from the supplied function 
+   * name, for XPath 3.1 built-in functions from namespace 
+   * http://www.w3.org/2005/xpath-functions/array. 
+   * 
+   * @param localName                  The supplied string value, for
+   *                                   an XSL function local name.
+   * @return                           Function id, for an XSL built-in
+   *                                   function.
    */
-  public Object getFunctionIdForXPathBuiltinArrayFuncs(String funcName) {	  
+  public Object getFunctionIdForXPathBuiltinArrayFuncs(String localName) {	  
 		
 	    Object id = null;
 		
-		switch (funcName) {
-		      case Keywords.FUNC_ARRAY_SIZE:
-			     id = FunctionTable.FUNC_ARRAY_SIZE;
-			     break;
-		      case Keywords.FUNC_ARRAY_GET:
-			     id = FunctionTable.FUNC_ARRAY_GET;
-			     break;
-		      case Keywords.FUNC_ARRAY_PUT:
-			     id = FunctionTable.FUNC_ARRAY_PUT;
-			     break;
+		switch (localName) {
 		      case Keywords.FUNC_ARRAY_APPEND:
-			     id = FunctionTable.FUNC_ARRAY_APPEND;
-			     break;
-		      case Keywords.FUNC_ARRAY_SUBARRAY:
-			     id = FunctionTable.FUNC_ARRAY_SUBARRAY;
-			     break;
-		      case Keywords.FUNC_ARRAY_REMOVE:
-			     id = FunctionTable.FUNC_ARRAY_REMOVE;
-			     break;
-		      case Keywords.FUNC_ARRAY_INSERT_BEFORE:
-			     id = FunctionTable.FUNC_ARRAY_INSERT_BEFORE;
-			     break;
-		      case Keywords.FUNC_ARRAY_HEAD:
-			     id = FunctionTable.FUNC_ARRAY_HEAD;
-			     break;
-		      case Keywords.FUNC_ARRAY_TAIL:
-			     id = FunctionTable.FUNC_ARRAY_TAIL;
-			     break;
-		      case Keywords.FUNC_ARRAY_REVERSE:
-				 id = FunctionTable.FUNC_ARRAY_REVERSE;
-				 break;
-		      case Keywords.FUNC_ARRAY_JOIN:
-			     id = FunctionTable.FUNC_ARRAY_JOIN;
-				 break;
-		      case Keywords.FUNC_ARRAY_FOR_EACH:
-				 id = FunctionTable.FUNC_ARRAY_FOR_EACH;
-				 break;
+		         id = FUNC_ARRAY_APPEND;
+		         break;
 		      case Keywords.FUNC_ARRAY_FILTER:
-			     id = FunctionTable.FUNC_ARRAY_FILTER;
-			     break;
-		      case Keywords.FUNC_ARRAY_FOR_EACH_PAIR:
-			     id = FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR;
+		         id = FUNC_ARRAY_FILTER;
+		         break;
+		      case Keywords.FUNC_ARRAY_FLATTEN:
+				 id = FUNC_ARRAY_FLATTEN;
 				 break;
 		      case Keywords.FUNC_ARRAY_FOLD_LEFT:
-				 id = FunctionTable.FUNC_ARRAY_FOLD_LEFT;
-			     break;
-		      case Keywords.FUNC_ARRAY_FOLD_RIGHT:
-			     id = FunctionTable.FUNC_ARRAY_FOLD_RIGHT;
+				 id = FUNC_ARRAY_FOLD_LEFT;
 				 break;
+			  case Keywords.FUNC_ARRAY_FOLD_RIGHT:
+				 id = FUNC_ARRAY_FOLD_RIGHT;
+				 break;
+			  case Keywords.FUNC_ARRAY_FOR_EACH:
+				 id = FUNC_ARRAY_FOR_EACH;
+				 break;		      
+			  case Keywords.FUNC_ARRAY_FOR_EACH_PAIR:
+				 id = FUNC_ARRAY_FOR_EACH_PAIR;
+				 break;
+			  case Keywords.FUNC_ARRAY_GET:
+				 id = FUNC_ARRAY_GET;
+				 break;
+			  case Keywords.FUNC_ARRAY_HEAD:
+				 id = FUNC_ARRAY_HEAD;
+				 break;
+			  case Keywords.FUNC_ARRAY_INSERT_BEFORE:
+				 id = FUNC_ARRAY_INSERT_BEFORE;
+				 break;
+			  case Keywords.FUNC_ARRAY_JOIN:
+				 id = FUNC_ARRAY_JOIN;
+			     break;
+			  case Keywords.FUNC_ARRAY_PUT:
+				 id = FUNC_ARRAY_PUT;
+				 break;
+			  case Keywords.FUNC_ARRAY_REMOVE:
+				 id = FUNC_ARRAY_REMOVE;
+				 break;
+			  case Keywords.FUNC_ARRAY_REVERSE:
+			     id = FUNC_ARRAY_REVERSE;
+				 break;	
+		      case Keywords.FUNC_ARRAY_SIZE:
+			     id = FUNC_ARRAY_SIZE;
+			     break;
 		      case Keywords.FUNC_ARRAY_SORT:
-				 id = FunctionTable.FUNC_ARRAY_SORT;
-			     break;
-		      case Keywords.FUNC_ARRAY_FLATTEN:
-			     id = FunctionTable.FUNC_ARRAY_FLATTEN;
+				 id = FUNC_ARRAY_SORT;
 				 break;
+		      case Keywords.FUNC_ARRAY_SUBARRAY:
+			     id = FUNC_ARRAY_SUBARRAY;
+			     break;		      		      		      
+		      case Keywords.FUNC_ARRAY_TAIL:
+			     id = FUNC_ARRAY_TAIL;
+			     break;		      	      		      	      		      		      
 			  default:
 				 // no op 
 		}
 		
 		return id;		
    }
-  
-  /**
-   * Install a built-in function.
-   * @param name The unqualified name of the function, must not be null
-   * @param func A Implementation of an XPath Function object.
-   * @return the position of the function in the internal index.
-   */
-  public int installFunction(String name, Class func)
-  {
-
-	  int funcIndex;
-	  Object funcIndexObj = getFunctionId(name);
-
-	  if (null != funcIndexObj)
-	  {
-		  funcIndex = ((Integer) funcIndexObj).intValue();
-
-		  if (funcIndex < NUM_BUILT_IN_FUNCS){
-			  funcIndex = m_funcNextFreeIndex++;
-			  m_functionId_customer.put(name, Integer.valueOf(funcIndex)); 
-		  }
-		  m_functions_customer[funcIndex - NUM_BUILT_IN_FUNCS] = func;          
-	  }
-	  else
-	  {
-		  funcIndex = m_funcNextFreeIndex++;
-
-		  m_functions_customer[funcIndex-NUM_BUILT_IN_FUNCS] = func;
-
-		  m_functionId_customer.put(name, Integer.valueOf(funcIndex));   
-	  }
-
-	  return funcIndex;
-  }
 
   /**
    * Tell if a built-in, non-namespaced function is available.
@@ -1529,13 +1959,16 @@ public class FunctionTable
    * @return True if the function can be executed.
    */
   public boolean functionAvailable(String methName)
-  {
-	  Object tblEntry = m_functionId.get(methName);
-	  if (null != tblEntry) return true;
-	  else{
-		  tblEntry = m_functionId_customer.get(methName);
-		  return (null != tblEntry)? true : false;
+  {	  
+	  boolean result = false;
+	  
+	  Object funcId = getFunctionIdForXSLBuiltinFuncs(methName);
+	  
+	  if (funcId != null) {
+		 result = true; 
 	  }
+	  
+	  return result;
   }
   
 }

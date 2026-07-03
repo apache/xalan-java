@@ -53,7 +53,7 @@ public class FuncFormatDate extends FunctionMultiArgs {
      * Class constructor.
      */
     public FuncFormatDate() {
-  	   m_defined_arity = new Short[] {2, 5}; 
+  	   m_arity = new Short[] {2, 5}; 
     }
     
     /**

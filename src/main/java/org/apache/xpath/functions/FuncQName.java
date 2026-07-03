@@ -44,7 +44,7 @@ public class FuncQName extends Function2Args
 	 * Class constructor.
 	 */
 	public FuncQName() {
-		m_defined_arity = new Short[] { 2 };
+		m_arity = new Short[] { 2 };
 	}
 
 	/**

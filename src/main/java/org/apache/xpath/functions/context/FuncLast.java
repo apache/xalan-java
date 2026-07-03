@@ -43,7 +43,7 @@ public class FuncLast extends Function
 	 * Class constructor.
 	 */
 	public FuncLast() {
-		m_defined_arity = new Short[] { 0 };
+		m_arity = new Short[] { 0 };
 	}
 
 	/**

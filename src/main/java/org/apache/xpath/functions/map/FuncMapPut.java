@@ -41,7 +41,7 @@ public class FuncMapPut extends Function3Args {
 	 * Class constructor.
 	 */
 	public FuncMapPut() {
-		m_defined_arity = new Short[] { 3 };	
+		m_arity = new Short[] { 3 };	
 	}
 
 	/**

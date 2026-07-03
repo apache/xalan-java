@@ -47,7 +47,7 @@ public class FuncNamespaceUriForPrefix extends Function2Args {
 	 * Class constructor.
 	 */
 	public FuncNamespaceUriForPrefix() {
-		m_defined_arity = new Short[] { 2 };
+		m_arity = new Short[] { 2 };
 	}
 
 	/**

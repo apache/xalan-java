@@ -41,7 +41,7 @@ public class FuncNamespaceUriFromQName extends FunctionDef1Arg {
 	 * Class constructor.
 	 */
 	public FuncNamespaceUriFromQName() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**

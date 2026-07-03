@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:36:16Z" fail="19" name="fn-replace" pass="69" run="88" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:00Z" fail="14" name="fn-replace" pass="74" run="88" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="fn-replace3args-1"/>
    <testResult status="pass" testName="fn-replace3args-2"/>
    <testResult status="pass" testName="fn-replace3args-3"/>
@@ -42,8 +42,8 @@
    <testResult status="pass" testName="fn-replace-31"/>
    <testResult status="pass" testName="fn-replace-32"/>
    <testResult status="pass" testName="fn-replace-33"/>
-   <testResult status="fail" testName="fn-replace-34"/>
-   <testResult status="fail" testName="fn-replace-35"/>
+   <testResult status="pass" testName="fn-replace-34"/>
+   <testResult status="pass" testName="fn-replace-35"/>
    <testResult status="pass" testName="fn-replace-36"/>
    <testResult status="pass" testName="fn-replace-37"/>
    <testResult status="pass" testName="fn-replace-38"/>
@@ -56,16 +56,16 @@
    <testResult status="pass" testName="fn-replace-46"/>
    <testResult status="pass" testName="fn-replace-47"/>
    <testResult status="pass" testName="fn-replace-48"/>
-   <testResult status="fail" testName="fn-replace-49"/>
-   <testResult status="fail" testName="fn-replace-50"/>
-   <testResult status="fail" testName="fn-replace-51"/>
+   <testResult status="pass" testName="fn-replace-49"/>
+   <testResult status="pass" testName="fn-replace-50"/>
+   <testResult status="pass" testName="fn-replace-51"/>
    <testResult status="fail" testName="fn-replace-52"/>
-   <testResult status="fail" testName="fn-replace-53"/>
+   <testResult status="pass" testName="fn-replace-53"/>
    <testResult status="pass" testName="fn-replace-54"/>
    <testResult status="pass" testName="fn-replace-55"/>
    <testResult status="pass" testName="fn-replace-56"/>
    <testResult status="pass" testName="fn-replace-57"/>
-   <testResult status="pass" testName="fn-replace-58"/>
+   <testResult status="fail" testName="fn-replace-58"/>
    <testResult status="pass" testName="fn-replace-59"/>
    <testResult status="pass" testName="K-ReplaceFunc-1"/>
    <testResult status="fail" testName="K-ReplaceFunc-2"/>

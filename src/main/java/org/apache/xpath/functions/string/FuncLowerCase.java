@@ -15,18 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
+
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionDef1Arg;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
+
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of the lower-case() function.
+ * Implementation of an XPath 3.1 function fn:lower-case.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -41,7 +44,7 @@ public class FuncLowerCase extends FunctionDef1Arg
  	  * Class constructor.
  	  */
       public FuncLowerCase() {
- 	      m_defined_arity = new Short[] { 1 };
+ 	      m_arity = new Short[] { 1 };
       }
 
       /**
@@ -54,8 +57,23 @@ public class FuncLowerCase extends FunctionDef1Arg
        */
       public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
       {
-          String strValueOfArg = (getArg0AsString(xctxt)).toString();
-          
-          return new XString((new String(strValueOfArg)).toLowerCase());
+          XObject result = null;
+    	  
+    	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+    	  
+    	  XObject xObjArg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+    	  
+    	  if (!((xObjArg0 instanceof XNumber) || (xObjArg0 instanceof XSNumericType))) {
+    		 String strValueOfArg = (getArg0AsString(xctxt)).toString();
+    		 
+    		 result = new XSString(strValueOfArg.toLowerCase());
+    	  }
+    	  else {
+    		 throw new TransformerException("XPTY0004 : An XPath 3.1 function 'lower-case' requires a "
+    		 		                                                          + "string argument, but the supplied "
+    		 		                                                          + "value is numeric.",srcLocator);  
+    	  }
+    	  
+    	  return result;
       }
 }

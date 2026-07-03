@@ -52,7 +52,7 @@ public class FuncBoolean extends FunctionOneArg
      * Default constructor.
      */
     public FuncBoolean() {
-    	m_defined_arity = new Short[] { 1 };	
+    	m_arity = new Short[] { 1 };	
     }
     
     /**

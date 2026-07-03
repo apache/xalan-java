@@ -60,7 +60,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncAnalyzeString() {
-	   m_defined_arity = new Short[] { 2, 3 };
+	   m_arity = new Short[] { 2, 3 };
 	}
 	
 	/**
@@ -148,9 +148,11 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         	while (regexMatcher.find()) {
         		int idx1 = regexMatcher.start();
         		int idx2 = regexMatcher.end();
+        		
         		RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
         		regexMatchInfo.setStartIdx(idx1);
         		regexMatchInfo.setEndIdx(idx2);
+        		
         		regexMatchInfoList.add(regexMatchInfo);
         	}
         	
@@ -241,12 +243,14 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
     {
-       if (!((argNum == 2) || (argNum == 3))) {
+       /*if (!((argNum == 2) || (argNum == 3))) {
           reportWrongNumberArgs();
        }
        else {
           fNumOfArgs = argNum;   
-       }
+       }*/
+       
+       fNumOfArgs = argNum;
     }
     
     /**
@@ -265,7 +269,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
      * for a substring that matched with the fn:analyze-string 
      * function's regex argument.
      */
-    class RegexMatchInfo {    	
+    class RegexMatchInfo {
+    	
     	private int startIdx;
     	
     	private int endIdx;

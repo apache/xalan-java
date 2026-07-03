@@ -67,7 +67,7 @@ public class FuncApply extends Function2Args {
     * Class constructor.
     */
    public FuncApply() {
-	   m_defined_arity = new Short[] { 2 };
+	   m_arity = new Short[] { 2 };
    }
 
    /**
@@ -188,8 +188,8 @@ public class FuncApply extends Function2Args {
 	  FunctionTable funcTable = xctxt.getFunctionTable();
 
 	  Object funcIdObj = null;
-	  if (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
-		  funcIdObj = funcTable.getFunctionId(funcLocalName);
+	  if ((funcNamespace == null) || (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace))) {
+		  funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
 	  }
 	  else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
 		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
@@ -200,8 +200,14 @@ public class FuncApply extends Function2Args {
 	  else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
 		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
 	  }
-
-	  String expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;	  	  
+	  
+	  String funcExpandedName = null;
+      if (funcNamespace != null) {
+	      funcExpandedName = "{" + funcNamespace + ":" + funcLocalName + "}#" + funcArity;
+      }
+      else {
+    	  funcExpandedName = "{" + funcLocalName + "}#" + funcArity;
+      }
 	  
 	  if (funcIdObj != null) {
 		  String funcIdStr = funcIdObj.toString();
@@ -216,12 +222,12 @@ public class FuncApply extends Function2Args {
 		  } 
 		  catch (WrongNumberArgsException ex) {			    
 			 throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
-					                                                   									+ "during function call " + expandedFuncName + ".", srcLocator); 
+					                                                   									+ "during function call " + funcExpandedName + ".", srcLocator); 
 		  }               
 	  }
 	  else {
 		  throw new javax.xml.transform.TransformerException("XPTY0004 : There is no function definition "
-		  		                                                    									+ "found, for the function " + expandedFuncName + ".", srcLocator);
+		  		                                                    									+ "found, for the function " + funcExpandedName + ".", srcLocator);
 	  }
 
 	  return result;

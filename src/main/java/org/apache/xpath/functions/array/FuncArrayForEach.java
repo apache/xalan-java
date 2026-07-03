@@ -32,7 +32,10 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.Function;
@@ -41,11 +44,16 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Evaluation of an XPath 3.1 function array:for-each.
@@ -62,7 +70,7 @@ public class FuncArrayForEach extends Function2Args {
     * Class constructor.
     */
    public FuncArrayForEach() {
-	   m_defined_arity = new Short[] { 2 };
+	   m_arity = new Short[] { 2 };
    }
    
    /**
@@ -209,30 +217,47 @@ public class FuncArrayForEach extends Function2Args {
         }
         else if (m_arg1 instanceof XPathNamedFunctionReference) {
             XPathNamedFunctionReference xpathNamedFuncRef = (XPathNamedFunctionReference)m_arg1;
-            String funcName = xpathNamedFuncRef.getFuncName();
-            String namespace2 = xpathNamedFuncRef.getFuncNamespace();
+            String localName = xpathNamedFuncRef.getFuncName();
+            String fNamespace = xpathNamedFuncRef.getFuncNamespace();
             short arity = xpathNamedFuncRef.getArity();
             if (arity == 1) {
             	result = new XPathArray();
             	
                 FunctionTable funcTable = xctxt.getFunctionTable();
-                int funcId = (Integer)(funcTable.getFunctionId(funcName));
-                Function function = funcTable.getFunction(funcId);
-                XPathArray xpathArr = (XPathArray)xObjArg0;
-        		int size1 = xpathArr.size();        		
-        		for (int idx = 0; idx < size1; idx++) {
-        		   XObject xObj = xpathArr.get(idx);
-        		   function.setArg0(xObj);
-        		   XObject funcEvalResult = function.execute(xctxt);
-        		   
-        		   result.add(funcEvalResult);
-        		}
+                Object funcId = null;
+
+                if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) { 
+                	funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+                }
+                else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
+                	funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+                }
+                else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
+                	funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+                }
+                else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {     	   
+                	funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+                }
+                
+                if (funcId != null) {
+                	Function function = funcTable.getFunction((Integer)funcId);
+
+                	XPathArray xpathArr = (XPathArray)xObjArg0;
+                	int size1 = xpathArr.size();        		
+                	for (int idx = 0; idx < size1; idx++) {
+                		XObject xObj = xpathArr.get(idx);
+                		function.setArg0(xObj);
+                		XObject funcEvalResult = function.execute(xctxt);
+
+                		result.add(funcEvalResult);
+                	}
+                }
             }
             else {
             	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each' "
-            			                                                                   + "argument function item arity should be "
-            			                                                                   + "one. The supplied argument function item "
-            			                                                                   + "arity is " + arity + ".", srcLocator);  
+				            			                                                                   + "argument function item arity should be "
+				            			                                                                   + "one. The supplied argument function item "
+				            			                                                                   + "arity is " + arity + ".", srcLocator);  
             }
         }
         else if (m_arg1 instanceof Variable) {
@@ -252,6 +277,112 @@ public class FuncArrayForEach extends Function2Args {
                 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each', "
                                                                                                     + "second argument is not a function item.", srcLocator);    
             }
+        }
+        else if (m_arg1 instanceof XPathMapConstructor) {
+        	// An XPath 3.1 function array:for-each's second argument, 
+        	// uses xdm map as the mapping function.
+        	
+        	XPathMap xpathMapObj1 = (XPathMap)(((XPathMapConstructor)m_arg1).execute(xctxt));
+        	
+        	result = new XPathArray();
+        	
+        	XPathArray xpathArr0 = (XPathArray)xObjArg0;
+        	int size1 = xpathArr0.size();
+        	for (int idx = 0; idx < size1; idx++) {
+        	   XObject xObj = xpathArr0.get(idx);
+        	   XObject xObj1 = xpathMapObj1.get(xObj);
+        	   if (xObj1 != null) {
+        	      result.add(xObj1);
+        	   }
+        	   else {
+        		   result.add(new ResultSequence()); 
+        	   }
+        	}
+        }
+        else if (m_arg1 instanceof XPathMap) {
+        	// An XPath 3.1 function array:for-each's second argument, 
+        	// uses xdm map as the mapping function.
+        	
+        	XPathMap xpathMapObj1 = (XPathMap)m_arg1;
+        			
+            result = new XPathArray();
+        	
+        	XPathArray xpathArr0 = (XPathArray)xObjArg0;
+        	int size1 = xpathArr0.size();
+        	for (int idx = 0; idx < size1; idx++) {
+        	   XObject xObj = xpathArr0.get(idx);
+        	   XObject xObj1 = xpathMapObj1.get(xObj);
+        	   if (xObj1 != null) {
+        	      result.add(xObj1);
+        	   }
+        	   else {
+        		   result.add(new ResultSequence()); 
+        	   }
+        	}
+        }
+        else if (m_arg1 instanceof XPathArrayConstructor) {
+        	// An XPath 3.1 function array:for-each's second argument, 
+        	// uses xdm array as the mapping function.
+        	
+        	XPathArray xpathArrObj1 = (XPathArray)(((XPathArrayConstructor)m_arg1).execute(xctxt));
+        	
+        	int size2 = xpathArrObj1.size();
+        	
+        	result = new XPathArray();
+        	
+        	XPathArray xpathArr0 = (XPathArray)xObjArg0;
+        	int size1 = xpathArr0.size();
+        	for (int idx = 0; idx < size1; idx++) {
+        	   XObject xObj = xpathArr0.get(idx);
+        	   if ((xObj instanceof XNumber) || (xObj instanceof XSNumericType)) {
+        		  String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+        		  try {
+        		     int a1 = Integer.valueOf(str1);
+        		     if ((a1 >= 1) && (a1 <= size2)) {
+        		    	XObject xObj1 = xpathArrObj1.get(a1 - 1);
+        		    	result.add(xObj1);
+        		     }
+        		     else {
+        		    	result.add(new ResultSequence()); 
+        		     }
+        		  }
+        		  catch (NumberFormatException ex) {
+        			 result.add(new ResultSequence()); 
+        		  }
+        	   }
+        	}
+        }
+        else if (m_arg1 instanceof XPathArray) {
+        	// An XPath 3.1 function array:for-each's second argument, 
+        	// uses xdm array as the mapping function.
+        	
+        	XPathArray xpathArrObj1 = (XPathArray)m_arg1;
+        	
+        	int size2 = xpathArrObj1.size();
+        	
+        	result = new XPathArray();
+        	
+        	XPathArray xpathArr0 = (XPathArray)xObjArg0;
+        	int size1 = xpathArr0.size();
+        	for (int idx = 0; idx < size1; idx++) {
+        	   XObject xObj = xpathArr0.get(idx);
+        	   if ((xObj instanceof XNumber) || (xObj instanceof XSNumericType)) {
+        		  String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+        		  try {
+        		     int a1 = Integer.valueOf(str1);
+        		     if ((a1 >= 1) && (a1 <= size2)) {
+        		    	XObject xObj1 = xpathArrObj1.get(a1 - 1);
+        		    	result.add(xObj1);
+        		     }
+        		     else {
+        		    	result.add(new ResultSequence()); 
+        		     }
+        		  }
+        		  catch (NumberFormatException ex) {
+        			 result.add(new ResultSequence()); 
+        		  }
+        	   }
+        	}
         }
         else {
         	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each', "

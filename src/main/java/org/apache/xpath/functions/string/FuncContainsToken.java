@@ -51,7 +51,7 @@ public class FuncContainsToken extends FunctionMultiArgs {
     * Class constructor.
     */
    public FuncContainsToken() {
- 	  m_defined_arity = new Short[] { 2, 3 };
+ 	  m_arity = new Short[] { 2, 3 };
    }
 
    /**

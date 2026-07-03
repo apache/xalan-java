@@ -49,7 +49,7 @@ public class FuncDoc extends FunctionOneArg {
      * Default constructor.
      */
     public FuncDoc() {
-    	m_defined_arity = new Short[] { 1 };	
+    	m_arity = new Short[] { 1 };	
     }
     
     /**

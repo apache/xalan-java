@@ -49,13 +49,24 @@ public abstract class Function extends Expression
    protected Expression m_arg0;
    
    /**
-    * Class field to represent, an XPath built-in function's
-    * arity which can have count 0 or greater. These are the
-    * function arity values defined by XPath 3.1 F&O spec, and
-    * are set to this variable by concrete function implementation 
-    * subclasses of this class.
+    * Class fields to represent, an XPath built-in function's
+    * arity which can vary from 0 or greater. These are the
+    * function arity values specified by XPath 3.1 F&O spec.
+    * 
+    * Function's specified arity are set, either to an array 
+    * m_arity, or {m_min_arity, m_max_arity}.  
     */
-   protected Short[] m_defined_arity = null;
+   
+   protected Short[] m_arity = null;
+   
+   protected int m_min_arity = -1;
+
+   protected int m_max_arity = -1;
+   
+   // This class field represents, function call's 
+   // run-time argument count.
+   protected int m_arg_count = -1;
+   
    
    private String m_localName = null;
    
@@ -170,13 +181,37 @@ public abstract class Function extends Expression
 	  this.m_arg0 = arg0; 
   }
   
-  public Short[] getDefinedArity() {
-	 return m_defined_arity; 
+  public Short[] getArity() {
+	 return m_arity; 
   }
   
-  public void setDefinedArity(Short[] definedArity) {
-	 this.m_defined_arity = definedArity; 
+  public void setArity(Short[] arity) {
+	 this.m_arity = arity; 
   }
+  
+  public int getMinArity() {
+	  return m_min_arity;
+  }
+
+  public void setMinArity(int minArity) {
+	  this.m_min_arity = minArity;
+  }
+
+  public int getMaxArity() {
+	  return m_max_arity;
+  }
+
+  public void setMaxArity(int maxArity) {
+	  this.m_max_arity = maxArity;
+  }
+
+  public int getRuntimeArgCount() {
+	  return m_arg_count; 
+  }
+
+  public void setRuntimeArgCount(int argCount) {
+	  this.m_arg_count = argCount; 
+  } 
 
   public String getLocalName() {
 	  return m_localName;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T11:00:10Z" fail="2" name="fn-zero-or-one" pass="47" run="49" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:00Z" fail="1" name="fn-zero-or-one" pass="48" run="49" statusUnknown="0">
    <testResult status="pass" testName="fn-zero-or-oneint1args-1"/>
    <testResult status="pass" testName="fn-zero-or-oneint1args-2"/>
    <testResult status="pass" testName="fn-zero-or-oneint1args-3"/>
@@ -40,7 +40,7 @@
    <testResult status="pass" testName="fn-zero-or-onesht1args-3"/>
    <testResult status="pass" testName="fn-zero-or-one-1"/>
    <testResult status="pass" testName="K-SeqZeroOrOneFunc-1"/>
-   <testResult status="fail" testName="K-SeqZeroOrOneFunc-2"/>
+   <testResult status="pass" testName="K-SeqZeroOrOneFunc-2"/>
    <testResult status="pass" testName="K-SeqZeroOrOneFunc-3"/>
    <testResult status="pass" testName="K-SeqZeroOrOneFunc-4"/>
    <testResult status="pass" testName="K-SeqZeroOrOneFunc-5"/>

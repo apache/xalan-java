@@ -41,6 +41,13 @@ public class FuncCurrentGroupingKey extends Function
     private static final long serialVersionUID = 936495388930718095L;
     
     public static final String XSL_GROUPING_KEY_ABSENT = "XSL_GROUPING_KEY_ABSENT";
+    
+    /**
+     * Class constructor.
+     */
+    public FuncCurrentGroupingKey() {
+ 	   m_arity = new Short[] { 0 };
+    }
 
     /**
       * Evaluate the function. The function must return a valid object.

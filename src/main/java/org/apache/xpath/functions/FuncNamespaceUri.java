@@ -42,7 +42,7 @@ public class FuncNamespaceUri extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncNamespaceUri() {
-		m_defined_arity = new Short[] { 0, 1 };
+		m_arity = new Short[] { 0, 1 };
 	}
 
 	/**

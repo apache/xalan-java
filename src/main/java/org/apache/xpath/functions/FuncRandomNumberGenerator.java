@@ -56,7 +56,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncRandomNumberGenerator() {
-		m_defined_arity = new Short[] { 0, 1 };
+		m_arity = new Short[] { 0, 1 };
 	}
 	
 	/**

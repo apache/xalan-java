@@ -42,7 +42,7 @@ public class FuncMinutesFromDateTime extends FunctionOneArg
    * Class constructor.
    */
   public FuncMinutesFromDateTime() {
-  	 m_defined_arity = new Short[] { 1 };	
+  	 m_arity = new Short[] { 1 };	
   }
 
   /**

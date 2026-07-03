@@ -45,7 +45,7 @@ public class FuncArrayInsertBefore extends Function3Args {
 	 * Class constructor.
 	 */
 	public FuncArrayInsertBefore() {
-		m_defined_arity = new Short[] { 3 };
+		m_arity = new Short[] { 3 };
 	}
 
 	/**

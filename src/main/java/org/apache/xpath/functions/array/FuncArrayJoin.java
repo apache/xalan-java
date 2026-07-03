@@ -42,7 +42,7 @@ public class FuncArrayJoin extends FunctionOneArg {
 	 * Class constructor.
 	 */
 	public FuncArrayJoin() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**

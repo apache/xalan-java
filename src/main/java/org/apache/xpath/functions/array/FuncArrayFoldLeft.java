@@ -49,7 +49,7 @@ public class FuncArrayFoldLeft extends Function3Args {
 	 * Class constructor.
 	 */
 	public FuncArrayFoldLeft() {
-		m_defined_arity = new Short[] { 3 };
+		m_arity = new Short[] { 3 };
 	}
 
 	/**

@@ -56,20 +56,24 @@ public class And extends Operation
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-	  XObject expr1 = null;	
+	  XObject xObjL = null;	
 	  
 	  try {
-	     expr1 = m_left.execute(xctxt);
+	     xObjL = m_left.execute(xctxt);
 	  }
 	  catch (Exception ex) {
 		 // no op
 	  }
 	  
+	  if (xObjL instanceof XSString) {		  
+		  xObjL = new XString(((XSString)xObjL).stringValue()); 
+	  }
+	  
 	  boolean a1 = false;
 	  
 	  try {
-		  if (expr1 != null) {
-			  a1 = expr1.bool();
+		  if (xObjL != null) {
+			  a1 = xObjL.bool();
 			  if (!a1) {
 				  return XBoolean.S_FALSE;  
 			  }
@@ -79,52 +83,52 @@ public class And extends Operation
 		  // no op
 	  }
 	  	  
-	  if (expr1 != null) {
-		  if ((expr1 instanceof ResultSequence) && (((ResultSequence)expr1).size() == 0)) {
+	  if (xObjL != null) {
+		  if ((xObjL instanceof ResultSequence) && (((ResultSequence)xObjL).size() == 0)) {
 			  return XBoolean.S_FALSE;
 		  }
-		  else if ((expr1 instanceof ResultSequence) && (((ResultSequence)expr1).size() == 1)) {
-			  XObject xObj = ((ResultSequence)expr1).item(0);
+		  else if ((xObjL instanceof ResultSequence) && (((ResultSequence)xObjL).size() == 1)) {
+			  XObject xObj = ((ResultSequence)xObjL).item(0);
 			  if ((xObj instanceof XSBoolean) || (xObj instanceof XBoolean) || (xObj instanceof XBooleanStatic)) {
 				  if (!xObj.bool()) {
 					  return XBoolean.S_FALSE; 
 				  }
 			  }
 		  }
-		  else if ((expr1 instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)expr1).getLength() == 0)) {
+		  else if ((xObjL instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)xObjL).getLength() == 0)) {
 			  return XBoolean.S_FALSE;
 		  }
-		  else if ((expr1 instanceof XSBoolean) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic)) {
-			  if (!expr1.bool()) {
+		  else if ((xObjL instanceof XSBoolean) || (xObjL instanceof XBoolean) || (xObjL instanceof XBooleanStatic)) {
+			  if (!xObjL.bool()) {
 				  return XBoolean.S_FALSE; 
 			  }
 		  }
-		  else if ((expr1 instanceof XSString) || (expr1 instanceof XString)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr1);
+		  else if ((xObjL instanceof XSString) || (xObjL instanceof XString)) {
+			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjL);
 			  if (str1.length() == 0) {
 				  return XBoolean.S_FALSE; 
 			  }
 		  }
-		  else if ((expr1 instanceof XSAnyURI) || (expr1 instanceof XSUntypedAtomic)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr1);
+		  else if ((xObjL instanceof XSAnyURI) || (xObjL instanceof XSUntypedAtomic)) {
+			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjL);
 			  if (str1.length() == 0) {
 				  return XBoolean.S_FALSE; 
 			  }
 		  }
-		  else if (expr1 instanceof XSFloat) {
-			  XSFloat xsFloat = (XSFloat)expr1;
+		  else if (xObjL instanceof XSFloat) {
+			  XSFloat xsFloat = (XSFloat)xObjL;
 			  if (xsFloat.nan()) {
 				  return XBoolean.S_FALSE; 
 			  }
 		  }
-		  else if (expr1 instanceof XSDouble) {
-			  XSDouble xsDouble = (XSDouble)expr1;
+		  else if (xObjL instanceof XSDouble) {
+			  XSDouble xsDouble = (XSDouble)xObjL;
 			  if (xsDouble.nan()) {
 				  return XBoolean.S_FALSE;
 			  }
 		  }	  
-		  else if (expr1 instanceof XNumber) {
-			  XNumber xNumber = (XNumber)expr1;
+		  else if (xObjL instanceof XNumber) {
+			  XNumber xNumber = (XNumber)xObjL;
 			  Double dbl = xNumber.num();
 			  if (dbl.isNaN()) {
 				  return XBoolean.S_FALSE; 
@@ -135,9 +139,9 @@ public class And extends Operation
 	  boolean lInf = false;	  
 	  boolean lNumericOk = false;
 	  
-	  if (expr1 != null) {
-		  if (expr1 instanceof XSNumericType) {
-			  java.lang.String str1 = ((XSNumericType)expr1).stringValue();
+	  if (xObjL != null) {
+		  if (xObjL instanceof XSNumericType) {
+			  java.lang.String str1 = ((XSNumericType)xObjL).stringValue();
 			  if (!("INF".equals(str1) || "-INF".equals(str1))) {
 				  double dbl = Double.valueOf(str1);
 				  if (dbl == 0) {
@@ -151,8 +155,8 @@ public class And extends Operation
 				  lInf = true;
 			  }
 		  }
-		  else if (expr1 instanceof XNumber) {
-			  XNumber xNum = (XNumber)expr1;
+		  else if (xObjL instanceof XNumber) {
+			  XNumber xNum = (XNumber)xObjL;
 			  Double dbl = xNum.num();			
 			  if (!dbl.isInfinite()) {
 				  if (dbl == 0) {
@@ -168,21 +172,25 @@ public class And extends Operation
 		  }
       }	  	  
 
-	  if ((expr1 == null) || a1 || lInf || lNumericOk)
+	  if ((xObjL == null) || a1 || lInf || lNumericOk)
 	  {		  
-		  XObject expr2 = null;
+		  XObject xObjR = null;
 		  
 		  try {
-		     expr2 = m_right.execute(xctxt);
+		     xObjR = m_right.execute(xctxt);
 		  }
 		  catch (Exception ex) {
 			 // no op 
 		  }
 		  
+		  if (xObjR instanceof XSString) {		  
+			  xObjR = new XString(((XSString)xObjR).stringValue()); 
+		  }
+		  
 		  boolean a2 = false;
 		  
 		  try {
-			  a2 = expr2.bool();			  
+			  a2 = xObjR.bool();			  
 			  if (!a2) {
 				  return XBoolean.S_FALSE;  
 			  }
@@ -191,52 +199,52 @@ public class And extends Operation
 			  // no op
 		  }
 		  
-		  if (expr2 != null) {
-			  if ((expr2 instanceof ResultSequence) && (((ResultSequence)expr2).size() == 0)) {
+		  if (xObjR != null) {
+			  if ((xObjR instanceof ResultSequence) && (((ResultSequence)xObjR).size() == 0)) {
 				  return XBoolean.S_FALSE;
 			  }
-			  else if ((expr2 instanceof ResultSequence) && (((ResultSequence)expr2).size() == 1)) {
-				  XObject xObj = ((ResultSequence)expr2).item(0);
+			  else if ((xObjR instanceof ResultSequence) && (((ResultSequence)xObjR).size() == 1)) {
+				  XObject xObj = ((ResultSequence)xObjR).item(0);
 				  if ((xObj instanceof XSBoolean) || (xObj instanceof XBoolean) || (xObj instanceof XBooleanStatic)) {
 					  if (!xObj.bool()) {
 						  return XBoolean.S_FALSE; 
 					  }
 				  }
 			  }
-			  else if ((expr2 instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)expr2).getLength() == 0)) {
+			  else if ((xObjR instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)xObjR).getLength() == 0)) {
 				  return XBoolean.S_FALSE;
 			  }
-			  else if ((expr2 instanceof XSBoolean) || (expr2 instanceof XBoolean) || (expr2 instanceof XBooleanStatic)) {
-				  if (!expr2.bool()) {
+			  else if ((xObjR instanceof XSBoolean) || (xObjR instanceof XBoolean) || (xObjR instanceof XBooleanStatic)) {
+				  if (!xObjR.bool()) {
 					  return XBoolean.S_FALSE; 
 				  }
 			  }
-			  else if ((expr2 instanceof XSString) || (expr2 instanceof XString)) {
-				  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr2);
+			  else if ((xObjR instanceof XSString) || (xObjR instanceof XString)) {
+				  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjR);
 				  if (str1.length() == 0) {
 					  return XBoolean.S_FALSE; 
 				  }
 			  }
-			  else if ((expr2 instanceof XSAnyURI) || (expr2 instanceof XSUntypedAtomic)) {
-				  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(expr2);
+			  else if ((xObjR instanceof XSAnyURI) || (xObjR instanceof XSUntypedAtomic)) {
+				  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObjR);
 				  if (str1.length() == 0) {
 					  return XBoolean.S_FALSE; 
 				  }
 			  }
-			  else if (expr2 instanceof XSFloat) {
-				  XSFloat xsFloat = (XSFloat)expr2;
+			  else if (xObjR instanceof XSFloat) {
+				  XSFloat xsFloat = (XSFloat)xObjR;
 				  if (xsFloat.nan()) {
 					  return XBoolean.S_FALSE; 
 				  }
 			  }
-			  else if (expr2 instanceof XSDouble) {
-				  XSDouble xsDouble = (XSDouble)expr2;
+			  else if (xObjR instanceof XSDouble) {
+				  XSDouble xsDouble = (XSDouble)xObjR;
 				  if (xsDouble.nan()) {
 					  return XBoolean.S_FALSE;
 				  }
 			  }	  
-			  else if (expr2 instanceof XNumber) {
-				  XNumber xNumber = (XNumber)expr2;
+			  else if (xObjR instanceof XNumber) {
+				  XNumber xNumber = (XNumber)xObjR;
 				  Double dbl = xNumber.num();
 				  if (dbl.isNaN()) {
 					  return XBoolean.S_FALSE; 
@@ -247,9 +255,9 @@ public class And extends Operation
 		  boolean rInf = false;
 		  boolean rNumericOk = false;
 
-		  if (expr2 != null) {
-			  if (expr2 instanceof XSNumericType) {
-				  java.lang.String str1 = ((XSNumericType)expr2).stringValue();
+		  if (xObjR != null) {
+			  if (xObjR instanceof XSNumericType) {
+				  java.lang.String str1 = ((XSNumericType)xObjR).stringValue();
 				  if (!("INF".equals(str1) || "-INF".equals(str1))) {
 					  double dbl = Double.valueOf(str1);
 					  if (dbl == 0) {
@@ -264,8 +272,8 @@ public class And extends Operation
 				  }
 			  }
 
-			  if (expr2 instanceof XNumber) {
-				  XNumber xNum = (XNumber)expr2;
+			  if (xObjR instanceof XNumber) {
+				  XNumber xNum = (XNumber)xObjR;
 				  Double dbl = xNum.num();			
 				  if (!dbl.isInfinite()) {
 					  if (dbl == 0) {

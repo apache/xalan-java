@@ -55,7 +55,7 @@ public class FuncName extends FunctionMultiArgs {
    * Class constructor.
    */
   public FuncName() {
-	  m_defined_arity = new Short[] { 0, 1 };
+	  m_arity = new Short[] { 0, 1 };
   }
 
   /**

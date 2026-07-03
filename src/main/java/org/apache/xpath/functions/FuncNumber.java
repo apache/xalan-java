@@ -48,7 +48,7 @@ public class FuncNumber extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncNumber() {
-		m_defined_arity = new Short[] {0, 1};  
+		m_arity = new Short[] {0, 1};  
 	}
 
 	/**

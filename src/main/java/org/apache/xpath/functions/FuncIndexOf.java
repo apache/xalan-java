@@ -55,7 +55,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncIndexOf() {
-		m_defined_arity = new Short[] { 2, 3 };
+		m_arity = new Short[] { 2, 3 };
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 				}
 
 				try {
-					if (XslTransformEvaluationHelper.contains(rSeq1, arg1Obj, collationUri, xpathCollationSupport)) {
+					if (XslTransformEvaluationHelper.contains(rSeq1, arg1Obj, collationUri, xpathCollationSupport, xctxt)) {
 						resultSeq1.add(new XSInteger(BigInteger.valueOf(idx + 1)));    
 					}
 				}

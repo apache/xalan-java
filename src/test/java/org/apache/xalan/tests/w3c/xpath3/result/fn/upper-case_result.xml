@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T05:06:16Z" fail="2" name="fn-upper-case" pass="27" run="29" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:16Z" fail="0" name="fn-upper-case" pass="29" run="29" statusUnknown="0">
    <testResult status="pass" testName="fn-upper-case1args-1"/>
    <testResult status="pass" testName="fn-upper-case1args-2"/>
    <testResult status="pass" testName="fn-upper-case1args-3"/>
@@ -20,11 +20,11 @@
    <testResult status="pass" testName="fn-upper-case-16"/>
    <testResult status="pass" testName="fn-upper-case-17"/>
    <testResult status="pass" testName="fn-upper-case-18"/>
-   <testResult status="fail" testName="fn-upper-case-19"/>
+   <testResult status="pass" testName="fn-upper-case-19"/>
    <testResult status="pass" testName="fn-upper-case-20"/>
    <testResult status="pass" testName="fn-upper-case-21"/>
    <testResult status="pass" testName="fn-upper-case-22"/>
-   <testResult status="fail" testName="K-UpperCaseFunc-1"/>
+   <testResult status="pass" testName="K-UpperCaseFunc-1"/>
    <testResult status="pass" testName="K-UpperCaseFunc-2"/>
    <testResult status="pass" testName="K-UpperCaseFunc-3"/>
    <testResult status="pass" testName="K-UpperCaseFunc-4"/>

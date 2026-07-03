@@ -46,7 +46,7 @@ public class FuncSubsequence extends FunctionMultiArgs {
      * Class constructor.
      */
     public FuncSubsequence() {
-  	   m_defined_arity = new Short[] { 2, 3 };  
+  	   m_arity = new Short[] { 2, 3 };  
     }
     
     /**
@@ -171,12 +171,14 @@ public class FuncSubsequence extends FunctionMultiArgs {
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
     {
-       if (!(argNum > 1 && argNum <= 3)) {
+       /*if (!(argNum > 1 && argNum <= 3)) {
           reportWrongNumberArgs();
        }
        else {
           numOfArgs = argNum;   
-       }
+       }*/
+       
+       numOfArgs = argNum;
     }
     
     /**

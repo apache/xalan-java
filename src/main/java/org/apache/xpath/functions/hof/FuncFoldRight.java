@@ -54,7 +54,7 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
      * Class constructor.
      */
     public FuncFoldRight() {
- 	   m_defined_arity = new Short[] { 3 };
+ 	   m_arity = new Short[] { 3 };
     }
 
     /**

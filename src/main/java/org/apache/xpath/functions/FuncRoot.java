@@ -44,7 +44,7 @@ public class FuncRoot extends FunctionMultiArgs {
 	    * Class constructor.
 	    */
 	   public FuncRoot() {
-		   m_defined_arity = new Short[] { 0, 1 };
+		   m_arity = new Short[] { 0, 1 };
 	   }
 
 	   /**

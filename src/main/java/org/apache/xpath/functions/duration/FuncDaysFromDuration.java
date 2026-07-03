@@ -46,7 +46,7 @@ public class FuncDaysFromDuration extends FunctionOneArg {
      * Class constructor.
      */
     public FuncDaysFromDuration() {
-    	m_defined_arity = new Short[] { 1 };	
+    	m_arity = new Short[] { 1 };	
     }
 
     /**

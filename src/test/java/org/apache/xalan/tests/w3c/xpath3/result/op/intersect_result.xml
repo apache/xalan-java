@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-30T10:58:35Z" fail="20" name="op-intersect" pass="12" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:49Z" fail="20" name="op-intersect" pass="12" run="32" statusUnknown="0">
    <testResult status="pass" testName="fn-intersect-node-args-001"/>
    <testResult status="pass" testName="fn-intersect-node-args-002"/>
    <testResult status="pass" testName="fn-intersect-node-args-003"/>

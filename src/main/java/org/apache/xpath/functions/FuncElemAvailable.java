@@ -40,6 +40,13 @@ import org.apache.xpath.objects.XObject;
 public class FuncElemAvailable extends FunctionOneArg
 {
   static final long serialVersionUID = -472533699257968546L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncElemAvailable() {
+	  m_arity = new Short[] { 1 };  
+  }
 
   /**
    * Evaluate the function. The function must return a valid object.

@@ -34,7 +34,7 @@ public class FuncCount extends FunctionOneArg
      * Default constructor.
      */
     public FuncCount() {
-    	m_defined_arity = new Short[] { 1 };	
+    	m_arity = new Short[] { 1 };	
     }
 
     /**

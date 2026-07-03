@@ -111,35 +111,59 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class Compiler extends OpMap
 {
+	
+	/** The error listener where errors will be sent.  If this is null, errors 
+	 *  and warnings will be sent to System.err.  May be null.    */
+	ErrorListener m_errorHandler;
 
-  /**
-   * Construct a Compiler object with a specific ErrorListener and 
-   * SourceLocator where the expression is located.
-   *
-   * @param errorHandler Error listener where messages will be sent, or null 
-   *                     if messages should be sent to System err.
-   * @param locator      The location object where the expression lives, which 
-   *                     may be null, but which, if not null, must be valid over 
-   *                     the long haul, in other words, it will not be cloned.
-   * @param funcTable    The FunctionTable object where the xpath build-in 
-   *                     functions are stored.                 
-   */
-  public Compiler(ErrorListener errorHandler, SourceLocator locator, FunctionTable funcTable)
-  {
-    m_errorHandler = errorHandler;
-    m_locator = locator;
-    m_functionTable = funcTable;
-  }
+	/** The source locator for the expression being compiled.  May be null. */
+	SourceLocator m_locator;
 
-  /**
-   * Construct a Compiler instance that has a null error listener and a 
-   * null source locator.
-   */
-  public Compiler()
-  {
-    m_errorHandler = null;
-    m_locator = null;
-  }
+	/**
+	 * The FunctionTable for all xpath build-in functions
+	 */
+	private FunctionTable m_functionTable;
+
+	/**
+	 * We store within this class field, the fact that, there is
+	 * an XPath expression of kind "... => functionCall()".
+	 */
+	private boolean m_isFunctionCallPrecededByArrow = false;
+	
+	/**
+	 * Class field, denoting to skip XPath built-in function arity 
+	 * verification, for few XPath parse cases.
+	 */
+	public static boolean m_verify_func_arg_count = true;
+
+	/**
+	 * Construct a Compiler object with a specific ErrorListener and 
+	 * SourceLocator where the expression is located.
+	 *
+	 * @param errorHandler Error listener where messages will be sent, or null 
+	 *                     if messages should be sent to System err.
+	 * @param locator      The location object where the expression lives, which 
+	 *                     may be null, but which, if not null, must be valid over 
+	 *                     the long haul, in other words, it will not be cloned.
+	 * @param funcTable    The FunctionTable object where the xpath build-in 
+	 *                     functions are stored.                 
+	 */
+	public Compiler(ErrorListener errorHandler, SourceLocator locator, FunctionTable funcTable)
+	{
+		m_errorHandler = errorHandler;
+		m_locator = locator;
+		m_functionTable = funcTable;
+	}
+
+	/**
+	 * Construct a Compiler instance that has a null error listener and a 
+	 * null source locator.
+	 */
+	public Compiler()
+	{
+		m_errorHandler = null;
+		m_locator = null;
+	}
 
   /**
    * Evaluate the XPath object from a given opcode position.
@@ -227,7 +251,7 @@ public class Compiler extends OpMap
     case OpCodes.XPath3OpCodes.OP_STR_CONCAT :
       expr = strConcat(opPos); break;
     case OpCodes.XPath3OpCodes.OP_ARROW :
-      m_isCompileFuncPrecededByCompileArrow = true;
+      m_isFunctionCallPrecededByArrow = true;
       expr = arrowOp(opPos);
       break;
     case OpCodes.OP_MINUS :
@@ -269,7 +293,7 @@ public class Compiler extends OpMap
     case OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION :
       expr = compileConstructorStylesheetOrExtensionFunction(opPos); break;
     case OpCodes.OP_FUNCTION :
-      expr = compileFunction(opPos); break;
+      expr = compileFunction(opPos); break;      
     case OpCodes.XPath3OpCodes.OP_FUNCTION2 :
       expr = compileFunction2(opPos); break;      
     case OpCodes.XPath3OpCodes.OP_INLINE_FUNCTION :
@@ -313,9 +337,8 @@ public class Compiler extends OpMap
     }
     
     return expr;
+    
   }
-  
-  public static boolean m_verify_func_arg_count = true;
 
   /**
    * Bottle-neck compilation of an operation with left and right operands.
@@ -1055,7 +1078,7 @@ public class Compiler extends OpMap
   /**
    * Get the function table  
    */
-  FunctionTable getFunctionTable()
+  public FunctionTable getFunctionTable()
   {
     return m_functionTable;
   }
@@ -1465,66 +1488,106 @@ private static final boolean DEBUG = false;
   Expression compileFunction(int opPos) throws TransformerException
   {
 
-    int endFunc = opPos + getOp(opPos + 1) - 1;
+	  int endFunc = opPos + getOp(opPos + 1) - 1;
 
-    opPos = getFirstChildPos(opPos);
+	  opPos = getFirstChildPos(opPos);
 
-    int funcID = getOp(opPos);
+	  int funcID = getOp(opPos);
 
-    opPos++;
+	  opPos++;
 
-    if (-1 != funcID)
-    {
-      Function func = m_functionTable.getFunction(funcID);
-      
-      /**
-       * It is a trick for function-available. Since the function table is an
-       * instance field, insert this table at compilation time for later usage
-       */
-      
-      if (func instanceof FuncExtFunctionAvailable)
-          ((FuncExtFunctionAvailable) func).setFunctionTable(m_functionTable);
+	  if (-1 != funcID)
+	  {		  		  
+		  Function func = m_functionTable.getFunction(funcID);
 
-      func.postCompileStep(this);
-      
-      try
-      {
-        int i = 0;
+		  /**
+		   * It is a trick for function-available. Since the function table is an
+		   * instance field, insert this table at compilation time for later usage
+		   */
 
-        for (int p = opPos; p < endFunc; p = getNextOpPos(p), i++)
-        {          
-           func.setArg(compile(p), i);
-        }
-        
-        if (m_isCompileFuncPrecededByCompileArrow) 
-        {
-           // This allows us to, permit the absence of XPath function's 1st 
-           // argument when evaluating with operator "=>".
-           i++;
-           m_isCompileFuncPrecededByCompileArrow = false;
-        }
-        
-        func.checkNumberArgs(i);
-      }
-      catch (WrongNumberArgsException wnae)
-      {
-    	if (org.apache.xpath.compiler.Compiler.m_verify_func_arg_count) {
-    		java.lang.String name = m_functionTable.getFunctionName(funcID);
+		  if (func instanceof FuncExtFunctionAvailable)
+			  ((FuncExtFunctionAvailable) func).setFunctionTable(m_functionTable);
 
-    		m_errorHandler.fatalError( new TransformerException(
-    				XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
-    						new Object[]{name, wnae.getMessage()}), m_locator));
-    	}
-      }
+		  func.postCompileStep(this);
 
-      return func;
-    }
-    else
-    {
-      error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND, null);  //"function token not found.");
+		  String funcName1 = m_functionTable.getFunctionName(funcID);
 
-      return null;
-    }
+		  try
+		  {
+			  int i = 0;
+
+			  for (int p = opPos; p < endFunc; p = getNextOpPos(p), i++)
+			  {          
+				  func.setArg(compile(p), i);
+			  }
+
+			  if (m_isFunctionCallPrecededByArrow) 
+			  {
+				  // This allows us to, permit the absence of XPath function's first 
+				  // argument. while evaluating an XPath 3.1 operator "=>".
+				  i++;
+				  m_isFunctionCallPrecededByArrow = false;
+			  }
+
+			  if (m_verify_func_arg_count) {
+				  if (!(Keywords.FUNC_CONCAT_STRING.equals(funcName1) || Keywords.FROM_SELF_ABBREVIATED_STRING.equals(funcName1))) {
+					  Short[] funcArityArr = func.getArity();        	
+
+					  boolean funcArityErr = true;
+					  for (int idx = 0; idx < funcArityArr.length; idx++) {
+						  Short arity = funcArityArr[idx];
+						  if (arity == i) {
+							  funcArityErr = false; 
+						  }
+					  }        	        	 
+
+					  if (funcArityErr) {
+						  StringBuffer strBuff = new StringBuffer();
+						  for (int idx = 0; idx < funcArityArr.length; idx++) {
+							  Short arity = funcArityArr[idx];
+							  strBuff.append(arity);
+							  if (idx < (funcArityArr.length - 1)) {
+								  strBuff.append(","); 
+							  }
+						  }
+
+						  String arityStr1 = strBuff.toString();
+
+						  m_errorHandler.fatalError(new TransformerException(
+								  XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+										  new Object[] {funcName1, arityStr1}), m_locator));
+					  }
+				  }
+				  else {
+					  int minArity = func.getMinArity();
+					  int maxArity = func.getMaxArity();
+					  if ((i < minArity) || (i > maxArity)) {
+						  m_errorHandler.fatalError(new TransformerException(
+								  XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+										  new Object[] {funcName1, minArity + " upto " + maxArity}), m_locator));
+					  }
+				  }
+			  }
+
+			  func.checkNumberArgs(i);
+		  }
+		  catch (WrongNumberArgsException wnae)
+		  {
+			  if (org.apache.xpath.compiler.Compiler.m_verify_func_arg_count) {
+				  m_errorHandler.fatalError( new TransformerException(
+																	XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+																			          new Object[]{funcName1, wnae.getMessage()}), m_locator));
+			  }
+		  }
+
+		  return func;
+	  }
+	  else
+	  {
+		  error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND, null);  //"function token not found.");
+
+		  return null;
+	  }
   }
   
   /**
@@ -1992,21 +2055,4 @@ private static final boolean DEBUG = false;
     m_currentPrefixResolver = pr;
   }
 
-  /** The error listener where errors will be sent.  If this is null, errors 
-   *  and warnings will be sent to System.err.  May be null.    */
-  ErrorListener m_errorHandler;
-
-  /** The source locator for the expression being compiled.  May be null. */
-  SourceLocator m_locator;
-  
-  /**
-   * The FunctionTable for all xpath build-in functions
-   */
-  private FunctionTable m_functionTable;
-  
-  /**
-   * We store within this class field, the fact that, there is
-   * an XPath expression of kind "... => functionCall()".
-   */
-  private boolean m_isCompileFuncPrecededByCompileArrow;
 }

@@ -66,7 +66,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncMapMerge() {
-		m_defined_arity = new Short[] { 1, 2 };	
+		m_arity = new Short[] { 1, 2 };	
 	}
 
 	/**

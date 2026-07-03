@@ -857,7 +857,7 @@ public class XPathDynamicFunctionCall extends Expression {
 			}
 			
 			expandedFuncName = "{" + funcNamespace + ":" + funcLocalName + "}#" + runTimeArityValue;
-			Short[] funcDefinedArity = funcObj.getDefinedArity();
+			Short[] funcDefinedArity = funcObj.getArity();
 			List<Short> arityList = Arrays.asList(funcDefinedArity);
 			int listSize1 = arityList.size();
 			StringBuffer strBuff = new StringBuffer();

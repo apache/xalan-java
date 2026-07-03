@@ -41,7 +41,7 @@ public class FuncSecondsFromTime extends FunctionOneArg
    * Class constructor.
    */
   public FuncSecondsFromTime() {
-  	 m_defined_arity = new Short[] { 1 };	
+  	 m_arity = new Short[] { 1 };	
   }
 
   /**

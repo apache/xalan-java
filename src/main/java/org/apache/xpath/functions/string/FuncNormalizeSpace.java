@@ -39,7 +39,7 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncNormalizeSpace() {
-		m_defined_arity = new Short[] { 0, 1 };
+		m_arity = new Short[] { 0, 1 };
 	}    
 
 	/**

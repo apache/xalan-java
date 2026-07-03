@@ -37,7 +37,7 @@ public class FuncTrue extends Function
 	 * Class constructor;
 	 */
 	public FuncTrue() {
-		m_defined_arity = new Short[] { 0 };
+		m_arity = new Short[] { 0 };
 	}
 
 	/**

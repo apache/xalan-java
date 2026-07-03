@@ -38,7 +38,7 @@ public class FuncTail extends FunctionOneArg {
      * Class constructor.
      */
     public FuncTail() {
-  	   m_defined_arity = new Short[] { 1 };  
+  	   m_arity = new Short[] { 1 };  
     }
 
     /**

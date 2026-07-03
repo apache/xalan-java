@@ -38,7 +38,7 @@ public class FuncSum extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncSum() {
-		m_defined_arity = new Short[] { 1, 2 };  
+		m_arity = new Short[] { 1, 2 };  
 	}
 
 	/**

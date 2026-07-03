@@ -200,6 +200,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String XSD_VERSION = "xsd-version";
     
+    public static final String UNICODE_VERSION = "unicode-version";
+    
     public static final String HIGHER_ORDER_FUNC = "higherOrderFunctions";
     
     public static final String RESULT = "result";
@@ -610,7 +612,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									depValue = elem3.getAttribute(VALUE);
 								}
 
-								if (!dependencySpecified || XML_VERSION.equals(depType) || XSD_VERSION.equals(depType) 
+								if (!dependencySpecified || XML_VERSION.equals(depType) || XSD_VERSION.equals(depType) || UNICODE_VERSION.equals(depType) 
 										                                                || (SPEC.equals(depType) && (depValue.contains(XPATH31) 
 										                                                || depValue.contains(XPATH30) 
 										                                                || depValue.contains(XPATH20)))

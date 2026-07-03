@@ -39,15 +39,22 @@ public class FuncCurrentMergeKey extends Function
 {
 
    private static final long serialVersionUID = 8404013696862488459L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncCurrentMergeKey() {
+	   m_arity = new Short[] { 0 };
+   }
 
    /**
-     * Evaluate the function. The function must return a valid object.
-     * 
-     * @param xctxt The current execution context.
-     * @return a valid XObject.
-     *
-     * @throws javax.xml.transform.TransformerException
-   */
+    * Evaluate the function. The function must return a valid object.
+    * 
+    * @param xctxt The current execution context.
+    * @return a valid XObject.
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
 	   TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            

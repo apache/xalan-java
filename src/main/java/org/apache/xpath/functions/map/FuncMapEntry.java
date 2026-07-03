@@ -39,7 +39,7 @@ public class FuncMapEntry extends Function2Args {
 	 * Class constructor.
 	 */
 	public FuncMapEntry() {
-		m_defined_arity = new Short[] { 2 };	
+		m_arity = new Short[] { 2 };	
 	}
 
 	/**

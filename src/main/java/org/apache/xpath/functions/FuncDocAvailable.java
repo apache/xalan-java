@@ -41,7 +41,7 @@ public class FuncDocAvailable extends FunctionOneArg {
      * Default constructor.
      */
     public FuncDocAvailable() {
-    	m_defined_arity = new Short[] { 1 };	
+    	m_arity = new Short[] { 1 };	
     }
 
     /**

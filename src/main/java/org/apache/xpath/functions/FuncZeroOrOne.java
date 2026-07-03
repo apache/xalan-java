@@ -40,7 +40,7 @@ public class FuncZeroOrOne extends FunctionDef1Arg {
 	 * Class constructor.
 	 */
 	public FuncZeroOrOne() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 	
 	/**

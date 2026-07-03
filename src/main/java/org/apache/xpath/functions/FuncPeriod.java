@@ -32,9 +32,9 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceTypeData;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -50,19 +50,14 @@ import org.apache.xpath.objects.XPathMap;
  */
 public class FuncPeriod extends FunctionMultiArgs {
 	
-	private static final long serialVersionUID = -638591636434982044L;
-	
-	private int m_min_arity = 1;
-
-	private int m_max_arity = Integer.MAX_VALUE - 1;
-	
-	private int m_defined_arity = 0;
+	private static final long serialVersionUID = -638591636434982044L;	
 
 	/**
 	 * Class constructor.
 	 */
 	public FuncPeriod() {
-		// no op
+		m_min_arity = 1;
+		m_max_arity = Integer.MAX_VALUE - 1;
 	}
 	
 	/**
@@ -168,46 +163,54 @@ public class FuncPeriod extends FunctionMultiArgs {
 			else if (xpath3CtxtItem instanceof XPathNamedFunctionReference) {
 				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xpath3CtxtItem;    					   
 				String localName = xpathNamedFunctionReference.getFuncName();
-				String namespace = xpathNamedFunctionReference.getFuncNamespace();
+				String fNamespace = xpathNamedFunctionReference.getFuncNamespace();
 				Short arity = xpathNamedFunctionReference.getArity();
 				int argCount = getFunctionArgumentCount();				
-				if ((int)arity == argCount) {
-					if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
-							                                                                   (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || 
-							                                                                   (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace)) {
-						FunctionTable funcTable = xctxt.getFunctionTable();
-						Object funcId = funcTable.getFunctionId(localName);
-						if (funcId != null) {
-							Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
-							List<Short> funcDefinedArity = Arrays.asList(function.getDefinedArity());
-							if (funcDefinedArity.contains(arity)) {
-								for (int idx = 0; idx < argCount; idx++) {									 									
-									XObject argValue = getFuncCallArgumentValue(idx, xctxt);
-									try {
-										function.setArg(argValue, idx);
-									} 
-									catch (WrongNumberArgsException ex) {
-										// no op
-									}
-								}
+				if ((int)arity == argCount) {					
+					FunctionTable funcTable = xctxt.getFunctionTable();
+					
+					Object funcId = null;
 
-								result = function.execute(xctxt);
+					if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) { 
+						funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+					}
+					else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
+						funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+					}
+					else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
+						funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+					}
+					else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {     	   
+						funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+					}					
+						
+					if (funcId != null) {
+						Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
+						List<Short> funcDefinedArity = Arrays.asList(function.getArity());
+						if (funcDefinedArity.contains(arity)) {
+							for (int idx = 0; idx < argCount; idx++) {									 									
+								XObject argValue = getFuncCallArgumentValue(idx, xctxt);
+								try {
+									function.setArg(argValue, idx);
+								} 
+								catch (WrongNumberArgsException ex) {
+									// no op
+								}
 							}
-							else {
-								throw new TransformerException("XPTY0004 : The function arity value specified in an XPath named "
-												    												+ "function reference is " + arity + ", but the corresponding "
-												    												+ "XPath function {" + namespace + "}" + localName + " doesn't "
-												    												+ "allow this arity.", srcLocator);  
-							}
+
+							result = function.execute(xctxt);
 						}
 						else {
-							throw new TransformerException("XPTY0004 : The function {" + namespace + "}" + localName + " referred "
-																									+ "within an XPath expression is not found.", srcLocator); 
+							throw new TransformerException("XPTY0004 : The function arity value specified in an XPath named "
+																										+ "function reference is " + arity + ", but the corresponding "
+																										+ "XPath function {" + fNamespace + "}" + localName + " doesn't "
+																										+ "allow this arity.", srcLocator);  
 						}
-					}
-					else if (namespace != null) {
-						// This may handle, XSL stylesheet function call, and XPath 3.1 constructor function call
-						XSL3ConstructorOrExtensionFunction xsl3ConsExtFuncObj = new XSL3ConstructorOrExtensionFunction(namespace, localName, null);
+					}										
+					else if (fNamespace != null) {
+						// This may handle, XSL stylesheet function call, and 
+						// XPath 3.1 schema type constructor function call.						
+						XSL3ConstructorOrExtensionFunction xsl3ConsExtFuncObj = new XSL3ConstructorOrExtensionFunction(fNamespace, localName, null);
 						for (int idx = 0; idx < argCount; idx++) {
 							XObject argValue = getFuncCallArgumentValue(idx, xctxt);
 							try {
@@ -222,10 +225,10 @@ public class FuncPeriod extends FunctionMultiArgs {
 					}
 				}
 				else {
-					throw new TransformerException("XPTY0004 : The number of arguments provided during an XPath function call {" + namespace + "}" + localName 
-															    									+ " is " + argCount + ", but the corresponding XPath named function "
-															    									+ "reference specifies the function arity value as " + arity + ".", 
-															    									srcLocator); 
+					throw new TransformerException("XPTY0004 : The number of arguments provided during an XPath function call {" + fNamespace + "}" + localName 
+																    									+ " is " + argCount + ", but the corresponding XPath named function "
+																    									+ "reference specifies the function arity value as " + arity + ".", 
+																    									srcLocator); 
 				}				
 			}
 		}
@@ -293,30 +296,6 @@ public class FuncPeriod extends FunctionMultiArgs {
 		}
 		
 		return result;
-	}
-	
-	public int getMinArity() {
-		return m_min_arity;
-	}
-
-	public void setMinArity(int minArity) {
-		this.m_min_arity = minArity;
-	}
-
-	public int getMaxArity() {
-		return m_max_arity;
-	}
-
-	public void setMaxArity(int maxArity) {
-		this.m_max_arity = maxArity;
-	}
-	
-	public int getActualArity() {
-	    return m_defined_arity; 
-	}
-	  
-	public void setActualArity(int definedArity) {
-	    this.m_defined_arity = definedArity; 
-	}
+	}	
 
 }

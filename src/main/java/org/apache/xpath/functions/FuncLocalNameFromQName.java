@@ -42,7 +42,7 @@ public class FuncLocalNameFromQName extends FunctionDef1Arg {
 	 * Class constructor.
 	 */
 	public FuncLocalNameFromQName() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**

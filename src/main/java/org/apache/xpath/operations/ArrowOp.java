@@ -128,6 +128,7 @@ public class ArrowOp extends Operation
     		  else {     		
     			  Expression arg0 = funcTwoArgs.getArg0();
     			  funcTwoArgs.setArg0(m_left);
+    			  
     			  try {     		   
     				  funcTwoArgs.setArg(arg0, 1);
     			  } 
@@ -160,14 +161,7 @@ public class ArrowOp extends Operation
 	  }
       
       return result;
-    }
-
-    public java.lang.String getArrowOpRemainingXPathExprStr() {
-	   return m_xpath_arrowOpRemainingExprStr;
-    }
-
-    public void setArrowOpRemainingXPathExprStr(java.lang.String arrowOpRemainingXPathExprStr) {
-	   this.m_xpath_arrowOpRemainingExprStr = arrowOpRemainingXPathExprStr;
+      
     }
     
     /**
@@ -259,6 +253,15 @@ public class ArrowOp extends Operation
        }
        
        return result;
+       
+    }
+    
+    public java.lang.String getArrowOpRemainingXPathExprStr() {
+    	return m_xpath_arrowOpRemainingExprStr;
+    }
+
+    public void setArrowOpRemainingXPathExprStr(java.lang.String arrowOpRemainingXPathExprStr) {
+    	this.m_xpath_arrowOpRemainingExprStr = arrowOpRemainingXPathExprStr;
     }
     
 }

@@ -57,6 +57,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.Function;
@@ -491,10 +492,28 @@ public class XPathSequenceTypeSupport {
             			return srcValue;
             		}
             		else {        		     		             			
-            			String funcName = xpathNamedFunctionReference.getFuncName();
+            			String localName = xpathNamedFunctionReference.getFuncName();
+            			String fNamespace = xpathNamedFunctionReference.getFuncNamespace(); 
+            			
             			FunctionTable funcTable = xctxt.getFunctionTable();
-            			Object funcIdInFuncTable = funcTable.getFunctionId(funcName);
-            			Function function = funcTable.getFunction((int)funcIdInFuncTable);
+            			
+            			Object funcId = null;
+
+            			if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) { 
+            				funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+            			}
+            			else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
+            				funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+            			}
+            			else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
+            				funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+            			}
+            			else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {     	   
+            				funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+            			}            			
+            			
+            			Function function = funcTable.getFunction((int)funcId);
+            			
             			if (function != null) {
             				return srcValue; 
             			}

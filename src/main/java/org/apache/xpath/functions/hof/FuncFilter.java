@@ -65,7 +65,7 @@ public class FuncFilter extends Function2Args {
     * Class constructor.
     */
    public FuncFilter() {
-	   m_defined_arity = new Short[] { 2 };
+	   m_arity = new Short[] { 2 };
    }
    
    /**

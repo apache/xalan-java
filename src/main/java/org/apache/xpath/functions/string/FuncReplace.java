@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions.string;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.transform.SourceLocator;
 
@@ -53,7 +53,7 @@ public class FuncReplace extends Function4Args {
     * Class constructor.
     */
    public FuncReplace() {
- 	  m_defined_arity = new Short[] { 3, 4 };
+ 	  m_arity = new Short[] { 3, 4 };
    }
 
    /**
@@ -110,9 +110,102 @@ public class FuncReplace extends Function4Args {
 
 			   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
 		   }
+		   
+		   if ((flagStr != null) && flagStr.contains("q")) {			   
+			   List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
 
-		   String resultStr = regexMatcher.replaceAll(replacementStr);
-		   result = new XSString(resultStr);
+			   while (regexMatcher.find()) {
+				   int idx1 = regexMatcher.start();
+				   int idx2 = regexMatcher.end();
+
+				   RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
+				   regexMatchInfo.setStartIdx(idx1);
+				   regexMatchInfo.setEndIdx(idx2);
+
+				   regexMatchInfoList.add(regexMatchInfo);
+			   }
+
+			   regexMatcher.reset();
+
+			   int size1 = regexMatchInfoList.size();
+
+			   StringBuffer strBuff = new StringBuffer();
+
+			   if (size1 > 0) {
+				   RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
+				   int startIdx1 = firstRegexMatchInfo.getStartIdx();
+				   if (startIdx1 == 0) {
+					   // Regex has matched a substring, which is prefix of an input string         			
+					   for (int idx = 0; idx < size1; idx++) {
+						   RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
+						   int idx1 = matchInfo.getStartIdx();
+						   int idx2 = matchInfo.getEndIdx();
+						   //String matchStr = inputStr.substring(idx1, idx2);
+
+						   strBuff.append(replacementStr);
+
+						   if (isXslNonMatchStringAvailable(inputStr, idx2)) {
+							   String nonMatchStr = null;
+							   if ((idx + 1) == size1) {
+								   nonMatchStr = inputStr.substring(idx2);
+							   }
+							   else {
+								   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
+								   nonMatchStr = inputStr.substring(idx2, matchInfoNext.getStartIdx());   
+							   }
+
+							   if ((nonMatchStr != null) && (nonMatchStr.length() > 0)) {
+								   strBuff.append(nonMatchStr);
+							   }
+						   }        		
+					   }	
+				   }
+				   else if (startIdx1 > 0) {
+					   // An input string's prefix has not been matched by regex        			
+					   RegexMatchInfo pof1 = regexMatchInfoList.get(0);
+					   String nonMatchStr = inputStr.substring(0, pof1.getStartIdx());
+
+					   if ((nonMatchStr != null) && (nonMatchStr.length() > 0)) {
+						   strBuff.append(nonMatchStr);
+					   }
+
+					   for (int idx = 0; idx < size1; idx++) {
+						   RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
+						   int idx1 = matchInfo.getStartIdx();
+						   int idx2 = matchInfo.getEndIdx();
+
+						   strBuff.append(replacementStr);
+
+						   if (isXslNonMatchStringAvailable(inputStr, idx2)) {
+							   if ((idx + 1) == size1) {
+								   nonMatchStr = inputStr.substring(idx2);
+							   }
+							   else {
+								   RegexMatchInfo matchInfoNext = regexMatchInfoList.get(idx + 1);
+								   nonMatchStr = inputStr.substring(idx2, matchInfoNext.getStartIdx());   
+							   }
+
+							   if ((nonMatchStr != null) && (nonMatchStr.length() > 0)) {
+								   strBuff.append(nonMatchStr);
+							   }
+						   }        			
+					   }
+				   }
+
+				   String str1 = strBuff.toString();
+
+				   result = new XSString(str1);
+			   }
+			   else {
+				   result = new XSString(inputStr);
+			   }
+	       }
+		   else {
+			   String str1 = regexMatcher.replaceAll(replacementStr);
+			   
+			   result = new XSString(str1);
+		   }
+       	
 	   }
 	   catch (PatternSyntaxException ex) {
 		   throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
@@ -133,6 +226,41 @@ public class FuncReplace extends Function4Args {
 	   }
 
 	   return result;
+   }
+   
+   /**
+    * A class representing, a pair of string index values,
+    * for a substring that matched with the fn:replace 
+    * function's regex argument.
+    */
+   class RegexMatchInfo {    	
+	   
+	   private int startIdx;
+	   
+	   private int endIdx;
+
+	   /**
+	    * Class constructor.
+	    */
+	   public RegexMatchInfo() {
+		   // no op
+	   }
+
+	   public int getStartIdx() {
+		   return startIdx;
+	   }
+
+	   public void setStartIdx(int startIdx) {
+		   this.startIdx = startIdx;
+	   }
+
+	   public int getEndIdx() {
+		   return endIdx;
+	   }
+
+	   public void setEndIdx(int endIdx) {
+		   this.endIdx = endIdx;
+	   }
    }
 
   /**
@@ -158,6 +286,20 @@ public class FuncReplace extends Function4Args {
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
                                               XPATHErrorResources.ER_THREE_OR_FOUR, null)); //"3 or 4"
+  }
+  
+  private boolean isXslNonMatchStringAvailable(String inpStr, int idx) {
+
+	  boolean result = false;
+
+	  try {
+		  result = (inpStr.charAt(idx) != -1);
+	  }
+	  catch (IndexOutOfBoundsException ex) {
+		  // no op
+	  }
+
+	  return result;
   }
   
 }

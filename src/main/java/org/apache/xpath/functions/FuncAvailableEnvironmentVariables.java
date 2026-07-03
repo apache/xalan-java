@@ -45,7 +45,7 @@ public class FuncAvailableEnvironmentVariables extends Function {
 	 * Class constructor.
 	 */
 	public FuncAvailableEnvironmentVariables() {
-		m_defined_arity = new Short[] { 0 };
+		m_arity = new Short[] { 0 };
 	}
 	
 	/**

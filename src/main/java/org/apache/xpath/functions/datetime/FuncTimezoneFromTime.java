@@ -43,7 +43,7 @@ public class FuncTimezoneFromTime extends FunctionOneArg
    * Class constructor.
    */
   public FuncTimezoneFromTime() {
-  	 m_defined_arity = new Short[] { 1 };	
+  	 m_arity = new Short[] { 1 };	
   }
 
   /**

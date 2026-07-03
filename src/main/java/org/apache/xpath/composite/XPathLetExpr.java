@@ -139,25 +139,24 @@ public class XPathLetExpr extends Expression {
     			   }
     			   else {
     				   funcArity = xpathNamedFuncRef.getArity();
-    			   }
-
-    			   String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName; 
+    			   } 
 
     			   FunctionTable funcTable = xctxt.getFunctionTable();
 
-    			   Object funcIdObj = null;
-    			   if (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace)) {
-    				   funcIdObj = funcTable.getFunctionId(funcLocalName);
+    			   Object funcIdObj = null;    			   
+    			   
+    			   if ((funcNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace))) { 
+    				   funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
     			   }
-    			   else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
+    			   else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {    	       	   
     				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
     			   }
-    			   else if (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
+    			   else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace)) {    	       	   
     				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
     			   }
-    			   else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
+    			   else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {     	   
     				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
-    			   }
+    			   }    			   
 
     			   if (funcIdObj != null) {
     				   String funcIdStr = funcIdObj.toString();
@@ -166,10 +165,10 @@ public class XPathLetExpr extends Expression {
     				   function.setNamespace(funcNamespace);        		  
     				   if (function instanceof FuncConcat) {        		     
     					   FuncConcat funcConcat = (FuncConcat)function;
-    					   funcConcat.setActualArity(concatArity);
+    					   funcConcat.setRuntimeArgCount(concatArity);
     				   }
     				   else {
-    					   function.setDefinedArity(new Short[] { funcArity });
+    					   function.setArity(new Short[] { funcArity });
     				   }
 
     				   varBindingEvalResult = new XObject(function);
@@ -181,10 +180,12 @@ public class XPathLetExpr extends Expression {
     			   }
     			   else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
     				   XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
-    				   funcObj.setDefinedArity(new Short[] { funcArity });
+    				   funcObj.setArity(new Short[] { funcArity });
     				   varBindingEvalResult = new XObject(funcObj);        		  
     			   }
     			   else {
+    				   String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName;
+    				   
     				   throw new TransformerException("FODC0005 : Function definition for named function reference " + 
     						   																					     funcQualifiedName + " doesn't exist.", srcLocator);
     			   }

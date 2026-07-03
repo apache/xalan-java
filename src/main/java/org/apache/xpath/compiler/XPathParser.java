@@ -1428,46 +1428,43 @@ public class XPathParser
   final int getFunctionToken(String key, String nsUri)
   {
 
-    int tok;
-    
-    Object id;
+	  int tok;
 
-    try
-    {
-      // These are nodetests, xpathparser treats them as functions when parsing
-      // a FilterExpr. 
-      id = Keywords.lookupNodeTest(key);
-      if (id == null) {
-    	if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
-    	   // This check is there, to avoid XPath parse conflicts with map & array 
-    	   // functions with same local name as functions from namespace http://www.w3.org/2005/xpath-functions. 
-    	   id = m_functionTable.getFunctionIdForXPathBuiltinFuncs(key);
-    	}
-    	else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
-     	   id = m_functionTable.getFunctionIdForXPathBuiltinMathFuncs(key);
-     	}
-    	else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
-    	   id = m_functionTable.getFunctionIdForXPathBuiltinMapFuncs(key);
-    	}
-    	else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
-     	  id = m_functionTable.getFunctionIdForXPathBuiltinArrayFuncs(key);
-     	}
-    	else {
-    	  id = m_functionTable.getFunctionId(key);
-    	}
-      }
-      tok = ((Integer)id).intValue();
-    }
-    catch (NullPointerException npe)
-    {
-      tok = -1;
-    }
-    catch (ClassCastException cce)
-    {
-      tok = -1;
-    }
+	  Object id;
 
-    return tok;
+	  try
+	  {
+		  // These are nodetests, xpathparser treats them as functions when parsing
+		  // a FilterExpr. 
+		  id = Keywords.lookupNodeTest(key);
+
+		  if (id == null) {
+			  if ((nsUri == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri))) {
+				  id = m_functionTable.getFunctionIdForXSLBuiltinFuncs(key);
+			  }
+			  else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+				  id = m_functionTable.getFunctionIdForXPathBuiltinMathFuncs(key);
+			  }
+			  else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+				  id = m_functionTable.getFunctionIdForXPathBuiltinMapFuncs(key);
+			  }
+			  else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
+				  id = m_functionTable.getFunctionIdForXPathBuiltinArrayFuncs(key);
+			  }			  
+		  }
+
+		  tok = ((Integer)id).intValue();
+	  }
+	  catch (NullPointerException npe)
+	  {
+		  tok = -1;
+	  }
+	  catch (ClassCastException cce)
+	  {
+		  tok = -1;
+	  }
+
+	  return tok;
   }
 
   /**

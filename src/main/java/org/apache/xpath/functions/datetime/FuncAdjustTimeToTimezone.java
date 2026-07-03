@@ -44,7 +44,7 @@ public class FuncAdjustTimeToTimezone extends FunctionMultiArgs {
 	 * Class constructor.
 	 */
 	public FuncAdjustTimeToTimezone() {
-		m_defined_arity = new Short[] {1, 2}; 
+		m_arity = new Short[] {1, 2}; 
 	}
 	
 	/**

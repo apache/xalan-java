@@ -43,7 +43,7 @@ public class FuncImplicitTimezone extends Function {
 	 * Class constructor.
 	 */
 	public FuncImplicitTimezone() {
-		m_defined_arity = new Short[] { 0 };
+		m_arity = new Short[] { 0 };
 	}
 
 	/**

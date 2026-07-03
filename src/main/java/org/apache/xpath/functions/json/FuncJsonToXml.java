@@ -85,7 +85,7 @@ public class FuncJsonToXml extends JsonFunction
        OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
        OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.VALIDATE);
        
-       m_defined_arity = new Short[] { 1, 2 };
+       m_arity = new Short[] { 1, 2 };
     }
 
     /**

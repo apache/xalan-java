@@ -44,7 +44,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Evaluate the Doc() function.
+ * Implementation of an XSLT 3.0 function fn:document.
  *
  * When the document function has exactly one argument and the argument
  * is a node-set, then the result is the union, for each node in the
@@ -60,7 +60,14 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncDocument extends Function2Args
 {
-    static final long serialVersionUID = 2483304325971281424L;
+  static final long serialVersionUID = 2483304325971281424L;
+  
+  /**
+   * Class constructor.
+   */
+  public FuncDocument() {
+	  m_arity = new Short[] { 1, 2 };
+  }
 
   /**
    * Evaluate the function. The function must return

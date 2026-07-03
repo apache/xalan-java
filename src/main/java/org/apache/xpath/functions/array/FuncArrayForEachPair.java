@@ -48,7 +48,7 @@ public class FuncArrayForEachPair extends Function3Args {
 	 * Class constructor.
 	 */
 	public FuncArrayForEachPair() {
-		m_defined_arity = new Short[] { 3 };
+		m_arity = new Short[] { 3 };
 	}
 
 	/**

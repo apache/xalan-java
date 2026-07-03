@@ -37,7 +37,7 @@ public class FuncArrayFlatten extends FunctionOneArg {
 	 * Class constructor.
 	 */
 	public FuncArrayFlatten() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**

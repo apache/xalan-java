@@ -46,7 +46,7 @@ public class FuncSubstring extends Function3Args
 	* Class constructor.
 	*/
    public FuncSubstring() {
-	   m_defined_arity = new Short[] { 2, 3 };
+	   m_arity = new Short[] { 2, 3 };
    }
 
    /**

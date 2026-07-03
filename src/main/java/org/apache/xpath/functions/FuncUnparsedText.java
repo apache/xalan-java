@@ -49,7 +49,7 @@ public class FuncUnparsedText extends Function2Args {
    * Class constructor.
    */
   public FuncUnparsedText() {
-	  m_defined_arity = new Short[] { 1, 2 };  
+	  m_arity = new Short[] { 1, 2 };  
   }
 
   /**

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-28T05:06:16Z" fail="3" name="array-for-each" pass="4" run="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:16Z" fail="0" name="array-for-each" pass="7" run="7" statusUnknown="0">
    <testResult status="pass" testName="array-for-each-001"/>
    <testResult status="pass" testName="array-for-each-002"/>
    <testResult status="pass" testName="array-for-each-003"/>
    <testResult status="pass" testName="array-for-each-006"/>
-   <testResult status="fail" testName="array-for-each-007"/>
-   <testResult status="fail" testName="array-for-each-008"/>
-   <testResult status="fail" testName="array-for-each-009"/>
+   <testResult status="pass" testName="array-for-each-007"/>
+   <testResult status="pass" testName="array-for-each-008"/>
+   <testResult status="pass" testName="array-for-each-009"/>
 </testrun>

@@ -40,6 +40,13 @@ public class FuncCurrentGroup extends Function
 {
 
    private static final long serialVersionUID = -9147780878956514961L;
+   
+   /**
+    * Class constructor.
+    */
+   public FuncCurrentGroup() {
+	   m_arity = new Short[] { 0 };
+   }
 
    /**
      * Evaluate the function. The function must return a valid object.

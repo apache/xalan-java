@@ -38,7 +38,7 @@ public class FuncArrayHead extends FunctionOneArg {
 	 * Class constructor.
 	 */
 	public FuncArrayHead() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**

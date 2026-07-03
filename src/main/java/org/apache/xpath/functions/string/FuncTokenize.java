@@ -55,7 +55,7 @@ public class FuncTokenize extends Function3Args {
    * Class constructor.
    */
   public FuncTokenize() {
-	  m_defined_arity = new Short[] { 1, 2, 3 };
+	  m_arity = new Short[] { 1, 2, 3 };
   }
 
   /**

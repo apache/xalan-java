@@ -47,7 +47,7 @@ public class FuncPosition extends Function
 	 * Class constructor.
 	 */
 	public FuncPosition() {
-		m_defined_arity = new Short[] { 0 };
+		m_arity = new Short[] { 0 };
 	}
 
 	/**

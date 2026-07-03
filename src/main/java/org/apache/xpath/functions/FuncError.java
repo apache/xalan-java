@@ -44,7 +44,7 @@ public class FuncError extends FunctionMultiArgs
      * Default constructor.
      */
     public FuncError() {
-    	m_defined_arity = new Short[] { 0, 1, 2, 3 };	
+    	m_arity = new Short[] { 0, 1, 2, 3 };	
     }
 
     /**

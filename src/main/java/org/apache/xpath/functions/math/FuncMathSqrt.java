@@ -49,7 +49,7 @@ public class FuncMathSqrt extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathSqrt() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class FuncParseXml extends FunctionOneArg {
      * Class constructor.
      */
     public FuncParseXml() {
- 	   m_defined_arity = new Short[] { 1 };
+ 	   m_arity = new Short[] { 1 };
     }
 
     /**

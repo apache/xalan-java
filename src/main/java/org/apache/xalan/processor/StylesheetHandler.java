@@ -128,12 +128,12 @@ public class StylesheetHandler extends DefaultHandler
   public StylesheetHandler(XSL3TransformerFactoryImpl processor)
           throws TransformerConfigurationException
   {
-    Class func = org.apache.xalan.templates.FuncDocument.class;
+    /*Class func = org.apache.xalan.templates.FuncDocument.class;
     m_funcTable.installFunction("document", func);
 
     func = org.apache.xalan.templates.FuncFormatNumber.class;
 
-    m_funcTable.installFunction("format-number", func);
+    m_funcTable.installFunction("format-number", func);*/
 
     m_optimize =((Boolean) processor.getAttribute(
             XSL3TransformerFactoryImpl.FEATURE_OPTIMIZE)).booleanValue();

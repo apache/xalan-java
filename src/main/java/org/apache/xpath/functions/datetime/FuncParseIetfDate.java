@@ -48,7 +48,7 @@ public class FuncParseIetfDate extends FunctionOneArg {
 	 * Class constructor.
 	 */
 	public FuncParseIetfDate() {
-		m_defined_arity = new Short[] { 1 };	
+		m_arity = new Short[] { 1 };	
 	}
 	
 	/**

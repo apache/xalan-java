@@ -49,7 +49,7 @@ public class FuncDistinctValues extends FunctionMultiArgs {
     * Default constructor.
     */
    public FuncDistinctValues() {
- 	  m_defined_arity = new Short[] { 1, 2 }; 
+ 	  m_arity = new Short[] { 1, 2 }; 
    }
 
    /**
@@ -106,15 +106,18 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 
 			   if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
 				   XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntyped, true, collationUri, xpathCollationSupport);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntyped, true, collationUri, 
+						                                                xpathCollationSupport, xctxt);
 			   }
 			   else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
 				   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, 
+						                                                collationUri, xpathCollationSupport, xctxt);
 			   }
 			   else {
 				   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, 
+						                                                collationUri, xpathCollationSupport, xctxt);
 			   }
 		   }
 	   }
@@ -125,10 +128,12 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 			   XObject xObj = inpResultSeq.item(idx);
 			   if (xObj instanceof XSAnyType) {
 				   XSAnyType xsAnyType = (XSAnyType)xObj;
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, true, collationUri, xpathCollationSupport);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, true, 
+						                                                collationUri, xpathCollationSupport, xctxt);
 			   }
 			   else {
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xObj, true, collationUri, xpathCollationSupport);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xObj, true, 
+						                                                collationUri, xpathCollationSupport, xctxt);
 			   }
 		   }
 	   }
@@ -137,12 +142,13 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 		   // xdm singleton item.            
 		   if (arg0Obj instanceof XSAnyType) {
 			   XSAnyType xsAnyType = (XSAnyType)arg0Obj;
-			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, false, collationUri, xpathCollationSupport);
+			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, false, 
+					                                                collationUri, xpathCollationSupport, xctxt);
 		   }
 		   else {
 			   String seqItemStrValue = arg0Obj.str();
-			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, new XString(seqItemStrValue), false, collationUri, 
-					                                                                                                          xpathCollationSupport);
+			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, new XString(seqItemStrValue), 
+					                                                false, collationUri, xpathCollationSupport, xctxt);
 		   }
 	   }
 

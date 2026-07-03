@@ -51,7 +51,7 @@ public class FuncMathPow extends Function2Args {
 	 * Class constructor.
 	 */
 	public FuncMathPow() {
-		m_defined_arity = new Short[] { 2 };
+		m_arity = new Short[] { 2 };
 	}
     
 	/**

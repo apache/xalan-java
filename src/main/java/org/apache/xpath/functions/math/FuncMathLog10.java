@@ -49,7 +49,7 @@ public class FuncMathLog10 extends FunctionOneArg
 	 * Class constructor.
 	 */
 	public FuncMathLog10() {
-		m_defined_arity = new Short[] { 1 };
+		m_arity = new Short[] { 1 };
 	}
 
 	/**
