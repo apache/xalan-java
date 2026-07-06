@@ -15,16 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 
 /**
- * Holds the attribute declarations for the xsl:keys element.
+ * Holds the attribute declarations for an xsl:key element.
  * A stylesheet declares a set of keys for each document using
  * the xsl:key element. When this set of keys contains a member
  * with node x, name y and value z, we say that node x has a key
@@ -34,38 +32,38 @@ import org.apache.xpath.XPath;
  */
 public class KeyDeclaration extends ElemTemplateElement
 {
-    static final long serialVersionUID = 7724030248631137918L;
+	static final long serialVersionUID = 7724030248631137918L;
 
-  /**
-   * Constructs a new element representing the xsl:key.  The parameters
-   * are needed to prioritize this key element as part of the recomposing
-   * process.  For this element, they are not automatically created
-   * because the element is never added on to the stylesheet parent.
-   */
-  public KeyDeclaration(Stylesheet parentNode, int docOrderNumber)
-  {
-    m_parentNode = parentNode;
-    setUid(docOrderNumber);
-  }
+	/**
+	 * Constructs a new element representing the xsl:key.  The parameters
+	 * are needed to prioritize this key element as part of the recomposing
+	 * process.  For this element, they are not automatically created
+	 * because the element is never added on to the stylesheet parent.
+	 */
+	public KeyDeclaration(Stylesheet parentNode, int docOrderNumber)
+	{
+		m_parentNode = parentNode;
+		setUid(docOrderNumber);
+	}
 
-  /**
-   * The "name" property.
-   * 
-   */
-  private QName m_name;
+	/**
+	 * The "name" property.
+	 * 
+	 */
+	private QName m_name;
 
-  /**
-   * Set the "name" attribute.
-   * The name attribute specifies the name of the key. The value
-   * of the name attribute is a QName, which is expanded as
-   * described in [2.4 Qualified Names].
-   *
-   * @param name Value to set for the "name" attribute.
-   */
-  public void setName(QName name)
-  {
-    m_name = name;
-  }
+	/**
+	 * Set the "name" attribute.
+	 * The name attribute specifies the name of the key. The value
+	 * of the name attribute is a QName, which is expanded as
+	 * described in [2.4 Qualified Names].
+	 *
+	 * @param name Value to set for the "name" attribute.
+	 */
+	public void setName(QName name)
+	{
+		m_name = name;
+	}
 
   /**
    * Get the "name" attribute.
@@ -77,9 +75,9 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public QName getName()
   {
-    return m_name;
+	  return m_name;
   }
-  
+
   /**
    * Return the node name.
    *
@@ -87,13 +85,11 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_KEY_STRING;
+	  return Constants.ELEMNAME_KEY_STRING;
   }
 
-
   /**
-   * The "match" attribute.
-   * 
+   * The "match" attribute. 
    */
   private XPath m_matchPattern = null;
 
@@ -108,7 +104,7 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public void setMatch(XPath v)
   {
-    m_matchPattern = v;
+	  m_matchPattern = v;
   }
 
   /**
@@ -122,12 +118,11 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public XPath getMatch()
   {
-    return m_matchPattern;
+	  return m_matchPattern;
   }
 
   /**
-   * The "use" attribute.
-   * 
+   * The "use" attribute. 
    */
   private XPath m_use;
 
@@ -141,7 +136,7 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public void setUse(XPath v)
   {
-    m_use = v;
+	  m_use = v;
   }
 
   /**
@@ -154,7 +149,116 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public XPath getUse()
   {
-    return m_use;
+	  return m_use;
+  }
+  
+  /**
+   * An attribute 'composite''s boolean value.
+   */
+  private boolean m_composite;
+  
+  /**
+   * Set the "composite" attribute.
+   */
+  public void setComposite(boolean composite) {
+	  this.m_composite = composite;
+  }
+  
+  /**
+   * Get the "composite" attribute.
+   */
+  public boolean getComposite() {
+	  return m_composite;
+  }
+  
+  /**
+   * The "collation" attribute value.
+   */
+  private AVT m_collationUri = null;
+  
+  /**
+   * Set the "collation" attribute.
+   *
+   * @param collation   String value for the "collation" attribute.
+   */
+  public void setCollation(AVT collationUri)
+  {
+	  m_collationUri = collationUri;   
+  }
+  
+  /**
+   * Get the "collation" attribute.
+   *
+   * @return   String value of the "collation" attribute.
+   */
+  public AVT getCollation()
+  {
+      return m_collationUri;
+  }
+  
+  /**
+   * Class field, that represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Class field, that represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+  
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:key instruction.
+   */
+  private boolean m_expand_text_declared;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	  m_expand_text = v;
+	  m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	  return m_expand_text;
+  }
+  
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
+  public boolean getExpandTextDeclared() {
+	  return m_expand_text_declared;
+  }
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	  m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	  return m_xpath_default_namespace;
   }
   
   /**
@@ -165,7 +269,7 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_KEY;
+	  return Constants.ELEMNAME_KEY;
   }
   
   /**
@@ -177,12 +281,12 @@ public class KeyDeclaration extends ElemTemplateElement
   public void compose(StylesheetRoot sroot) 
     throws javax.xml.transform.TransformerException
   {
-    super.compose(sroot);
-    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
-    if (null != m_matchPattern)
-      m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
-    if (null != m_use)
-      m_use.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+	  super.compose(sroot);
+	  java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+	  if (null != m_matchPattern)
+		  m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+	  if (null != m_use)
+		  m_use.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
   }
 
   /**
@@ -192,7 +296,44 @@ public class KeyDeclaration extends ElemTemplateElement
    */
   public void recompose(StylesheetRoot root)
   {
-    root.recomposeKeys(this);
+	  root.recomposeKeys(this);
+  }
+  
+  /**
+   * Add a child to the child list.
+   *
+   * @param newChild Child to add to child list
+   *
+   * @return Child just added to child list
+   */
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
+  {        
+	 ElemTemplateElement elemTemplateElement = null;
+	  
+	 
+	 if (m_use == null) {
+		 elemTemplateElement = super.appendChild(newChild);		 		 
+	 }
+	 else {
+		 String lineNo = String.valueOf(newChild.getLineNumber());
+		 String columnNo = String.valueOf(newChild.getColumnNumber());
+
+		 error(XSLTErrorResources.ER_KEY_CANNOT_ADD,
+												    new Object[]{ newChild.getNodeName(),
+														 this.getNodeName(), lineNo, columnNo });
+	 }
+	 
+	 return elemTemplateElement;	
+  }
+  
+  /**
+   * Call the children visitors.
+   * 
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
+  {      	    
+     super.callChildVisitors(visitor, callAttributes);
   }
 
 }

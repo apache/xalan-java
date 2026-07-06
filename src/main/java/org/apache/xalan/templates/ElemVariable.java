@@ -1006,7 +1006,7 @@ public class ElemVariable extends ElemTemplateElement
     			      			  
     			  var = null;
     			  
-    			  // We'll again evaluate variable's value, and check it with 
+    			  // We'll again evaluate variable's value, and check that with 
     			  // the type if applicable, further below within this method.
     		  }
     	  }

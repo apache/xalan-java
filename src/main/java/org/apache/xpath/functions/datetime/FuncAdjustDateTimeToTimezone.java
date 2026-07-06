@@ -134,7 +134,7 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 			
 			String timeZoneStrValue = null;
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
-			   timeZoneStrValue = "00:00";
+			   timeZoneStrValue = "Z";
 			}
 			else {
 			   String hrs1 = (timeZoneHours < 10) ? ("0" + timeZoneHours) : (timeZoneHours + "");
@@ -178,8 +178,8 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 			int timeZoneMins = arg0XsTimezone.minutes();						
 			
 			String timeZoneStrValue = null;
-			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
-			   timeZoneStrValue = "00:00";			   			     
+			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {			   			     
+			   timeZoneStrValue = "Z";
 			}
 			else {
 			   String hrs1 = (timeZoneHours < 10) ? ("0" + timeZoneHours) : (timeZoneHours + "");
@@ -202,17 +202,18 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 
 			String timeZoneStrValue2 = null;			
 			if ((hrs2 == 0) && (mins2 == 0)) {
-				timeZoneStrValue2 = "00:00";			   			     
+				timeZoneStrValue2 = "Z";			   			     
 			}
 			else {
 				String hrsA = (hrs2 < 10) ? ("0" + hrs2) : (hrs2 + "");
 				String minsA = (mins2 < 10) ? ("0" + mins2) : (mins2 + "");
 
 				timeZoneStrValue2 = (hrsA + ":" + minsA);
-			}
+				
+				boolean isTimeZoneNegative2 = arg1Timezone.negative();
+				timeZoneStrValue2 = isTimeZoneNegative2 ? ("-" + timeZoneStrValue2) : ("+" + timeZoneStrValue2);
+			}						
 			
-			boolean isTimeZoneNegative2 = arg1Timezone.negative();
-			timeZoneStrValue2 = isTimeZoneNegative2 ? ("-" + timeZoneStrValue2) : ("+" + timeZoneStrValue2);
 			ZoneOffset zoneOffset2 = ZoneOffset.of(timeZoneStrValue2);
 			
 			OffsetDateTime offsetDateTimeResult = offsetDateTime.withOffsetSameInstant(zoneOffset2);

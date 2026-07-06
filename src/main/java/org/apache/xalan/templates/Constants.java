@@ -493,6 +493,9 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String ANONYMOUS_FUNCTION = "anonymous_func";
   
+  // An XPath 3.1 expression string representing UTC timezone
+  public static final String XS_DAYTIME_DURATION_UTC = "xs:dayTimeDuration('PT0H')";
+  
   public static final String ATTRVAL_TEXT_ONLY_COPY = "text-only-copy".intern(); 
   public static final String ATTRVAL_DEEP_COPY = "deep-copy".intern();
   public static final String ATTRVAL_SHALLOW_COPY = "shallow-copy".intern();

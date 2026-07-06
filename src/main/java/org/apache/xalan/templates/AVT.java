@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.util.StringTokenizer;
@@ -39,7 +36,7 @@ import org.apache.xpath.XPathContext;
  */
 public class AVT implements java.io.Serializable, XSLTVisitable
 {
-    static final long serialVersionUID = 5167607155517042691L;
+  static final long serialVersionUID = 5167607155517042691L;
   
   /**
     *We are not going to use the object pool if USE_OBJECT_POOL == false.
@@ -66,8 +63,6 @@ public class AVT implements java.io.Serializable, XSLTVisitable
    */
   private Vector m_parts = null;
   
-   
-
   /**
    * The name of the attribute.
    * 

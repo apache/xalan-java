@@ -814,14 +814,28 @@ public class ElemValueOf extends ElemTemplateElement {
                            if (func != null) {
                         	  // Evaluate an XPath expression like /a/b/funcCall(..).
                         	  // Find one result item for a sequence of items.
-                              XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
-                              resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);                               
+                        	   try {
+                        		   xctxt.pushCurrentNode(nextNode);
+                        		   XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+                        		   
+                        		   resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);
+                        	   }
+                        	   finally {
+                        		   xctxt.popCurrentNode();
+                        	   }                        	                                                                
                            }
                            else if (dfc != null) {
                         	   // Evaluate an XPath expression like /a/b/$funcCall(..).
                         	   // Find one result item for a sequence of items.
-                               XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
-                               resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);                               
+                               try {
+                            	  xctxt.pushCurrentNode(nextNode);
+                        	      XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
+                        	      
+                                  resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);
+                               }
+                               finally {
+                            	   xctxt.popCurrentNode(); 
+                               }
                            }
                            else {
                               resultStr = xdmNodeObj.str();

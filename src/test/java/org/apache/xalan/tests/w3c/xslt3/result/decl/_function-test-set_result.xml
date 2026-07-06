@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:16Z" fail="25" name="function" pass="62" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:51Z" fail="24" name="function" pass="63" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -53,17 +53,15 @@
    <testResult status="fail" testName="function-1007"/>
    <testResult status="fail" testName="function-1009"/>
    <testResult status="fail" testName="function-1011">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out result=""/&gt;</outResult>
+      <outResult>
+         <errTrace>FORG0006 : The string value 'INFXSL_SEQ_DOUBLE XSL_SEQ_DOUBLE100' cannot be cast to schema type double.</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="function-1012"/>
    <testResult status="fail" testName="function-1013"/>
    <testResult reason="Xalan configured" status="skipped" testName="function-1014"/>
    <testResult status="pass" testName="function-1015"/>
-   <testResult status="fail" testName="function-1016">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: XTSE0770 : Found more than one XSL stylesheet function named: x:test with arity 1</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1016"/>
    <testResult status="fail" testName="function-1017">
       <outResult>
          <errTrace>Unknown error in XPath.</errTrace>
@@ -79,7 +77,10 @@
    </testResult>
    <testResult status="fail" testName="function-1022">
       <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>Unknown error in XPath.</errTrace>
       </outResult>
    </testResult>
    <testResult status="skipped" testName="function-1023" xsltVersion="XSLT 2.0/1.0 only test case"/>
@@ -132,10 +133,7 @@ java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was exp
    <testResult status="pass" testName="function-2001"/>
    <testResult status="skipped" testName="function-2002" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="fail" testName="function-2101">
-      <outResult>
-         <errTrace>XTSE0010 : t:function requires attribute: name</errTrace>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:function must have a name attribute.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="function-2102">
       <outResult>

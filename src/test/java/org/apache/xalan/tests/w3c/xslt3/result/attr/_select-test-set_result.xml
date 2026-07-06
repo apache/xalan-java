@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:49Z" fail="24" name="select" pass="108" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:20Z" fail="22" name="select" pass="110" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -19,20 +19,13 @@
    <testResult status="pass" testName="select-1202"/>
    <testResult status="pass" testName="select-1301"/>
    <testResult status="fail" testName="select-1302">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression comment () has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="select-1401"/>
    <testResult status="pass" testName="select-1402"/>
    <testResult status="pass" testName="select-1501"/>
    <testResult status="fail" testName="select-1502">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="select-1503"/>
    <testResult status="pass" testName="select-1504"/>
@@ -57,28 +50,20 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult status="pass" testName="select-2002"/>
    <testResult status="fail" testName="select-2003"/>
    <testResult status="fail" testName="select-2004">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult reason="Xalan configured" status="skipped" testName="select-2005"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2006"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2007"/>
-   <testResult status="fail" testName="select-2008"/>
-   <testResult status="fail" testName="select-2009"/>
+   <testResult status="pass" testName="select-2008"/>
+   <testResult status="pass" testName="select-2009"/>
    <testResult status="fail" testName="select-2010"/>
    <testResult status="pass" testName="select-2011"/>
    <testResult status="pass" testName="select-2012"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2013"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2014"/>
    <testResult status="fail" testName="select-2015">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="select-2016"/>
    <testResult status="pass" testName="select-2017"/>
@@ -101,11 +86,7 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult reason="Xalan configured" status="skipped" testName="select-2034"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2035"/>
    <testResult status="fail" testName="select-2036">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}attribute()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="select-2037"/>
    <testResult status="fail" testName="select-2038"/>

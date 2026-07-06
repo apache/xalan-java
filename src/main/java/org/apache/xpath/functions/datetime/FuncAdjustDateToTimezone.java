@@ -139,7 +139,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			
 			String timeZoneStrValue = null;
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
-			   timeZoneStrValue = "00:00";
+			   timeZoneStrValue = "Z";
 			}
 			else {
 			   String hrs1 = (timeZoneHours < 10) ? ("0" + timeZoneHours) : (timeZoneHours + "");
@@ -181,7 +181,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			
 			String timeZoneStrValue = null;
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
-			   timeZoneStrValue = "00:00";			   			     
+			   timeZoneStrValue = "Z";			   			     
 			}
 			else {
 			   String hrs1 = (timeZoneHours < 10) ? ("0" + timeZoneHours) : (timeZoneHours + "");
@@ -230,7 +230,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			
 			timeZoneStrValue = null;
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
-			   timeZoneStrValue = "00:00";			   			     
+			   timeZoneStrValue = "Z";			   			     
 			}
 			else {
 			   String hrs1 = (timeZoneHours < 10) ? ("0" + timeZoneHours) : (timeZoneHours + "");

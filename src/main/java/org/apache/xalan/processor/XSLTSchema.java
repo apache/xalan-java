@@ -289,7 +289,7 @@ public class XSLTSchema extends XSLTElementDef
 
 		// xsl:key                                 
 		XSLTAttributeDef useAttr = new XSLTAttributeDef(null, "use",
-				XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
+				XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
 		// xsl:global-context-item
 		XSLTAttributeDef useAttrOpt = new XSLTAttributeDef(null, "use",
@@ -371,11 +371,12 @@ public class XSLTSchema extends XSLTElementDef
 				XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
 		// Optional
-		// xsl:for-each-group
+		// xsl:for-each-group, xsl:key
 		XSLTAttributeDef compositeAttrOpt = new XSLTAttributeDef(null, "composite",
 				XSLTAttributeDef.T_YESNO, false, false, XSLTAttributeDef.ERROR);
+		
 		// Optional
-		// xsl:for-each-group, xsl:sort 
+		// xsl:for-each-group, xsl:sort, xsl:key 
 		XSLTAttributeDef collationAttrOpt = new XSLTAttributeDef(null, "collation", 
 				XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
 
@@ -1375,10 +1376,12 @@ public class XSLTSchema extends XSLTElementDef
 								Constants.S_XSLNAMESPACEURL,
 								"key",
 								null /*alias */,
-								null /* elements */,  // EMPTY
+								templateElements,
 								new XSLTAttributeDef[] { nameAttrRequired,
 										matchAttrRequired,
-										useAttr }, 
+										useAttr, compositeAttrOpt, 
+										collationAttrOpt, xpathDefaultNamespaceAttrOpt, 
+										expandTextAttrOpt }, 
 								new ProcessorKey(), null /* class object */, 20, true),
 						new XSLTElementDef(
 								this,

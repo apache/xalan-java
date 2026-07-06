@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:19Z" fail="13" name="character-map" pass="14" run="28" skipped="1" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:56Z" fail="12" name="character-map" pass="15" run="28" skipped="1" statusUnknown="1">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
@@ -26,11 +26,7 @@
    <testResult status="fail" testName="character-map-021">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;doc&gt;&lt;a value="ab{C}de"&gt;vwx{Y}z&lt;/a&gt;&lt;/doc&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="character-map-022">
-      <outResult>
-         <errTrace>XTSE1580 : An XSL stylesheet contains more than one xsl:character-map instruction with name 'map02'.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="character-map-022"/>
    <testResult status="fail" testName="character-map-023"/>
    <testResult status="fail" testName="character-map-024"/>
    <testResult testName="character-map-025"/>

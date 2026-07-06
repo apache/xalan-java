@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-07-03T17:11:31Z" desc="W3C XPath 3.1 test suite results" fail="1606" pass="7230" run="8840" skipped="17" success="81.79%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-07-06T10:49:37Z" desc="W3C XPath 3.1 test suite results" fail="1595" pass="7241" run="8840" skipped="17" success="81.91%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="6" run="6" success="100.0%"/>
     <array-filter fail="0" pass="10" run="10" success="100.0%"/>
@@ -9,9 +9,9 @@
   </array>
   <fn>
     <fn-abs fail="3" pass="179" run="182" success="98.35%"/>
-    <fn-adjust-date-to-timezone fail="12" pass="29" run="41" success="70.73%"/>
-    <fn-adjust-dateTime-to-timezone fail="11" pass="37" run="48" success="77.08%"/>
-    <fn-adjust-time-to-timezone fail="10" pass="32" run="42" success="76.19%"/>
+    <fn-adjust-date-to-timezone fail="9" pass="32" run="41" success="78.05%"/>
+    <fn-adjust-dateTime-to-timezone fail="8" pass="40" run="48" success="83.33%"/>
+    <fn-adjust-time-to-timezone fail="6" pass="36" run="42" success="85.71%"/>
     <fn-analyze-string fail="8" pass="14" run="26" skipped="4" success="53.85%"/>
     <fn-boolean fail="8" pass="130" run="138" success="94.2%"/>
     <fn-ceiling fail="5" pass="78" run="83" success="93.98%"/>
@@ -39,7 +39,7 @@
     <fn-head fail="3" pass="5" run="8" success="62.5%"/>
     <fn-hours-from-dateTime fail="3" pass="24" run="27" success="88.89%"/>
     <fn-hours-from-duration fail="4" pass="27" run="31" success="87.1%"/>
-    <fn-hours-from-time fail="4" pass="23" run="27" success="85.19%"/>
+    <fn-hours-from-time fail="3" pass="24" run="27" success="88.89%"/>
     <fn-implicit-timezone fail="5" pass="21" run="26" success="80.77%"/>
     <fn-in-scope-prefixes fail="0" pass="12" run="12" success="100.0%"/>
     <fn-index-of fail="13" pass="40" run="53" success="75.47%"/>

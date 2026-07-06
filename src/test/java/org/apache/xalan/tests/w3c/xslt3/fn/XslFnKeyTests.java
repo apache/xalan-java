@@ -37,13 +37,6 @@ public class XslFnKeyTests extends W3CXslTransformTestsUtil {
     	m_resultSubFolderName = "fn";
     	
     	m_testResultFileName = "_key-test-set_result.xml";
-    	
-    	// Xalan-J has bugs with following, W3C XSLT 3.0 test cases.
-    	// Skipping these XSL test cases for now.
-    	
-    	m_skipped_tests_list.add("key-085a");
-    	m_skipped_tests_list.add("key-085b");
-    	m_skipped_tests_list.add("key-088");
     }
 
     @AfterClass

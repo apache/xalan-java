@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:44Z" fail="12" name="fn-adjust-date-to-timezone" pass="29" run="41" statusUnknown="0">
-   <testResult status="fail" testName="fn-adjust-date-to-timezone1args-1"/>
-   <testResult status="fail" testName="fn-adjust-date-to-timezone1args-2"/>
-   <testResult status="fail" testName="fn-adjust-date-to-timezone1args-3"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:44:57Z" fail="9" name="fn-adjust-date-to-timezone" pass="32" run="41" statusUnknown="0">
+   <testResult status="pass" testName="fn-adjust-date-to-timezone1args-1"/>
+   <testResult status="pass" testName="fn-adjust-date-to-timezone1args-2"/>
+   <testResult status="pass" testName="fn-adjust-date-to-timezone1args-3"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone-1"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone-2"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone-3"/>

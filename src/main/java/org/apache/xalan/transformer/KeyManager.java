@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.transformer;
 
 import java.util.Vector;
@@ -54,7 +51,7 @@ public class KeyManager
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XMLNodeCursorImpl getNodeSetDTMByKey(
+  public XMLNodeCursorImpl getNodeSetDtmByKey(
           XPathContext xctxt, int doc, QName name, XMLString ref, PrefixResolver nscontext)
             throws javax.xml.transform.TransformerException
   {

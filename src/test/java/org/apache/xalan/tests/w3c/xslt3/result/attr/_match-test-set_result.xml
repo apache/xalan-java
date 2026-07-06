@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:43Z" fail="72" name="match" pass="110" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:14Z" fail="71" name="match" pass="111" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -53,15 +53,10 @@
    <testResult status="pass" testName="match-048"/>
    <testResult status="pass" testName="match-049"/>
    <testResult status="fail" testName="match-050">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-051">
-      <outResult>
-         <errTrace>unknown match operation!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-052"/>
    <testResult status="pass" testName="match-053"/>
@@ -93,11 +88,7 @@
    </testResult>
    <testResult status="pass" testName="match-068"/>
    <testResult status="fail" testName="match-069">
-      <outResult>
-         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = namespace</errTrace>
-         <errTrace>unknown match operation!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-070"/>
    <testResult status="fail" testName="match-071"/>
@@ -168,12 +159,7 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    <testResult status="pass" testName="match-096"/>
    <testResult status="pass" testName="match-097"/>
    <testResult status="fail" testName="match-098">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-         <errTrace>Unknown nodetype: attribute</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="match-099"/>
    <testResult status="pass" testName="match-100"/>
@@ -189,15 +175,9 @@ java.lang.Exception: Line# : 50, Column# : 70 XPST0003: Expected ), but found: a
    <testResult status="pass" testName="match-102"/>
    <testResult status="pass" testName="match-103"/>
    <testResult status="pass" testName="match-104"/>
-   <testResult status="fail" testName="match-105">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="match-105"/>
    <testResult status="fail" testName="match-106">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-107">
       <outResult>
@@ -213,53 +193,25 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult status="pass" testName="match-110"/>
    <testResult status="pass" testName="match-111"/>
    <testResult status="fail" testName="match-112">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-113">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-114">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-115">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-116">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-117">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-118">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}element()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-119">
       <outResult>
@@ -439,11 +391,7 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult status="pass" testName="match-234"/>
    <testResult status="fail" testName="match-235"/>
    <testResult status="fail" testName="match-236">
-      <outResult>
-         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = descendant</errTrace>
-         <errTrace>unknown match operation!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-237"/>
    <testResult status="fail" testName="match-238"/>
@@ -459,10 +407,7 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult status="pass" testName="match-246a"/>
    <testResult status="pass" testName="match-246b"/>
    <testResult status="fail" testName="match-247">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression @* | node()  has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException: -1</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="match-248"/>
    <testResult status="pass" testName="match-249"/>
@@ -487,9 +432,7 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult feature="schema_aware" status="skipped" testName="match-262"/>
    <testResult feature="schema_aware" status="skipped" testName="match-263"/>
    <testResult status="fail" testName="match-264">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-265"/>
    <testResult status="fail" testName="match-266"/>
@@ -502,12 +445,7 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult status="fail" testName="match-273"/>
    <testResult status="pass" testName="match-274"/>
    <testResult status="fail" testName="match-275">
-      <outResult>
-         <errTrace>Only child:: and attribute:: axes are allowed in match patterns!  Offending axes = descendant</errTrace>
-         <errTrace>Extra illegal tokens: 'except', 'child', '::', 'a'</errTrace>
-         <errTrace>unknown match operation!</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-276">
       <outResult>
@@ -520,14 +458,10 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult status="pass" testName="match-278"/>
    <testResult status="pass" testName="match-279"/>
    <testResult status="fail" testName="match-280">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-281">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="match-282"/>
    <testResult status="pass" testName="match-283"/>

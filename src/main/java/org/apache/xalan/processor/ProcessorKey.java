@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import java.util.ArrayList;
@@ -25,7 +22,11 @@ import java.util.List;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.KeyDeclaration;
+import org.apache.xalan.templates.Stylesheet;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.xml.sax.Attributes;
 
 /**
@@ -43,7 +44,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorKey extends XSLTElementProcessor
 {
-    static final long serialVersionUID = 4285205417566822979L;
+   static final long serialVersionUID = 4285205417566822979L;
 
   /**
    * Receive notification of the start of an xsl:key element.
@@ -66,12 +67,35 @@ class ProcessorKey extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
-    KeyDeclaration kd = new KeyDeclaration(handler.getStylesheet(), handler.nextUid());
+	  KeyDeclaration kd = new KeyDeclaration(handler.getStylesheet(), handler.nextUid());
 
-    kd.setDOMBackPointer(handler.getOriginatingNode());
-    kd.setLocaterInfo(handler.getLocator());
-    setPropertiesFromAttributes(handler, rawName, attributes, kd);
-    handler.getStylesheet().setKey(kd);
+	  kd.setDOMBackPointer(handler.getOriginatingNode());
+	  kd.setLocaterInfo(handler.getLocator());
+	  setPropertiesFromAttributes(handler, rawName, attributes, kd);
+
+	  Stylesheet stylesheet = handler.getStylesheet();
+	  int xslKeyCount = stylesheet.getKeyCount();
+	  for (int idx = 0; idx < xslKeyCount; idx++) {
+		  KeyDeclaration keyDecl2 = stylesheet.getKey(idx);
+		  QName keyName = keyDecl2.getName();       
+		  if (keyName.equals(kd.getName())) {
+			  if (kd.getComposite() != keyDecl2.getComposite()) {
+				  SAXSourceLocator srcLocator = handler.getLocator();
+				  int lineNo = srcLocator.getLineNumber();
+				  int colNo = srcLocator.getColumnNumber();
+				  String errLocationStr = "[" + lineNo + ", " + colNo + "]";
+				  String keyNameStr = keyName.toString();    		  
+				  throw new org.xml.sax.SAXException("XTSE1222 : " + errLocationStr + " Within an XSL stylesheet, there are more "
+																											   + "than one key declarations with name '" 
+																											   + keyNameStr + "', whose attribute 'composite' "
+																											   + "value are not consistent.");   
+			  }
+		  }
+	  }
+
+	  appendAndPush(handler, kd);
+
+	  stylesheet.setKey(kd);
   }
 
   /**
@@ -107,18 +131,23 @@ class ProcessorKey extends XSLTElementProcessor
 
         // Then barf, because this element does not allow this attribute.
         handler.error(attributes.getQName(i)
-                      + "attribute is not allowed on the " + rawName
-                      + " element!", null);
+                      + "attribute is not allowed within an XML element " + rawName + ".", null);
       }
       else
       {
         String valueString = attributes.getValue(i);
+        
+        int colonIdx = valueString.indexOf(':');
+        boolean valueStrOk = false;
+        int idx2 = valueString.indexOf(org.apache.xpath.compiler.Keywords.FUNC_KEY_STRING + "(");
+        if ((colonIdx != -1) && (idx2 >= 0) && ((colonIdx + 1) == idx2)) {
+        	valueStrOk = true;
+        }
 
-        if (valueString.indexOf(org.apache.xpath.compiler.Keywords.FUNC_KEY_STRING
-                                + "(") >= 0)
-          handler.error(
-            XSLMessages.createMessage(
-            XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
+        if (!valueStrOk && (idx2 >= 0)) {
+		   handler.error(XSLMessages.createMessage(
+				                                  XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
+        }
 
         processedDefs.add(attrDef);
         attrDef.setAttrValue(handler, attrUri, attrLocalName,
@@ -152,5 +181,44 @@ class ProcessorKey extends XSLTElementProcessor
                                                                    attrDef.getName() }), null);
       }
     }
+  }
+  
+  /**
+   * Append the current template element to the current
+   * template element, and then push it onto the current template
+   * element stack.
+   *
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param elem non-null reference to a the current template element.
+   *
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
+   */
+  protected void appendAndPush(
+          StylesheetHandler handler, ElemTemplateElement elem)
+            throws org.xml.sax.SAXException
+  {
+	  
+	  ElemTemplateElement parent = handler.getElemTemplateElement();
+	  if (null != parent)
+	  {		  
+		  handler.pushElemTemplateElement(elem);
+	  }
+  }
+  
+  /**
+   * Receive notification of the end of an element.
+   *
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param localName The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   */
+  public void endElement(
+          StylesheetHandler handler, String uri, String localName, String rawName)
+            throws org.xml.sax.SAXException
+  {
+	  super.endElement(handler, uri, localName, rawName);
+	  handler.popElemTemplateElement().setEndLocaterInfo(handler.getLocator());
   }
 }
