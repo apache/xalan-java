@@ -1,27 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:46Z" fail="16" name="prod-InlineFunctionExpr" pass="10" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-08T15:11:37Z" fail="9" name="prod-InlineFunctionExpr" pass="17" run="26" statusUnknown="0">
    <testResult status="pass" testName="inline-fn-001"/>
    <testResult status="pass" testName="inline-fn-002"/>
    <testResult status="pass" testName="inline-fn-003"/>
    <testResult status="fail" testName="inline-fn-004"/>
-   <testResult status="fail" testName="inline-fn-005"/>
-   <testResult status="fail" testName="inline-fn-007"/>
+   <testResult status="pass" testName="inline-fn-005"/>
+   <testResult status="pass" testName="inline-fn-007"/>
    <testResult status="fail" testName="inline-fn-008"/>
    <testResult status="fail" testName="inline-fn-009"/>
    <testResult status="pass" testName="inline-fn-010"/>
-   <testResult status="fail" testName="inline-fn-011"/>
+   <testResult status="pass" testName="inline-fn-011"/>
    <testResult status="pass" testName="inline-fn-012"/>
-   <testResult status="fail" testName="inline-fn-012a"/>
+   <testResult status="pass" testName="inline-fn-012a"/>
    <testResult status="fail" testName="inline-fn-014"/>
    <testResult status="fail" testName="inline-fn-016"/>
-   <testResult status="fail" testName="inline-fn-021"/>
+   <testResult status="pass" testName="inline-fn-021"/>
    <testResult status="pass" testName="inline-fn-022"/>
    <testResult status="pass" testName="inline-fn-023"/>
    <testResult status="fail" testName="inline-fn-025"/>
    <testResult status="pass" testName="inline-fn-026"/>
    <testResult status="pass" testName="inline-fn-028"/>
-   <testResult status="fail" testName="inline-fn-029"/>
+   <testResult status="pass" testName="inline-fn-029"/>
    <testResult status="pass" testName="inline-fn-030"/>
-   <testResult status="fail" testName="inline-fn-031"/>
+   <testResult status="pass" testName="inline-fn-031"/>
    <testResult status="fail" testName="inline-fn-032"/>
    <testResult status="fail" testName="inline-fn-033"/>
    <testResult status="fail" testName="inline-fn-036"/>

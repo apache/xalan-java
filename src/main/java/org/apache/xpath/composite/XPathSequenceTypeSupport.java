@@ -1060,8 +1060,8 @@ public class XPathSequenceTypeSupport {
                    result = new XSString(srcStrVal);
                 }
                 else if (sequenceTypeKindTest != null) {
-                      result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                     "xs:anyURI", sequenceTypeXPathExprStr);
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                    "xs:anyURI", sequenceTypeXPathExprStr);
                 }
             }
             else if (srcValue instanceof XString) {
@@ -1122,18 +1122,20 @@ public class XPathSequenceTypeSupport {
                   result = castStringValueToAnExpectedType(srcStrVal, expectedType, sequenceTypeXPathExprStr);
                }
             }            
-            else if (srcValue instanceof XNumber) {
-               XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
-               String srcStrVal = xsDouble.stringValue(); 
-               
+            else if (srcValue instanceof XNumber) {                              
                if ((expectedType == XS_DOUBLE) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
-                  result = srcValue; 
-               }
+            	  result = srcValue; 
+               }               
                else if (sequenceTypeKindTest != null) {
+            	  XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
+            	  String srcStrVal = xsDouble.stringValue();
+            	  
                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
                                                                                                    "xs:double", sequenceTypeXPathExprStr);
                }
                else {
+            	  XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
+            	  
                   result = xpathNumericTypeConversionAndPromotion(xsDouble, expectedType, sequenceTypeXPathExprStr);
                }
             }

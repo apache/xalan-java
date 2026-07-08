@@ -119,7 +119,10 @@ public class FuncArrayFoldLeft extends Function3Args {
            }
               
            XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                              XPath.SELECT, null);              
+                                                                                              XPath.SELECT, null);
+           
+           verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
+           
            int size1 = foldLeftArr.size();
            
            for (int idx = 0; idx < size1; idx++) {

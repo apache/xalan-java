@@ -35,6 +35,7 @@ import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -113,7 +114,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  int size1 = resultSeq0.size();
 		  for (int idx = 0; idx < size1; idx++) {
 			 XObject xObj1 = resultSeq0.item(idx);
-			 if (xObj1 instanceof XPathNamedFunctionReference) {
+			 if ((xObj1 instanceof XPathInlineFunction) || (xObj1 instanceof XPathNamedFunctionReference)) {
 				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath 3.1 function call 'deep-equal' has an argument containing a function item.", srcLocator);   
 			 }
 		  }
@@ -123,7 +124,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  int size2 = resultSeq1.size();
 		  for (int idx = 0; idx < size2; idx++) {
 			 XObject xObj1 = resultSeq1.item(idx);
-			 if (xObj1 instanceof XPathNamedFunctionReference) {
+			 if ((xObj1 instanceof XPathInlineFunction) || (xObj1 instanceof XPathNamedFunctionReference)) {
 				 throw new javax.xml.transform.TransformerException("FOTY0015 : An XPath 3.1 function call 'deep-equal' has an argument containing a function item.", srcLocator);   
 			 }
 		  }

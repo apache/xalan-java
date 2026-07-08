@@ -32,6 +32,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSBoolean;
@@ -414,6 +415,22 @@ public class Equals extends Operation
 	  else if (((left instanceof XSNumericType) || (left instanceof XNumber)) && ((right instanceof XBooleanStatic) || (right instanceof XBoolean) || 
 			                                                                                                                           (right instanceof XSBoolean))) {
 		  throw new javax.xml.transform.TransformerException("XPTY0004 : Within an XPath expression, number cannot be compared to a boolean value."); 
+	  }	
+	  else if (left instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 map cannot be atomized. An xdm map is provided as "
+		  																															+ "operator '=' lhs operand.");
+	  }
+      else if (right instanceof XPathMap) {
+    	  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 map cannot be atomized. An xdm map is provided as "
+    	  																															+ "operator '=' rhs operand."); 
+	  }
+	  else if (isXPathOperandXdmFunctionItem(left)) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 function item cannot be atomized. An XPath function "
+		  		                                                                                                                    + "item is provided as operator '=' lhs operand.");
+	  }
+      else if (isXPathOperandXdmFunctionItem(right)) {
+    	  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 function item cannot be atomized. An XPath function "
+                                                                                                                                    + "item is provided as operator '=' rhs operand."); 
 	  }
 	  else {
 		  result = (left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
@@ -421,7 +438,7 @@ public class Equals extends Operation
 	  
 	  return result;
   }
-  
+
   /**
    * Execute a binary operation by calling execute on each of the operands,
    * and then calling the operate method on the derived class.

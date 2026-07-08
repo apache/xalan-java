@@ -42,14 +42,12 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathRelationalOp;
-import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
@@ -171,13 +169,13 @@ public class VcGt extends XPathRelationalOp
 																												  + "type which cannot be atomized.", this); 
 	  }
 	  
-	  if ((left instanceof XPathInlineFunction) || (left instanceof ElemFunctionItem)) {
+	  if (isXPathOperandXdmFunctionItem(left)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'gt', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", this); 
 	  }
 
-	  if ((right instanceof XPathInlineFunction) || (right instanceof ElemFunctionItem)) {
+	  if (isXPathOperandXdmFunctionItem(right)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'gt', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", this); 

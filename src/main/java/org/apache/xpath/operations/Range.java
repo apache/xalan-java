@@ -37,7 +37,7 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XPath 3.1 range "to" operator.
+ * Implementation of an XPath 3.1 range "to" operator.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -49,12 +49,13 @@ public class Range extends Operation
    private static final long serialVersionUID = 7722428363208837859L;
 
    /**
-   * Apply the operation to two operands, and return the result.
+   * Apply an XPath operation to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to an evaluated XPath left operand
+   * @param right non-null reference to an evaluated XPath right operand
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to the XObject that represents the 
+   *         result of an XPath operation.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -93,8 +94,9 @@ public class Range extends Operation
          rObj = m_right.execute(xctxt, true); 
       }
                   
-      BigInteger lBigInt = getBigIntValue(xctxt, lObj);
-      BigInteger rBigInt = getBigIntValue(xctxt, rObj);      
+      BigInteger lBigInt = getBigIntValue(lObj, xctxt);
+      
+      BigInteger rBigInt = getBigIntValue(rObj, xctxt);      
       
       if (rBigInt.compareTo(lBigInt) >= 0) {
     	  BigInteger maxIntValue = new BigInteger((Integer.valueOf(Integer.MAX_VALUE - 1)).toString());
@@ -121,32 +123,42 @@ public class Range extends Operation
       
       return result;      
     }
-
+    
     /**
-     * Given an XPath range 'to' operator's compiled 1st or 2nd operand, get an 
-     * operand's value as java.math.BigInteger object.
+     * Method definition, to get java.math.BigInteger object, corresponding to
+     * the supplied XObject object instance (which is, XPath range 'to' operator's
+     * compiled first, or second operand).  
+     * 
+     * @param xObj                          The supplied XObject object instance
+     * @param xctxt                         An XPath context object
+     * @return                              An java.math.BigInteger object instance
+     * @throws TransformerException
      */
-    private BigInteger getBigIntValue(XPathContext xctxt, XObject xpathToOperand) throws TransformerException {
+    private BigInteger getBigIntValue(XObject xObj, XPathContext xctxt) throws TransformerException {
     	
-    	BigInteger result = null;
+        BigInteger result = null;
     	
     	SourceLocator srcLocator = xctxt.getSAXLocator();
 
-    	if (xpathToOperand instanceof XSNumericType) {
-    		java.lang.String strVal = ((XSNumericType)xpathToOperand).stringValue();
+    	if (xObj instanceof XSNumericType) {
+    		java.lang.String strVal = ((XSNumericType)xObj).stringValue();
+    		
     		try {
      	       result = new BigInteger(strVal);
      	    }
      	    catch (NumberFormatException ex) {
      	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                                                                                + "operand value " + strVal + " is not an integer.", srcLocator);
+                                                                                                + "operand value " + strVal 
+                                                                                                + " is not an integer.", srcLocator);
      	    }
     	}
-    	else if (xpathToOperand instanceof XNumber) {
-    		double dbl = ((XNumber)xpathToOperand).num();
+    	else if (xObj instanceof XNumber) {
+    		double dbl = ((XNumber)xObj).num();
+    		
     		if (dbl > (long)dbl) {
     			throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                                                                                + "operand value " + dbl + " is not an integer.", srcLocator);  
+                                                                                                + "operand value " + dbl + " "
+                                                                                                + "is not an integer.", srcLocator);  
     		}
     		else {
     			result = BigInteger.valueOf((long)dbl); 
@@ -154,13 +166,15 @@ public class Range extends Operation
 
     	}
     	else {
-    		java.lang.String strVal = XslTransformEvaluationHelper.getStrVal(xpathToOperand);
+    		java.lang.String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
+    		
     	    try {
     	       result = new BigInteger(strVal);
     	    }
     	    catch (NumberFormatException ex) {
-    	    	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                        														+ "operand value " + strVal + " is not an integer.", srcLocator);
+    	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
+                        														                + "operand value " + strVal + " "
+                        														                + "is not an integer.", srcLocator);
     	    }
     	}    	
 

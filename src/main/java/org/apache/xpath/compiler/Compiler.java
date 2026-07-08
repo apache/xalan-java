@@ -253,6 +253,7 @@ public class Compiler extends OpMap
     case OpCodes.XPath3OpCodes.OP_ARROW :
       m_isFunctionCallPrecededByArrow = true;
       expr = arrowOp(opPos);
+      m_isFunctionCallPrecededByArrow = false;
       break;
     case OpCodes.OP_MINUS :
       expr = minus(opPos); break;
@@ -1526,7 +1527,6 @@ private static final boolean DEBUG = false;
 				  // This allows us to, permit the absence of XPath function's first 
 				  // argument. while evaluating an XPath 3.1 operator "=>".
 				  i++;
-				  m_isFunctionCallPrecededByArrow = false;
 			  }
 
 			  if (m_verify_func_arg_count) {
@@ -1771,8 +1771,9 @@ private static final boolean DEBUG = false;
 		 XPathArrayConsFuncArgs xpathArrayConsFuncArgs = XPathParser.m_xpathArrayConsFuncArgs;
 		 
 		 List<XPathArrayConstructor> arrayConsList = xpathArrayConsFuncArgs.getArrayFuncArgList();		 
-		 List<Boolean> funcArgUsedArr = xpathArrayConsFuncArgs.getIsFuncArgUsedArr();		 
-		 for (int idx = 0; idx < funcArgUsedArr.size(); idx++) {
+		 List<Boolean> funcArgUsedArr = xpathArrayConsFuncArgs.getIsFuncArgUsedArr();
+		 int size1 = funcArgUsedArr.size();		 
+		 for (int idx = 0; idx < size1; idx++) {
 			Boolean boolVal = funcArgUsedArr.get(idx);
 			if (!boolVal.booleanValue()) {
 			   xpathArrayCons = arrayConsList.get(idx);

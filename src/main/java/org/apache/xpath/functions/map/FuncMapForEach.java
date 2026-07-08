@@ -224,7 +224,10 @@ public class FuncMapForEach extends Function2Args {
         }
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
+        
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
+        
+        verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
 		
 		Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 		Set<Entry<XObject, XObject>> mapEntrySet = nativeMap.entrySet();

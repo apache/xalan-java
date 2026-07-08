@@ -134,6 +134,8 @@ public class FuncPeriod extends FunctionMultiArgs {
 					inlineFunctionVarMap.putAll(functionParamAndArgMap);
 
 					XPath inlineFnXPath = new XPath(xpathFuncBodyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					
+					verifyXPathInlineFuncContextItemAccess(inlineFnXPath.getExpression(), xpathFuncBodyStr, srcLocator);
 
 					result = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 

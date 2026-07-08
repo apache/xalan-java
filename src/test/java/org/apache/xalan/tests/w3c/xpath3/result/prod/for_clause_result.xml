@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:56Z" fail="19" name="prod-ForClause" pass="55" run="74" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-08T15:11:47Z" fail="16" name="prod-ForClause" pass="58" run="74" statusUnknown="0">
    <testResult status="pass" testName="ForExpr001"/>
    <testResult status="pass" testName="ForExpr007"/>
    <testResult status="pass" testName="ForExpr009"/>
@@ -42,13 +42,13 @@
    <testResult status="fail" testName="K-ForExprWithout-25"/>
    <testResult status="pass" testName="K-ForExprWithout-26"/>
    <testResult status="pass" testName="K-ForExprWithout-27"/>
-   <testResult status="fail" testName="K-ForExprWithout-28"/>
+   <testResult status="pass" testName="K-ForExprWithout-28"/>
    <testResult status="pass" testName="K-ForExprWithout-29"/>
    <testResult status="pass" testName="K-ForExprWithout-30"/>
-   <testResult status="fail" testName="K-ForExprWithout-31"/>
+   <testResult status="pass" testName="K-ForExprWithout-31"/>
    <testResult status="pass" testName="K-ForExprWithout-32"/>
    <testResult status="pass" testName="K-ForExprWithout-33"/>
-   <testResult status="fail" testName="K-ForExprWithout-34"/>
+   <testResult status="pass" testName="K-ForExprWithout-34"/>
    <testResult status="pass" testName="K-ForExprWithout-35"/>
    <testResult status="pass" testName="K-ForExprWithout-36"/>
    <testResult status="pass" testName="K-ForExprWithout-37"/>

@@ -166,13 +166,13 @@ public class VcEquals extends XPathRelationalOp
 																												  + "type which cannot be atomized.", this); 
 	  }
 	  
-	  if ((left instanceof XPathInlineFunction) || (left instanceof ElemFunctionItem)) {
+	  if (isXPathOperandXdmFunctionItem(left)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'eq', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", this); 
 	  }
 
-	  if ((right instanceof XPathInlineFunction) || (right instanceof ElemFunctionItem)) {
+	  if (isXPathOperandXdmFunctionItem(right)) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'eq', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", this); 

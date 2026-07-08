@@ -83,8 +83,9 @@ public class XPathLetExpr extends Expression {
        
        List<QName> qNameVarList = new ArrayList<QName>();
        
-       try {    	       	   
-    	   for (int idx = 0; idx < m_letExprVarBindingList.size(); idx++) {          
+       try {
+    	   int size1 = m_letExprVarBindingList.size();
+    	   for (int idx = 0; idx < size1; idx++) {          
     		   XPathLetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
     		   String varName = letExprVarBinding.getVarName();
     		   String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();

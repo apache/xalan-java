@@ -149,7 +149,10 @@ public class FuncSort extends FunctionMultiArgs
                 		  }
 
                 		  XPath sortKeyXPathExpr = new XPath(sortKeyXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-                				                             XPath.SELECT, null);
+                				                                                                                  XPath.SELECT, null);
+                		  
+                		  verifyXPathInlineFuncContextItemAccess(sortKeyXPathExpr.getExpression(), sortKeyXPathStr, srcLocator);
+                		  
                 		  XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, nextNode, xctxt.getNamespaceContext());
 
                 		  // Reset the function item argument reference value
@@ -188,7 +191,10 @@ public class FuncSort extends FunctionMultiArgs
             		  }
 
             		  XPath sortKeyXPathExpr = new XPath(sortKeyXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-            				                             XPath.SELECT, null);
+            				                             														XPath.SELECT, null);
+            		  
+            		  verifyXPathInlineFuncContextItemAccess(sortKeyXPathExpr.getExpression(), sortKeyXPathStr, srcLocator);
+            		  
             		  XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, nextNode, xctxt.getNamespaceContext());
 
             		  // Reset the function item argument reference value
@@ -309,6 +315,9 @@ public class FuncSort extends FunctionMultiArgs
 	                 
 	                 XPath sortKeyXPathExpr = new XPath(sortKeyXPathStr, srcLocator, xctxt.getNamespaceContext(), 
 	                                                                                                     XPath.SELECT, null);
+	                 
+	                 verifyXPathInlineFuncContextItemAccess(sortKeyXPathExpr.getExpression(), sortKeyXPathStr, srcLocator);
+	                 
 	                 XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
 	                 
 	                 // Reset the function item argument reference value

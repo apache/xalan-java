@@ -140,6 +140,9 @@ public class FuncArraySort extends FunctionMultiArgs
                  
                  XPath sortKeyXPathExpr = new XPath(sortKeyXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                      XPath.SELECT, null);
+                 
+                 verifyXPathInlineFuncContextItemAccess(sortKeyXPathExpr.getExpression(), sortKeyXPathStr, srcLocator);
+                 
                  XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
                  
                  // Reset the function item argument reference value

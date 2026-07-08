@@ -33,11 +33,13 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
@@ -394,6 +396,20 @@ public class Operation extends Expression implements ExpressionOwner
 		  result = contextItem;  
 	  }
 
+	  return result;
+  }
+  
+  /**
+   * Method definition, to check whether an XPath operator, 
+   * operand is an xdm function item.
+   * 
+   * @param xObj                    The supplied xdm object instance
+   * @return                        Boolean value true or false
+   */
+  protected boolean isXPathOperandXdmFunctionItem(XObject xObj) {
+	  boolean result = ((xObj instanceof XPathInlineFunction) || (xObj instanceof XPathNamedFunctionReference)
+			                                                  || (xObj instanceof ElemFunctionItem));
+	  
 	  return result;
   }
   

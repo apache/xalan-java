@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:17Z" fail="1" name="xs-double" pass="4" run="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-08T15:13:53Z" fail="0" name="xs-double" pass="4" run="4" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="xs-double-001"/>
    <testResult status="pass" testName="xs-double-002"/>
    <testResult status="pass" testName="xs-double-003"/>
-   <testResult status="fail" testName="xs-double-004"/>
+   <testResult reason="Xalan implements XSD 1.1 rule for +INF" status="skipped" testName="xs-double-004"/>
    <testResult status="pass" testName="xs-double-005"/>
 </testrun>

@@ -30,8 +30,14 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionDef1Arg;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -41,7 +47,9 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.NotEquals;
+import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.VcGt;
+import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.ContentHandler;
 
@@ -807,6 +815,124 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 	  }
 
 	  return result;
+  }
+  
+  /**
+   * Method definition, to verify whether an XPath 3.1 inline 
+   * function expression body accesses an XPath context item.
+   * 
+   * @param xpathInlineFuncBodyExr              An XPath 3.1 inline function expression 
+   *                                            function body's compiled, expression object.
+   * @param funcBodyStr                         XPath function body's user supplied 
+   *                                            string value.
+   * @param srcLocator                          An XSL transform source locator object
+   * @throws TransformerException
+   */
+  public static void verifyXPathInlineFuncContextItemAccess(Expression xpathInlineFuncBodyExr, String funcBodyStr, 
+		  																						SourceLocator srcLocator) throws TransformerException {
+
+	  if (xpathInlineFuncBodyExr instanceof SelfIteratorNoPredicate) {
+		  throw new TransformerException("XPDY0002 : An XPath 3.1 inline function expression body, cannot "
+																								  + "refer to an XPath context item. An XPath "
+																								  + "inline function expression, erroneous function body is '" 
+																								  + funcBodyStr + "'.", srcLocator);			  			  
+	  }
+	  else if (xpathInlineFuncBodyExr instanceof Operation) {
+		  Operation opn1 = (Operation)xpathInlineFuncBodyExr;
+		  Expression exprL = opn1.getLeftOperand();
+		  Expression exprR = opn1.getRightOperand();
+
+		  if ((exprL instanceof SelfIteratorNoPredicate) || (exprR instanceof SelfIteratorNoPredicate)) {
+			  throw new TransformerException("XPDY0002 : An XPath 3.1 inline function expression body, cannot "
+																								  + "refer to an XPath context item. An XPath "
+																								  + "inline function expression, erroneous function body is '" 
+																								  + funcBodyStr + "'.", srcLocator); 
+		  }
+	  }
+	  else if (xpathInlineFuncBodyExr instanceof XPath3UnaryOperation) {
+		  XPath3UnaryOperation opn1 = (XPath3UnaryOperation)xpathInlineFuncBodyExr;
+		  Expression exprR = opn1.getOperand();
+
+		  if (exprR instanceof SelfIteratorNoPredicate) {
+			  throw new TransformerException("XPDY0002 : An XPath 3.1 inline function expression body, cannot "
+																								  + "refer to an XPath context item. An XPath "
+																								  + "inline function expression, erroneous function body is '" 
+																								  + funcBodyStr + "'.", srcLocator);	
+		  }
+	  }
+	  else if (xpathInlineFuncBodyExr instanceof Function) {
+		  Function func1 = (Function)xpathInlineFuncBodyExr;		  
+
+		  if (func1 instanceof FunctionOneArg) {
+			  FunctionOneArg fObj = (FunctionOneArg)func1;				  
+			  Expression expr1 = fObj.getArg0();
+			  
+			  if (expr1 != null) {
+				  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);  
+			  }
+			  else {
+				  throw new TransformerException("XPDY0002 : An XPath 3.1 inline function expression body, cannot "
+																								  + "refer to an XPath context item. An XPath "
+																								  + "inline function expression, erroneous function body is '" 
+																								  + funcBodyStr + "'.", srcLocator);
+			  }
+		  }
+		  else if (func1 instanceof FunctionDef1Arg) {
+			  FunctionOneArg fObj = (FunctionOneArg)func1;				  
+			  Expression expr1 = fObj.getArg0();
+			  
+			  if (expr1 != null) {
+				  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);  
+			  }
+			  else {
+				  throw new TransformerException("XPDY0002 : An XPath 3.1 inline function expression body, cannot "
+																								  + "refer to an XPath context item. An XPath "
+																								  + "inline function expression, erroneous function body is '" 
+																								  + funcBodyStr + "'.", srcLocator);
+			  }
+		  }
+		  else if (func1 instanceof Function2Args) {
+			  Function2Args fObj = (Function2Args)func1;				  
+			  Expression expr1 = fObj.getArg0();
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+
+			  expr1 = fObj.getArg1();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);				  
+		  }
+		  else if (func1 instanceof Function3Args) {
+			  Function3Args fObj = (Function3Args)func1;
+
+			  Expression expr1 = fObj.getArg0();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+
+			  expr1 = fObj.getArg1();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+
+			  expr1 = fObj.getArg2();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+		  }
+		  else if (func1 instanceof FunctionMultiArgs) {
+			  FunctionMultiArgs fObj = (FunctionMultiArgs)func1;
+
+			  Expression expr1 = fObj.getArg0();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+
+			  expr1 = fObj.getArg1();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+
+			  expr1 = fObj.getArg2();				  				  
+			  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+
+			  Expression[] exprArr1 = fObj.getArgs();
+			  if (exprArr1 != null) {
+				  int size1 = exprArr1.length;
+				  for (int idx = 0; idx < size1; idx++) {
+					  expr1 = exprArr1[idx];						  						  
+					  verifyXPathInlineFuncContextItemAccess(expr1, funcBodyStr, srcLocator);
+				  }
+			  }
+		  }
+	  }
   }
 
 }

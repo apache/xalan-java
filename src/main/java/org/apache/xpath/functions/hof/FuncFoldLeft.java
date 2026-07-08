@@ -140,7 +140,10 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         		}
 
         		XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-        																									XPath.SELECT, null);              
+        																									XPath.SELECT, null);
+        		
+        		verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
+        		
         		int size1 = foldLeftFirstArgSeq.size();        		
         		for (int idx = 0; idx < size1; idx++) {
         			Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();

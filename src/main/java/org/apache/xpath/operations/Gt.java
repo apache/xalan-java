@@ -33,6 +33,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSNumericType;
@@ -451,6 +452,22 @@ public class Gt extends Operation
 				  throw new TransformerException("FORG0001 : The string value '" + rStrVal + "' cannot be converted to double.");
 			  }
 		  }
+	  }
+	  else if (left instanceof XPathMap) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 map cannot be atomized. An xdm map is provided as "
+		  																															+ "operator '>' lhs operand.");
+	  }
+      else if (right instanceof XPathMap) {
+    	  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 map cannot be atomized. An xdm map is provided as "
+    	  																															+ "operator '>' rhs operand."); 
+	  }
+	  else if (isXPathOperandXdmFunctionItem(left)) {
+		  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 function item cannot be atomized. An XPath function "
+		  		                                                                                                                    + "item is provided as operator '>' lhs operand.");
+	  }
+      else if (isXPathOperandXdmFunctionItem(right)) {
+    	  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 function item cannot be atomized. An XPath function "
+                                                                                                                                    + "item is provided as operator '>' rhs operand."); 
 	  }
 	  else {
 		  result = left.greaterThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;

@@ -398,6 +398,8 @@ public class FuncArrayFilter extends Function2Args {
       }
 
 	  XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	  
+	  verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
 
 	  Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
 

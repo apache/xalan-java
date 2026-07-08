@@ -45,8 +45,8 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of XPath 3.1 quantified expressions 'some' & 
- * 'every'.
+ * An implementation of XPath 3.1 quantified expressions 
+ * 'some' & 'every'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -96,15 +96,12 @@ public class XPathQuantifiedExpr extends Expression {
 	 * as performed within object of this class.  
 	 */
     private int m_globals_size;
-
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
-    }
+    
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-        XObject quantifiedExprResult = null;
+        
+    	XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -132,14 +129,14 @@ public class XPathQuantifiedExpr extends Expression {
            
            if (m_xpathQuantifier == SOME) {
               if (xsBoolean.value()) {
-                 quantifiedExprResult = XBoolean.S_TRUE;
+                 result = XBoolean.S_TRUE;
                  isEvalResultDecided = true;
                  break;      
               }
            }
            else {
               if (!xsBoolean.value()) {
-                 quantifiedExprResult = XBoolean.S_FALSE;
+                 result = XBoolean.S_FALSE;
                  isEvalResultDecided = true;
                  break;     
               }   
@@ -148,14 +145,14 @@ public class XPathQuantifiedExpr extends Expression {
         
         if (!isEvalResultDecided) {
            if (m_xpathQuantifier == SOME) {
-              quantifiedExprResult = XBoolean.S_FALSE;    
+              result = XBoolean.S_FALSE;    
            }
            else {
-              quantifiedExprResult = XBoolean.S_TRUE;    
+              result = XBoolean.S_TRUE;    
            }
         }
         
-        return quantifiedExprResult;
+        return result;
     }
 
     @Override
@@ -241,6 +238,7 @@ public class XPathQuantifiedExpr extends Expression {
        		    		if (!m_xpathVarList.contains(new QName(varName))) {
              			   m_xpathVarList.add(new QName(varName));
              		    }
+       		    		
        		    		xpathLhsObj.fixupVariables(m_vars, m_globals_size);
        		        }
        		    	
@@ -347,6 +345,11 @@ public class XPathQuantifiedExpr extends Expression {
             
             return satisfiesClauseEvalResult; 
         }
+    }
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+       // no op
     }
 
 }

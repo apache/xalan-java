@@ -127,6 +127,8 @@ public class FuncArrayForEachPair extends Function3Args {
             XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                             XPath.SELECT, null);
             
+            verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
+            
             // As per XPath 3.1 F&O spec, if the arrays have different size, excess members in the 
             // longer array are ignored.
             int effectiveInpArrSize = 0;        

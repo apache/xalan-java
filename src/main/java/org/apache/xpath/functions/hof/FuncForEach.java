@@ -263,6 +263,8 @@ public class FuncForEach extends Function2Args {
         
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
         
+        verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
+        
         if (xObjectArg instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
            Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getXPathVarMap();

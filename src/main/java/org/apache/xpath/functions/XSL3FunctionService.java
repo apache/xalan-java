@@ -1275,6 +1275,14 @@ public class XSL3FunctionService {
 
     	String inlineFnXPathStr = xpathInlineFunction.getFuncBodyXPathExprStr();
     	
+    	if (prefixTable != null) {
+    	   inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, prefixTable);
+ 	    }
+    	
+    	XPath xpathObj = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	
+    	Expression.verifyXPathInlineFuncContextItemAccess(xpathObj.getExpression(), inlineFnXPathStr, srcLocator);
+    	
     	if (Constants.FN_XALAN_RNG_PERMUTE.equals(inlineFnXPathStr)) {
     		String arg1XPathStr = argList.get(0);
     		if (prefixTable != null) {
@@ -1355,24 +1363,24 @@ public class XSL3FunctionService {
     				argValue = XPathSequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
     				if (argValue == null) {
     					if (xslDynFuncCallVarName != null) {
-    					    throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
+    					    throw new TransformerException("XPTY0004 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
 			    							                                              + "function call $" + xslDynFuncCallVarName + ", "
 			    							                                              + "doesn't match an expected type.", srcLocator);
     					}
     					else {
-    						throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of an XPath "
+    						throw new TransformerException("XPTY0004 : An item type of argument at position " + (idx + 1) + " of an XPath "
                                                                                           + "function call, doesn't match an expected type.", srcLocator);
     					}
     				}
     			}
     			catch (TransformerException ex) {
     				if (xslDynFuncCallVarName != null) {
-					    throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
+					    throw new TransformerException("XPTY0004 : An item type of argument at position " + (idx + 1) + " of XPath dynamic "
 		    							                                              + "function call $" + xslDynFuncCallVarName + ", "
 		    							                                              + "doesn't match an expected type.", srcLocator);
 					}
 					else {
-						throw new TransformerException("XTTE0505 : An item type of argument at position " + (idx + 1) + " of an XPath "
+						throw new TransformerException("XPTY0004 : An item type of argument at position " + (idx + 1) + " of an XPath "
                                                                                       + "function call, doesn't match an expected type.", srcLocator);
 					} 
     			}
@@ -1402,22 +1410,22 @@ public class XSL3FunctionService {
     			evalResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
     			if (evalResult == null) {
     				if (xslDynFuncCallVarName != null) {
-    				    throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "
+    				    throw new TransformerException("XPTY0004 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "
     						                                                                         + "doesn't match an expected type.", srcLocator);
     				}
     				else {
-    					throw new TransformerException("XTTE0505 : An item type of result of an XPath function call, doesn't match "
+    					throw new TransformerException("XPTY0004 : An item type of result of an XPath function call, doesn't match "
     							                                                                     + "an expected type.", srcLocator);
     				}
     			}
     		}
     		catch (TransformerException ex) {
     			if (xslDynFuncCallVarName != null) {
-				    throw new TransformerException("XTTE0505 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "
+				    throw new TransformerException("XPTY0004 : An item type of result of dynamic function call $"+ xslDynFuncCallVarName + ", "
 						                                                                             + "doesn't match an expected type.", srcLocator);
 				}
 				else {
-					throw new TransformerException("XTTE0505 : An item type of result of an XPath function call, doesn't match "
+					throw new TransformerException("XPTY0004 : An item type of result of an XPath function call, doesn't match "
 							                                                                         + "an expected type.", srcLocator);
 				}  
     		}

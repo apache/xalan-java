@@ -24,10 +24,8 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.composite.XPathSequenceTypeData;
 
 /**
- * An object of this class represents, a run-time representation
- * of an XPath function item "inline function expression".
- * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-inline-func
+ * A class, that represents run-time representation
+ * for an XPath function item 'inline function expression'.
  *  
  * @author Mukul Gandhi <mukulg@apache.org>
  *   
@@ -39,7 +37,13 @@ public class XPathInlineFunction extends XObject {
     
     private List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();
     
-    private String m_funcBodyXPathExprStr = null;
+    /**
+     * XPath inline function expression body, assignment
+     * to an XPath empty sequence expression if function
+     * body is specified as absent, i.e with an XPath 
+     * syntax {}.
+     */
+    private String m_funcBodyXPathExprStr = "()";
     
     private XPathSequenceTypeData m_returnType = null;
 
@@ -55,7 +59,7 @@ public class XPathInlineFunction extends XObject {
         return m_funcBodyXPathExprStr;
     }
 
-    public void setFuncBodyXPathExprStr(String funcBodyXPathExprStr) {
+    public void setFuncBodyXPathExprStr(String funcBodyXPathExprStr) {    	    	    	
         this.m_funcBodyXPathExprStr = funcBodyXPathExprStr;
     }
     

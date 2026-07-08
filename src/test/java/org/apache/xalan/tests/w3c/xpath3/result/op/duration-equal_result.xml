@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:03Z" fail="24" name="op-duration-equal" pass="120" run="144" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-08T15:11:51Z" fail="20" name="op-duration-equal" pass="124" run="144" statusUnknown="0">
    <testResult status="pass" testName="op-duration-equal-1"/>
    <testResult status="pass" testName="op-duration-equal-2"/>
    <testResult status="pass" testName="op-duration-equal-3"/>
@@ -78,10 +78,10 @@
    <testResult status="pass" testName="K-DurationEQ-8"/>
    <testResult status="pass" testName="K-DurationEQ-9"/>
    <testResult status="pass" testName="K-DurationEQ-10"/>
-   <testResult status="fail" testName="K-DurationEQ-11"/>
-   <testResult status="fail" testName="K-DurationEQ-12"/>
-   <testResult status="fail" testName="K-DurationEQ-13"/>
-   <testResult status="fail" testName="K-DurationEQ-14"/>
+   <testResult status="pass" testName="K-DurationEQ-11"/>
+   <testResult status="pass" testName="K-DurationEQ-12"/>
+   <testResult status="pass" testName="K-DurationEQ-13"/>
+   <testResult status="pass" testName="K-DurationEQ-14"/>
    <testResult status="fail" testName="K-DurationEQ-15"/>
    <testResult status="fail" testName="K-DurationEQ-16"/>
    <testResult status="fail" testName="K-DurationEQ-17"/>

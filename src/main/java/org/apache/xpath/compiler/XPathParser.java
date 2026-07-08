@@ -5084,7 +5084,7 @@ public class XPathParser
       
       appendOp(2, OpCodes.XPath3OpCodes.OP_INLINE_FUNCTION);
       
-      m_xpath_inlineFunction = InlineFunctionExpr();
+      m_xpath_inlineFunction = xpathInlineFunctionExpr();
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                              m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -5166,8 +5166,9 @@ public class XPathParser
     return matchFound;
   }
   
-  protected XPathInlineFunction InlineFunctionExpr() throws javax.xml.transform.TransformerException {
-      XPathInlineFunction inlineFunction = new XPathInlineFunction();
+  protected XPathInlineFunction xpathInlineFunctionExpr() throws javax.xml.transform.TransformerException {
+      
+	  XPathInlineFunction xpathInlineFunction = new XPathInlineFunction();
       
       List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();      
       String funcBodyXPathExprStr = null;
@@ -5223,7 +5224,7 @@ public class XPathParser
           }    
       }
       
-      inlineFunction.setFuncParamList(funcParamList);
+      xpathInlineFunction.setFuncParamList(funcParamList);
       
       consumeExpected(')');
       
@@ -5235,7 +5236,7 @@ public class XPathParser
          returnType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
          returnType.setSequenceTypeKindTest(seqTypeExpr.getSequenceTypeKindTest());
          
-         inlineFunction.setReturnType(returnType);
+         xpathInlineFunction.setReturnType(returnType);
       }
       
       consumeExpected('{');
@@ -5264,10 +5265,10 @@ public class XPathParser
       funcBodyXPathExprStr = getXPathStrFromComponentParts(funcBodyXPathExprStrPartsList);
       
       if (funcBodyXPathExprStr.length() > 0) {
-         inlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
+         xpathInlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
       }
       
-      return inlineFunction;
+      return xpathInlineFunction;
   }
 
   /**
@@ -5613,7 +5614,7 @@ public class XPathParser
     else if (tokenIs("function")) {
        appendOp(2, OpCodes.XPath3OpCodes.OP_INLINE_FUNCTION);
         
-       m_xpath_inlineFunction = InlineFunctionExpr();               
+       m_xpath_inlineFunction = xpathInlineFunctionExpr();               
     }
     else {
        TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);

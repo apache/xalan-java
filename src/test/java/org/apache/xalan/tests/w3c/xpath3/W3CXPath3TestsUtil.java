@@ -580,6 +580,14 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 										break;
 									}
+									else if ("xs-double-004".equals(testCaseNameStr) || "xs-float-004".equals(testCaseNameStr)) {
+										elemTestResult.setAttribute(STATUS, SKIPPED);
+										elemTestResult.setAttribute(REASON, "Xalan implements XSD 1.1 rule for +INF");
+
+										elemTestRun.appendChild(elemTestResult);
+
+										break;
+									}
 								}						   						   
 
 								for (int idx = 0; idx < size1; idx++) {
@@ -673,6 +681,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											String[] errMesgParts = errMeg.split(":");
 											if (errMesgParts.length > 2) {
 												runTimeErrCode = (errMesgParts[1]).trim();
+												if (runTimeErrCode.contains(" ") && (runTimeErrCode.length() > 8)) {
+													runTimeErrCode =(errMesgParts[0]).trim(); 
+												}
 											}
 											else if (errMesgParts.length > 1) {
 												runTimeErrCode = (errMesgParts[0]).trim();

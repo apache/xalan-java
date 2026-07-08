@@ -17,9 +17,13 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
@@ -29,7 +33,7 @@ import org.apache.xpath.objects.XdmProcessingInstructionItem;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function fn:generate-id.
+ * Implementation of an XPath 3.1 function fn:generate-id.
  * 
  * @xsl.usage advanced
  */
@@ -56,37 +60,44 @@ public class FuncGenerateId extends FunctionDef1Arg
 	{
 		
 		XObject result = null;
+		
+		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		if ((m_arg0 == null) || (m_arg0 instanceof SelfIteratorNoPredicate)) {
-			XObject contextItem = xctxt.getXPath3ContextItem();
+		XObject xpath3CtxtItem = null;
+		
+		if ((m_arg0 == null) || (m_arg0 instanceof SelfIteratorNoPredicate)) {			
+			xpath3CtxtItem = xctxt.getXPath3ContextItem();
 
-			if (contextItem != null) {
-				if (contextItem instanceof XdmAttributeItem) {
-					result = new XSString(((XdmAttributeItem)contextItem).getIdValue()); 
+			if (xpath3CtxtItem != null) {
+				if (xpath3CtxtItem instanceof XdmAttributeItem) {
+					result = new XSString(((XdmAttributeItem)xpath3CtxtItem).getIdValue()); 
 				}
-				else if (contextItem instanceof XdmCommentItem) {
-					result = new XSString(((XdmCommentItem)contextItem).getIdValue());
+				else if (xpath3CtxtItem instanceof XdmCommentItem) {
+					result = new XSString(((XdmCommentItem)xpath3CtxtItem).getIdValue());
 				}
-				else if (contextItem instanceof XdmProcessingInstructionItem) {
-					result = new XSString(((XdmProcessingInstructionItem)contextItem).getIdValue());
+				else if (xpath3CtxtItem instanceof XdmProcessingInstructionItem) {
+					result = new XSString(((XdmProcessingInstructionItem)xpath3CtxtItem).getIdValue());
 				}
 
 				if (result != null) {
 					return result;
 				}
 			}		 		 
-		}
+		}		
+		
+		if (xpath3CtxtItem == null) {
+			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
+			if (!(xObj0 instanceof XMLNodeCursorImpl)) {
+				throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument "
+																								+ "is not an xdm node.", srcLocator);	
+			}
+		}
+		
 		int which = getArg0AsNode(xctxt);
 
 		if (DTM.NULL != which)
-		{
-			// Note that this is a different value than in previous releases
-			// of Xalan. It's sensitive to the exact encoding of the node
-			// handle anyway, so fighting to maintain backward compatability
-			// really didn't make sense; it may change again as we continue
-			// to experiment with balancing document and node numbers within
-			// that value.
+		{			
 			result = new XSString("N" + Integer.toHexString(which).toUpperCase());
 		}
 		else

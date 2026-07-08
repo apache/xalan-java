@@ -47,17 +47,17 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.composite.XPathSequenceTypeData;
-import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
-import org.apache.xpath.composite.XPathSequenceTypeKindTest;
-import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
+import org.apache.xpath.composite.XPathSequenceTypeKindTest;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
+import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -2446,6 +2446,9 @@ public class ElemVariable extends ElemTemplateElement
     				}
     				
     				expr1 = xpathSelect1.getExpression();
+    				
+    				Expression.verifyXPathInlineFuncContextItemAccess(expr1, xpathInlineFuncBody1, srcLocator);
+    				
     				if (expr1 instanceof XPathIfExpr) {
     					XPathIfExpr xpathIfExpr = (XPathIfExpr)expr1;
     					String xpathIfCondStr = xpathIfExpr.getIfBranchConditionXPathStr();
@@ -2658,4 +2661,5 @@ public class ElemVariable extends ElemTemplateElement
     	
     	return result;    	
      }
+
 }

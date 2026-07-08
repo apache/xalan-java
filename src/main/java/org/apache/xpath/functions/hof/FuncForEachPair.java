@@ -224,6 +224,8 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
             XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                             XPath.SELECT, null);
             
+            verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
+            
             int inpEffectiveIterationSize = 0;        
             if (inpSeq1.size() <= inpSeq2.size()) {
                inpEffectiveIterationSize = inpSeq1.size();    
