@@ -49,6 +49,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
  * Implementation of XPath 3.1 function fn:for-each.
@@ -263,7 +264,7 @@ public class FuncForEach extends Function2Args {
         
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
         
-        verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
+        XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
         
         if (xObjectArg instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);

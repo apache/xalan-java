@@ -50,6 +50,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSInteger;
@@ -399,7 +400,7 @@ public class FuncArrayFilter extends Function2Args {
 
 	  XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	  
-	  verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
+	  XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
 
 	  Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
 

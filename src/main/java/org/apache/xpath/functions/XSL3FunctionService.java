@@ -108,6 +108,7 @@ import org.apache.xpath.types.XSUnsignedByte;
 import org.apache.xpath.types.XSUnsignedInt;
 import org.apache.xpath.types.XSUnsignedLong;
 import org.apache.xpath.types.XSUnsignedShort;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -1281,7 +1282,7 @@ public class XSL3FunctionService {
     	
     	XPath xpathObj = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
     	
-    	Expression.verifyXPathInlineFuncContextItemAccess(xpathObj.getExpression(), inlineFnXPathStr, srcLocator);
+    	XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(xpathObj.getExpression(), inlineFnXPathStr, srcLocator);
     	
     	if (Constants.FN_XALAN_RNG_PERMUTE.equals(inlineFnXPathStr)) {
     		String arg1XPathStr = argList.get(0);

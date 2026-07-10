@@ -242,7 +242,7 @@ public class XslTransformEvaluationHelper {
        }
        else if (xObj instanceof XSAnyType) {
           result = ((XSAnyType)xObj).stringValue();    
-       }
+       }       
        else {
           result = xObj.str();  
        }

@@ -164,7 +164,8 @@ public class XPathForExpr extends Expression {
            }                     
            
            // Replace XPath expression string like .a$b to, 
-           // form as . a $b           
+           // form as . a $b
+           
            int indexPeriod = varBindingXPathStr.indexOf('.');
            int size1 = varBindingXPathStr.length();
            if (indexPeriod > 0) {
@@ -214,8 +215,10 @@ public class XPathForExpr extends Expression {
         				   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         				   {
         					   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+        					   
         					   // Evaluate an XPath expression like /a/b/funcCall(..).
-        					   // Find one result item for a sequence of items.            			   
+        					   // Find one result item for a sequence of items.
+        					   
         					   XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
         					   resultSeq2.add(evalResult);
         				   }
@@ -225,8 +228,10 @@ public class XPathForExpr extends Expression {
         				   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         				   {
         					   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+        					   
         					   // Evaluate an XPath expression like /a/b/$funcCall(..).
-        					   // Find one result item for a sequence of items.            			   
+        					   // Find one result item for a sequence of items.
+        					   
         					   XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
         					   resultSeq2.add(evalResult);
         				   }

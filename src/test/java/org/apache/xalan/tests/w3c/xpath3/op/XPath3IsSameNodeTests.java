@@ -23,24 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 string comparison.
+ * for XPath 3.1 node identity comparison operator 'is'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3OpTestsSix extends W3CXPath3TestsUtil {
-
+public class XPath3IsSameNodeTests extends W3CXPath3TestsUtil {
+    
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "op/is-same-node.xml";
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "op/";
-    	
-        m_test_set_fileArr = new String[] { "string-equal.xml", "string-greater-than.xml", "string-less-than.xml" };
-        
         m_resultSubFolderName = "op";
-        
-        m_test_set_result_fileArr = new String[] { "string-equal_result.xml", "string-greater-than_result.xml", "string-less-than_result.xml" };
+    	
+    	m_testResultFileName = "is-same-node_result.xml";
     }
 
     @AfterClass
@@ -52,8 +49,8 @@ public class XPath3OpTestsSix extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslOpTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslIsSameNodeTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

@@ -40,6 +40,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
  * Implementation of an XPath 3.1 function, map:for-each.
@@ -227,7 +228,7 @@ public class FuncMapForEach extends Function2Args {
         
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
         
-        verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
+        XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
 		
 		Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 		Set<Entry<XObject, XObject>> mapEntrySet = nativeMap.entrySet();

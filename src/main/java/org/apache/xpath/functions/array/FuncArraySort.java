@@ -41,6 +41,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
  * Implementation of the array:sort() function.
@@ -141,7 +142,7 @@ public class FuncArraySort extends FunctionMultiArgs
                  XPath sortKeyXPathExpr = new XPath(sortKeyXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                      XPath.SELECT, null);
                  
-                 verifyXPathInlineFuncContextItemAccess(sortKeyXPathExpr.getExpression(), sortKeyXPathStr, srcLocator);
+                 XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(sortKeyXPathExpr.getExpression(), sortKeyXPathStr, srcLocator);
                  
                  XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
                  

@@ -32,6 +32,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
  * Implementation of the array:for-each-pair function.
@@ -127,7 +128,7 @@ public class FuncArrayForEachPair extends Function3Args {
             XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                             XPath.SELECT, null);
             
-            verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
+            XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
             
             // As per XPath 3.1 F&O spec, if the arrays have different size, excess members in the 
             // longer array are ignored.

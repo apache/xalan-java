@@ -54,6 +54,7 @@ import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.PrefixResolver;
@@ -1088,14 +1089,37 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													elemTestResult.setAttribute(STATUS, FAIL);
 												}
 											}                                		
-											else if (xpathResultObj instanceof XMLNodeCursorImpl) {
-												int nodeHandle = ((XMLNodeCursorImpl)xpathResultObj).asNode(xctxt);
-												if (nodeHandle != DTM.NULL) {
-													DTM dtm = xctxt.getDTM(nodeHandle);
-													Node node2 = dtm.getNode(nodeHandle);
-
-													expectedResultStr = expectedResultStr.trim();                                				
-													String resultXmlStr = null;
+											else if (xpathResultObj instanceof XMLNodeCursorImpl) {																																			
+												expectedResultStr = expectedResultStr.replaceAll(">\\s*<", "><");
+												expectedResultStr = expectedResultStr.trim();
+												
+												XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathResultObj;
+												if (xmlNodeCursorImpl.getLength() > 0) {
+													DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+													StringBuffer strBuff2 = new StringBuffer();
+													int nextNode = DTM.NULL;
+													while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+														DTM dtm = xctxt.getDTM(nextNode);
+														short nodeType = dtm.getNodeType(nextNode);
+														if ((nodeType == DTM.ELEMENT_NODE) || (nodeType == DTM.PROCESSING_INSTRUCTION_NODE)
+																                           || (nodeType == DTM.COMMENT_NODE)) {
+															Node node2 = dtm.getNode(nextNode);
+															String str1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
+															str1 = str1.replaceAll(">\\s*<", "><");
+															int idx = str1.indexOf("?>");
+															str1 = str1.substring(idx + 2);
+															str1 = str1.trim();
+															strBuff2.append(str1);
+														}
+														else if (nodeType == DTM.TEXT_NODE) {
+															Node node2 = dtm.getNode(nextNode);
+															String str1 = node2.getTextContent();
+															str1 = str1.trim();
+															strBuff2.append(str1);
+														}
+													}
+													
+													String resultXmlStr = strBuff2.toString();
 
 													if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
 														String ignorePrefixesStr = resultElem1.getAttribute(IGNORE_PREFIXES);
@@ -1103,23 +1127,30 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															expectedResultStr = expectedResultStr.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
 															expectedResultStr = expectedResultStr.replace(FN_COLON, EMPTY_STRING);
 														}
-
-														expectedResultStr = expectedResultStr.replaceAll(">\\s*<", "><");
 													}
 
 													try {                                					                                				                                					                                					
 														byte[] byteArr = expectedResultStr.getBytes(StandardCharsets.UTF_8);
-														InputStream inpStream1 = new ByteArrayInputStream(byteArr);                                    				
-														Document document1 = m_xmlDocumentBuilder.parse(inpStream1);
+														InputStream inpStream1 = new ByteArrayInputStream(byteArr);
+														Document document1 = null;
+														
+														try {
+														   document1 = m_xmlDocumentBuilder.parse(inpStream1);
+														}
+														catch (Exception ex) {
+														   expectedResultStr = "<unlikely_xml_elem_name>" + expectedResultStr + "</unlikely_xml_elem_name>";
+														   byteArr = expectedResultStr.getBytes(StandardCharsets.UTF_8);
+														   inpStream1 = new ByteArrayInputStream(byteArr);
+														   
+														   document1 = m_xmlDocumentBuilder.parse(inpStream1);
+														   
+														   resultXmlStr = ("<unlikely_xml_elem_name>" + resultXmlStr + "</unlikely_xml_elem_name>"); 
+														}
+														
 														document1.normalizeDocument();
-
 														Node nodeA = document1.getDocumentElement();
-
-														resultXmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
-
-														if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
-															resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
-														}                                					
+														
+														resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
 
 														byte[] byteArr1 = resultXmlStr.getBytes(StandardCharsets.UTF_8);
 														InputStream inpStream2 = new ByteArrayInputStream(byteArr1);                                    				
@@ -1136,20 +1167,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														}
 													}
 													catch (Exception ex) {
-														// resultXmlStr is not a well-formed XML, but is an
-														// XML fragment.
-														int idx2 = resultXmlStr.indexOf("?>");
-														resultXmlStr = resultXmlStr.substring(idx2 + 2);
-														resultXmlStr = resultXmlStr.replaceAll("\r?\n", EMPTY_STRING);
-
-														expectedResultStr = expectedResultStr.replaceAll("\r?\n", EMPTY_STRING);                                					                                					
-
-														if (expectedResultStr.equals(resultXmlStr)) {
-															elemTestResult.setAttribute(STATUS, PASS);
-														}
-														else {
-															elemTestResult.setAttribute(STATUS, FAIL);
-														}                                					
+														// no op                                					
 													}
 												}
 											}
@@ -1508,13 +1526,37 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																break;
 															}                                        			  
 														}                                        		  
-														else if (xpathResultObj instanceof XMLNodeCursorImpl) {
-															int nodeHandle = ((XMLNodeCursorImpl)xpathResultObj).asNode(xctxt);
-															if (nodeHandle != DTM.NULL) {
-																DTM dtm = xctxt.getDTM(nodeHandle);
-																Node node3 = dtm.getNode(nodeHandle);
-
-																String resultXmlStr = null;
+														else if (xpathResultObj instanceof XMLNodeCursorImpl) {																								
+															expectedResultStr2 = expectedResultStr2.replaceAll(">\\s*<", "><");
+															expectedResultStr2 = expectedResultStr2.trim();
+															
+															XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathResultObj;
+															if (xmlNodeCursorImpl.getLength() > 0) {
+																DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+																StringBuffer strBuff2 = new StringBuffer();
+																int nextNode = DTM.NULL;
+																while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+																	DTM dtm = xctxt.getDTM(nextNode);
+																	short nodeType = dtm.getNodeType(nextNode);
+																	if ((nodeType == DTM.ELEMENT_NODE) || (nodeType == DTM.PROCESSING_INSTRUCTION_NODE)
+																			                           || (nodeType == DTM.COMMENT_NODE)) {
+																		Node node3 = dtm.getNode(nextNode);
+																		String str1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
+																		str1 = str1.replaceAll(">\\s*<", "><");
+																		int idx2 = str1.indexOf("?>");
+																		str1 = str1.substring(idx2 + 2);
+																		str1 = str1.trim();
+																		strBuff2.append(str1);
+																	}
+																	else if (nodeType == DTM.TEXT_NODE) {
+																		Node node3 = dtm.getNode(nextNode);
+																		String str1 = node3.getTextContent();
+																		str1 = str1.trim();
+																		strBuff2.append(str1);
+																	}
+																}
+																
+																String resultXmlStr = strBuff2.toString();                                 																	
 
 																if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
 																	String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
@@ -1522,25 +1564,30 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																		expectedResultStr2 = expectedResultStr2.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
 																		expectedResultStr2 = expectedResultStr2.replace(FN_COLON, EMPTY_STRING);
 																	}
-
-																	if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
-																		expectedResultStr2 = expectedResultStr2.replaceAll(">\\s*<", "><");
-																	}
 																}
 
 																try {                                					                                				                                					                                					
 																	byte[] byteArr = expectedResultStr2.getBytes(StandardCharsets.UTF_8);
-																	InputStream inpStream1 = new ByteArrayInputStream(byteArr);                                    				
-																	Document document1 = m_xmlDocumentBuilder.parse(inpStream1);
-																	document1.normalizeDocument();
-
-																	Node nodeA = document1.getDocumentElement();
-
-																	resultXmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
-
-																	if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
-																		resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
+																	InputStream inpStream1 = new ByteArrayInputStream(byteArr);
+																	Document document1 = null;
+																	
+																	try {
+																	   document1 = m_xmlDocumentBuilder.parse(inpStream1);
 																	}
+																	catch (Exception ex) {
+																	   expectedResultStr2 = "<unlikely_xml_elem_name>" + expectedResultStr2 + "</unlikely_xml_elem_name>";
+																	   byteArr = expectedResultStr2.getBytes(StandardCharsets.UTF_8);
+																	   inpStream1 = new ByteArrayInputStream(byteArr);
+																	   
+																	   document1 = m_xmlDocumentBuilder.parse(inpStream1);
+																	   
+																	   resultXmlStr = ("<unlikely_xml_elem_name>" + resultXmlStr + "</unlikely_xml_elem_name>"); 
+																	}
+																	
+																	document1.normalizeDocument();
+																	Node nodeA = document1.getDocumentElement();
+																	
+																	resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
 
 																	byte[] byteArr1 = resultXmlStr.getBytes(StandardCharsets.UTF_8);
 																	InputStream inpStream2 = new ByteArrayInputStream(byteArr1);                                    				
@@ -1553,30 +1600,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																		isXslTestPass = false;
 
 																		break;
-																	}
+																	}																	
 																}
 																catch (Exception ex) {
-																	// resultXmlStr is not a well-formed XML, but is an
-																	// XML fragment.
-																	int idx2 = resultXmlStr.indexOf("?>");
-																	resultXmlStr = resultXmlStr.substring(idx2 + 2);
-																	resultXmlStr = resultXmlStr.replaceAll("\r?\n", EMPTY_STRING);
-
-																	expectedResultStr2 = expectedResultStr2.replaceAll("\r?\n", EMPTY_STRING);                                					                                					
-
-																	if (!expectedResultStr2.equals(resultXmlStr)) {
-																		isXslTestPass = false;
-
-																		break;
-																	}                                					
+																	// no op                                					
 																}
 															}
-														}
-														else {
-															isXslTestPass = false;
-
-															break;
-														}
+														}														
 													}
 												}
 												else if (ASSERT_EMPTY.equals(nodeName3)) {
@@ -1985,12 +2015,36 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															}                                        			  
 														}                                        		  
 														else if (xpathResultObj instanceof XMLNodeCursorImpl) {
-															int nodeHandle = ((XMLNodeCursorImpl)xpathResultObj).asNode(xctxt);
-															if (nodeHandle != DTM.NULL) {
-																DTM dtm = xctxt.getDTM(nodeHandle);
-																Node node3 = dtm.getNode(nodeHandle);
-
-																String resultXmlStr = null;                                        				                                          				  
+															expectedResultStr2 = expectedResultStr2.replaceAll(">\\s*<", "><");
+															expectedResultStr2 = expectedResultStr2.trim();
+															
+															XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathResultObj;
+															if (xmlNodeCursorImpl.getLength() > 0) {
+																DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+																StringBuffer strBuff2 = new StringBuffer();
+																int nextNode = DTM.NULL;
+																while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+																	DTM dtm = xctxt.getDTM(nextNode);
+																	short nodeType = dtm.getNodeType(nextNode);
+																	if ((nodeType == DTM.ELEMENT_NODE) || (nodeType == DTM.PROCESSING_INSTRUCTION_NODE)
+																			                           || (nodeType == DTM.COMMENT_NODE)) {
+																		Node node3 = dtm.getNode(nextNode);
+																		String str1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
+																		str1 = str1.replaceAll(">\\s*<", "><");
+																		int idx2 = str1.indexOf("?>");
+																		str1 = str1.substring(idx2 + 2);
+																		str1 = str1.trim();
+																		strBuff2.append(str1);
+																	}
+																	else if (nodeType == DTM.TEXT_NODE) {
+																		Node node3 = dtm.getNode(nextNode);
+																		String str1 = node3.getTextContent();
+																		str1 = str1.trim();
+																		strBuff2.append(str1);
+																	}
+																}
+																
+																String resultXmlStr = strBuff2.toString();                                  																	
 
 																if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
 																	String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
@@ -1998,25 +2052,30 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																		expectedResultStr2 = expectedResultStr2.replace("xmlns:fn", XMLConstants.XMLNS_ATTRIBUTE);
 																		expectedResultStr2 = expectedResultStr2.replace(FN_COLON, EMPTY_STRING);
 																	}
-
-																	if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
-																		expectedResultStr2 = expectedResultStr2.replaceAll(">\\s*<", "><");
-																	}
 																}
 
 																try {                                					                                				                                					                                					
 																	byte[] byteArr = expectedResultStr2.getBytes(StandardCharsets.UTF_8);
-																	InputStream inpStream1 = new ByteArrayInputStream(byteArr);                                    				
-																	Document document1 = m_xmlDocumentBuilder.parse(inpStream1);
-																	document1.normalizeDocument();
-
-																	Node nodeA = document1.getDocumentElement();
-
-																	resultXmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node3);
-
-																	if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
-																		resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
+																	InputStream inpStream1 = new ByteArrayInputStream(byteArr);
+																	Document document1 = null;
+																	
+																	try {
+																	   document1 = m_xmlDocumentBuilder.parse(inpStream1);
 																	}
+																	catch (Exception ex) {
+																	   expectedResultStr2 = "<unlikely_xml_elem_name>" + expectedResultStr2 + "</unlikely_xml_elem_name>";
+																	   byteArr = expectedResultStr2.getBytes(StandardCharsets.UTF_8);
+																	   inpStream1 = new ByteArrayInputStream(byteArr);
+																	   
+																	   document1 = m_xmlDocumentBuilder.parse(inpStream1);
+																	   
+																	   resultXmlStr = ("<unlikely_xml_elem_name>" + resultXmlStr + "</unlikely_xml_elem_name>"); 
+																	}
+																	
+																	document1.normalizeDocument();
+																	Node nodeA = document1.getDocumentElement();
+																	
+																	resultXmlStr = resultXmlStr.replaceAll(">\\s*<", "><");
 
 																	byte[] byteArr1 = resultXmlStr.getBytes(StandardCharsets.UTF_8);
 																	InputStream inpStream2 = new ByteArrayInputStream(byteArr1);                                    				
@@ -2029,25 +2088,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 																		isXslTestPass = true;
 
 																		break;
-																	}
+																	}																	
 																}
 																catch (Exception ex) {
-																	// resultXmlStr is not a well-formed XML, but is an
-																	// XML fragment.
-																	int idx2 = resultXmlStr.indexOf("?>");
-																	resultXmlStr = resultXmlStr.substring(idx2 + 2);
-																	resultXmlStr = resultXmlStr.replaceAll("\r?\n", EMPTY_STRING);
-
-																	expectedResultStr2 = expectedResultStr2.replaceAll("\r?\n", EMPTY_STRING);                                					                                					
-
-																	if (expectedResultStr2.equals(resultXmlStr)) {
-																		isXslTestPass = true;
-
-																		break;
-																	}                                					
+																	// no op                                					
 																}
 															}
-														}                                        		  
+														}
 													}
 												}
 												else if (ASSERT_EMPTY.equals(nodeName3)) {

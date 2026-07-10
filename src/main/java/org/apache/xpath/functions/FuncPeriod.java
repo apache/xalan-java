@@ -39,6 +39,7 @@ import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
  * Implementation of an XPath 3.1 function call .(arg),
@@ -135,7 +136,7 @@ public class FuncPeriod extends FunctionMultiArgs {
 
 					XPath inlineFnXPath = new XPath(xpathFuncBodyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 					
-					verifyXPathInlineFuncContextItemAccess(inlineFnXPath.getExpression(), xpathFuncBodyStr, srcLocator);
+					XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFnXPath.getExpression(), xpathFuncBodyStr, srcLocator);
 
 					result = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 

@@ -191,11 +191,13 @@ public class FuncName extends FunctionMultiArgs {
 	  String result = null;
 
 	  DTM dtm = xctxt.getDTM(nodeHandle);
-	  if ((dtm.getNodeType(nodeHandle) == DTM.DOCUMENT_NODE) || (dtm.getNodeType(nodeHandle) == DTM.COMMENT_NODE) 
-			                                                                                  || (dtm.getNodeType(nodeHandle) == DTM.TEXT_NODE)) {
+	  
+	  short nodeType = dtm.getNodeType(nodeHandle);
+	  
+	  if ((nodeType == DTM.DOCUMENT_NODE) || (nodeType == DTM.COMMENT_NODE) || (nodeType == DTM.TEXT_NODE)) {
 		  result = "";
 	  }
-	  else if (dtm.getNodeType(nodeHandle) == DTM.NAMESPACE_NODE) {
+	  else if (nodeType == DTM.NAMESPACE_NODE) {
 		  Node node = dtm.getNode(nodeHandle);
 		  String nsNodeName = node.getNodeName();
 		  if ((nsNodeName == null) || ("".equals(nsNodeName))) {
@@ -211,6 +213,7 @@ public class FuncName extends FunctionMultiArgs {
 	  }
 	  else {
 		  Node node = dtm.getNode(nodeHandle);
+		  
 		  result = node.getNodeName();
 	  }
 

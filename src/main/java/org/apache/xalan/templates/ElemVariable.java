@@ -89,6 +89,7 @@ import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
@@ -2447,7 +2448,7 @@ public class ElemVariable extends ElemTemplateElement
     				
     				expr1 = xpathSelect1.getExpression();
     				
-    				Expression.verifyXPathInlineFuncContextItemAccess(expr1, xpathInlineFuncBody1, srcLocator);
+    				XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(expr1, xpathInlineFuncBody1, srcLocator);
     				
     				if (expr1 instanceof XPathIfExpr) {
     					XPathIfExpr xpathIfExpr = (XPathIfExpr)expr1;

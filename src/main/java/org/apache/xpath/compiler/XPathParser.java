@@ -321,9 +321,12 @@ public class XPathParser
   
   static XPathSequenceBinaryOp m_sequenceBinaryOp = null;
   
-  static XPathSequenceIndexBinaryOp m_sequenceIndexBinaryOp = null; 
+  static XPathSequenceIndexBinaryOp m_sequenceIndexBinaryOp = null;
   
-  private String m_arrowOpRemainingXPathExprStr = null;
+  static String m_union_lstr = null;
+  static String m_union_rstr = null;
+  
+  private String m_arrowOpRemainingXPathExprStr = null;    
   
   private XPathExprFunctionSuffix m_xpathExprFunctionSuffix = null;    
   
@@ -1634,19 +1637,19 @@ public class XPathParser
         	  else {
         		  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
         	  }
-          }
+          }          
           else {
         	  StringBuffer strBuff1 = new StringBuffer();
         	  StringBuffer strBuff2 = new StringBuffer();
         	  String xpathOpName = null;        	  
         	          	  
         	  String xpathPredicateExpr = null;
-        	  strBuff1.append('(');
+        	  strBuff1.append('(' + " ");
         	  
         	  boolean isExpectedXPathStr = false;
         	  while (m_token != null) {
         		 if (!tokenIs('[')) {
-        			strBuff1.append(m_token); 
+        			strBuff1.append(m_token + " "); 
         		 }
         		 else {        			 
         			 consumeExpected('[');
@@ -1676,8 +1679,8 @@ public class XPathParser
         		 nextToken();
         	  }
         	  
-        	  String xpathLStr = strBuff1.toString();
-        	  String xpathRStr = null;
+        	  String xpathLStr = (strBuff1.toString()).trim();
+        	  String xpathRStr = null;        	          	  
         	  
         	  if (isExpectedXPathStr && xpathLStr.startsWith("(") && xpathLStr.endsWith(")")) {
         		  if (StringUtil.isStrHasBalancedParentheses(xpathLStr, '(', ')')) {        			          			          			          			  
@@ -1729,9 +1732,73 @@ public class XPathParser
         			  restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
         		  }        		          		  
         	  }
-        	  else {
-        		  restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
-        	  }        	          	  
+        	  else {        		          		          		  
+        		  ObjectVector tokenQueue = m_ops.getTokenQueue();
+               	  int size1 = m_ops.getTokenQueueSize();
+               	  StringBuffer strBuff = new StringBuffer();
+               	  boolean isXPathUnionIntersectParse = false;
+               	  for (int idx2 = 0; idx2 < size1; idx2++) {
+               		 String str1 = (tokenQueue.elementAt(idx2)).toString();               		 
+               		 if ("union".equals(str1) || "|".equals(str1) || "intersect".equals(str1)) {
+               			isXPathUnionIntersectParse = true; 
+               		 }
+               		 
+               		 strBuff.append(str1);
+               	  }
+               	  
+               	  String str2 = strBuff.toString();
+               	  str2 = str2.replaceAll("\\s*", "");
+               	  
+               	  String str3 = xpathLStr.replaceAll("\\s*", "");
+               	  
+               	  if (isXPathUnionIntersectParse && (str2.length() == str3.length())) {
+               		  int length1 = xpathLStr.length();               		                 		  
+               		  int idx = xpathLStr.lastIndexOf("/");
+               		  boolean isXPathParseEagerCheck = false;
+               		  if ((idx != -1) && (length1 > (idx + 1))) {
+               			  String xpathPrefixStr = (xpathLStr.substring(0, idx)).trim();
+               			  if (StringUtil.isStrHasBalancedParentheses(xpathPrefixStr, '(', ')') && 
+               					                                                    xpathPrefixStr.startsWith("(") && 
+               					                                                    xpathPrefixStr.endsWith(")")) {
+               				 isXPathParseEagerCheck = true; 
+               			  }
+               		  }
+               		  
+               		  if (!isXPathParseEagerCheck) {
+              		     idx = xpathLStr.indexOf("/");
+              		  }
+
+               		  if ((idx != -1) && (length1 > (idx + 1))) {
+               			  String xpathPrefixStr = (xpathLStr.substring(0, idx)).trim();
+               			  String xpathSuffixStr = (xpathLStr.substring(idx + 1)).trim();
+               			  
+               			  boolean isBalancedParens = false;
+               			  if (StringUtil.isStrHasBalancedParentheses(xpathPrefixStr, '(', ')')) {
+               				 isBalancedParens = true;
+               			  }
+               			  
+               			  if (isBalancedParens && xpathPrefixStr.startsWith("(") && xpathPrefixStr.endsWith(")")) {
+               				  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+
+               				  m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
+               				  m_xpathSequenceConstructor.setXPathPrefixStr(xpathPrefixStr);  
+               				  m_xpathSequenceConstructor.setXPathSuffixStr(xpathSuffixStr);
+
+               				  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);                                                
+
+               				  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+               						                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+               				  return;
+               			  }               			  
+               		  }
+               		  
+               		  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+        	      }
+               	  else {
+            	      restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+               	  }
+        	   }        	          	  
           }
                     
           if (isSquareArrayConstructor) {
@@ -1991,7 +2058,7 @@ public class XPathParser
         		  m_isSequenceOperand = false; 
         	  }
         	  else {
-        		  // Resume XPath parse, reusing the same token queue
+        		  // Resume XPath parse, using the same token queue
                	  m_queueMark = 0;
         		  nextToken();       		  
         		  
@@ -2778,6 +2845,24 @@ public class XPathParser
          m_ifExpr = IfExpr();
       }
       else {
+    	 /*ObjectVector objVector1 = m_ops.m_tokenQueue; 
+    	 int size1 = objVector1.size();
+    	 boolean isXPath3UnionExpr = false;
+    	 int unionQMark = -1;
+    	 for (int idx = 0; idx < size1; idx++) {
+    		String str1 = (objVector1.elementAt(idx)).toString();
+    		if ("union".equals(str1)) {
+    			isXPath3UnionExpr = true; 
+    			unionQMark = idx;
+    			
+    			break;
+    		}
+    	 }
+    	 
+    	 if (isXPath3UnionExpr) {
+    		 
+    	 }*/
+    	  
          OrExpr();
       }
   }
@@ -4763,12 +4848,14 @@ public class XPathParser
   {
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+    
     boolean continueOrLoop = true;
-    boolean foundCombiningExpr = false;
+    boolean isNodeCombiningExpr = false;
 
     do 
     {      
     	String prevToken = getTokenRelative(-2);
+    	
     	if (isTokenNodeCombining(prevToken) && tokenIs('(')) {
     		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
     																				m_queueMark, m_tokenChar, m_token);
@@ -4802,21 +4889,39 @@ public class XPathParser
     		    restoreTokenQueueScanPosition(prevTokQueueScanPosition);
     		}
     	}
-
-    	PathExpr(); 
+    	
+    	PathExpr();
 
     	if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union")) {
-    		if (!foundCombiningExpr) {
-    			foundCombiningExpr = true;
+    		if (!isNodeCombiningExpr) {
+    			isNodeCombiningExpr = true;
 
     			insertOp(opPos, 2, OpCodes.OP_UNION);
+    			
+    			ObjectVector tokenQueue = m_ops.getTokenQueue();
+             	int size1 = tokenQueue.size();
+             	StringBuffer strBuf1 = new StringBuffer();
+    			for (int idx = 0; idx < (m_queueMark - 1); idx++) {
+    				String str1 = (tokenQueue.elementAt(idx)).toString();
+    				strBuf1.append(str1 + " ");
+    			}
+    			
+    			m_union_lstr = (strBuf1.toString()).trim(); 
+    			
+    			StringBuffer strBuf2 = new StringBuffer();
+                for (int idx = m_queueMark; idx < size1; idx++) {
+                	String str2 = (tokenQueue.elementAt(idx)).toString();
+                	strBuf2.append(str2 + " ");
+    			}
+                
+                m_union_rstr = (strBuf2.toString()).trim();
     		}
 
     		nextToken();
     	}
     	else if (tokenIs("intersect")) {
-    		if (!foundCombiningExpr) {
-    			foundCombiningExpr = true;
+    		if (!isNodeCombiningExpr) {
+    			isNodeCombiningExpr = true;
 
     			insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_INTERSECT);
     		}
@@ -4824,8 +4929,8 @@ public class XPathParser
     		nextToken();  
     	}
     	else if (tokenIs("except")) {
-    		if (!foundCombiningExpr) {
-    			foundCombiningExpr = true;
+    		if (!isNodeCombiningExpr) {
+    			isNodeCombiningExpr = true;
 
     			insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_EXCEPT);
     		}
@@ -9812,7 +9917,7 @@ public class XPathParser
 
     	}
     	else {
-    		// Resume XPath parse, reusing the same token queue
+    		// Resume XPath parse, using the same token queue
     		m_queueMark = 0;            		  
     		nextToken();            		  
     		ExprSingle();
@@ -9848,7 +9953,7 @@ public class XPathParser
 
     	String lStr = (strBuff.toString()).trim();        		  
     	if (!lStr.contains(",")) {
-    		// Resume XPath parse, reusing the same token queue
+    		// Resume XPath parse, using the same token queue
     		m_queueMark = 0;
     		nextToken();       		  
     		ExprSingle();
@@ -9916,14 +10021,14 @@ public class XPathParser
     					                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     		}
     		else {
-    			// Resume XPath parse, reusing the same token queue
+    			// Resume XPath parse, using the same token queue
     			m_queueMark = 0;
     			nextToken();       		  
     			ExprSingle();
     		}
     	}
     	else {
-    		// Resume XPath parse, reusing the same token queue
+    		// Resume XPath parse, using the same token queue
     		m_queueMark = 0;
     		nextToken();       		  
     		ExprSingle();

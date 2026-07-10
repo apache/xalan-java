@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:49Z" fail="20" name="op-intersect" pass="12" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-10T16:55:07Z" fail="19" name="op-intersect" pass="13" run="32" statusUnknown="0">
    <testResult status="pass" testName="fn-intersect-node-args-001"/>
    <testResult status="pass" testName="fn-intersect-node-args-002"/>
    <testResult status="pass" testName="fn-intersect-node-args-003"/>
@@ -9,7 +9,7 @@
    <testResult status="pass" testName="fn-intersect-node-args-008"/>
    <testResult status="fail" testName="fn-intersect-node-args-009"/>
    <testResult status="fail" testName="fn-intersect-node-args-010"/>
-   <testResult status="fail" testName="fn-intersect-node-args-011"/>
+   <testResult status="pass" testName="fn-intersect-node-args-011"/>
    <testResult status="pass" testName="fn-intersect-node-args-012"/>
    <testResult status="fail" testName="fn-intersect-node-args-013"/>
    <testResult status="fail" testName="fn-intersect-node-args-014"/>

@@ -85,6 +85,7 @@ import org.apache.xpath.operations.VcLe;
 import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.operations.XPath3UnaryOperation;
+import org.apache.xpath.operations.XPath3Union;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -1019,7 +1020,28 @@ public class Compiler extends OpMap
     locPathDepth++;
     try
     {
-      return UnionPathIterator.createUnionIterator(this, opPos);
+       return UnionPathIterator.createUnionIterator(this, opPos);
+    }
+    catch (Exception ex) {
+       /**
+        * If XPath expression using union operator, fails
+        * to compile in usual way, we try a second chance to compile
+        * by, using XPath expression string values for union operator's
+        * first and second operands.
+        */    	
+       String lStr = XPathParser.m_union_lstr;
+       String rStr = XPathParser.m_union_rstr;
+       if ((lStr != null) && (rStr != null)) {    	  
+    	  XPathParser.m_union_lstr = null;
+    	  XPathParser.m_union_rstr = null;
+    	  
+    	  return new XPath3Union(lStr, rStr);
+       }
+       else {
+    	   String errMesg = ex.getMessage();
+    	   
+    	   throw new TransformerException(errMesg);
+       }
     }
     finally
     {

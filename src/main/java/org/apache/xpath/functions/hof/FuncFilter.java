@@ -47,6 +47,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 import xml.xpath31.processor.types.XSBoolean;
 
@@ -236,7 +237,7 @@ public class FuncFilter extends Function2Args {
         
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         
-        verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
+        XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFnXpath.getExpression(), funcBodyXPathExprStr, srcLocator);
         
         if (xsObject instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);

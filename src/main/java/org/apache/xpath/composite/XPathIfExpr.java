@@ -63,16 +63,14 @@ public class XPathIfExpr extends Expression {
     
     private String m_thenExprXPathStr;
     
-    private String m_elseExprXPathStr;        
+    private String m_elseExprXPathStr;            
     
-    /**
-     * The following two fields of this class, are used during
-     * XPath.fixupVariables(..) action as performed within object of
-     * this class.
-     */
-    
+    // Class field, used to resolve variable references 
+    // within an XPath expression.
     private Vector m_vars;
     
+    // Class field, used to resolve variable references 
+    // within an XPath expression.
     private int m_globals_size;
     
     /**

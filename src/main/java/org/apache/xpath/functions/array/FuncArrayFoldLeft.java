@@ -33,6 +33,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
  * Implementation of XPath 3.1 function, array:fold-left.
@@ -121,7 +122,7 @@ public class FuncArrayFoldLeft extends Function3Args {
            XPath inlineFuncXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                               XPath.SELECT, null);
            
-           verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
+           XPath3ExpressionUtil.verifyXPathInlineFuncContextItemAccess(inlineFuncXPath.getExpression(), inlineFnXPathStr, srcLocator);
            
            int size1 = foldLeftArr.size();
            
