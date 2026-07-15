@@ -116,6 +116,7 @@ import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.FuncArgPlaceholder;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
@@ -2844,25 +2845,7 @@ public class XPathParser
       else if (tokenIs("if")) {         
          m_ifExpr = IfExpr();
       }
-      else {
-    	 /*ObjectVector objVector1 = m_ops.m_tokenQueue; 
-    	 int size1 = objVector1.size();
-    	 boolean isXPath3UnionExpr = false;
-    	 int unionQMark = -1;
-    	 for (int idx = 0; idx < size1; idx++) {
-    		String str1 = (objVector1.elementAt(idx)).toString();
-    		if ("union".equals(str1)) {
-    			isXPath3UnionExpr = true; 
-    			unionQMark = idx;
-    			
-    			break;
-    		}
-    	 }
-    	 
-    	 if (isXPath3UnionExpr) {
-    		 
-    	 }*/
-    	  
+      else {    	     	  
          OrExpr();
       }
   }
@@ -5635,8 +5618,8 @@ public class XPathParser
        handleXPathParseNamedFuncRefWithNSQual(opPos);
     }
     else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
-    	// XPath parse for named function reference, for XPath built-in functions    	
-    	handleXPathParseNamedFuncRefWithoutNSQual(opPos);
+       // XPath parse for named function reference, for XPath built-in functions    	
+       handleXPathParseNamedFuncRefWithoutNSQual(opPos);
     }
     else if (tokenIs("if") || tokenIs("some") || tokenIs("every") || tokenIs("let") || tokenIs("for")) {
        ExprSingle();
@@ -8737,28 +8720,78 @@ public class XPathParser
 			TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
 			
 			if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
-											 && xslFunctionService.isFuncArityWellFormed(nextTokenToAnalyze)) {
-				nextToken();
-				consumeExpected(':');
-				String funcName = m_token.substring(0, m_token.indexOf('#'));
-				String namedFuncRef = m_token;										
-				nextToken();
-				
-				insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+											 && xslFunctionService.isFuncArityWellFormed(nextTokenToAnalyze)) {				
+				if (lookahead('(', 3)) {
+					// An XPath 3.1 function call like, prefix:local_name#arity(..)
+					
+					ObjectVector tokenQueue = m_ops.m_tokenQueue;
+					String str1 = (tokenQueue.elementAt(m_queueMark + 1)).toString();
+					int idx = str1.indexOf('#');
+					String funcLocalName = str1.substring(0, idx);
+					int funcTok = getFunctionToken(funcLocalName, funcNamespaceUri);
+					if (funcTok >= 0) {
+						FunctionTable funcTable = new FunctionTable();
+						Function function = funcTable.getFunction(funcTok);
+						Short[] arityArr = function.getArity();							
+						boolean arityOk = false;
+						short runTimeArity = Short.valueOf(str1.substring(idx + 1));
+						if (arityArr != null) {										
+							for (int idx2 = 0; idx2 < arityArr.length; idx2++) {
+								short definedArity = arityArr[idx2];
+								if (runTimeArity == definedArity) {
+									arityOk = true;
 
-				m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
-				m_xpathNamedFunctionReference.setFuncName(funcName);
-				m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);									
-				String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);				
-				if ((Keywords.FUNC_CONCAT_STRING).equals(funcName)) {
-					m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+									break;
+								}
+							}
+						}
+						else {
+							int minArity = function.getMinArity();
+							int maxArity = function.getMaxArity();
+							if ((runTimeArity >= minArity) && (runTimeArity <= maxArity)) {
+								arityOk = true;
+							}
+						}
+						
+						if (arityOk) {
+							tokenQueue.setElementAt(funcLocalName, m_queueMark + 1);
+							
+							FunctionCall();
+						}
+						else {						
+							String funcQualName = "Q{" + funcNamespaceUri + "}" + str1;							
+							error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND2, new Object[]{ funcQualName });
+						}
+					}
+					else {
+					    String funcQualName = "Q{" + funcNamespaceUri + "}" + str1;						
+					    error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND2, new Object[]{ funcQualName });
+					}
 				}
 				else {
-					m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
-				}
+					nextToken();
+					consumeExpected(':');
 
-				m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-						                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);			
+					String funcName = m_token.substring(0, m_token.indexOf('#'));
+					String namedFuncRef = m_token;										
+					nextToken();
+
+					insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+
+					m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+					m_xpathNamedFunctionReference.setFuncName(funcName);
+					m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);									
+					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);				
+					if ((Keywords.FUNC_CONCAT_STRING).equals(funcName)) {
+						m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+					}
+					else {
+						m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
+					}
+
+					m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+							                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+				}
 			}
 			else {
 				restoreTokenQueueScanPosition(prevTokQueueScanPosition);
@@ -8869,32 +8902,86 @@ public class XPathParser
 
 		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
 
-		String funcName = m_token.substring(0, m_token.indexOf('#'));
-		int funcTok = getFunctionToken(funcName, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
-		if (funcTok >= 0) {
-			String namedFuncRef = m_token;
-			nextToken();
+		String funcLocalName = m_token.substring(0, m_token.indexOf('#'));
+		
+		if (lookahead('(', 1)) {
+			// An XPath 3.1 function call like, local_name#arity(..)
 			
-			insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+			ObjectVector tokenQueue = m_ops.m_tokenQueue;
+			String str1 = (tokenQueue.elementAt(m_queueMark - 1)).toString();
+			int idx = str1.indexOf('#');
+			int funcTok = getFunctionToken(funcLocalName, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+			
+			if (funcTok >= 0) {				
+				FunctionTable funcTable = new FunctionTable();
+				Function function = funcTable.getFunction(funcTok);
+				Short[] arityArr = function.getArity();							
+				boolean arityOk = false;
+				short runTimeArity = Short.valueOf(str1.substring(idx + 1));
+				if (arityArr != null) {										
+					for (int idx2 = 0; idx2 < arityArr.length; idx2++) {
+						short definedArity = arityArr[idx2];
+						if (runTimeArity == definedArity) {
+							arityOk = true;
 
-			m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
-			m_xpathNamedFunctionReference.setFuncName(funcName);
-			m_xpathNamedFunctionReference.setFuncNamespace(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);			
-			String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-			if ((Keywords.FUNC_CONCAT_STRING).equals(funcName)) {
-			   m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+							break;
+						}
+					}
+				}
+				else {
+					int minArity = function.getMinArity();
+					int maxArity = function.getMaxArity();
+					if ((runTimeArity >= minArity) && (runTimeArity <= maxArity)) {
+						arityOk = true;
+					}
+				}
+				
+				if (arityOk) {
+					tokenQueue.setElementAt(funcLocalName, m_queueMark - 1);					
+					
+					m_token = funcLocalName;
+					m_tokenChar = funcLocalName.charAt(0); 
+
+					FunctionCall();
+				}
+				else {						
+					String funcQualName = "Q{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + str1;					
+					error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND2, new Object[]{ funcQualName });
+				}
 			}
 			else {
-			   m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
+			    String funcQualName = "Q{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + str1;				
+			    error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND2, new Object[]{ funcQualName });
 			}
-
-			m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-			                                       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 		}
 		else {
-			restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+			int funcTok = getFunctionToken(funcLocalName, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+			
+			if (funcTok >= 0) {
+				String namedFuncRef = m_token;
+				nextToken();
 
-			ExprSingle();
+				insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+
+				m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+				m_xpathNamedFunctionReference.setFuncName(funcLocalName);
+				m_xpathNamedFunctionReference.setFuncNamespace(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);			
+				String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
+				if ((Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+					m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+				}
+				else {
+					m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
+				}
+
+				m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+						m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+			}
+			else {
+				restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+
+				ExprSingle();
+			}
 		}
 	}
 	

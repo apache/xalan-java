@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-07-10T16:57:40Z" desc="W3C XPath 3.1 test suite results" fail="1583" pass="7278" run="8868" skipped="19" success="82.07%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-07-15T12:05:34Z" desc="W3C XPath 3.1 test suite results" fail="1582" pass="7280" run="8869" skipped="19" success="82.08%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="6" run="6" success="100.0%"/>
     <array-filter fail="0" pass="10" run="10" success="100.0%"/>
@@ -35,7 +35,7 @@
     <fn-false fail="2" pass="23" run="25" success="92.0%"/>
     <fn-floor fail="4" pass="80" run="84" success="95.24%"/>
     <fn-format-integer fail="51" pass="22" run="73" success="30.14%"/>
-    <fn-generate-id fail="11" pass="8" run="19" skipped="1" success="42.11%"/>
+    <fn-generate-id fail="10" pass="9" run="19" skipped="1" success="47.37%"/>
     <fn-head fail="3" pass="5" run="8" success="62.5%"/>
     <fn-hours-from-dateTime fail="3" pass="24" run="27" success="88.89%"/>
     <fn-hours-from-duration fail="4" pass="27" run="31" success="87.1%"/>
@@ -81,7 +81,7 @@
     <math-exp fail="0" pass="9" run="9" success="100.0%"/>
     <math-log10 fail="0" pass="9" run="9" success="100.0%"/>
     <math-log fail="0" pass="9" run="9" success="100.0%"/>
-    <math-pi fail="2" pass="3" run="5" success="60.0%"/>
+    <math-pi fail="1" pass="4" run="5" success="80.0%"/>
     <math-pow fail="0" pass="34" run="34" success="100.0%"/>
     <math-sin fail="0" pass="9" run="9" success="100.0%"/>
     <math-sqrt fail="0" pass="9" run="9" success="100.0%"/>
@@ -159,7 +159,7 @@
     <op-yearMonthDuration-less-than fail="4" pass="24" run="28" success="85.71%"/>
   </op>
   <prod>
-    <prod-ArrowPostfix fail="23" pass="16" run="39" success="41.03%"/>
+    <prod-ArrowPostfix fail="24" pass="16" run="40" success="40.0%"/>
     <prod-AxisStep.abbr fail="2" pass="13" run="15" success="86.67%"/>
     <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
     <prod-AxisStep.ancestor fail="1" pass="20" run="21" success="95.24%"/>

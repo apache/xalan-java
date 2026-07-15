@@ -85,7 +85,7 @@ public class FuncGenerateId extends FunctionDef1Arg
 			}		 		 
 		}		
 		
-		if (xpath3CtxtItem == null) {
+		if ((xpath3CtxtItem == null) && (m_arg0 != null)) {
 			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 			if (!(xObj0 instanceof XMLNodeCursorImpl)) {

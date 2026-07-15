@@ -210,8 +210,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_OIERROR = "ER_OIERROR";
   public static final String ER_CANNOT_CREATE_URL = "ER_CANNOT_CREATE_URL";
   public static final String ER_XPATH_READOBJECT = "ER_XPATH_READOBJECT";
- public static final String ER_FUNCTION_TOKEN_NOT_FOUND = 
-	 "ER_FUNCTION_TOKEN_NOT_FOUND";
+  public static final String ER_FUNCTION_TOKEN_NOT_FOUND = "ER_FUNCTION_TOKEN_NOT_FOUND";
+  public static final String ER_FUNCTION_TOKEN_NOT_FOUND2 = "ER_FUNCTION_TOKEN_NOT_FOUND2";
   public static final String ER_CANNOT_DEAL_XPATH_TYPE = 
 	 "ER_CANNOT_DEAL_XPATH_TYPE";
   public static final String ER_NODESET_NOT_MUTABLE = "ER_NODESET_NOT_MUTABLE";
@@ -644,7 +644,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "In XPath.readObject: {0}"},
 
   { ER_FUNCTION_TOKEN_NOT_FOUND,
-      "function token not found."},
+      "XPST0017 : An XPath function token not found."},
+  
+  { ER_FUNCTION_TOKEN_NOT_FOUND2,
+      "XPST0017 : An XPath function token ''{0}'' not found."},
 
   { ER_CANNOT_DEAL_XPATH_TYPE,
        "Can not deal with XPath type: {0}"},

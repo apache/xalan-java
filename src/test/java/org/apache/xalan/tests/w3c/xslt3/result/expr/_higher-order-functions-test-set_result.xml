@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:57Z" fail="27" name="higher-order-functions" pass="42" run="69" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-15T11:58:18Z" fail="26" name="higher-order-functions" pass="43" run="69" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="higher-order-functions-001"/>
    <testResult status="pass" testName="higher-order-functions-002"/>
    <testResult status="pass" testName="higher-order-functions-003"/>
@@ -22,7 +22,7 @@
    <testResult status="pass" testName="higher-order-functions-021"/>
    <testResult status="pass" testName="higher-order-functions-022"/>
    <testResult status="pass" testName="higher-order-functions-023"/>
-   <testResult status="pass" testName="higher-order-functions-024"/>
+   <testResult status="fail" testName="higher-order-functions-024"/>
    <testResult status="pass" testName="higher-order-functions-025"/>
    <testResult status="pass" testName="higher-order-functions-026"/>
    <testResult status="pass" testName="higher-order-functions-027"/>
@@ -48,9 +48,13 @@ java.lang.Exception: Line# : 12, Column# : 68 XPST0003: Expected ,, but found: '
    <testResult status="fail" testName="higher-order-functions-042"/>
    <testResult status="fail" testName="higher-order-functions-043"/>
    <testResult status="fail" testName="higher-order-functions-044"/>
-   <testResult status="fail" testName="higher-order-functions-045"/>
+   <testResult status="pass" testName="higher-order-functions-045"/>
    <testResult status="fail" testName="higher-order-functions-046"/>
-   <testResult status="fail" testName="higher-order-functions-047"/>
+   <testResult status="fail" testName="higher-order-functions-047">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="higher-order-functions-048">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"/&gt;</outResult>
    </testResult>
@@ -84,11 +88,7 @@ java.lang.Exception: Line# : 12, Column# : 68 XPST0003: Expected ,, but found: '
    <testResult status="fail" testName="higher-order-functions-060">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:local="http://local/"&gt;MICHAEL~KAY~michael~kay~Michail~Kay~11&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="higher-order-functions-061">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: javax.xml.transform.TransformerException: XTTE0505 : An item type of argument at position 1 of XPath dynamic function call $f, doesn't match an expected type.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="higher-order-functions-061"/>
    <testResult status="pass" testName="higher-order-functions-062"/>
    <testResult status="pass" testName="higher-order-functions-063"/>
    <testResult status="fail" testName="higher-order-functions-064">

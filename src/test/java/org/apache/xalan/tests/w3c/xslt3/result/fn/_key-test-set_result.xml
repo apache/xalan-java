@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:53:44Z" fail="21" name="key" pass="78" run="99" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-15T11:58:30Z" fail="20" name="key" pass="79" run="99" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
-   <testResult status="fail" testName="key-002">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 31, Column# : 79 XPST0003 : A location path was expected, but the following token was encountered =.
-java.lang.Exception: Line# : 31, Column# : 79 XPST0003 : A location path was expected, but the following token was encountered =.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="key-002"/>
    <testResult status="pass" testName="key-003"/>
    <testResult status="pass" testName="key-004"/>
    <testResult status="pass" testName="key-005"/>
@@ -113,8 +108,9 @@ java.lang.Exception: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: k
    <testResult status="fail" testName="key-087"/>
    <testResult status="fail" testName="key-088">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 19, Column# : 72 XPST0003 : A location path was expected, but the following token was encountered ,.
-java.lang.Exception: Line# : 19, Column# : 72 XPST0003 : A location path was expected, but the following token was encountered ,.</errTrace>
+         <errTrace>Found ',' but no preceding argument!</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 25, Column# : 67 XPST0003 : A location path was expected, but the following token was encountered ,.
+java.lang.Exception: Line# : 25, Column# : 67 XPST0003 : A location path was expected, but the following token was encountered ,.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-089"/>
