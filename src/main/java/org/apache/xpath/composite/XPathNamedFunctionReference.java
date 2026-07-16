@@ -26,8 +26,8 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An XPath parser, constructs an object instance of this class
- * to represent a named function reference expression.
+ * Class definition, to represent an XPath 3.1 named 
+ * function reference expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

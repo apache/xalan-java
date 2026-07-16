@@ -1082,6 +1082,7 @@ public class XslTransformEvaluationHelper {
     	List<XMLNSDecl> result = null;
 
     	PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+    	
     	if (prefixResolver instanceof ElemTemplateElement) {
     		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)prefixResolver; 
     		result = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());

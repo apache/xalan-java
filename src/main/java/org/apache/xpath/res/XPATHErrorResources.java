@@ -151,6 +151,9 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_FOR_EXPR_4 = "ER_FOR_EXPR_4";
   public static final String ER_FOR_EXPR_5 = "ER_FOR_EXPR_5";
   public static final String ER_FOR_EXPR_6 = "ER_FOR_EXPR_6";
+  
+  public static final String ER_IS_EXPR_1 = "ER_IS_EXPR_1";
+  
   public static final String ER_INCORRECT_PROGRAMMER_ASSERTION = 
 	 "ER_INCORRECT_PROGRAMMER_ASSERTION";
   public static final String ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL = 
@@ -534,6 +537,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_FOR_EXPR_6,
      "XPST0003 : An XPath ''for'' expression within function argument, has syntax error."},
+  
+  { ER_IS_EXPR_1,
+     "XPST0003 : Unexpected token ''{0}'' after ''is''."},
 
   { ER_INCORRECT_PROGRAMMER_ASSERTION,
       "Programmer assertion is incorrect! - {0}"},

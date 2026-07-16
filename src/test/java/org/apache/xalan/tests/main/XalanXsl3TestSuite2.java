@@ -33,6 +33,7 @@ import org.apache.xalan.tests.xpath3.FnForEachPairTests;
 import org.apache.xalan.tests.xpath3.FnFormatDateTests;
 import org.apache.xalan.tests.xpath3.FnFormatIntegerTests;
 import org.apache.xalan.tests.xpath3.FnFunctionArityTests;
+import org.apache.xalan.tests.xpath3.FnFunctionLookupTests;
 import org.apache.xalan.tests.xpath3.FnFunctionNameTests;
 import org.apache.xalan.tests.xpath3.FnMaxTests;
 import org.apache.xalan.tests.xpath3.FnMinTests;
@@ -159,7 +160,8 @@ import xml.xpath31.processor.types.tests.XSTimeTest;
                 XslUseAttributeSetsTests.class, XslInitialFunctionTests.class, XslFnCopyofTests.class, FnUnparsedTextAvailableTests.class,
                 XslMapTests.class, FnSerializeTests.class, XPath3DecimalFormatTest.class, XSAnyURITest.class, XSDateTest.class,
                 XSDateTimeTest.class, XSDayTimeDurationTest.class, XSDecimalTest.class, XSDoubleTest.class, XSDurationTest.class,
-                XSNumericTypeTest.class, XSTimeTest.class, FnFormatDateTests.class, FnParseIetfDateTests.class, XslSchemaAwareTests.class })
+                XSNumericTypeTest.class, XSTimeTest.class, FnFormatDateTests.class, FnParseIetfDateTests.class, XslSchemaAwareTests.class,
+                FnFunctionLookupTests.class })
 public class XalanXsl3TestSuite2 {
 
 }

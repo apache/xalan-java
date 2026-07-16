@@ -29,7 +29,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
 /**
- * A class definition providing support for XPath parse of 
+ * Class definition, providing support for XPath parse of 
  * function call syntax, like prefix:func1(args1)(args2). The 
  * list of string values within an object of this class, stores 
  * XPath expression strings for the function arguments args2. 

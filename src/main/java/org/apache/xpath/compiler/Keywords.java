@@ -754,11 +754,14 @@ public class Keywords
   /** transform function string. */
   public static final String FUNC_TRANSFORM = "transform";
   
+  /** function-name function string. */
+  public static final String FUNC_FUNCTION_NAME = "function-name";
+  
   /** function-arity function string. */
   public static final String FUNC_FUNCTION_ARITY = "function-arity";
   
-  /** function-name function string. */
-  public static final String FUNC_FUNCTION_NAME = "function-name";
+  /** function-lookup function string. */
+  public static final String FUNC_FUNCTION_LOOKUP = "function-lookup";
   
   /** normalize-unicode function string. */
   public static final String FUNC_NORMALIZE_UNICODE = "normalize-unicode";

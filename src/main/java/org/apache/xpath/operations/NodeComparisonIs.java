@@ -94,18 +94,19 @@ public class NodeComparisonIs extends Operation
           rNodeSet = (XMLNodeCursorImpl)(rNodeSet.getFresh());
        }
        
-       if ((lNodeSet != null) && (rNodeSet != null)) {
-    	  int lNodeHandle = lNodeSet.asNode(m_xctxt);
-          int rNodeHandle = rNodeSet.asNode(m_xctxt);                               
-          if ((lNodeHandle == DTM.NULL) || (rNodeHandle == DTM.NULL)) {
-        	  result = new ResultSequence();  
-          }
-          else if (lNodeHandle == rNodeHandle) {
-        	  result = XBoolean.S_TRUE;
-          }
-          else {
-        	  result = XBoolean.S_FALSE;  
-          }
+       if ((lNodeSet != null) && (rNodeSet != null)) {    	   
+    	   int lNodeHandle = (lNodeSet.iter()).nextNode();
+    	   int rNodeHandle = (rNodeSet.iter()).nextNode();
+
+    	   if ((lNodeHandle == DTM.NULL) || (rNodeHandle == DTM.NULL)) {
+    		   result = new ResultSequence();  
+    	   }
+    	   else if (lNodeHandle == rNodeHandle) {
+    		   result = XBoolean.S_TRUE;
+    	   }
+    	   else {
+    		   result = XBoolean.S_FALSE;  
+    	   }
        }
        else if (lNodeSet == null) {
     	   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of lhs operand of XPath "

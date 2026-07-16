@@ -45,6 +45,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.hof.FuncFunctionLookup;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
@@ -130,6 +131,8 @@ public class Compiler extends OpMap
 	 * an XPath expression of kind "... => functionCall()".
 	 */
 	private boolean m_isFunctionCallPrecededByArrow = false;
+	
+	private static boolean m_isFuncCallPrecededByFuncLookup = false;
 	
 	/**
 	 * Class field, denoting to skip XPath built-in function arity 
@@ -1538,10 +1541,39 @@ private static final boolean DEBUG = false;
 		  try
 		  {
 			  int i = 0;
+			  
+			  boolean funcLookup = false;
+			  if (funcID == FunctionTable.FUNC_FUNCTION_LOOKUP) {
+				 // This XPath function compilation is, for an
+				 // XPath 3.1 function fn:function-lookup.
+				  
+				 funcLookup = true;
+				 m_isFuncCallPrecededByFuncLookup = true;
+			  }
 
 			  for (int p = opPos; p < endFunc; p = getNextOpPos(p), i++)
 			  {          
-				  func.setArg(compile(p), i);
+				  if (!funcLookup) {
+				     func.setArg(compile(p), i);
+				  }
+				  else if (i <= 1) {
+					 // XPath expression compilation for function 
+					 // fn:function-lookup's argument.
+					 func.setArg(compile(p), i); 
+				  }
+				  else {
+					 /**
+					  * XPath expression compilation for function fn:function-lookup's 
+					  * argument.
+					  * 
+					  * This handles an XPath function call like fn:function-lookup(..)(...)
+					  * i.e, An XPath 3.1 function item returned by fn:function-lookup
+					  * is followed by the call to XPath function represented by 
+					  * function item.
+					  */
+					  
+					 ((FuncFunctionLookup)func).setExtendedArg(compile(p));
+				  }
 			  }
 
 			  if (m_isFunctionCallPrecededByArrow) 
@@ -1553,7 +1585,25 @@ private static final boolean DEBUG = false;
 
 			  if (m_verify_func_arg_count) {
 				  if (!(Keywords.FUNC_CONCAT_STRING.equals(funcName1) || Keywords.FROM_SELF_ABBREVIATED_STRING.equals(funcName1))) {
-					  Short[] funcArityArr = func.getArity();        	
+					  Short[] funcArityArr = func.getArity();					  
+					  if (funcLookup) {
+						 Short[] newFuncArityArr = new Short[2];
+						 
+						 newFuncArityArr[0] = funcArityArr[0];
+						 newFuncArityArr[1] = 3;
+						 
+						 funcArityArr = newFuncArityArr;
+						 
+						 FuncFunctionLookup funcFunctionLookup = (FuncFunctionLookup)func;
+						 if (funcFunctionLookup.getExtendedArg() != null) {						 
+						    i--;
+						 }
+					  }
+					  else if (m_isFuncCallPrecededByFuncLookup && (i == 0)) {
+						 i = funcArityArr[0];
+						 
+						 m_isFuncCallPrecededByFuncLookup = false;
+					  }
 
 					  boolean funcArityErr = true;
 					  for (int idx = 0; idx < funcArityArr.length; idx++) {

@@ -5395,6 +5395,45 @@ public class XPathParser
 	        seqConsList.add(xPathSeqConstructor);
 	      	List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
 	      	funcArgUsedSeq.add(Boolean.valueOf(false));
+	      	
+	      	if (tokenIs("is")) {
+	      		consumeExpected("is");
+	      		
+	      		if (tokenIs(',') || tokenIs(')')) {
+	      		    error(XPATHErrorResources.ER_IS_EXPR_1, new Object[]{ m_token });
+	      		}
+	      		else {
+	      			/**
+	    			 * An XPath operator 'is' first operand is an empty sequence,
+	    			 * therefore the result of XPath 'is' operator evaluation is
+	    			 * an empty sequence. We skip further tokens for this function
+	    			 * argument.
+	    			 */
+	      			
+	      			StringBuffer strBuff = new StringBuffer();
+	      			String str1 = null;
+	      			while (m_token != null) {
+	      			   strBuff.append(m_token + " ");
+	      			   str1 = (strBuff.toString()).trim();
+	      			   if (tokenIs(',')) {
+	      				  String str2 = (str1.substring(0, str1.length() - 1)).trim();
+	      				  if (StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+	      					 break;  
+	      				  }
+	      			   }
+	      			   else if (tokenIs(')') && lookahead(')', 1) && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+	      				  consumeExpected(')');
+	      				  
+	      				  break;
+	      			   }
+	      			   else if (tokenIs(')') && lookahead(null, 1)) {	      				    	      				   
+	      				   break;
+	      			   }
+	      			   
+	      			   nextToken();
+	      			}
+	      		}
+	      	}
 	        
 	        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
 	                                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -5708,7 +5747,46 @@ public class XPathParser
        TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
        StringBuffer strBuff = new StringBuffer();
        while (!tokenIs(',') && !(tokenIs(')') && lookahead(null, 1)) && (m_token != null)) {
-    	  strBuff.append(m_token);    	  
+    	  strBuff.append(m_token);
+    	  
+    	  if (tokenIs("is") && (lookahead(',', 1) || lookahead(')', 1))) {
+    		 consumeExpected("is");
+    		 
+    		 error(XPATHErrorResources.ER_IS_EXPR_1, new Object[]{ m_token });
+    	  }    	  
+    	  else if (tokenIs("is") && lookahead('(', 1) && lookahead(')', 2)) {    		      		  
+    		 if (lookahead(',', 3) || lookahead(')', 3)) {
+    			/**
+    			 * An XPath operator 'is' second operand is an empty sequence,
+    			 * therefore the result of XPath 'is' operator evaluation is
+    			 * an empty sequence.
+    			 */
+    			 
+    			consumeExpected("is");
+    			
+    			consumeExpected('('); 
+    			consumeExpected(')');
+    			
+    			insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+    	        
+    	        List<String> seqConstructorXPathParts = new ArrayList<String>();
+    	        seqConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+    	        
+    	        List<XPathSequenceConstructor> seqConsList = m_xpathSequenceConsFuncArgs.getSeqFuncArgList();
+    	        XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+    	        xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
+    	        seqConsList.add(xPathSeqConstructor);
+    	      	List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
+    	      	funcArgUsedSeq.add(Boolean.valueOf(false));
+    	      	
+    	      	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                                       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+                m_isFunctionArgumentParse = false;
+                
+                return;
+    		 }
+    	  }
+    	  
     	  nextToken();
        }
        

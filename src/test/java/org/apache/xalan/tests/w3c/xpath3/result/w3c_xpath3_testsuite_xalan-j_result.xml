@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-07-15T12:05:34Z" desc="W3C XPath 3.1 test suite results" fail="1582" pass="7280" run="8869" skipped="19" success="82.08%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-07-16T12:03:37Z" desc="W3C XPath 3.1 test suite results" fail="1573" pass="7289" run="8869" skipped="19" success="82.19%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="6" run="6" success="100.0%"/>
     <array-filter fail="0" pass="10" run="10" success="100.0%"/>
@@ -81,7 +81,7 @@
     <math-exp fail="0" pass="9" run="9" success="100.0%"/>
     <math-log10 fail="0" pass="9" run="9" success="100.0%"/>
     <math-log fail="0" pass="9" run="9" success="100.0%"/>
-    <math-pi fail="1" pass="4" run="5" success="80.0%"/>
+    <math-pi fail="0" pass="5" run="5" success="100.0%"/>
     <math-pow fail="0" pass="34" run="34" success="100.0%"/>
     <math-sin fail="0" pass="9" run="9" success="100.0%"/>
     <math-sqrt fail="0" pass="9" run="9" success="100.0%"/>
@@ -121,7 +121,7 @@
     <op-gYear-equal fail="7" pass="33" run="40" success="82.5%"/>
     <op-gYearMonth-equal fail="7" pass="33" run="40" success="82.5%"/>
     <op-intersect fail="19" pass="13" run="32" success="40.62%"/>
-    <op-is-same-node fail="13" pass="9" run="22" success="40.91%"/>
+    <op-is-same-node fail="5" pass="17" run="22" success="77.27%"/>
     <op-multiply-dayTimeDuration fail="5" pass="28" run="33" success="84.85%"/>
     <op-multiply-yearMonthDuration fail="10" pass="30" run="40" success="75.0%"/>
     <op-node-after fail="12" pass="14" run="26" success="53.85%"/>
