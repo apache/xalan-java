@@ -1560,6 +1560,46 @@ public class XPathParser
 
         		  return;
         	  }
+        	  else if (lookahead('|', 1) || lookahead("union", 1)) {
+        		  // An XPath expression is like, () | ...
+        		  
+        		  consumeExpected(')');        		  
+        		  nextToken();
+        		  
+        		  Expr();
+        	  }
+        	  else if (lookahead("intersect", 1) || lookahead("except", 1)) {
+        		  // An XPath expression is like, () intersect ...
+        		  //, or () except ... 
+        		  
+        		  consumeExpected(')');        		  
+        		  nextToken(); 
+        		  
+        		  // Result for this, XPath 3.1 'intersect', 'except' operator
+        		  // is an xdm empty sequence.
+        		  
+        		  if (m_token != null) {
+        			  /**
+        			   * We assume here, that anything after XPath token 'intersect', 'except',
+        			   * is XPath 'intersect', 'except' operator's second operand which is upto 
+        			   * XPath expression's last token and we don't do syntax check
+        			   * on XPath 'intersect', 'except' operator's second operand. 
+        			   */
+        			  
+        			  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+
+        			  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+        			  List<String> seqOrArrayXPathItems = new ArrayList<String>();
+
+        			  seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+
+        			  m_xpathSequenceConstructor = new XPathSequenceConstructor();              
+        			  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+        			  
+        			  return;
+        		  }        		          		  
+        	  }
         	  else {
         		  // An XPath expression is of the form, () = ... , () >= ...         		  
         		  xpathParseEmptySequenceGeneralCmp();
@@ -1573,7 +1613,11 @@ public class XPathParser
              parseXPathEmptyLiteralArray();
              
              return;             
-          }                                        
+          }
+          
+          if (m_token == null) {
+        	 return; 
+          }
           
           if (isSequenceConstructor && tokenIs("if") || tokenIs("some") || tokenIs("every") || 
         		                                                                  tokenIs("let") || tokenIs("for")) {
@@ -1888,9 +1932,8 @@ public class XPathParser
             	 rParenChar = '}'; 
              }
              
-             boolean isStrHasBalancedParentheses = StringUtil.isStrHasBalancedParentheses(seqOrArrayMemberXPathExprStr, 
-            		                                                                                                lParenChar, rParenChar);
-             if (!isStrHasBalancedParentheses) {
+             boolean isStrBalancedParens = StringUtil.isStrHasBalancedParentheses(seqOrArrayMemberXPathExprStr, lParenChar, rParenChar);
+             if (!isStrBalancedParens) {
                 isXPathParseOkToProceed = false;
                 break;
              }
@@ -4875,9 +4918,24 @@ public class XPathParser
     	
     	PathExpr();
 
-    	if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union")) {
+    	if ((tokenIs('|') && !tokenIs("||")) || tokenIs("union")) {    		
+    		if (lookahead('(', 1) && lookahead(')', 2)) {
+    		   /**
+    		    * An XPath expression is like, .... | (), therefore
+    		    * we don't need to process XPath union operator
+    		    * ('|', 'union').
+    		    */
+    			
+    		   nextToken();
+    		   
+    		   consumeExpected('(');
+    		   consumeExpected(')');
+    		   
+    		   break;
+    		}
+    		    		
     		if (!isNodeCombiningExpr) {
-    			isNodeCombiningExpr = true;
+    			isNodeCombiningExpr = true;    			    			
 
     			insertOp(opPos, 2, OpCodes.OP_UNION);
     			
@@ -4903,6 +4961,29 @@ public class XPathParser
     		nextToken();
     	}
     	else if (tokenIs("intersect")) {
+    		if (lookahead('(', 1) && lookahead(')', 2)) {
+     		    // An XPath expression is like, .... intersect ()
+     			
+    			consumeExpected("intersect");
+
+    			consumeExpected('(');
+    			consumeExpected(')');
+
+    			// Result for this, XPath 3.1 "intersect" operator
+    			// is an xdm empty sequence.
+
+    			insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    			List<String> seqOrArrayXPathItems = new ArrayList<String>();
+
+    			seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+
+    			m_xpathSequenceConstructor = new XPathSequenceConstructor();              
+    			m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+
+    			break;
+     		}
+    		
     		if (!isNodeCombiningExpr) {
     			isNodeCombiningExpr = true;
 
@@ -4912,6 +4993,20 @@ public class XPathParser
     		nextToken();  
     	}
     	else if (tokenIs("except")) {
+    		if (lookahead('(', 1) && lookahead(')', 2)) {
+     		   /**
+     		    * An XPath expression is like, .... except (), therefore
+     		    * we don't need to process XPath 'except' operator
+     		    */
+     			
+    		   consumeExpected("except");
+     		   
+     		   consumeExpected('(');
+     		   consumeExpected(')');
+     		   
+     		   break;
+     		}
+    		
     		if (!isNodeCombiningExpr) {
     			isNodeCombiningExpr = true;
 
@@ -10080,7 +10175,7 @@ public class XPathParser
     		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
     				                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
-    	}
+    	}    	
     	else {
     		// Resume XPath parse, using the same token queue
     		m_queueMark = 0;            		  

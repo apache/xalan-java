@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:51Z" fail="24" name="function" pass="63" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-17T12:33:59Z" fail="21" name="function" pass="66" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -85,26 +85,11 @@
    </testResult>
    <testResult status="skipped" testName="function-1023" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-1024"/>
-   <testResult status="fail" testName="function-1025">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).
-java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1025"/>
    <testResult status="pass" testName="function-1026"/>
-   <testResult status="fail" testName="function-1027">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).
-java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1027"/>
    <testResult status="pass" testName="function-1028"/>
-   <testResult status="fail" testName="function-1029">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).
-java.lang.Exception: Line# : 26, Column# : 57 XPST0003 : A location path was expected, but the following token was encountered ).</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1029"/>
    <testResult status="pass" testName="function-1030"/>
    <testResult status="pass" testName="function-1031"/>
    <testResult status="pass" testName="function-1032"/>
