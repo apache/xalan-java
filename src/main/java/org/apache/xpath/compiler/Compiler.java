@@ -20,18 +20,30 @@ package org.apache.xpath.compiler;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.StringUtil;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.compiler.XPathParser.XPathArrayConsFuncArgs;
@@ -46,7 +58,10 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.hof.FuncFunctionLookup;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
 import org.apache.xpath.operations.ArrowOp;
@@ -92,10 +107,14 @@ import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import xml.xpath31.processor.types.XSAnyAtomicType;
 
 /**
- * An instance of this class compiles an XPath string expression into 
- * a Expression object.  This class compiles the string into a sequence 
+ * An instance of this class compiles an XPath string expression, into 
+ * an XPath Expression object. This class compiles the string into a sequence 
  * of operation codes (op map) and then builds from that into an Expression 
  * tree.
  * 
@@ -1020,36 +1039,75 @@ public class Compiler extends OpMap
    */
   protected Expression union(int opPos) throws TransformerException
   {
-    locPathDepth++;
-    try
-    {
-       return UnionPathIterator.createUnionIterator(this, opPos);
-    }
-    catch (Exception ex) {
-       /**
-        * If XPath expression using union operator, fails
-        * to compile in usual way, we try a second chance to compile
-        * by, using XPath expression string values for union operator's
-        * first and second operands.
-        */    	
-       String lStr = XPathParser.m_union_lstr;
-       String rStr = XPathParser.m_union_rstr;
-       if ((lStr != null) && (rStr != null)) {    	  
-    	  XPathParser.m_union_lstr = null;
-    	  XPathParser.m_union_rstr = null;
-    	  
-    	  return new XPath3Union(lStr, rStr);
-       }
-       else {
-    	   String errMesg = ex.getMessage();
-    	   
-    	   throw new TransformerException(errMesg);
-       }
-    }
-    finally
-    {
-      locPathDepth--;
-    }
+	  locPathDepth++;
+
+	  String lStr = XPathParser.m_union_lstr;
+	  String rStr = XPathParser.m_union_rstr;
+
+	  if ((lStr != null) && (rStr != null)) {
+		  try {
+			  lStr = lStr.replace(" : ", ":");
+			  rStr = rStr.replace(" : ", ":");
+
+			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
+			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
+
+			  if (a1 && a2) {
+				  xpathUnionOperandTypeCheck(lStr);
+
+				  xpathUnionOperandTypeCheck(rStr);
+			  }
+		  }
+		  catch (Exception ex) {
+			  if (ex instanceof TransformerException) {    			
+				  String errMesg = ex.getMessage();
+				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath '|', or 'union'")) {
+					  XPathParser.m_union_lstr = null;
+					  XPathParser.m_union_rstr = null;
+
+					  throw (TransformerException)ex; 
+				  }
+			  }
+		  }
+	  }
+
+	  try
+	  {
+		  return UnionPathIterator.createUnionIterator(this, opPos);
+	  }
+	  catch (Exception ex) {
+		  /**
+		   * If XPath expression using union operator, fails
+		   * to compile in usual way, we try a second chance to compile
+		   * by, using XPath expression string values for union operator's
+		   * first and second operands.
+		   */    	       
+		  if ((lStr != null) && (rStr != null)) { 
+			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
+			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
+
+			  if (a1 && a2) {
+				  XPathParser.m_union_lstr = null;
+				  XPathParser.m_union_rstr = null;
+
+				  return new XPath3Union(lStr, rStr);
+			  }
+			  else {
+				  String errMesg = ex.getMessage();
+
+				  throw new TransformerException(errMesg); 
+			  }
+		  }
+		  else {
+			  String errMesg = ex.getMessage();
+
+			  throw new TransformerException(errMesg);
+		  }
+	  }
+	  finally
+	  {
+		  locPathDepth--;
+	  }
   }
   
   /**
@@ -2126,6 +2184,104 @@ private static final boolean DEBUG = false;
   public void setNamespaceContext(PrefixResolver pr)
   {
     m_currentPrefixResolver = pr;
+  }
+  
+  /**
+   * Method definition, to get an XML namespace prefix 
+   * resolver, that may be used for XPath expression 
+   * evaluation.
+   * 
+   * @return                          An PrefixResolver object instance
+   * @throws Exception
+   */
+  private PrefixResolver getXMLNsPrefixResolver() throws Exception {
+  	
+	  PrefixResolver result = null;
+
+	  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+	  DocumentBuilderFactory xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+	  xmlDocumentBuilderFactory.setNamespaceAware(true);
+
+	  DocumentBuilder xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();
+
+	  Document document = xmlDocumentBuilder.newDocument();
+	  Element elem = document.createElement("elem1");
+
+	  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "fn", XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+	  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "math", XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+	  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "map", XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+	  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "array", XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+	  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "err", org.apache.xalan.templates.Constants.XSL_ERROR_NAMESACE);
+	  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "xs", XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+	  document.appendChild(elem);
+
+	  result = new PrefixResolverDefault(elem);
+
+	  return result;
+  }
+  
+  /**
+   * Method definition, to get a default XML namespace
+   * prefix table.
+   * 
+   * @return                      An XML namespace prefix table 
+   *                              as java.util.List<XMLNSDecl> object. 
+   */
+  private List<XMLNSDecl> getDefaultXmlNsPrefixTable() {
+	  
+	  List<XMLNSDecl> result = new ArrayList<XMLNSDecl>();
+	  
+	  XMLNSDecl xmlNsDecl1 = new XMLNSDecl("fn", XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, false);
+	  XMLNSDecl xmlNsDecl2 = new XMLNSDecl("math", XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI, false);
+	  XMLNSDecl xmlNsDecl3 = new XMLNSDecl("map", XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI, false);
+	  XMLNSDecl xmlNsDecl4 = new XMLNSDecl("array", XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI, false);
+	  XMLNSDecl xmlNsDecl5 = new XMLNSDecl("xs", XMLConstants.W3C_XML_SCHEMA_NS_URI, false);
+	  
+	  result.add(xmlNsDecl1);
+	  result.add(xmlNsDecl2);
+	  result.add(xmlNsDecl3);
+	  result.add(xmlNsDecl4);
+	  result.add(xmlNsDecl5);
+	  
+	  return result;
+  }
+  
+  /**
+   * Method definition, to do an XPath operand type check
+   * for XPath union operator, '|' or 'union'.
+   * 
+   * @param xpathStr                        The supplied XPath expression 
+   *                                        string.
+   * 
+   * @throws TransformerException
+   * @throws Exception
+   */
+  private void xpathUnionOperandTypeCheck(String xpathStr) throws TransformerException, Exception {
+	  	  	  
+	  XPathContext xctxt = new XPathContext(); 
+	  
+	  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
+	  
+	  String xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+
+	  XPath xpathObj = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
+	  
+	  XObject xObj1 = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
+
+	  if ((xObj1 instanceof XNumber) || (xObj1 instanceof XString) || (xObj1 instanceof XBoolean) ||
+			                            (xObj1 instanceof XBooleanStatic) || (xObj1 instanceof XSAnyAtomicType)) {               
+		  String errMesgStr = "XPTY0004 : An XPath '|', or 'union' operator requires an xdm "
+																					  + "node as an operand. The supplied "
+																					  + "value, is an xdm atomic value."; 
+		  if (m_locator != null) {
+			  throw new TransformerException(errMesgStr, m_locator);
+		  }
+		  else {
+			  throw new TransformerException(errMesgStr);
+		  }
+	  }
   }
 
 }

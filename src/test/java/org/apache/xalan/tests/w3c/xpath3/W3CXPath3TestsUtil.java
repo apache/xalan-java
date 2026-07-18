@@ -219,8 +219,6 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String FN_COLON = "fn:";
     
-    public static final String XMLNS_COLON = (XMLConstants.XMLNS_ATTRIBUTE + ":");
-    
     public static final String UNLIKELY_XML_ELEM_START_TAG = "<unlikely_xml_elem_name>";
     
     public static final String UNLIKELY_XML_ELEM_END_TAG = "</unlikely_xml_elem_name>";
@@ -1133,7 +1131,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
 													String ignorePrefixesStr = resultElem1.getAttribute(IGNORE_PREFIXES);
 													if (TRUE.equals(ignorePrefixesStr)) {
-														expectedResultStr = expectedResultStr.replace(XMLNS_COLON + "fn", XMLConstants.XMLNS_ATTRIBUTE);
+														expectedResultStr = expectedResultStr.replace(org.apache.xalan.templates.Constants.XMLNS_COLON + "fn", XMLConstants.XMLNS_ATTRIBUTE);
 														expectedResultStr = expectedResultStr.replace(FN_COLON, EMPTY_STRING);
 													}
 												}
@@ -1584,7 +1582,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
 																String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
 																if (TRUE.equals(ignorePrefixesStr)) {
-																	expectedResultStr2 = expectedResultStr2.replace(XMLNS_COLON + "fn", XMLConstants.XMLNS_ATTRIBUTE);
+																	expectedResultStr2 = expectedResultStr2.replace(org.apache.xalan.templates.Constants.XMLNS_COLON + "fn", XMLConstants.XMLNS_ATTRIBUTE);
 																	expectedResultStr2 = expectedResultStr2.replace(FN_COLON, EMPTY_STRING);
 																}
 															}
@@ -2087,7 +2085,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															if (m_xslTransformTestSetFilePath.contains("analyze-string.xml")) {
 																String ignorePrefixesStr = elNode1.getAttribute(IGNORE_PREFIXES);
 																if (TRUE.equals(ignorePrefixesStr)) {
-																	expectedResultStr2 = expectedResultStr2.replace(XMLNS_COLON + "fn", XMLConstants.XMLNS_ATTRIBUTE);
+																	expectedResultStr2 = expectedResultStr2.replace(org.apache.xalan.templates.Constants.XMLNS_COLON + "fn", XMLConstants.XMLNS_ATTRIBUTE);
 																	expectedResultStr2 = expectedResultStr2.replace(FN_COLON, EMPTY_STRING);
 																}
 															}
@@ -2435,12 +2433,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	
     	Document document = m_xmlDocumentBuilder.newDocument();
     	Element elem = document.createElement("elem1");
-    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + "fn", XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
-    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + "math", XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
-    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + "map", XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
-    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + "array", XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
-    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + "err", org.apache.xalan.templates.Constants.XSL_ERROR_NAMESACE);
-    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + "xs", XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    	
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "fn", XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "math", XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "map", XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "array", XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "err", org.apache.xalan.templates.Constants.XSL_ERROR_NAMESACE);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "xs", XMLConstants.W3C_XML_SCHEMA_NS_URI);
     	
     	if (nsMap.size() > 0) {
     	   Set<Entry<String, String>> mapEntrySet1 = nsMap.entrySet();
@@ -2450,7 +2449,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     		  String prefix = mapEntry1.getKey();
     		  String uri = mapEntry1.getValue();
     		  
-    		  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLNS_COLON + prefix, uri);
+    		  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + prefix, uri);
     	   }
     	}
     	

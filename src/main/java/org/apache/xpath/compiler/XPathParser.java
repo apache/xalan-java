@@ -448,7 +448,7 @@ public class XPathParser
     }
 
     m_ops.setOp(0,OpCodes.OP_XPATH);
-    m_ops.setOp(OpMap.MAPINDEX_LENGTH,2);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);
         	
 	try {
 
@@ -456,7 +456,7 @@ public class XPathParser
       
       m_isXPathExprBeginParse = true;
       
-      Expr();
+      Expr();                
 
       if (m_token != null)
       {    	
@@ -523,7 +523,7 @@ public class XPathParser
         			}
 
         			error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-        					new Object[]{ extraTokens });
+        														   new Object[]{ extraTokens });
         		}
         	}
         	catch (org.apache.xpath.XPathProcessorException e)
@@ -551,7 +551,7 @@ public class XPathParser
 
         if (!isTrySecondTime) {
 	        error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-	              new Object[]{ extraTokens });
+	                                                       new Object[]{ extraTokens });
         }
       }
 
@@ -672,7 +672,7 @@ public class XPathParser
       }
 
       error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-            new Object[]{ extraTokens });
+                                                     new Object[]{ extraTokens });
     }
 
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
@@ -741,7 +741,7 @@ public class XPathParser
 		  }
 
 		  error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-				  new Object[]{ extraTokens });
+				                                         new Object[]{ extraTokens });
 	  }
 
 	  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
@@ -5159,7 +5159,7 @@ public class XPathParser
     {
       appendOp(2, OpCodes.OP_LITERAL);
       
-      Literal();
+      Literal(false);
 
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
                                              m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -6762,7 +6762,7 @@ public class XPathParser
 			  {
 				  if (!tokenIs(')'))
 				  {
-					  Literal();
+					  Literal(true);
 				  }
 			  }			  
 
@@ -6987,40 +6987,61 @@ public class XPathParser
    *
    * Literal  ::=  '"' [^"]* '"'
    * | "'" [^']* "'"
-   *
+   * 
+   * @param isXmlPi                      Boolean value true, if this
+   *                                     XPath literal check is for an
+   *                                     XML PITarget.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void Literal() throws javax.xml.transform.TransformerException
+  protected void Literal(boolean isXmlPi) throws javax.xml.transform.TransformerException
   {
 
-    int last = m_token.length() - 1;
-    char c0 = m_tokenChar;
-    char cX = m_token.charAt(last);
+	  int last = m_token.length() - 1;
+	  char c0 = m_tokenChar;
+	  char cX = m_token.charAt(last);
+	  
+	  if (((c0 == '\"') && (cX == '\"')) || ((c0 == '\'') && (cX == '\'')))
+	  {		  
+		  // Mutate the token to remove the quotes and have the XString object
+		  // already made.
+		  
+		  // This check is valid for an XML PITarget as well. 
+		  
+		  int tokenQueuePos = m_queueMark - 1;
 
-    if (((c0 == '\"') && (cX == '\"')) || ((c0 == '\'') && (cX == '\'')))
-    {
+		  m_ops.m_tokenQueue.setElementAt(null, tokenQueuePos);
 
-      // Mutate the token to remove the quotes and have the XString object
-      // already made.
-      int tokenQueuePos = m_queueMark - 1;
+		  Object obj = new XString(m_token.substring(1, last));
 
-      m_ops.m_tokenQueue.setElementAt(null,tokenQueuePos);
+		  m_ops.m_tokenQueue.setElementAt(obj, tokenQueuePos);
 
-      Object obj = new XString(m_token.substring(1, last));
+		  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), tokenQueuePos);
+		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
-      m_ops.m_tokenQueue.setElementAt(obj,tokenQueuePos);
+		  nextToken();
+	  }
+	  else if (isXmlPi) {
+		  //  Check for an XML PITarget
+		  
+		  int tokenQueuePos = m_queueMark - 1;
+		  
+		  m_ops.m_tokenQueue.setElementAt(null, tokenQueuePos);
 
-      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), tokenQueuePos);
-      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+		  Object obj = new XString(m_token);
 
-      nextToken();
-    }
-    else
-    {
-      error(XPATHErrorResources.ER_PATTERN_LITERAL_NEEDS_BE_QUOTED,
-            new Object[]{ m_token });  //"Pattern literal ("+m_token+") needs to be quoted!");
-    }
+		  m_ops.m_tokenQueue.setElementAt(obj, tokenQueuePos);
+
+		  m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), tokenQueuePos);
+		  m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+
+		  nextToken();
+	  }
+	  else
+	  {
+		  error(XPATHErrorResources.ER_PATTERN_LITERAL_NEEDS_BE_QUOTED,
+				  new Object[]{ m_token });  //"Pattern literal ("+m_token+") needs to be quoted!");
+	  }
   }
 
   /**

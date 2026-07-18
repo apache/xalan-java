@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-17T15:11:08Z" fail="9" name="op-union" pass="16" run="27" statusUnknown="2">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-18T11:10:14Z" fail="7" name="op-union" pass="20" run="27" statusUnknown="0">
    <testResult status="pass" testName="fn-union-node-args-001"/>
    <testResult status="pass" testName="fn-union-node-args-002"/>
    <testResult status="pass" testName="fn-union-node-args-004"/>
    <testResult status="pass" testName="fn-union-node-args-005"/>
-   <testResult testName="fn-union-node-args-006"/>
+   <testResult status="pass" testName="fn-union-node-args-006"/>
    <testResult status="pass" testName="fn-union-node-args-007"/>
    <testResult status="pass" testName="fn-union-node-args-008"/>
    <testResult status="pass" testName="fn-union-node-args-009"/>
-   <testResult testName="fn-union-node-args-010"/>
+   <testResult status="pass" testName="fn-union-node-args-010"/>
    <testResult status="pass" testName="fn-union-node-args-011"/>
    <testResult status="pass" testName="fn-union-node-args-012"/>
    <testResult status="pass" testName="fn-union-node-args-013"/>
@@ -24,6 +24,6 @@
    <testResult status="fail" testName="K2-SeqUnion-5"/>
    <testResult status="pass" testName="K2-SeqUnion-43"/>
    <testResult status="pass" testName="K2-SeqUnion-44"/>
-   <testResult status="fail" testName="K2-SeqUnion-46"/>
-   <testResult status="fail" testName="K2-SeqUnion-47"/>
+   <testResult status="pass" testName="K2-SeqUnion-46"/>
+   <testResult status="pass" testName="K2-SeqUnion-47"/>
 </testrun>

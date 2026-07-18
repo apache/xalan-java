@@ -17,6 +17,8 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.XMLConstants;
+
 /**
  * Specification of primary constant values used in the 
  * TransformerImpl classes.
@@ -542,5 +544,7 @@ public class Constants extends org.apache.xml.utils.Constants
   public static final String XSL_SER_NAMESACE = "http://www.w3.org/2010/xslt-xquery-serialization";
   
   public static final String XSL_SER_PARAMS = "serialization-parameters";
+  
+  public static final String XMLNS_COLON = (XMLConstants.XMLNS_ATTRIBUTE + ":");
   
 }

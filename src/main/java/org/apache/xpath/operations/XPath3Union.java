@@ -35,10 +35,10 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Class definition, providing implementation for XPath 3.1 
- * operators '|' & 'union', using XPath expression string 
- * values which are, XPath expression string values for 
- * union operator's first and second operands.
+ * Class definition, supporting implementation for XPath 3.1 
+ * operators '|' & 'union' (which are XPath equivalent operators). 
+ * This class, evaluates XPath union operator, by using XPath expression 
+ * string values for union operator's first and second operands.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
