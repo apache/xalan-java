@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:14Z" fail="71" name="match" pass="111" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-21T16:19:51Z" fail="70" name="match" pass="112" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -163,15 +163,7 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    </testResult>
    <testResult status="pass" testName="match-099"/>
    <testResult status="pass" testName="match-100"/>
-   <testResult status="fail" testName="match-101">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-         <errTrace>Pattern literal (anotherpi) needs to be quoted.</errTrace>
-         <errTrace>org.xml.sax.SAXException: Line# : 50, Column# : 70 XPST0003: Expected ), but found: anotherpi
-java.lang.Exception: Line# : 50, Column# : 70 XPST0003: Expected ), but found: anotherpi</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="match-101"/>
    <testResult status="pass" testName="match-102"/>
    <testResult status="pass" testName="match-103"/>
    <testResult status="pass" testName="match-104"/>
@@ -179,15 +171,7 @@ java.lang.Exception: Line# : 50, Column# : 70 XPST0003: Expected ), but found: a
    <testResult status="fail" testName="match-106">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="match-107">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-         <errTrace>Pattern literal (anotherpi) needs to be quoted.</errTrace>
-         <errTrace>org.xml.sax.SAXException: Line# : 47, Column# : 77 XPST0003: Expected ), but found: anotherpi
-java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: anotherpi</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="match-107"/>
    <testResult status="pass" testName="match-108"/>
    <testResult status="pass" testName="match-109"/>
    <testResult status="pass" testName="match-110"/>
@@ -406,9 +390,7 @@ java.lang.Exception: Line# : 47, Column# : 77 XPST0003: Expected ), but found: a
    <testResult status="pass" testName="match-245"/>
    <testResult status="pass" testName="match-246a"/>
    <testResult status="pass" testName="match-246b"/>
-   <testResult status="fail" testName="match-247">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="match-247"/>
    <testResult status="pass" testName="match-248"/>
    <testResult status="pass" testName="match-249"/>
    <testResult status="pass" testName="match-250"/>

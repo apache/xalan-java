@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -46,6 +47,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
 import org.apache.xpath.composite.XPathSequenceTypeData;
 import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
@@ -53,7 +55,6 @@ import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
-import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XslFunctionMemoization;
 import org.apache.xpath.objects.ElemFunctionItem;
@@ -99,7 +100,7 @@ import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * Implementation of XSLT 3.0 xsl:function instruction.
+ * Implementation of an XSLT 3.0 xsl:function instruction.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -386,486 +387,513 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * Method definition, to evaluate result of xsl:function call. 
+   * Method definition, to evaluate an xsl:function call. 
    * 
    * @param transformer						An XSL TransformerImpl object 
    *                                        instance.
-   * @param argSequence						An xdm sequence, representing arguments
-   *                                        to xsl:function call.
+   * @param argSequence						The supplied xsl:function call arguments
+   *                                        as xdm sequence items.
    * @return                                Result of xsl:function call
    * @throws TransformerException
    */
-  public XObject evaluateXslFunction(TransformerImpl transformer, ResultSequence argSequence) throws TransformerException {
+  public XObject evaluateXslFunction(TransformerImpl transformer, ResultSequence argSequence) 
+		                                                                                  throws TransformerException {
       
 	  XObject result = null;
       
-      XPathContext xctxt = transformer.getXPathContext();            
+      XPathContext xctxt = transformer.getXPathContext();
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
-      String funcLocalName = m_name.getLocalName();
-      String funcNameSpaceUri = m_name.getNamespaceURI();
+      final int sourceNode = xctxt.getCurrentNode();
+      final int currentExprNode = xctxt.getCurrentExpressionNode();
       
-      // Validate few of the information of xsl:function's xsl:param declarations      
-      Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
-      int idx = 0;
+      final XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+      final int xpath3CtxtPos = xctxt.getXPath3ContextPosition();
+      final int xpath3CtxtSize = xctxt.getXPath3ContextSize();
       
-      PrefixResolver prefixResolver = xctxt.getNamespaceContext();
-      boolean isOnlyElemTextLiteral = false;
-      boolean isOtherElem = false;
-      for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
-    	 if ((elem instanceof ElemTextLiteral) && !isOtherElem) {
-    		isOnlyElemTextLiteral = true; 
-         }
-    	 else if (!(elem instanceof ElemParam)) {
-    		isOtherElem = true;
-    		isOnlyElemTextLiteral = false;
-    	 }
-    	 
-         String nodeName = elem.getNodeName();         
-         if (nodeName.contains(":")) {
-            String nsPrefix = nodeName.substring(0, nodeName.indexOf(':'));
-            String namespaceUri = prefixResolver.getNamespaceForPrefix(nsPrefix);
-            String nodeLocalName = nodeName.substring(nodeName.indexOf(':') + 1);
-            if ((Constants.ELEMNAME_PARAMVARIABLE_STRING).equals(nodeLocalName) && 
-                                                                             (Constants.S_XSLNAMESPACEURL).equals(namespaceUri)) {
-                String xslParamName = elem.getAttribute(Constants.ATTRNAME_NAME);
-                if (xslParamMap.get(new QName(xslParamName)) == null) {
-                   xslParamMap.put(new QName(xslParamName), Integer.valueOf(idx)); 
-                }
-                else {
-                   throw new TransformerException("XPST0017 : An XSL function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
-                   		                                                                     + "has more than one param '" + 
-                		                                                                       xslParamName + "' declaration.", srcLocator); 
-                }
-            }
-         }
-         else if (elem instanceof ElemParam) {
-             ElemParam elemParam = (ElemParam)elem;
-             QName elemParamQName = elemParam.getName();
-             if (xslParamMap.get(elemParamQName) == null) {
-                if (!elemParam.getRequired()) {
-                	throw new TransformerException("XTSE0020 : An XSL function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
-                                                                                              + "param attribute 'required''s value "
-                                                                                              + "cannot be 'no' with lexical forms no, false, 0.", srcLocator); 
-                }
-            	 
-                xslParamMap.put(elemParamQName, Integer.valueOf(idx)); 
-             }
-             else {
-            	 throw new TransformerException("XPST0017 : An XSL function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
-                                                                                           + "has more than one param '" + elemParamQName.toString() 
-                                                                                           + "' declaration.", srcLocator); 
-             } 
-         }
-         
-         idx++;
-      }
-      
-      if (xslParamMap.size() != argSequence.size()) {
-         throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-					                                                                       " call's argument count is not equal "
-					                                                                       + "to number of function's param declarations.", srcLocator);  
-      }
-      
-      Collection<Integer> xslParamIdxs = xslParamMap.values();
-      Object[] idxArr = xslParamIdxs.toArray();
-      if (idxArr.length > 0) {
-         Arrays.sort(idxArr);
-         int currVal = ((Integer)idxArr[0]).intValue();
-         if (currVal != 0) {
-            throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-				                                                                           " declaration has a non 'param' declaration as first child "
-				                                                                           + "element of 'function'.", srcLocator); 
-         }
-         
-         for (int idx1 = 1; idx1 < idxArr.length; idx1++) {
-            int nextVal = ((Integer)idxArr[idx1]).intValue();
-            if (nextVal != (currVal + 1)) {
-               throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-			                                                                               " declaration has a non 'param' declaration between two "
-			                                                                               + "'param' declarations.", srcLocator); 
-            }
-            else {
-               currVal = nextVal;  
-            }
-         }
-      }
-      
-      if (m_newEachTime != null) {
-    	 String xslFuncNewEachTimeNormalizedValue = m_newEachTime.trim();
-    	 if (!("yes".equals(xslFuncNewEachTimeNormalizedValue) || "true".equals(xslFuncNewEachTimeNormalizedValue) 
-    			                                               || "1".equals(xslFuncNewEachTimeNormalizedValue) 
-    			                                               || "no".equals(xslFuncNewEachTimeNormalizedValue) 
-    			                                               || "false".equals(xslFuncNewEachTimeNormalizedValue) 
-    			                                               || "0".equals(xslFuncNewEachTimeNormalizedValue) 
-    			                                               || "maybe".equals(xslFuncNewEachTimeNormalizedValue))) {
-    		 throw new TransformerException("XTSE0020 : An XSL function declaration " + "{" + funcNameSpaceUri + "}" + funcLocalName + " "
-    		 		                                                                  + "specifies a disallowed value " + m_newEachTime + " for attribute 'new-each-time'. "
-							                                                          + "An XSL function declaration's attribute 'new-each-time' may have one of following "
-							                                                          + "values : yes, true, 1, no, false, 0, maybe.", srcLocator);
-    		 
-    	 }
-    	 else {
-    		// We may try to implement this feature
-    	 }    	 
-      }
-      
-      int paramIdx = 0;
-      List<XObject> argList = new ArrayList<XObject>();      
-      for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
-    		  													elem = elem.getNextSiblingElem()) {
-    	  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
-    		  XObject argValue = argSequence.item(paramIdx);
-    		  argList.add(argValue);
-    	  }
-      }
-      
-      if (m_cache) {
-    	  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList);
-    	  int funcResultCacheSize = (funcMemoization.func_result_cache).size();
-    	  for (int idx2 = 0; idx2 < funcResultCacheSize; idx2++) {
-    		  XslFunctionMemoization obj2 = (funcMemoization.func_result_cache).get(idx2);
-    		  if (obj2.equals(funcMemoization)) {
-    			  result = obj2.getResult();
+      try {    	  
+    	  String funcLocalName = m_name.getLocalName();
+    	  String funcNameSpaceUri = m_name.getNamespaceURI();
 
-    			  return result;
+    	  // Validate few of the information of xsl:function's xsl:param declarations      
+    	  Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
+    	  int idx = 0;
+
+    	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+    	  boolean isOnlyElemTextLiteral = false;
+    	  boolean isOtherElem = false;
+    	  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
+    		  if ((elem instanceof ElemTextLiteral) && !isOtherElem) {
+    			  isOnlyElemTextLiteral = true; 
     		  }
-    	  }
-      }
-      
-      VariableStack varStack = xctxt.getVarStack();            
-      int argsFrame = 0;
-      
-      try {
-    	  if (xslParamMap.size() > 0) {
-    		  /**
-    		   * Add all of the xsl:function parameter value mappings to XPath context's
-    		   * variable stack, after which the XSL instructions following xsl:param 
-    		   * declarations can dereference those parameters.
-    		   */
-    		  argsFrame = varStack.link(xslParamMap.size());
+    		  else if (!(elem instanceof ElemParam)) {
+    			  isOtherElem = true;
+    			  isOnlyElemTextLiteral = false;
+    		  }
 
-    		  paramIdx = 0;
-    		  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
-    				                                                   elem = elem.getNextSiblingElem()) {
-    			  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
-    				  XObject argValue = argSequence.item(paramIdx);    				  
-    				  XObject argConvertedVal = null;
-    				  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
-    				  
-    				  if (paramAsAttrStrVal != null) {
-    					  List prefixTable = elem.getPrefixTable();    					  
-    					  argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
-    							                                               prefixTable, paramAsAttrStrVal, transformer, xctxt);
+    		  String nodeName = elem.getNodeName();         
+    		  if (nodeName.contains(":")) {
+    			  String nsPrefix = nodeName.substring(0, nodeName.indexOf(':'));
+    			  String namespaceUri = prefixResolver.getNamespaceForPrefix(nsPrefix);
+    			  String nodeLocalName = nodeName.substring(nodeName.indexOf(':') + 1);
+    			  if ((Constants.ELEMNAME_PARAMVARIABLE_STRING).equals(nodeLocalName) && 
+    					  															(Constants.S_XSLNAMESPACEURL).equals(namespaceUri)) {
+    				  String xslParamName = elem.getAttribute(Constants.ATTRNAME_NAME);
+    				  if (xslParamMap.get(new QName(xslParamName)) == null) {
+    					  xslParamMap.put(new QName(xslParamName), Integer.valueOf(idx)); 
     				  }
     				  else {
-    					  argConvertedVal = argValue;  
+    					  throw new TransformerException("XPST0017 : An XSL function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
+																    							    + "has more than one param '" + 
+																    							      xslParamName + "' declaration.", srcLocator); 
+    				  }
+    			  }
+    		  }
+    		  else if (elem instanceof ElemParam) {
+    			  ElemParam elemParam = (ElemParam)elem;
+    			  QName elemParamQName = elemParam.getName();
+    			  if (xslParamMap.get(elemParamQName) == null) {
+    				  if (!elemParam.getRequired()) {
+    					  throw new TransformerException("XTSE0020 : An XSL function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
+																	    							+ "param attribute 'required''s value "
+																	    							+ "cannot be 'no' with lexical forms no, false, 0.", srcLocator); 
     				  }
 
-    				  if (argConvertedVal instanceof ResultSequence) {                
-    					  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(
-    							                                                                              (ResultSequence)argConvertedVal, xctxt);
-    					  if (nodeSet != null) {
-    						  argConvertedVal = nodeSet;  
-    					  }
-    				  }
-
-    				  varStack.setLocalVariable(paramIdx, argConvertedVal, argsFrame);
-    				  paramIdx++;
+    				  xslParamMap.put(elemParamQName, Integer.valueOf(idx)); 
     			  }
     			  else {
-    				  break; 
+    				  throw new TransformerException("XPST0017 : An XSL function declaration {" + funcNameSpaceUri + "}" + funcLocalName + " "
+																	    						+ "has more than one param '" + elemParamQName.toString() 
+																	    						+ "' declaration.", srcLocator); 
+    			  } 
+    		  }
+
+    		  idx++;
+    	  }
+
+    	  if (xslParamMap.size() != argSequence.size()) {
+    		  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+															    				  " call's argument count is not equal "
+															    				  + "to number of function's param declarations.", srcLocator);  
+    	  }
+
+    	  Collection<Integer> xslParamIdxs = xslParamMap.values();
+    	  Object[] idxArr = xslParamIdxs.toArray();
+    	  if (idxArr.length > 0) {
+    		  Arrays.sort(idxArr);
+    		  int currVal = ((Integer)idxArr[0]).intValue();
+    		  if (currVal != 0) {
+    			  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+															    					  " declaration has a non 'param' declaration as first child "
+															    					  + "element of 'function'.", srcLocator); 
+    		  }
+
+    		  for (int idx1 = 1; idx1 < idxArr.length; idx1++) {
+    			  int nextVal = ((Integer)idxArr[idx1]).intValue();
+    			  if (nextVal != (currVal + 1)) {
+    				  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+																    						  " declaration has a non 'param' declaration between two "
+																    						  + "'param' declarations.", srcLocator); 
     			  }
-    		  }                    
+    			  else {
+    				  currVal = nextVal;  
+    			  }
+    		  }
     	  }
 
-          // Evaluate xsl:function's result, before processing with "as" attribute    	  
-    	  ElemTemplateElement elemTemplateElement = getFirstChildElem();
-    	  if ((elemTemplateElement instanceof ElemValueOf) && (elemTemplateElement.getNextSiblingElem() == null)) {
-    		  // An xsl:function has single xsl:value-of child instruction
-    		  ElemValueOf elemValueOf = (ElemValueOf)elemTemplateElement;
-    		  XPath selectAttrXPath = elemValueOf.getSelect();
-    		  String strValue = null;
-    		  if (selectAttrXPath != null) {
-    			  int sourceNode = xctxt.getCurrentNode();
-    			  XObject xObj = selectAttrXPath.execute(xctxt, sourceNode, prefixResolver);
-    			  strValue = XslTransformEvaluationHelper.getStrVal(xObj); 
+    	  if (m_newEachTime != null) {
+    		  String xslFuncNewEachTimeNormalizedValue = m_newEachTime.trim();
+    		  if (!("yes".equals(xslFuncNewEachTimeNormalizedValue) || "true".equals(xslFuncNewEachTimeNormalizedValue) 
+											    			  	    || "1".equals(xslFuncNewEachTimeNormalizedValue) 
+											    				    || "no".equals(xslFuncNewEachTimeNormalizedValue) 
+											    				    || "false".equals(xslFuncNewEachTimeNormalizedValue) 
+											    				    || "0".equals(xslFuncNewEachTimeNormalizedValue) 
+											    				    || "maybe".equals(xslFuncNewEachTimeNormalizedValue))) {
+    			  throw new TransformerException("XTSE0020 : An XSL function declaration " + "{" + funcNameSpaceUri + "}" + funcLocalName + " "
+														    					  + "specifies a disallowed value " + m_newEachTime + " for attribute 'new-each-time'. "
+														    					  + "An XSL function declaration's attribute 'new-each-time' may have one of following "
+														    					  + "values : yes, true, 1, no, false, 0, maybe.", srcLocator);
+
     		  }
-    		  else {		  
-    			  strValue = transformer.transformToString(elemTemplateElement);    		     
+    		  else {
+    			  // We may try to implement this feature
+    		  }    	 
+    	  }
+
+    	  int paramIdx = 0;
+    	  List<XObject> argList = new ArrayList<XObject>();      
+    	  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
+    			  														elem = elem.getNextSiblingElem()) {
+    		  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+    			  XObject argValue = argSequence.item(paramIdx);
+    			  argList.add(argValue);
+    		  }
+    	  }
+
+    	  if (m_cache) {
+    		  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList);
+    		  int funcResultCacheSize = (funcMemoization.func_result_cache).size();
+    		  for (int idx2 = 0; idx2 < funcResultCacheSize; idx2++) {
+    			  XslFunctionMemoization obj2 = (funcMemoization.func_result_cache).get(idx2);
+    			  if (obj2.equals(funcMemoization)) {
+    				  result = obj2.getResult();
+
+    				  return result;
+    			  }
+    		  }
+    	  }
+
+    	  VariableStack varStack = xctxt.getVarStack();            
+    	  int argsFrame = 0;
+
+    	  try {
+    		  if (xslParamMap.size() > 0) {
+    			  /**
+    			   * Add all of the xsl:function parameter value mappings to XPath context's
+    			   * variable stack, after which the XSL instructions following xsl:param 
+    			   * declarations can dereference those parameters.
+    			   */
+    			  argsFrame = varStack.link(xslParamMap.size());
+
+    			  paramIdx = 0;
+    			  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
+    					  															elem = elem.getNextSiblingElem()) {
+    				  if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+    					  XObject argValue = argSequence.item(paramIdx);    				  
+    					  XObject argConvertedVal = null;
+    					  String paramAsAttrStrVal = ((ElemParam)elem).getAs();
+
+    					  if (paramAsAttrStrVal != null) {
+    						  List prefixTable = elem.getPrefixTable();    					  
+    						  argConvertedVal = getParamValueAsAttributeProcessing(argValue, funcLocalName, funcNameSpaceUri, paramIdx, 
+    								  																						prefixTable, paramAsAttrStrVal, transformer, xctxt);
+    					  }
+    					  else {
+    						  argConvertedVal = argValue;  
+    					  }
+
+    					  if (argConvertedVal instanceof ResultSequence) {                
+    						  XMLNodeCursorImpl nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(
+    								  																				(ResultSequence)argConvertedVal, xctxt);
+    						  if (nodeSet != null) {
+    							  argConvertedVal = nodeSet;  
+    						  }
+    					  }
+
+    					  varStack.setLocalVariable(paramIdx, argConvertedVal, argsFrame);
+    					  paramIdx++;
+    				  }
+    				  else {
+    					  break; 
+    				  }
+    			  }                    
     		  }
 
-    		  result = new XSString(strValue);    		      		  
+    		  // Evaluate xsl:function's result, before processing with "as" attribute    	  
+    		  ElemTemplateElement elemTemplateElement = getFirstChildElem();
+    		  if ((elemTemplateElement instanceof ElemValueOf) && (elemTemplateElement.getNextSiblingElem() == null)) {
+    			  // An xsl:function has single xsl:value-of child instruction
+    			  ElemValueOf elemValueOf = (ElemValueOf)elemTemplateElement;
+    			  XPath selectAttrXPath = elemValueOf.getSelect();
+    			  String strValue = null;
+    			  if (selectAttrXPath != null) {
+    				  //int sourceNode = xctxt.getCurrentNode();
+    				  XObject xObj = selectAttrXPath.execute(xctxt, sourceNode, prefixResolver);
+    				  strValue = XslTransformEvaluationHelper.getStrVal(xObj); 
+    			  }
+    			  else {		  
+    				  strValue = transformer.transformToString(elemTemplateElement);    		     
+    			  }
+
+    			  result = new XSString(strValue);    		      		  
+    		  }
+    		  else {
+    			  result = getXslFunctionResult(transformer, xctxt); 
+    		  }
     	  }
-    	  else {
-    		  result = getXslFunctionResult(transformer, xctxt); 
+    	  catch (TransformerException ex) {
+    		  throw ex;
     	  }
-      }
-      catch (TransformerException ex) {
-    	  throw ex;
+    	  finally {
+    		  if (xslParamMap.size() > 0) {
+    			  varStack.unlink(); 
+    		  }    	  
+    	  }
+
+    	  XObject funcResultConvertedVal = result;
+
+    	  String funcAsAttrStrVal = getAs();
+
+    	  if (funcAsAttrStrVal == null) {
+    		  funcAsAttrStrVal = "item()*"; 
+    	  }
+
+    	  if (funcAsAttrStrVal != null) {    	  
+    		  try {
+    			  XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+
+    			  XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+    			  int seqTypeItemOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+
+    			  if (isOnlyElemTextLiteral) {    	    	
+    				  funcResultConvertedVal = new XSString((XslTransformEvaluationHelper.getStrVal(funcResultConvertedVal)).trim());
+
+    				  CastAs castAs = new CastAs();
+    				  funcResultConvertedVal = castAs.operate(funcResultConvertedVal, seqExpectedTypeData);
+
+    				  if (m_cache) {
+    					  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    					  (funcMemoization.func_result_cache).add(funcMemoization);
+    				  }
+
+    				  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    					  SerializerUtils.m_xdmAttrList.clear();
+    				  }
+
+    				  return funcResultConvertedVal;
+    			  }    	          	         	 
+
+    			  if (funcResultConvertedVal instanceof XPathInlineFunction) {
+    				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
+    					  if (m_cache) {
+    						  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    						  (funcMemoization.func_result_cache).add(funcMemoization);
+    					  }
+
+    					  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    						  SerializerUtils.m_xdmAttrList.clear();
+    					  }
+
+    					  return funcResultConvertedVal;
+    				  }
+
+    				  if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
+    					  if (m_cache) {
+    						  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    						  (funcMemoization.func_result_cache).add(funcMemoization);
+    					  }
+
+    					  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    						  SerializerUtils.m_xdmAttrList.clear();
+    					  }
+
+    					  return funcResultConvertedVal;
+    				  }
+    				  else {
+    					  throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+																    							  ", doesn't match the declared function result type " + 
+																    							  funcAsAttrStrVal + ".", srcLocator); 
+    				  }
+    			  }
+    			  else if ((funcResultConvertedVal instanceof XPathMap) || (funcResultConvertedVal instanceof XPathArray)) {
+    				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
+    					  if (m_cache) {
+    						  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    						  (funcMemoization.func_result_cache).add(funcMemoization);
+    					  }
+
+    					  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    						  SerializerUtils.m_xdmAttrList.clear();
+    					  }
+
+    					  return funcResultConvertedVal;
+    				  }
+
+    				  try {
+    					  funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(funcResultConvertedVal, funcAsAttrStrVal, null, xctxt);
+
+    					  if (m_cache) {
+    						  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    						  (funcMemoization.func_result_cache).add(funcMemoization);
+    					  }
+
+    					  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    						  SerializerUtils.m_xdmAttrList.clear();
+    					  }
+
+    					  return funcResultConvertedVal;
+    				  }
+    				  catch (TransformerException ex) {
+    					  throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+																		    							  ", doesn't match the declared function result type " + 
+																		    							  funcAsAttrStrVal + ".", srcLocator);
+    				  }             	            	              	
+    			  }
+    			  else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            
+    				  int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
+
+    				  XPathSequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();        		
+    				  boolean isSeqCardinalityOk = false;
+    				  if ((funcItemSeqSize == 0) && ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    						  																(seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+    					  isSeqCardinalityOk = true;
+    				  }
+    				  else if ((funcItemSeqSize == 1) && ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
+							    						  (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+							    						  (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
+							    						  (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
+    					  // An XPath sequence type occurrence indicator with value absent, or any 
+    					  // other occurrence indicator is ok.
+    					  isSeqCardinalityOk = true;
+    				  }
+    				  else if ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
+    						   (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
+    					  // here, funcItemSeqSize > 1
+    					  isSeqCardinalityOk = true;
+    				  }
+
+    				  if (!isSeqCardinalityOk) {
+    					  throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+												    							  ", doesn't match the declared function result type " + funcAsAttrStrVal + ". The cardinality " + 
+												    							  funcItemSeqSize + " of function's result, doesn't conform to what is specified in XSL function "
+												    							  + "result's 'as' attribute value " + funcAsAttrStrVal + ".", srcLocator);
+    				  }
+
+    				  if (sequenceTypeFunctionTest != null) {
+    					  if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
+    						  if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
+    							  funcResultConvertedVal = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
+    							  (XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
+    						  }
+    						  else {
+    							  funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
+    						  }
+
+    						  if (m_cache) {
+    							  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    							  (funcMemoization.func_result_cache).add(funcMemoization);
+    						  }
+
+    						  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    							  SerializerUtils.m_xdmAttrList.clear();
+    						  }
+
+    						  return funcResultConvertedVal;
+    					  }
+    					  else {
+    						  if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
+    							  funcResultConvertedVal = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);        					
+    							  if (funcResultConvertedVal instanceof XPathNamedFunctionReference) {
+    								  XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)funcResultConvertedVal;
+    								  if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
+    									  String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
+    									  int actualFuncArity = 0;           
+    									  if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
+    											  																	(Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+    										  actualFuncArity = xpathNamedFunctionReference.getConcatArity();
+    									  }
+    									  else {
+    										  actualFuncArity = xpathNamedFunctionReference.getArity(); 
+    									  }
+
+    									  List<String> expectedParamList = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
+    									  if (actualFuncArity != expectedParamList.size()) {
+    										  throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+														    												  ", doesn't match the declared function result type " + funcAsAttrStrVal + 
+														    												  ". The function arity specification doesn't match.", srcLocator); 
+    									  }        						   
+    								  }        					   
+    							  }
+
+    							  (XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
+    						  }
+    						  else {
+    							  funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
+    							  (XslTransformData.m_xpathNamedFunctionRefSequence).clear();
+    						  }
+
+    						  if (m_cache) {
+    							  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    							  (funcMemoization.func_result_cache).add(funcMemoization);
+    						  }
+
+    						  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    							  SerializerUtils.m_xdmAttrList.clear();
+    						  }
+
+    						  return funcResultConvertedVal;
+    					  }
+    				  }
+    			  }
+
+    			  if (ElemPerformSort.m_namespace_result_seq.size() > 0) {
+    				  result = ElemPerformSort.m_namespace_result_seq;            	 
+    				  funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);            	 
+    				  (ElemPerformSort.m_namespace_result_seq).clear();
+    			  }
+    			  else if (result instanceof XSString) {
+    				  funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
+    			  }
+    			  else {
+    				  funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
+    			  }
+
+    			  if (funcResultConvertedVal == null) {
+    				  funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
+    				  if (funcResultConvertedVal == null) {
+    					  if ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    							  																	(seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+    						  funcResultConvertedVal = new ResultSequence();
+    					  }
+    					  else {
+    						  throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+															    								    ", doesn't match the declared function result type " + 
+															    								    funcAsAttrStrVal + ".", srcLocator);
+    					  }
+    				  }
+    				  else if (funcResultConvertedVal instanceof XMLNodeCursorImpl) {
+    					  funcResultConvertedVal = xslSequenceTransformTextnode(xctxt, (XMLNodeCursorImpl)funcResultConvertedVal);
+    				  }
+    			  }
+    		  }
+    		  catch (TransformerException ex) {
+    			  throw new TransformerException(ex.getMessage(), srcLocator); 
+    		  }
+    		  finally {
+    			  ElemVariable.m_isXPathNamedFunctionRefSequenceVar = false;    		 
+    		  }
+    	  }
+
+    	  if (funcResultConvertedVal instanceof ResultSequence) {
+    		  ResultSequence resultSeq = (ResultSequence)funcResultConvertedVal;
+    		  if (resultSeq.size() == 1) {
+    			  funcResultConvertedVal = resultSeq.item(0);   
+    		  }
+    	  }
+
+    	  if (m_cache) {
+    		  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
+    		  (funcMemoization.func_result_cache).add(funcMemoization);
+    	  }
+
+    	  if (SerializerUtils.m_xdmAttrList.size() > 0) {
+    		  SerializerUtils.m_xdmAttrList.clear();
+    	  }
+
+    	  if (funcResultConvertedVal instanceof XMLNodeCursorImpl) {
+    		  funcResultConvertedVal = xslSequenceTransformTextnode(xctxt, (XMLNodeCursorImpl)funcResultConvertedVal);
+    	  }
+
+    	  return funcResultConvertedVal;
       }
       finally {
-    	  if (xslParamMap.size() > 0) {
-    		  varStack.unlink(); 
-    	  }    	  
+    	  /**
+    	   * Before, xsl:function returns the result to it's caller instruction,
+    	   * an XPath context information is reset to values before xsl:function
+    	   * an XPath context information is reset to values before xsl:function
+    	   */
+    	  
+    	  xctxt.popCurrentNode();
+    	  xctxt.pushCurrentNode(sourceNode);
+    	  
+    	  xctxt.popCurrentExpressionNode();
+    	  xctxt.pushCurrentExpressionNode(currentExprNode);
+    	  
+    	  xctxt.setXPath3ContextItem(xpath3CtxtItem);
+    	  xctxt.setXPath3ContextPosition(xpath3CtxtPos);
+    	  xctxt.setXPath3ContextSize(xpath3CtxtSize);
       }
-                        
-      XObject funcResultConvertedVal = result;
-      
-      String funcAsAttrStrVal = getAs();
-      
-      if (funcAsAttrStrVal == null) {
-    	 funcAsAttrStrVal = "item()*"; 
-      }
-      
-      if (funcAsAttrStrVal != null) {    	  
-    	  try {
-    		XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
-    		
-    		XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-    		int seqTypeItemOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
-    		
-    	    if (isOnlyElemTextLiteral) {    	    	
-    		    funcResultConvertedVal = new XSString((XslTransformEvaluationHelper.getStrVal(funcResultConvertedVal)).trim());
-    		    
-    		    CastAs castAs = new CastAs();
-    		    funcResultConvertedVal = castAs.operate(funcResultConvertedVal, seqExpectedTypeData);
-    		    
-    		    if (m_cache) {
-    		       XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-    		       (funcMemoization.func_result_cache).add(funcMemoization);
-    		    }
-    		    
-    		    if (SerializerUtils.m_xdmAttrList.size() > 0) {
-    		       SerializerUtils.m_xdmAttrList.clear();
-    		    }
-    		    
-    		    return funcResultConvertedVal;
-    	    }    	          	         	 
-        	 
-             if (funcResultConvertedVal instanceof XPathInlineFunction) {
-            	if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
-            		if (m_cache) {
-         		       XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-         		       (funcMemoization.func_result_cache).add(funcMemoization);
-         		    }
-            		
-            		if (SerializerUtils.m_xdmAttrList.size() > 0) {
-         		       SerializerUtils.m_xdmAttrList.clear();
-         		    }
-            		
-            	    return funcResultConvertedVal;
-            	}
-            	
-            	if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
-            		if (m_cache) {
-            			XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-            			(funcMemoization.func_result_cache).add(funcMemoization);
-            		}
-            		
-            		if (SerializerUtils.m_xdmAttrList.size() > 0) {
-         		       SerializerUtils.m_xdmAttrList.clear();
-         		    }
-
-            		return funcResultConvertedVal;
-            	}
-            	else {
-            	   throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-										                                                                         ", doesn't match the declared function result type " + 
-										                                                                         funcAsAttrStrVal + ".", srcLocator); 
-            	}
-             }
-             else if ((funcResultConvertedVal instanceof XPathMap) || (funcResultConvertedVal instanceof XPathArray)) {
-            	 if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
-            		 if (m_cache) {
-            			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-            			 (funcMemoization.func_result_cache).add(funcMemoization);
-            		 }
-            		 
-            		 if (SerializerUtils.m_xdmAttrList.size() > 0) {
-          		        SerializerUtils.m_xdmAttrList.clear();
-          		     }
-
-            		 return funcResultConvertedVal;
-            	 }
-            	 
-            	 try {
-            		 funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(funcResultConvertedVal, funcAsAttrStrVal, null, xctxt);
-            		 
-            		 if (m_cache) {
-            			 XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-            			 (funcMemoization.func_result_cache).add(funcMemoization);
-            		 }
-            		 
-            		 if (SerializerUtils.m_xdmAttrList.size() > 0) {
-          		        SerializerUtils.m_xdmAttrList.clear();
-          		     }
-
-            		 return funcResultConvertedVal;
-            	 }
-            	 catch (TransformerException ex) {
-            		 throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-																			            				 ", doesn't match the declared function result type " + 
-																			            				 funcAsAttrStrVal + ".", srcLocator);
-            	 }             	            	              	
-             }
-             else if (((XslTransformData.m_xpathNamedFunctionRefSequence).size() > 0) && !ElemVariable.m_isXPathNamedFunctionRefSequenceVar) {            
-            	int funcItemSeqSize = (XslTransformData.m_xpathNamedFunctionRefSequence).size();
-        		
-        		XPathSequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();        		
-        		boolean isSeqCardinalityOk = false;
-        		if ((funcItemSeqSize == 0) && ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-        				                       (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
-        		   isSeqCardinalityOk = true;
-        		}
-        		else if ((funcItemSeqSize == 1) && ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) || 
-        				                            (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-        				                            (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) ||
-        				                            (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
-        		   // An XPath sequence type occurrence indicator with value absent, or any 
-        		   // other occurrence indicator is ok.
-        		   isSeqCardinalityOk = true;
-        		}
-        		else if ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) ||
-        				 (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) {
-        		   // here, funcItemSeqSize > 1
-        		   isSeqCardinalityOk = true;
-        		}
-        		
-        		if (!isSeqCardinalityOk) {
-        			throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-													                                                    ", doesn't match the declared function result type " + funcAsAttrStrVal + ". The cardinality " + 
-													        					                        funcItemSeqSize + " of function's result, doesn't conform to what is specified in XSL function "
-													        					                        + "result's 'as' attribute value " + funcAsAttrStrVal + ".", srcLocator);
-        		}
-            	
-        		if (sequenceTypeFunctionTest != null) {
-        			if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
-        				if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
-        					funcResultConvertedVal = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);
-        					(XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
-        				}
-        				else {
-        					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
-        				}
-        				
-        				if (m_cache) {
-        					XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-        					(funcMemoization.func_result_cache).add(funcMemoization);
-        				}
-        				
-        				if (SerializerUtils.m_xdmAttrList.size() > 0) {
-        	    		   SerializerUtils.m_xdmAttrList.clear();
-        	    		}
-
-        				return funcResultConvertedVal;
-        			}
-        			else {
-        				if ((XslTransformData.m_xpathNamedFunctionRefSequence).size() == 1) {
-        					funcResultConvertedVal = (XslTransformData.m_xpathNamedFunctionRefSequence).item(0);        					
-        					if (funcResultConvertedVal instanceof XPathNamedFunctionReference) {
-        					   XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)funcResultConvertedVal;
-        					   if (xpathNamedFunctionReference.getXslStylesheetFunction() == null) {
-        						   String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
-        						   int actualFuncArity = 0;           
-        						   if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
-        								   																     (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
-        							   actualFuncArity = xpathNamedFunctionReference.getConcatArity();
-        						   }
-        						   else {
-        							   actualFuncArity = xpathNamedFunctionReference.getArity(); 
-        						   }
-        						   
-        						   List<String> expectedParamList = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
-        						   if (actualFuncArity != expectedParamList.size()) {
-        							   throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                                                                             ", doesn't match the declared function result type " + funcAsAttrStrVal + 
-                                                                                                                             ". The function arity specification doesn't match.", srcLocator); 
-        						   }        						   
-        					   }        					   
-        					}
-        					
-        					(XslTransformData.m_xpathNamedFunctionRefSequence).remove(0);
-        				}
-        				else {
-        					funcResultConvertedVal = XslTransformData.m_xpathNamedFunctionRefSequence;
-        					(XslTransformData.m_xpathNamedFunctionRefSequence).clear();
-        				}
-        				
-        				if (m_cache) {
-        					XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-        					(funcMemoization.func_result_cache).add(funcMemoization);
-        				}
-        				
-        				if (SerializerUtils.m_xdmAttrList.size() > 0) {
-        	    		   SerializerUtils.m_xdmAttrList.clear();
-        	    		}
-
-        				return funcResultConvertedVal;
-        			}
-        		}
-             }
-             
-             if (ElemPerformSort.m_namespace_result_seq.size() > 0) {
-            	 result = ElemPerformSort.m_namespace_result_seq;            	 
-            	 funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);            	 
-            	 (ElemPerformSort.m_namespace_result_seq).clear();
-             }
-             else if (result instanceof XSString) {
-            	 funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
-             }
-             else {
-                 funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
-             }
-            
-             if (funcResultConvertedVal == null) {
-                funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);                                
-                if (funcResultConvertedVal == null) {
-                   if ((seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
-                	   (seqTypeItemOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
-                	   funcResultConvertedVal = new ResultSequence();
-                   }
-                   else {
-                       throw new TransformerException("XPTY0004 : An XSL function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                                                                          ", doesn't match the declared function result type " + 
-                		                                                                                                  funcAsAttrStrVal + ".", srcLocator);
-                   }
-                }
-                else if (funcResultConvertedVal instanceof XMLNodeCursorImpl) {
-                   funcResultConvertedVal = xslSequenceTransformTextnode(xctxt, (XMLNodeCursorImpl)funcResultConvertedVal);
-                }
-             }
-         }
-         catch (TransformerException ex) {
-            throw new TransformerException(ex.getMessage(), srcLocator); 
-         }
-    	 finally {
-    		ElemVariable.m_isXPathNamedFunctionRefSequenceVar = false;    		 
-    	 }
-      }
-      
-      if (funcResultConvertedVal instanceof ResultSequence) {
-         ResultSequence resultSeq = (ResultSequence)funcResultConvertedVal;
-         if (resultSeq.size() == 1) {
-            funcResultConvertedVal = resultSeq.item(0);   
-         }
-      }
-      
-      if (m_cache) {
-    	  XslFunctionMemoization funcMemoization = new XslFunctionMemoization(m_name, argList, funcResultConvertedVal, this);
-    	  (funcMemoization.func_result_cache).add(funcMemoization);
-      }
-      
-      if (SerializerUtils.m_xdmAttrList.size() > 0) {
-	     SerializerUtils.m_xdmAttrList.clear();
-	  }
-      
-      if (funcResultConvertedVal instanceof XMLNodeCursorImpl) {
-    	  funcResultConvertedVal = xslSequenceTransformTextnode(xctxt, (XMLNodeCursorImpl)funcResultConvertedVal);
-      }
-      
-      return funcResultConvertedVal;
   }
 
   /**
@@ -1110,7 +1138,8 @@ public class ElemFunction extends ElemTemplate
     	 }
      }
      
-     XNodeSetForDOM xNodeSetForDom = null;     
+     XNodeSetForDOM xNodeSetForDom = null;
+     
      try {
         xNodeSetForDom = (XNodeSetForDOM)xdmValue;
      }
@@ -1118,252 +1147,318 @@ public class ElemFunction extends ElemTemplate
     	throw new TransformerException("XTTE0780 : The supplied value cannot be cast to the expected type, during XSL function " + m_name.toString() + "'s evaluation.", srcLocator); 
      }
      
-     DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDom.object());
-
-     Node localRootNode = dtmNodeList.item(0);
-     NodeList nodeList = localRootNode.getChildNodes();
-     int nodeSetLen = nodeList.getLength();          
+     int builtInSeqType = seqExpectedTypeData.getBuiltInSequenceType();
      
-     if (nodeSetLen == 1) {
-        Node node = nodeList.item(0);
-        short nodeType = node.getNodeType();
-        if (nodeType == Node.TEXT_NODE) {
-             String strVal = ((Text)node).getNodeValue();             
-             if (seqTypeKindTest == null) {                                 
-                if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
-                   String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
-                   for (int idx = 0; idx < strParts.length; idx++) {
-                      String seqItemStrVal = strParts[idx];
-                      XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
-                      if (xObject != null) {
-                    	 if (result == null) {
-                    		result = new ResultSequence(); 
-                    	 }
-                    	 
-                         result.add(xObject);
-                      }
-                   }
-                }
-                else if (strVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
-                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
-                    for (int idx = 0; idx < strParts.length; idx++) {
-                       String seqItemStrVal = strParts[idx];
-                       int xsBuiltInSeqType = seqExpectedTypeData.getBuiltInSequenceType();                       
-                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, xsBuiltInSeqType);
-                       if (xObject instanceof XSInteger) {
-                    	   if (result == null) {
-                    		   result = new ResultSequence(); 
-                    	   }
+     if ((seqTypeKindTest == null) || ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) && (getAs() != null))) {     
+        String str1 = xNodeSetForDom.str();
+        
+        String delim = (UUID.randomUUID()).toString();
+        
+        str1 = str1.replace(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX, delim);
+        str1 = str1.replace(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX, delim);
+        str1 = str1.replace(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX, delim);
+        str1 = str1.replace(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX, delim);
+        str1 = (str1.replace(ElemSequence.STRING_VAL_SER_SUFFIX, delim)).trim();
+        
+        String[] strArray = str1.split(delim);
+        int itemCount = strArray.length;
 
-                    	   result.add(xObject);
-                       }
-                    }
-                }
-                else if (strVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
-                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
-                    for (int idx = 0; idx < strParts.length; idx++) {
-                       String seqItemStrVal = strParts[idx];
-                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
-                       if (xObject instanceof XSDecimal) {
-                    	   if (result == null) {
-                    		   result = new ResultSequence(); 
-                    	   }
-
-                    	   result.add(xObject);
-                       }
-                    }
-                }
-                else if (strVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
-                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
-                    for (int idx = 0; idx < strParts.length; idx++) {
-                       String seqItemStrVal = strParts[idx];
-                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
-                       if ((xObject instanceof XSDouble) || (xObject instanceof XSInteger)) {
-                    	   if (result == null) {
-                    		   result = new ResultSequence(); 
-                    	   }
-
-                    	   result.add(xObject);
-                       }
-                    }
-                }
-                else if (strVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
-                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
-                    for (int idx = 0; idx < strParts.length; idx++) {
-                       String seqItemStrVal = strParts[idx];
-                       XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
-                       if (xObject instanceof XSFloat) {
-                    	   if (result == null) {
-                    		   result = new ResultSequence(); 
-                    	   }
-
-                    	   result.add(xObject);
-                       }
-                    }
-                }
-                else {
-                   XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getBuiltInSequenceType());
-                   if (xObject != null) {
-                	   if (result == null) {
-                		   result = new ResultSequence(); 
-                	   }
-                	   
-                	   result.add(xObject);
-                   }
-                }
-             }
-             else if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
-            	 if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
-            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
-            		 for (int idx = 0; idx < strParts.length; idx++) {
-            			 String seqItemStrVal = strParts[idx];
-            			 if (result == null) {
-            				 result = new ResultSequence(); 
-            			 }
-            			 
-            			 result.add(new XSString(seqItemStrVal));
-            		 }
-            	 }
-            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
-            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
-            		 for (int idx = 0; idx < strParts.length; idx++) {
-            			 String seqItemStrVal = strParts[idx];
-            			 if (result == null) {
-            				 result = new ResultSequence(); 
-            			 }
-            			 
-            			 try {
-            				Integer intValue1 = Integer.valueOf(seqItemStrVal);
-            				result.add(new XSInteger(seqItemStrVal));
-            			 }
-            			 catch(NumberFormatException ex) {
-            				// no op
-            			 }            			             			 
-            		 }
-            	 }
-            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
-            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
-            		 for (int idx = 0; idx < strParts.length; idx++) {
-            			 String seqItemStrVal = strParts[idx];
-            			 if (result == null) {
-            				 result = new ResultSequence(); 
-            			 }
-            			 
-            			 try {
-            				Double dblValue1 = Double.valueOf(seqItemStrVal);
-            				result.add(new XSDecimal(seqItemStrVal));
-            			 }
-            			 catch(NumberFormatException ex) {
-            				// no op
-            			 }
-            		 }
-            	 }
-            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
-            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
-            		 for (int idx = 0; idx < strParts.length; idx++) {
-            			 String seqItemStrVal = strParts[idx];
-            			 if (result == null) {
-            				 result = new ResultSequence(); 
-            			 }
-            			 
-            			 try {
-            				Double dblValue1 = Double.valueOf(seqItemStrVal);
-            				result.add(new XSDouble(seqItemStrVal));
-            			 }
-            			 catch(NumberFormatException ex) {
-            				// no op 
-            			 }
-            		 }
-            	 }
-            	 else if (strVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
-            		 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
-            		 for (int idx = 0; idx < strParts.length; idx++) {
-            			 String seqItemStrVal = strParts[idx];
-            			 if (result == null) {
-            				 result = new ResultSequence(); 
-            			 }
-            			 
-            			 try {
-            				Float fltValue1 = Float.valueOf(seqItemStrVal);
-            				result.add(new XSFloat(seqItemStrVal));
-            			 }
-            			 catch(NumberFormatException ex) {
-            				// no op 
-            			 }
-            		 }
-            	 }
-            	 else {
-            		 if (result == null) {
-        				 result = new ResultSequence(); 
-        			 }
-        			 
-        			 result.add(new XSString(strVal));
-            	 }
-             }
-         }
-     }
-     
-     if ((nodeSetLen == 1) && (seqTypeKindTest != null)) {
-    	 Node node = nodeList.item(0);
-         short nodeType = node.getNodeType();
-         if ((nodeType == Node.ELEMENT_NODE) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ELEMENT_KIND)) {        	 
-        	 String typeNodeLocalName = seqTypeKindTest.getNodeLocalName();
-        	 String typeNodeNsUri = seqTypeKindTest.getNodeNsUri();
-        	 String typeDataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
-        	 String typeDataTypeUri = seqTypeKindTest.getDataTypeUri();
-        	 
-        	 String nodeLocalName = node.getLocalName();
-        	 String nodeNsUri = node.getNamespaceURI();
-        	 
-        	 XSTypeDefinition xsTypeDefn = xNodeSetForDom.getXsTypeDefinition();
-        	 if (xsTypeDefn == null) {
-        		if (typeDataTypeLocalName == null) {
-        			if (typeNodeLocalName == null) {        				
-        				result = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
-        				
-        				return result;
-        			}        			
+        boolean isSeqTypeOccrIndicatorOk = false;
+        if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+        	isSeqTypeOccrIndicatorOk = true;
+        }
+        else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (itemCount > 0)) {
+        	isSeqTypeOccrIndicatorOk = true;
+        }
+        else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (itemCount <= 1)) {
+        	isSeqTypeOccrIndicatorOk = true;
+        }
+        else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ABSENT) && (itemCount == 1)) {
+        	isSeqTypeOccrIndicatorOk = true;
+        }
+        
+        if (isSeqTypeOccrIndicatorOk) {
+        	result = new ResultSequence();
+        	for (int idx = 0; idx < itemCount; idx++) {
+        		String str2 = strArray[idx];
+        		XObject xObj2 = null;
+        	    if ("".equals(str2) && ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
+        	    		                (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {        	    	
+        	    	xObj2 = new XSString(""); 
+        	    }
+        	    else {
+        	    	XSString xsString = new XSString(str2);
+        		    
+        		    xObj2 = XPathSequenceTypeSupport.castXdmValueToAnotherType(xsString, null, seqExpectedTypeData, xctxt);
+        	    }        		        		
+        		
+        		if (xObj2 != null) {
+        			result.add(xObj2); 
         		}
-        		else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeDataTypeUri) && (Keywords.XS_UNTYPED).equals(typeDataTypeLocalName)) {
-    				if ((nodeNsUri == null) && (typeNodeNsUri == null) && typeNodeLocalName.equals(nodeLocalName)) {
-    					result = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
-
-        				return result;
-    				}
-    				else if ((nodeNsUri != null) && (nodeNsUri.equals(typeNodeNsUri)) && typeNodeLocalName.equals(nodeLocalName)) {
-    					result = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
-
-        				return result;
-    				}
-    			}
-        	 }
-        	 else {
-        		// REVISIT
-        		// We need to do XML Schema validation of node 'node' with the type xsTypeDefn 
-        	 }
-         }
+        		else {
+        			throw new TransformerException("XTTE0780 : The supplied, sequence cannot be cast to an xdm type " 
+																	        					+ sequenceTypeXPathExprStr + ", "
+																	        					+ "during XSL function " + m_name.toString() + "'s evaluation.", srcLocator);
+        		}
+        	}
+        	
+        	return result;
+        }
+        else {
+        	throw new TransformerException("XTTE0780 : The supplied, sequence cannot be cast to an xdm type " 
+																			                    + sequenceTypeXPathExprStr + ", "
+																			                    + "during XSL function " + m_name.toString() + "'s evaluation.", srcLocator);
+        }
      }
-     else if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
-                                                                                                               XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
-    	 if ((result != null) && (result.size() > 1)) {
-    		 String errMesg = null;
-    		 if (m_name != null) {
-    			 errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_name.toString() + "'. "
-    					 																		+ "The expected result type of this function is " 
-    					                                                                        + sequenceTypeXPathExprStr + "."; 
-    		 }
-    		 else if (varQName != null) {
-    			 errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$" + varQName.toString() + "'. "
-    					 																		+ "This variable has expected type " 
-    					                                                                        + sequenceTypeXPathExprStr + "."; 
-    		 }
-    		 else {
-    			 errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the result of XSL 'evaluate' instruction's evaluation. "
-    					 																		+ "An XSL 'evaluate' instruction's expected type is " 
-    					                                                                        + sequenceTypeXPathExprStr + ".";
-    		 }
+     else {
+    	 DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDom.object());
 
-    		 throw new TransformerException(errMesg); 
+    	 Node localRootNode = dtmNodeList.item(0);
+    	 NodeList nodeList = localRootNode.getChildNodes();
+    	 int nodeSetLen = nodeList.getLength();          
+
+    	 if (nodeSetLen == 1) {
+    		 Node node = nodeList.item(0);
+    		 short nodeType = node.getNodeType();
+    		 if (nodeType == Node.TEXT_NODE) {
+    			 String strVal = ((Text)node).getNodeValue();             
+    			 //if (seqTypeKindTest == null) {
+    			 if (builtInSeqType != 0) {
+    				 if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+    						 if (xObject != null) {
+    							 if (result == null) {
+    								 result = new ResultSequence(); 
+    							 }
+
+    							 result.add(xObject);
+    						 }
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 int xsBuiltInSeqType = seqExpectedTypeData.getBuiltInSequenceType();                       
+    						 XObject xObject = getXSTypedAtomicValue(seqItemStrVal, xsBuiltInSeqType);
+    						 if (xObject instanceof XSInteger) {
+    							 if (result == null) {
+    								 result = new ResultSequence(); 
+    							 }
+
+    							 result.add(xObject);
+    						 }
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+    						 if (xObject instanceof XSDecimal) {
+    							 if (result == null) {
+    								 result = new ResultSequence(); 
+    							 }
+
+    							 result.add(xObject);
+    						 }
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+    						 if ((xObject instanceof XSDouble) || (xObject instanceof XSInteger)) {
+    							 if (result == null) {
+    								 result = new ResultSequence(); 
+    							 }
+
+    							 result.add(xObject);
+    						 }
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
+    						 if (xObject instanceof XSFloat) {
+    							 if (result == null) {
+    								 result = new ResultSequence(); 
+    							 }
+
+    							 result.add(xObject);
+    						 }
+    					 }
+    				 }
+    				 else {
+    					 XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getBuiltInSequenceType());
+    					 if (xObject != null) {
+    						 if (result == null) {
+    							 result = new ResultSequence(); 
+    						 }
+
+    						 result.add(xObject);
+    					 }
+    				 }
+    			 }
+    			 else if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {    			 
+    				 if (strVal.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 if (result == null) {
+    							 result = new ResultSequence(); 
+    						 }
+
+    						 result.add(new XSString(seqItemStrVal));
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_INTEGER_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 if (result == null) {
+    							 result = new ResultSequence(); 
+    						 }
+
+    						 try {
+    							 Integer intValue1 = Integer.valueOf(seqItemStrVal);
+    							 result.add(new XSInteger(seqItemStrVal));
+    						 }
+    						 catch(NumberFormatException ex) {
+    							 // no op
+    						 }            			             			 
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DECIMAL_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 if (result == null) {
+    							 result = new ResultSequence(); 
+    						 }
+
+    						 try {
+    							 Double dblValue1 = Double.valueOf(seqItemStrVal);
+    							 result.add(new XSDecimal(seqItemStrVal));
+    						 }
+    						 catch(NumberFormatException ex) {
+    							 // no op
+    						 }
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_DOUBLE_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 if (result == null) {
+    							 result = new ResultSequence(); 
+    						 }
+
+    						 try {
+    							 Double dblValue1 = Double.valueOf(seqItemStrVal);
+    							 result.add(new XSDouble(seqItemStrVal));
+    						 }
+    						 catch(NumberFormatException ex) {
+    							 // no op 
+    						 }
+    					 }
+    				 }
+    				 else if (strVal.contains(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX)) {
+    					 String[] strParts = strVal.split(ElemSequence.STRING_VAL_SER_FLOAT_SUFFIX);
+    					 for (int idx = 0; idx < strParts.length; idx++) {
+    						 String seqItemStrVal = strParts[idx];
+    						 if (result == null) {
+    							 result = new ResultSequence(); 
+    						 }
+
+    						 try {
+    							 Float fltValue1 = Float.valueOf(seqItemStrVal);
+    							 result.add(new XSFloat(seqItemStrVal));
+    						 }
+    						 catch(NumberFormatException ex) {
+    							 // no op 
+    						 }
+    					 }
+    				 }
+    				 else {
+    					 if (result == null) {
+    						 result = new ResultSequence(); 
+    					 }
+
+    					 result.add(new XSString(strVal));
+    				 }
+    			 }
+    		 }
+    	 }
+
+    	 if ((nodeSetLen == 1) && (seqTypeKindTest != null)) {
+    		 Node node = nodeList.item(0);
+    		 short nodeType = node.getNodeType();
+    		 if ((nodeType == Node.ELEMENT_NODE) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ELEMENT_KIND)) {        	 
+    			 String typeNodeLocalName = seqTypeKindTest.getNodeLocalName();
+    			 String typeNodeNsUri = seqTypeKindTest.getNodeNsUri();
+    			 String typeDataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
+    			 String typeDataTypeUri = seqTypeKindTest.getDataTypeUri();
+
+    			 String nodeLocalName = node.getLocalName();
+    			 String nodeNsUri = node.getNamespaceURI();
+
+    			 XSTypeDefinition xsTypeDefn = xNodeSetForDom.getXsTypeDefinition();
+    			 if (xsTypeDefn == null) {
+    				 if (typeDataTypeLocalName == null) {
+    					 if (typeNodeLocalName == null) {        				
+    						 result = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
+
+    						 return result;
+    					 }        			
+    				 }
+    				 else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeDataTypeUri) && (Keywords.XS_UNTYPED).equals(typeDataTypeLocalName)) {
+    					 if ((nodeNsUri == null) && (typeNodeNsUri == null) && typeNodeLocalName.equals(nodeLocalName)) {
+    						 result = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
+
+    						 return result;
+    					 }
+    					 else if ((nodeNsUri != null) && (nodeNsUri.equals(typeNodeNsUri)) && typeNodeLocalName.equals(nodeLocalName)) {
+    						 result = getResultSequenceFromNode(node, seqTypeKindTest, xctxt);
+
+    						 return result;
+    					 }
+    				 }
+    			 }
+    			 else {
+    				 // REVISIT
+    				 // We need to do XML Schema validation of node 'node' with the type xsTypeDefn 
+    			 }
+    		 }
+    	 }
+    	 else if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
+    			 																													XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+    		 if ((result != null) && (result.size() > 1)) {
+    			 String errMesg = null;
+    			 if (m_name != null) {
+    				 errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_name.toString() + "'. "
+																		    						 + "The expected result type of this function is " 
+																		    						 + sequenceTypeXPathExprStr + "."; 
+    			 }
+    			 else if (varQName != null) {
+    				 errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$" + varQName.toString() + "'. "
+																		    						 + "This variable has expected type " 
+																		    						 + sequenceTypeXPathExprStr + "."; 
+    			 }
+    			 else {
+    				 errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the result of XSL 'evaluate' instruction's evaluation. "
+																		    						 + "An XSL 'evaluate' instruction's expected type is " 
+																		    						 + sequenceTypeXPathExprStr + ".";
+    			 }
+
+    			 throw new TransformerException(errMesg); 
+    		 }
     	 }
      }
      

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:04Z" fail="19" name="regex" pass="45" run="64" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-21T16:20:05Z" fail="18" name="regex" pass="46" run="64" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
@@ -124,6 +124,6 @@ java.lang.Exception: Line# : 57, Column# : 89 XPST0003: Expected ,, but found: '
    <testResult status="pass" testName="regex-086b"/>
    <testResult status="pass" testName="regex-086c"/>
    <testResult status="pass" testName="regex-086d"/>
-   <testResult status="fail" testName="regex-090"/>
+   <testResult status="pass" testName="regex-090"/>
    <testResult status="pass" testName="regex-091"/>
 </testrun>

@@ -100,6 +100,8 @@ import org.apache.xpath.operations.VcGt;
 import org.apache.xpath.operations.VcLe;
 import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
+import org.apache.xpath.operations.XPath3Except;
+import org.apache.xpath.operations.XPath3Intersect;
 import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.apache.xpath.operations.XPath3Union;
 import org.apache.xpath.patterns.FunctionPattern;
@@ -1061,7 +1063,7 @@ public class Compiler extends OpMap
 		  catch (Exception ex) {
 			  if (ex instanceof TransformerException) {    			
 				  String errMesg = ex.getMessage();
-				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath '|', or 'union'")) {
+				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath operator '|', or 'union'")) {
 					  XPathParser.m_union_lstr = null;
 					  XPathParser.m_union_rstr = null;
 
@@ -1077,9 +1079,9 @@ public class Compiler extends OpMap
 	  }
 	  catch (Exception ex) {
 		  /**
-		   * If XPath expression using union operator, fails
+		   * If an XPath expression using operator 'union', fails
 		   * to compile in usual way, we try a second chance to compile
-		   * by, using XPath expression string values for union operator's
+		   * by, using XPath expression string values for operator 'union'
 		   * first and second operands.
 		   */    	       
 		  if ((lStr != null) && (rStr != null)) { 
@@ -1111,7 +1113,7 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath node sequence 'intersect' operator.
+   * Compile an XPath operator 'intersect' along with its operands.
    */
   protected Expression intersect(int opPos) throws TransformerException
   {	  
@@ -1119,8 +1121,67 @@ public class Compiler extends OpMap
 	  
 	  Expression result = null;
 	  
+	  String lStr = XPathParser.m_intersect_lstr;
+	  String rStr = XPathParser.m_intersect_rstr;
+	  
+	  if ((lStr != null) && (rStr != null)) {
+		  try {
+			  lStr = lStr.replace(" : ", ":");
+			  rStr = rStr.replace(" : ", ":");
+
+			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
+			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
+
+			  if (a1 && a2) {
+				  xpathIntersectOperandTypeCheck(lStr);
+
+				  xpathIntersectOperandTypeCheck(rStr);
+			  }
+		  }
+		  catch (Exception ex) {
+			  if (ex instanceof TransformerException) {    			
+				  String errMesg = ex.getMessage();
+				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath operator 'intersect'")) {
+					  XPathParser.m_intersect_lstr = null;
+					  XPathParser.m_intersect_rstr = null;
+
+					  throw (TransformerException)ex; 
+				  }
+			  }
+		  }
+	  }
+	  
 	  try {
 	     result = compileOperation(new Intersect(), opPos);
+	  }
+	  catch (Exception ex) {
+		  /**
+		   * If an XPath expression using operator 'intersect', fails
+		   * to compile in usual way, we try a second chance to compile
+		   * by, using XPath expression string values for operator 'intersect'
+		   * first and second operands.
+		   */    	       
+		  if ((lStr != null) && (rStr != null)) { 
+			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
+			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
+
+			  if (a1 && a2) {
+				  XPathParser.m_intersect_lstr = null;
+				  XPathParser.m_intersect_rstr = null;
+
+				  return new XPath3Intersect(lStr, rStr);
+			  }
+			  else {
+				  String errMesg = ex.getMessage();
+
+				  throw new TransformerException(errMesg); 
+			  }
+		  }
+		  else {
+			  String errMesg = ex.getMessage();
+
+			  throw new TransformerException(errMesg);
+		  }
 	  }
 	  finally {
 		 locPathDepth--;
@@ -1130,7 +1191,7 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath node sequence 'except' operator.
+   * Compile an XPath operator 'except' along with its operands.
    */
   protected Expression except(int opPos) throws TransformerException
   {	  
@@ -1138,8 +1199,67 @@ public class Compiler extends OpMap
 	  
 	  Expression result = null;
 	  
+	  String lStr = XPathParser.m_except_lstr;
+	  String rStr = XPathParser.m_except_rstr;
+	  
+	  if ((lStr != null) && (rStr != null)) {
+		  try {
+			  lStr = lStr.replace(" : ", ":");
+			  rStr = rStr.replace(" : ", ":");
+
+			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
+			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
+
+			  if (a1 && a2) {
+				  xpathExceptOperandTypeCheck(lStr);
+
+				  xpathExceptOperandTypeCheck(rStr);
+			  }
+		  }
+		  catch (Exception ex) {
+			  if (ex instanceof TransformerException) {    			
+				  String errMesg = ex.getMessage();
+				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath operator 'except'")) {
+					  XPathParser.m_except_lstr = null;
+					  XPathParser.m_except_rstr = null;
+
+					  throw (TransformerException)ex; 
+				  }
+			  }
+		  }
+	  }
+	  
 	  try {
 	     result = compileOperation(new Except(), opPos);
+	  }
+	  catch (Exception ex) {
+		  /**
+		   * If an XPath expression using operator 'except', fails
+		   * to compile in usual way, we try a second chance to compile
+		   * by, using XPath expression string values for operator 'except'
+		   * first and second operands.
+		   */    	       
+		  if ((lStr != null) && (rStr != null)) { 
+			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
+			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
+
+			  if (a1 && a2) {
+				  XPathParser.m_except_lstr = null;
+				  XPathParser.m_except_rstr = null;
+
+				  return new XPath3Except(lStr, rStr);
+			  }
+			  else {
+				  String errMesg = ex.getMessage();
+
+				  throw new TransformerException(errMesg); 
+			  }
+		  }
+		  else {
+			  String errMesg = ex.getMessage();
+
+			  throw new TransformerException(errMesg);
+		  }
 	  }
 	  finally {
 		 locPathDepth--;
@@ -2272,9 +2392,79 @@ private static final boolean DEBUG = false;
 
 	  if ((xObj1 instanceof XNumber) || (xObj1 instanceof XString) || (xObj1 instanceof XBoolean) ||
 			                            (xObj1 instanceof XBooleanStatic) || (xObj1 instanceof XSAnyAtomicType)) {               
-		  String errMesgStr = "XPTY0004 : An XPath '|', or 'union' operator requires an xdm "
-																					  + "node as an operand. The supplied "
-																					  + "value, is an xdm atomic value."; 
+		  String errMesgStr = "XPTY0004 : An XPath operator '|', or 'union' requires an xdm "
+																					       + "node as an operand. The supplied "
+																					       + "value, is an xdm atomic value."; 
+		  if (m_locator != null) {
+			  throw new TransformerException(errMesgStr, m_locator);
+		  }
+		  else {
+			  throw new TransformerException(errMesgStr);
+		  }
+	  }
+  }
+  
+  /**
+   * Method definition, to do an XPath operand type check
+   * for XPath operator 'intersect'.
+   * 
+   * @param xpathStr                        The supplied XPath expression 
+   *                                        string.
+   * 
+   * @throws TransformerException
+   * @throws Exception
+   */
+  private void xpathIntersectOperandTypeCheck(String xpathStr) throws TransformerException, Exception {
+	  	  	  
+	  XPathContext xctxt = new XPathContext(); 
+	  
+	  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
+	  
+	  String xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+
+	  XPath xpathObj = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
+	  
+	  XObject xObj1 = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
+
+	  if ((xObj1 instanceof XNumber) || (xObj1 instanceof XString) || (xObj1 instanceof XBoolean) ||
+			                            (xObj1 instanceof XBooleanStatic) || (xObj1 instanceof XSAnyAtomicType)) {               
+		  String errMesgStr = "XPTY0004 : An XPath operator 'intersect' requires an xdm node as an operand. "
+		  		                                                                                  + "The supplied value, is an xdm atomic value."; 
+		  if (m_locator != null) {
+			  throw new TransformerException(errMesgStr, m_locator);
+		  }
+		  else {
+			  throw new TransformerException(errMesgStr);
+		  }
+	  }
+   }
+  
+  /**
+   * Method definition, to do an XPath operand type check
+   * for XPath operator 'except'.
+   * 
+   * @param xpathStr                        The supplied XPath expression 
+   *                                        string.
+   * 
+   * @throws TransformerException
+   * @throws Exception
+   */
+  private void xpathExceptOperandTypeCheck(String xpathStr) throws TransformerException, Exception {
+
+	  XPathContext xctxt = new XPathContext(); 
+
+	  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
+
+	  String xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+
+	  XPath xpathObj = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
+
+	  XObject xObj1 = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
+
+	  if ((xObj1 instanceof XNumber) || (xObj1 instanceof XString) || (xObj1 instanceof XBoolean) ||
+			                            (xObj1 instanceof XBooleanStatic) || (xObj1 instanceof XSAnyAtomicType)) {               
+		  String errMesgStr = "XPTY0004 : An XPath operator 'except' requires an xdm node as an operand. "
+				                                                                               + "The supplied value, is an xdm atomic value."; 
 		  if (m_locator != null) {
 			  throw new TransformerException(errMesgStr, m_locator);
 		  }

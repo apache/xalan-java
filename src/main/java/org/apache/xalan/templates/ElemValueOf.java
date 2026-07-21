@@ -30,7 +30,6 @@ import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -73,7 +72,7 @@ import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XSLT 3.0 xsl:value-of instruction.
+ * Implementation of an XSLT 3.0 xsl:value-of instruction.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Ilene Seelemann
@@ -1272,36 +1271,46 @@ public class ElemValueOf extends ElemTemplateElement {
   private void evaluateXslValueOfSeqConstructorAndEmitResult(TransformerImpl transformer, XPathContext xctxt, 
 		                                                     SerializationHandler rth, String separatorStrValue) throws TransformerException, SAXException {
 	  
-	  int rtfNodeHandle = transformer.transformToRTF(this);
-	  DTMManager dtmMgr = xctxt.getDTMManager();        	  
-	  DTM dtm = dtmMgr.getDTM(rtfNodeHandle);        	  
+	  int rtfNodeHandle = transformer.transformToRTF(this);      	  
+	  
+	  DTM dtm = xctxt.getDTM(rtfNodeHandle);
+	  
 	  int nodeType = dtm.getNodeType(rtfNodeHandle);
 
-	  StringBuffer nodeStrValBuff = new StringBuffer();
-
-	  if (nodeType == DTM.DOCUMENT_NODE) {
+	  if (nodeType == DTM.DOCUMENT_NODE) {		  		 
+		  StringBuffer strBuff = new StringBuffer(); 
 		  Node docNode = dtm.getNode(rtfNodeHandle);
 		  NodeList nodeList = docNode.getChildNodes();
-		  if ((nodeList != null) && (nodeList.getLength() > 0)) {
-			  for (int idx = 0; idx < nodeList.getLength(); idx++) {
+		  String nodeStrVal = null;
+		  if ((nodeList != null) && (nodeList.getLength() > 1)) {
+			  int size1 = nodeList.getLength();
+			  for (int idx = 0; idx < size1; idx++) {
 				  Node node = nodeList.item(idx);
-				  String nodeStrVal = node.getTextContent();
-				  if (idx < (nodeList.getLength() - 1)) {
+				  String str1 = node.getTextContent();
+				  if (idx < (size1 - 1)) {
 					  if (separatorStrValue != null) {
-						  nodeStrValBuff.append(nodeStrVal + separatorStrValue);
+						  strBuff.append(str1 + separatorStrValue);
 					  }
 					  else {
-						  nodeStrValBuff.append(nodeStrVal); 
+						  strBuff.append(str1); 
 					  }
 				  }
 				  else {
-					  nodeStrValBuff.append(nodeStrVal);
+					  strBuff.append(str1);
 				  }
 			  }
+			  
+			  nodeStrVal = strBuff.toString();
 		  }
-
-		  String nodeStrVal = (nodeStrValBuff.toString()).trim();
-		  boolean status1 = false;		  
+		  else {		  
+			  nodeStrVal = (dtm.getStringValue(rtfNodeHandle)).toString();			  
+			  if (separatorStrValue != null) {
+				  nodeStrVal = nodeStrVal.replace(" ", separatorStrValue);  
+			  }
+		  }		  		  
+		  
+		  boolean status1 = false;
+		  
 		  if (nodeStrVal.contains(ElemSequence.SER_INTEGER_SUFFIX_ID)) {
 			  nodeStrVal = nodeStrVal.replace(ElemSequence.SER_INTEGER_SUFFIX_ID, "");
 			  status1 = true;
@@ -1341,10 +1350,11 @@ public class ElemValueOf extends ElemTemplateElement {
 		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
 	  }
 	  else {
-		  // xsl:value-of's 'separator' attribute is ignored 
-		  // in this case. 
+		  // xsl:value-of 'separator' attribute is ignored here
+		  
 		  Node node = dtm.getNode(rtfNodeHandle);
 		  String nodeStrVal = node.getTextContent();
+		  
 		  (new XString(nodeStrVal)).dispatchCharactersEvents(rth);
 	  }
    }

@@ -17,7 +17,7 @@
 
 Copyright 1999-2026 The Apache Software Foundation
 
-Document last modified : 2026-07-16
+Document last modified : 2026-07-21
 
 Authors:
         Gary Gregory <ggregory@apache.org>
@@ -77,11 +77,11 @@ When this Maven build command is run, results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite1
-[INFO] Tests run: 606, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 69.343 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite1
+[INFO] Tests run: 605, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 69.343 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite1
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 606, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 605, Failures: 0, Errors: 0, Skipped: 0
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
@@ -99,11 +99,11 @@ When this Maven build command is run, results like following shall be produced:
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
 [INFO] Running org.apache.xalan.tests.main.XalanXsl3TestSuite2
-[INFO] Tests run: 671, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 52.15 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
+[INFO] Tests run: 669, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 52.15 s - in org.apache.xalan.tests.main.XalanXsl3TestSuite2
 [INFO]
 [INFO] Results:
 [INFO]
-[INFO] Tests run: 671, Failures: 0, Errors: 0, Skipped: 0
+[INFO] Tests run: 669, Failures: 0, Errors: 0, Skipped: 0
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

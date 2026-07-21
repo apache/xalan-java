@@ -23,6 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -83,25 +84,48 @@ public class FuncGenerateId extends FunctionDef1Arg
 					return result;
 				}
 			}		 		 
-		}		
+		}	
+		
+		int which = DTM.NULL;
 		
 		if ((xpath3CtxtItem == null) && (m_arg0 != null)) {
-			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
-
-			if (!(xObj0 instanceof XMLNodeCursorImpl)) {
-				throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument "
-																								+ "is not an xdm node.", srcLocator);	
+			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);			
+			
+			if (xObj0 instanceof ResultSequence) {
+			   ResultSequence rSeq = (ResultSequence)xObj0;			   
+			   
+			   if (rSeq.size() == 1) {
+				  xObj0 = rSeq.item(0);				  
+			   }
+			   else {
+				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument "
+                                                                                                           + "is an xdm sequence whose size "
+                                                                                                           + "is not one.", srcLocator); 
+			   }
+			   
+			   if (xObj0 instanceof XMLNodeCursorImpl) {
+				  which = (((XMLNodeCursorImpl)xObj0).iter()).nextNode(); 
+			   }
+			   else {
+				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is not an xdm node.", srcLocator);
+			   }
+			}
+			else if (!(xObj0 instanceof XMLNodeCursorImpl)) {
+				throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is not an xdm node.", srcLocator);
 			}
 		}
 		
-		int which = getArg0AsNode(xctxt);
+		if (which == DTM.NULL) {
+		   which = getArg0AsNode(xctxt);
+		}
 
 		if (DTM.NULL != which)
 		{			
 			result = new XSString("N" + Integer.toHexString(which).toUpperCase());
 		}
-		else
+		else {
 			result = new XSString((XString.EMPTYSTRING).str());
+		}
 
 		return result;
 	}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-17T15:11:08Z" fail="15" name="op-intersect" pass="17" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-21T16:23:00Z" fail="11" name="op-intersect" pass="21" run="32" statusUnknown="0">
    <testResult status="pass" testName="fn-intersect-node-args-001"/>
    <testResult status="pass" testName="fn-intersect-node-args-002"/>
    <testResult status="pass" testName="fn-intersect-node-args-003"/>
@@ -7,8 +7,8 @@
    <testResult status="fail" testName="fn-intersect-node-args-006"/>
    <testResult status="fail" testName="fn-intersect-node-args-007"/>
    <testResult status="pass" testName="fn-intersect-node-args-008"/>
-   <testResult status="fail" testName="fn-intersect-node-args-009"/>
-   <testResult status="fail" testName="fn-intersect-node-args-010"/>
+   <testResult status="pass" testName="fn-intersect-node-args-009"/>
+   <testResult status="pass" testName="fn-intersect-node-args-010"/>
    <testResult status="pass" testName="fn-intersect-node-args-011"/>
    <testResult status="pass" testName="fn-intersect-node-args-012"/>
    <testResult status="pass" testName="fn-intersect-node-args-013"/>
@@ -24,8 +24,8 @@
    <testResult status="fail" testName="K2-SeqIntersect-1"/>
    <testResult status="pass" testName="K2-SeqIntersect-39"/>
    <testResult status="fail" testName="K2-SeqIntersect-40"/>
-   <testResult status="fail" testName="K2-SeqIntersect-43"/>
-   <testResult status="fail" testName="K2-SeqIntersect-44"/>
+   <testResult status="pass" testName="K2-SeqIntersect-43"/>
+   <testResult status="pass" testName="K2-SeqIntersect-44"/>
    <testResult status="pass" testName="K2-SeqIntersect-45"/>
    <testResult status="pass" testName="K2-SeqIntersect-46"/>
    <testResult status="pass" testName="K2-SeqIntersect-47"/>

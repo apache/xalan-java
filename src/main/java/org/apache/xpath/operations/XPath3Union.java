@@ -37,6 +37,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * Class definition, supporting implementation for XPath 3.1 
  * operators '|' & 'union' (which are XPath equivalent operators). 
+ * 
  * This class, evaluates XPath union operator, by using XPath expression 
  * string values for union operator's first and second operands.
  * 
@@ -105,8 +106,9 @@ public class XPath3Union extends Expression
 	  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(".*\\(\\s*\\)");
 	  
 	  // A java.util.List object, that shall contain list of
-	  // XML node handles for result of XPath 3.1 operator 'union'.		  
-	  List<Integer> nodeHandleList = new ArrayList<Integer>();
+	  // XML node handles for result of XPath 3.1 operator 'union'.
+	  
+	  List<Integer> nodeHandleResultLst = new ArrayList<Integer>();
 	  
 	  XMLNodeCursorImpl xmlNodeCursorImpl = null;
 	  
@@ -134,10 +136,10 @@ public class XPath3Union extends Expression
 			  lxpath.fixupVariables(m_vars, m_globals_size);
 		  }		  
 
-		  XObject lXObj = lxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		  XObject lxObj = lxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		  
-		  if (lXObj instanceof XMLNodeCursorImpl) {
-			  xmlNodeCursorImpl = (XMLNodeCursorImpl)lXObj; 
+		  if (lxObj instanceof XMLNodeCursorImpl) {
+			  xmlNodeCursorImpl = (XMLNodeCursorImpl)lxObj; 
 			  if (isSuffixFuncPattern) {
 				  java.lang.String a1 = str2.replace(" ", "");
 				  if ("text()".equals(a1)) {
@@ -147,7 +149,7 @@ public class XPath3Union extends Expression
 						  DTM dtm = xctxt.getDTM(nextNode);
 						  // This is assumed to be an xdm text node
 						  int child = dtm.getFirstChild(nextNode);				 
-						  nodeHandleList.add(child);
+						  nodeHandleResultLst.add(child);
 					  } 
 				  }
 			  }
@@ -155,7 +157,7 @@ public class XPath3Union extends Expression
 				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter(); 
 				  int nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-					  nodeHandleList.add(nextNode); 
+					  nodeHandleResultLst.add(nextNode); 
 				  }
 			  }
 	      }
@@ -190,10 +192,10 @@ public class XPath3Union extends Expression
 			  rxpath.fixupVariables(m_vars, m_globals_size);
 		  }
 
-		  XObject rXObj = rxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		  XObject rxObj = rxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		  
-		  if (rXObj instanceof XMLNodeCursorImpl) {
-			  xmlNodeCursorImpl = (XMLNodeCursorImpl)rXObj;
+		  if (rxObj instanceof XMLNodeCursorImpl) {
+			  xmlNodeCursorImpl = (XMLNodeCursorImpl)rxObj;
 			  if (isSuffixFuncPattern) {
 				  java.lang.String a1 = str4.replace(" ", "");
 				  if ("text()".equals(a1)) {
@@ -203,7 +205,7 @@ public class XPath3Union extends Expression
 						  DTM dtm = xctxt.getDTM(nextNode);
 						  // This is assumed to be an xdm text node
 						  int child = dtm.getFirstChild(nextNode);				 
-						  nodeHandleList.add(child);
+						  nodeHandleResultLst.add(child);
 					  } 
 				  }
 			  }
@@ -211,7 +213,7 @@ public class XPath3Union extends Expression
 				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter(); 
 				  int nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-					  nodeHandleList.add(nextNode); 
+					  nodeHandleResultLst.add(nextNode); 
 				  }
 			  }
 		  }
@@ -233,7 +235,7 @@ public class XPath3Union extends Expression
 			  xmlNodeCursorImpl = (XMLNodeCursorImpl)lXObj;
 			  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
 			  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-				  nodeHandleList.add(nextNode); 
+				  nodeHandleResultLst.add(nextNode); 
 			  }
 	      }
 		  
@@ -275,7 +277,7 @@ public class XPath3Union extends Expression
 							  DTM dtm = xctxt.getDTM(nextNode);
 							  // This is assumed to be an xdm text node
 							  int child = dtm.getFirstChild(nextNode);				 
-							  nodeHandleList.add(child);
+							  nodeHandleResultLst.add(child);
 						  } 
 					  }
 				  }
@@ -283,7 +285,7 @@ public class XPath3Union extends Expression
 					  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
 					  nextNode = DTM.NULL;
 					  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-						  nodeHandleList.add(nextNode); 
+						  nodeHandleResultLst.add(nextNode); 
 					  }
 				  }
 		      }
@@ -298,23 +300,23 @@ public class XPath3Union extends Expression
 				  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
 				  nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-					  nodeHandleList.add(nextNode); 
+					  nodeHandleResultLst.add(nextNode); 
 				  }
 		      }
 		  }
 	  }
 	  
 	  /**
-	   * Remove duplicates from nodeHandleList, and sort resulting 
+	   * Remove duplicates from nodeHandleResult, and sort resulting 
 	   * node handles in XML document order, as specified by 
 	   * XPath 3.1 spec.
 	   */
 	  
 	  List<Integer> list2 = new ArrayList<Integer>();
-	  int size2 = nodeHandleList.size();
+	  int size2 = nodeHandleResultLst.size();
 	  if (size2 > 0) {
 		  for (int a1 = 0; a1 < size2; a1++) {
-			  Integer x1 = nodeHandleList.get(a1);
+			  Integer x1 = nodeHandleResultLst.get(a1);
 			  if (list2.isEmpty()) {
 				  list2.add(x1);
 			  }

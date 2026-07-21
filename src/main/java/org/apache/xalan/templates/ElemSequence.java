@@ -37,10 +37,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.composite.XPathSequenceTypeData;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceTypeData;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
@@ -72,7 +72,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XSLT 3.0 instruction xsl:sequence.
+ * Implementation of an XSLT 3.0 xsl:sequence instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *
@@ -338,47 +338,65 @@ public class ElemSequence extends ElemTemplateElement
 
 		  int xObjectType = xdmObject.getType();
 		  String strVal = null;
+		  
+		  ElemTemplateElement elemTemplateParentElem = getParentElem();			  
+		  boolean isXslSeqDelimEmit = false;
+		  while (elemTemplateParentElem != null) {
+			  if (elemTemplateParentElem instanceof ElemCatch) {
+				  isXslSeqDelimEmit = true;
+				  
+				  break;
+			  }
+			  else {
+				  elemTemplateParentElem = elemTemplateParentElem.getParentElem(); 
+			  }
+		  }
 
 		  switch (xObjectType) {           
-		  case XObject.CLASS_NODESET :          
-			  ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmObject, transformer, handler, xctxt);          
+		  case XObject.CLASS_NODESET :          			  			  			  			  			  			  
+			  if (isToAddXslSequenceSerializationSuffix(xctxt)) {
+				 String strValue = XslTransformEvaluationHelper.getStrVal(xdmObject);
+				 
+			     xdmObject = new XSString(strValue);
+			  }
+			  else {
+				 ElemCopyOf.copyOfActionOnNodeSet((XMLNodeCursorImpl)xdmObject, transformer, handler, xctxt);
+			  }
+			  
 			  break;
 		  case XObject.CLASS_RTREEFRAG :
 			  SerializerUtils.outputResultTreeFragment(handler, xdmObject, xctxt);
+			  
 			  break;
 		  case XObject.CLASS_RESULT_SEQUENCE :         
-			  ResultSequence resultSequence = (ResultSequence)xdmObject;			  
-			  
-			  ElemTemplateElement elemTemplateParentElem = getParentElem();			  
-			  boolean isXslSeqDelimEmit = false;
-			  while (elemTemplateParentElem != null) {
-				  if (elemTemplateParentElem instanceof ElemCatch) {
-					  isXslSeqDelimEmit = true;
-					  
-					  break;
-				  }
-				  else {
-					  elemTemplateParentElem = elemTemplateParentElem.getParentElem(); 
-				  }
-			  }
+			  ResultSequence resultSequence = (ResultSequence)xdmObject;			  			  			  
 			  
 			  if (isXslSeqDelimEmit) {
 				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, !isXslSeqDelimEmit, this);
 			  }
-			  else {
-				  elemTemplateParentElem = getParentElem();				  
-				  while (elemTemplateParentElem != null) {
-					  if ((elemTemplateParentElem instanceof ElemValueOf) || (elemTemplateParentElem instanceof ElemVariable)
-							                                              || (elemTemplateParentElem instanceof ElemFunction)) {
-						  isXslSeqDelimEmit = true;
-
-						  break;
+			  else {				  
+				  if (isToAddXslSequenceSerializationSuffix(xctxt)) {
+					  ResultSequence rSeq = new ResultSequence();
+					  int size1 = resultSequence.size();
+					  for (int idx = 0; idx < size1; idx++) {
+						 XObject xObj = resultSequence.item(idx);
+						 
+						 if (xObj instanceof XMLNodeCursorImpl) {
+							String strValue = XslTransformEvaluationHelper.getStrVal(xObj);
+							xObj = new XSString(strValue);
+						 }
+						 
+						 rSeq.add(xObj);
 					  }
-
-					  elemTemplateParentElem = elemTemplateParentElem.getParentElem();
+					  
+					  resultSequence = rSeq;					  
+					  isXslSeqDelimEmit = true;
+					  
+					  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, isXslSeqDelimEmit, this);
 				  }
-
-				  ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, isXslSeqDelimEmit, this);
+				  else {
+				      ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, isXslSeqDelimEmit, this);
+				  }
 			  }
 			  
 			  break;
@@ -841,6 +859,7 @@ public class ElemSequence extends ElemTemplateElement
 				  }
 				  else {
 					  result = m_selectPattern.execute(xctxt, sourceNode, this);
+					  
 					  if (result instanceof XPathNamedFunctionReference) {
 						  (XslTransformData.m_xpathNamedFunctionRefSequence).add((XPathNamedFunctionReference)result);  
 					  }

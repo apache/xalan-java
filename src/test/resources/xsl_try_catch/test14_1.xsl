@@ -44,10 +44,12 @@
 		   <xsl:variable name="desc" select="map:get($itemMap1,'desc')" as="xs:string"/>
 		   <xsl:variable name="info" select="map:get($itemMap1,'info')" as="map(xs:string, xs:anyAtomicType)"/>
 		   <xsl:variable name="size" select="map:get($info,'size')" as="xs:double"/>
+		   
 		   <!-- This instruction raises an error because of incorrect sequence type 
 		        specified as value of 'as' attribute, and control goes to xsl:catch 
 		        and an empty sequence is returned as value of this function. -->
 		   <xsl:variable name="weight" select="map:get($info,'weight')" as="xs:date"/>
+		   
 		   <xsl:variable name="color" select="map:get($info,'color')" as="xs:string"/>
 		   <xsl:if test="not(empty(($id, $desc, $size, $weight, $color)))">
 		      <xsl:sequence select="$itemMap1"/>

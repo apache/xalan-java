@@ -47,11 +47,11 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3FnAbsTests.class, XPath3FnAdjustDateToTimezoneTests.class,
-	            XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, XPath3FnAdjustDateTimeToTimezoneTests.class, XPath3FnAdjustTimeToTimezoneTests.class, 
-	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3InlineFunctionExprTests.class, 
-	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3GeneralCompTests.class, XPath3UnionTests.class,
-	            XPath3IntersectTests.class, XPath3ExceptTests.class })
+@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3ExceptTests.class, XPath3FnAbsTests.class,
+	            XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, XPath3FnAdjustDateTimeToTimezoneTests.class, 
+	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
+	            XPath3IntersectTests.class, XPath3InlineFunctionExprTests.class, XPath3FnAdjustDateToTimezoneTests.class, 
+	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3GeneralCompTests.class, XPath3FnAdjustTimeToTimezoneTests.class })
 public class W3CXPath3Tests1 {
 
 }

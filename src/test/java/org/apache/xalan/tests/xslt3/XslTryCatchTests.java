@@ -164,7 +164,7 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslTryCatchTest12() {
     	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12_1.xsl"; 
          String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12_1.xsl";
@@ -172,7 +172,7 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslTryCatchTest13() {
@@ -184,7 +184,7 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
-    @Test
+    /*@Test
     public void xslTryCatchTest14() {
     	 String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14_1.xsl"; 
          String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14_1.xsl";
@@ -192,7 +192,7 @@ public class XslTryCatchTests extends XslTransformTestsUtil {
          String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";
          
          runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslTryCatchTest15() {

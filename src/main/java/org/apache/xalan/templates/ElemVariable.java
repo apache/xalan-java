@@ -38,6 +38,7 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XML11Char;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -105,7 +106,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of XSLT xsl:variable element.
+ * Implementation of an XSLT xsl:variable instruction.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Gary L Peskin <garyp@apache.org>
@@ -1369,7 +1370,8 @@ public class ElemVariable extends ElemTemplateElement
     	  }
     	  else if (var == null) {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
-    	     var = new XNodeSetForDOM(nodeList, xctxt);    	     
+    	     
+    	     var = new XNodeSetForDOM(nodeList, xctxt);
     	  }
       }
     }
@@ -1865,17 +1867,96 @@ public class ElemVariable extends ElemTemplateElement
 			if (seqExpectedTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_QNAME) {
 				String strValue = var.str();
 				if (strValue.contains(ElemSequence.STRING_VAL_SER_SUFFIX)) {
-					strValue = (strValue.replace(ElemSequence.STRING_VAL_SER_SUFFIX, " ")).trim();    			   
-					String regexStr = "\\{.*\\}.*";       // e.g, string value is  {uri}localName 
-					java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regexStr);
-					java.util.regex.Matcher matcher = pattern.matcher(strValue);
-					if (matcher.matches()) {
-						int i = strValue.indexOf('}');
-						String localName = strValue.substring(i + 1);
-						String namespaceUri = strValue.substring(1, i); 
-						result = new XSQName(null, localName, namespaceUri);
-
-						return result;
+					strValue = (strValue.replace(ElemSequence.STRING_VAL_SER_SUFFIX, " ")).trim();					
+					
+					String[] strArray = strValue.split(" ");
+					int size1 = strArray.length;
+					
+					boolean isSeqTypeOccrIndicatorOk = false;
+					if (seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
+						isSeqTypeOccrIndicatorOk = true;
+					}
+					else if ((seqTypeOccrIndicator == OccurrenceIndicator.ONE_OR_MANY) && (size1 > 0)) {
+						isSeqTypeOccrIndicatorOk = true;
+					}
+					else if ((seqTypeOccrIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (size1 <= 1)) {
+						isSeqTypeOccrIndicatorOk = true;
+					}
+					else if ((seqTypeOccrIndicator == OccurrenceIndicator.ABSENT) && (size1 == 1)) {
+						isSeqTypeOccrIndicatorOk = true;
+					}
+					
+					if (isSeqTypeOccrIndicatorOk) {
+					   ResultSequence rSeq = new ResultSequence();
+					   boolean isErr = false;
+					   for (int idx = 0; idx < size1; idx++) {
+						  String str1 = strArray[idx];
+						  XSQName xsQName = null;
+						  if (str1.startsWith("{")) {
+							 String nsUri = null;
+							 String localPart = null;
+							 int idx2 = str1.lastIndexOf("}");
+							 if (idx2 > 1) {
+								 nsUri = str1.substring(1, idx2);
+								 if (!(nsUri.contains("{") || nsUri.contains("}")) && (str1.length() > (idx2 + 1))) {
+									localPart = str1.substring(idx2 + 1);  
+								 }
+								 else {
+									isErr = true;
+									
+									break;
+								 }
+								 
+								 if (XML11Char.isXML11ValidNCName(localPart)) {
+								    xsQName = new XSQName(null, localPart, nsUri);
+								    rSeq.add(xsQName);
+								 }
+								 else {
+									isErr = true;
+									
+									break;
+								 }
+							 }
+							 else if (idx2 != 1) {
+								 isErr = true;
+								 
+								 break;
+							 }
+						  }
+						  else if (XML11Char.isXML11ValidNCName(str1)) {
+							  xsQName = new XSQName(null, str1, null);
+							  rSeq.add(xsQName);
+						  }
+						  else {
+							  isErr = true;
+								 
+							  break;
+						  }
+					   }
+					   
+					   if (isErr) {
+						  throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+														                               + "result doesn't match the specified "
+														                               + "xdm sequence type " + asAttrString + ".", srcLocator);  
+					   }
+					   
+					   int size2 = rSeq.size();
+					   if (size2 == 1) {
+						  result = rSeq.item(0);  
+					   }
+					   else if (size2 > 1) {
+						  result = rSeq;						  						  
+					   }
+					   else {
+						  result = new ResultSequence(); 
+					   }
+					   
+					   return result;
+					}
+					else {
+					   throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
+													                                + "result doesn't match the specified "
+													                                + "xdm sequence type " + asAttrString + ".", srcLocator);
 					}
 				}
 			}
@@ -2192,7 +2273,7 @@ public class ElemVariable extends ElemTemplateElement
 				result = variableConvertedVal;    
 			}
 			else {    			    			
-				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt);    			
+				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt); 				
 				if (result == null) {
 					throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
 																		                             + "result doesn't match the specified "

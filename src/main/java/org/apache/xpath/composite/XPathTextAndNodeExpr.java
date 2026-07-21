@@ -39,10 +39,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * Method definition, to support XPath parse of expressions like
  * /info/text()[. = 'there']/following-sibling::* etc. These are
- * newly introduced after XPath 1.0.
- * 
- * An implementation of this class, is motivated by W3C XSLT 3.0
- * test suite cases iterate-028 & iterate-030.
+ * introduced with XPath 2.0+
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -93,10 +90,12 @@ public class XPathTextAndNodeExpr extends Expression {
 		
 		XObject result = null;
 		
-		final int sourceNode = xctxt.getCurrentNode();
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
+		final int sourceNode = xctxt.getCurrentNode();
+		
 		XPath xpathObj = null;
+		
 		XObject xObjResult = null;
 		
 		if ((m_xpathPrefixStr == null) && (m_xpathPredicateValStr == null) 
@@ -112,24 +111,25 @@ public class XPathTextAndNodeExpr extends Expression {
 		}
 		
 		List<Integer> nodeHandleSeq = new ArrayList<Integer>();
+		
 		if (m_xpathPrefixStr != null) {
 		    xpathObj = new XPath(m_xpathPrefixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		    
 		    if (m_vars != null) {
 				xpathObj.fixupVariables(m_vars, m_globals_size);
 			}
 		    
 		    xObjResult = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		    
-		    XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;
-		    if (xmlNodeCursorImpl.getLength() == 1) {		    	
-		    	nodeHandleSeq.add(Integer.valueOf(xmlNodeCursorImpl.asNode(xctxt)));
-		    }
-		    else {
-		    	DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iterRaw();
-		    	int nextNode;	    
-		    	while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
-		    		nodeHandleSeq.add(Integer.valueOf(nextNode));
-		    	}
+		    XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;		    		    
+		    DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+
+		    int nextNode = DTM.NULL;
+		    while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+		    	DTM dtm = xctxt.getDTM(nextNode);
+		    	short nodeType = dtm.getNodeType(nextNode);
+		    	
+		    	nodeHandleSeq.add(Integer.valueOf(nextNode));
 		    }
 		}
 		else {
@@ -140,6 +140,7 @@ public class XPathTextAndNodeExpr extends Expression {
 		ResultSequence rSeq = new ResultSequence();
 		
 		int nodeSetLength = nodeHandleSeq.size();
+		
 		for (int idx = 0; idx < nodeSetLength; idx++) {
 			int localContextNode = (nodeHandleSeq.get(idx)).intValue();
 			xpathObj = new XPath(m_nodeStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -147,10 +148,17 @@ public class XPathTextAndNodeExpr extends Expression {
 				xpathObj.fixupVariables(m_vars, m_globals_size);
 			}
 
-			xObjResult = xpathObj.execute(xctxt, localContextNode, xctxt.getNamespaceContext());
+			xctxt.pushCurrentNode(localContextNode);
+			
+			try {
+			   xObjResult = xpathObj.execute(xctxt, localContextNode, xctxt.getNamespaceContext());
+			}
+			finally {
+			   xctxt.popCurrentNode();
+			}
 
 			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;
-			DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iterRaw();
+			DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iter();
 			int nextNode;
 			DTMManager dtmManager = xctxt.getDTMManager();			 
 			while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
@@ -183,13 +191,14 @@ public class XPathTextAndNodeExpr extends Expression {
 		   else {			   
 			   for (int idx = 0; idx < nodeCount; idx++) {
 				   XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)(rSeq.item(idx));
-				   int contextNode1 = (nodeRef.iterRaw()).nextNode();
+				   int contextNode1 = (nodeRef.iter()).nextNode();
 				   xpathObj = new XPath(m_xpathPredicateValStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 				   if (m_vars != null) {
 					   xpathObj.fixupVariables(m_vars, m_globals_size);
 				   }
 				   
 				   xObjResult = xpathObj.execute(xctxt, contextNode1, xctxt.getNamespaceContext());
+				   
 				   if (xObjResult.bool()) {
 					   rSeq2.add(nodeRef);  
 				   }
@@ -201,7 +210,7 @@ public class XPathTextAndNodeExpr extends Expression {
 			   ResultSequence rSeq3 = new ResultSequence();
 			   for (int idx = 0; idx < nodeCount; idx++) {
 				   XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)(rSeq2.item(idx));
-				   int contextNode1 = (nodeRef.iterRaw()).nextNode();
+				   int contextNode1 = (nodeRef.iter()).nextNode();
 				   xpathObj = new XPath(m_xpathSuffixValStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 				   if (m_vars != null) {
 					   xpathObj.fixupVariables(m_vars, m_globals_size);
@@ -210,14 +219,7 @@ public class XPathTextAndNodeExpr extends Expression {
 				   xObjResult = xpathObj.execute(xctxt, contextNode1, xctxt.getNamespaceContext());
 				   if (xObjResult instanceof XMLNodeCursorImpl) {
 					   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;					   
-					   int length1 = xmlNodeCursorImpl.getLength();
-					   DTMCursorIterator nodeIter1 = null;
-					   if (length1 > 0) {
-						   nodeIter1 = xmlNodeCursorImpl.iter();						  
-					   }
-					   else {
-						   nodeIter1 = xmlNodeCursorImpl.iterRaw();
-					   }
+					   DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iter();
 					   
 					   int nextNode;
 					   DTMManager dtmManager = xctxt.getDTMManager();			 
