@@ -71,7 +71,7 @@ public class XPathSequenceConstructor extends Expression {
      * An optional XPath expression string, to represent a 
      * predicate following an XPath literal sequence constructor.
      * 
-     * For e.g, in the XPath expression (a, b)[p] this is p.
+     * For e.g, within an XPath expression, (a, b)[p] this is p.
      */
     private String m_xpathPredicateExpr = null;
     
@@ -81,7 +81,7 @@ public class XPathSequenceConstructor extends Expression {
      * An optional XPath expression string, to represent a path 
      * suffix following an XPath literal sequence constructor.
      * 
-     * For e.g, in the XPath expression (a, b)/m/n this is m/n.
+     * For e.g, within an XPath expression, (a, b)/m/n this is m/n.
      */
     private String m_xpathSuffixStr = null;
     

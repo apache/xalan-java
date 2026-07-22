@@ -40,11 +40,13 @@ import org.apache.xpath.functions.datetime.FuncAdjustDateToTimezone;
 import org.apache.xpath.functions.datetime.FuncAdjustTimeToTimezone;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
 
 /**
@@ -129,7 +131,7 @@ public class KeyTable
   {
 	  XMLNodeCursorImpl refNodes = (XMLNodeCursorImpl)((getRefsTable()).get(ref));
 	  
-	  // clone wiht reset the node set
+	  // Clone with reset the node set	  
 	  try
 	  {
 		  if (refNodes != null)
@@ -143,14 +145,16 @@ public class KeyTable
 	  }
 
 	  if (refNodes == null) {
-		  //  create an empty XNodeSet
+		  //  Create an empty XNodeSet		  
 		  KeyIterator ki = (KeyIterator) (m_keyNodes).getContainedIter();
 		  XPathContext xctxt = ki.getXPathContext();
+		  
 		  refNodes = new XMLNodeCursorImpl(xctxt.getDTMManager()) {
 			  public void setRoot(int nodeHandle, Object environment) {
 				  // Root cannot be set on non-iterated node sets. Ignore it.
 			  }
 		  };
+		  
 		  refNodes.reset();
 	  }
 
@@ -189,7 +193,7 @@ public class KeyTable
     return keyDecls;
   }
 
-  /**
+  /** 
    * @return lazy initialized refs table associating evaluation of key function
    *         with a XNodeSet
    */
@@ -204,16 +208,44 @@ public class KeyTable
 		  Vector keyDecls = getKeyDeclarations();
 		  int nKeyDecls = keyDecls.size();
 
-		  int currentNode;
+		  int nextNode = DTM.NULL;		  
 		  m_keyNodes.reset();
-		  while (DTM.NULL != (currentNode = m_keyNodes.nextNode()))
+		  
+		  while (DTM.NULL != (nextNode = m_keyNodes.nextNode()))
 		  {
 			  try
 			  {
 				  for (int keyDeclIdx = 0; keyDeclIdx < nKeyDecls; keyDeclIdx++) {
-					  KeyDeclaration keyDeclaration = (KeyDeclaration) keyDecls.elementAt(keyDeclIdx);
-					  XObject xuse = (keyDeclaration.getUse()).execute(xctxt, currentNode, 
-							                                                              keyIter.getPrefixResolver());
+					  KeyDeclaration keyDeclaration = (KeyDeclaration) keyDecls.elementAt(keyDeclIdx);					  					  
+					  
+					  XObject xuse = null;					  
+					  XPath xpathKeyUse = keyDeclaration.getUse();
+					  if (xpathKeyUse != null) {
+						  xuse = xpathKeyUse.execute(xctxt, nextNode, keyIter.getPrefixResolver());  
+					  }
+					  else if (keyDeclaration.getFirstChildElem() == null) {
+						  xuse = XString.EMPTYSTRING;
+					  }
+					  else {
+						  xctxt.pushCurrentNode(nextNode);
+						  
+						  try {
+							  TransformerImpl transformer = (TransformerImpl)(xctxt.getOwnerObject());
+							  
+							  String str1 = transformer.transformToString(keyDeclaration); 
+							  
+							  xuse = new XString(str1);
+						  }
+						  finally {
+							  xctxt.popCurrentNode();  
+						  }
+					  }
+					  
+					  XNumber xNum = null;
+					  if ((xuse instanceof XSNumericType) || (xuse instanceof XNumber)) {
+						 String str1 = XslTransformEvaluationHelper.getStrVal(xuse);						 
+						 xNum = new XNumber(Double.valueOf(str1)); 
+					  }					  
 
 					  boolean isXslKeyComosite = keyDeclaration.getComposite();
 
@@ -303,8 +335,12 @@ public class KeyTable
 								  exprResult = new XString(str1);
 							  }              
 						  }
+						  
+						  if (xNum != null) {
+							 ((XString)exprResult).setNumber(xNum); 
+						  }
 
-						  addValueInRefsTable(xctxt, exprResult, currentNode);
+						  addValueInRefsTable(xctxt, exprResult, nextNode);
 					  } 
 					  else {
 						  DTMCursorIterator iter1 = ((XMLNodeCursorImpl)xuse).iterRaw();
@@ -313,7 +349,12 @@ public class KeyTable
 						  while (DTM.NULL != (currentNodeInUseClause = iter1.nextNode())) {
 							  DTM dtm = xctxt.getDTM(currentNodeInUseClause);
 							  XMLString exprResult = dtm.getStringValue(currentNodeInUseClause);
-							  addValueInRefsTable(xctxt, exprResult, currentNode);
+							  
+							  if (xNum != null) {
+								 ((XString)exprResult).setNumber(xNum); 
+							  }
+							  
+							  addValueInRefsTable(xctxt, exprResult, nextNode);
 						  }
 					  }
 				  }

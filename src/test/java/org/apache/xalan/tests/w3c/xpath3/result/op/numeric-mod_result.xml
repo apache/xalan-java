@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:09:33Z" fail="54" name="op-numeric-mod" pass="59" run="113" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-22T17:01:28Z" fail="51" name="op-numeric-mod" pass="62" run="113" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-modint2args-1"/>
    <testResult status="pass" testName="op-numeric-modintg2args-1"/>
    <testResult status="pass" testName="op-numeric-modintg2args-2"/>
@@ -20,7 +20,7 @@
    <testResult status="pass" testName="op-numeric-modnni2args-2"/>
    <testResult status="pass" testName="op-numeric-modsht2args-1"/>
    <testResult status="pass" testName="op-numeric-modmix2args-1"/>
-   <testResult status="fail" testName="op-numeric-modmix2args-2"/>
+   <testResult status="pass" testName="op-numeric-modmix2args-2"/>
    <testResult status="pass" testName="op-numeric-modmix2args-3"/>
    <testResult status="pass" testName="K-NumericMod-1"/>
    <testResult status="pass" testName="K-NumericMod-2"/>
@@ -45,8 +45,8 @@
    <testResult status="fail" testName="K-NumericMod-21"/>
    <testResult status="fail" testName="K-NumericMod-22"/>
    <testResult status="fail" testName="K-NumericMod-23"/>
-   <testResult status="fail" testName="K-NumericMod-24"/>
-   <testResult status="fail" testName="K-NumericMod-25"/>
+   <testResult status="pass" testName="K-NumericMod-24"/>
+   <testResult status="pass" testName="K-NumericMod-25"/>
    <testResult status="pass" testName="K-NumericMod-26"/>
    <testResult status="pass" testName="K-NumericMod-27"/>
    <testResult status="fail" testName="K-NumericMod-28"/>

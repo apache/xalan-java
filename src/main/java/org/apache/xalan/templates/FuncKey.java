@@ -17,7 +17,9 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -48,6 +50,8 @@ import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
 
@@ -86,13 +90,16 @@ public class FuncKey extends FunctionMultiArgs
 		TransformerImpl transformer = (TransformerImpl)(xctxt.getOwnerObject());
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
-
+				
+		final int sourceNode = xctxt.getCurrentNode();
+		
+		DTM dtm = xctxt.getDTM(sourceNode);
+		int docContext = dtm.getDocumentRoot(sourceNode);
+		
 		XMLNodeCursorImpl nodes = null;
-		int context = xctxt.getCurrentNode();
-		DTM dtm = xctxt.getDTM(context);
-		int docContext = dtm.getDocumentRoot(context);
 		
 		XObject xObjArg0 = getArg0().execute(xctxt);
+		
 		String keyNameStr = XslTransformEvaluationHelper.getStrVal(xObjArg0);
 		
 		QName keyQname = new QName(keyNameStr, xctxt.getNamespaceContext());
@@ -117,8 +124,23 @@ public class FuncKey extends FunctionMultiArgs
 		
 		if (xObjArg1 instanceof XSNumericType) {
 		   XSNumericType xsNumericType = (XSNumericType)xObjArg1;
-		   String str1 = xsNumericType.stringValue();
-		   xObjArg1 = new XNumber(Double.valueOf(str1));
+		   
+		   if (xsNumericType instanceof XSDouble) {
+			  if (((XSDouble)xsNumericType).nan()) {
+				  xObjArg1 = new ResultSequence(); 
+			  }
+		   }
+		   else if (xsNumericType instanceof XSFloat) {
+			   if (((XSFloat)xsNumericType).nan()) {
+				  xObjArg1 = new ResultSequence();
+			   } 
+		   }
+		   
+		   if (!(xObjArg1 instanceof ResultSequence)) {		   
+		      String str1 = xsNumericType.stringValue();
+		      
+		      xObjArg1 = new XNumber(Double.valueOf(str1));
+		   }
 		}
 		else if (xObjArg1 instanceof XSDateTime) {
 		   XSDateTime xsDateTime = (XSDateTime)xObjArg1;
@@ -202,7 +224,7 @@ public class FuncKey extends FunctionMultiArgs
 	    {
 	    	XMLNodeCursorImpl ns = (XMLNodeCursorImpl)xObjArg1;
 	    	ns.setShouldCacheNodes(true);
-	    	int len = ns.getLength();
+	    	int len = ns.getLength();	    	
 	    	if (len <= 1)
 	    		argIsNodeSetDtm = false;
 	    }
@@ -252,13 +274,46 @@ public class FuncKey extends FunctionMultiArgs
 	    else
 	    {	      	    		    		    		    	   
 	    	if (!isXslKeyComposite) {
-	    		String str1 = XslTransformEvaluationHelper.getStrVal(xObjArg1);
-	    		XMLString ref = new XString(str1);
+	    		if (xObjArg1 instanceof ResultSequence) {
+	    			ResultSequence rSeq = (ResultSequence)xObjArg1;
+	    			int size2 = rSeq.size();
+	    			List<Integer> nodeHandleList = new ArrayList<Integer>();
+	    			for (int idx = 0; idx < size2; idx++) {
+	    				XObject xObj = rSeq.item(idx);
+	    				
+	    				String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		    			XMLString ref = new XString(str1);
+		    			XMLNodeCursorImpl xmlNodeCursorImpl = kmgr.getNodeSetDtmByKey(xctxt, docContext, keyQname,
+				                                                  										ref, xctxt.getNamespaceContext());
+		    			DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+		    			int nextNode = DTM.NULL;
+		    			while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+		    			   nodeHandleList.add(nextNode);
+		    			}
+	    			}
+	    			
+	    			nodes = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+	    			nodes.setRoot(xctxt.getCurrentNode(), xctxt);
+	    		}
+	    		else {	    			
+	    			String str1 = XslTransformEvaluationHelper.getStrVal(xObjArg1);	    				    			
+	    			XMLString ref = null;
+	    			
+	    			if ((xObjArg1 instanceof XSNumericType) || (xObjArg1 instanceof XNumber)) {
+	    			   XString xStr = new XString(str1);
+	    			   XNumber xNum = new XNumber(Double.valueOf(str1));
+	    			   
+	    			   xStr.setNumber(xNum);
+	    			   ref = xStr; 
+	    			}
+	    			else {
+	    			   ref = new XString(str1);
+	    			}
 
-	    		nodes = kmgr.getNodeSetDtmByKey(xctxt, docContext, keyQname,
-											    				ref,
-											    				xctxt.getNamespaceContext());
-	    		nodes.setRoot(xctxt.getCurrentNode(), xctxt); 
+	    			nodes = kmgr.getNodeSetDtmByKey(xctxt, docContext, keyQname,
+							    					                  ref, xctxt.getNamespaceContext());
+	    			nodes.setRoot(xctxt.getCurrentNode(), xctxt);
+	    		}
 	    	}
 	    	else if (xObjArg1 instanceof ResultSequence) {
 	    		ResultSequence rSeq = (ResultSequence)xObjArg1;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:38Z" fail="15" name="math" pass="136" run="151" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-22T16:57:54Z" fail="16" name="math" pass="135" run="151" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="math-0101"/>
    <testResult status="pass" testName="math-0102"/>
    <testResult status="pass" testName="math-0103"/>
@@ -145,7 +145,11 @@
    <testResult status="fail" testName="math-3313"/>
    <testResult status="pass" testName="math-3314"/>
    <testResult status="pass" testName="math-3315"/>
-   <testResult status="pass" testName="math-3316"/>
+   <testResult status="fail" testName="math-3316">
+      <outResult>
+         <errTrace>XPTY0004 : An XPath operator 'div' is not defined for schema type string valued operands.</errTrace>
+      </outResult>
+   </testResult>
    <testResult feature="backwards_compatibility" status="skipped" testName="math-3317"/>
    <testResult status="pass" testName="math-3318"/>
    <testResult status="pass" testName="math-3319"/>

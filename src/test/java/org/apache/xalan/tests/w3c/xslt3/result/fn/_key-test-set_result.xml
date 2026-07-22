@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-21T16:20:04Z" fail="19" name="key" pass="80" run="99" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-22T16:58:13Z" fail="16" name="key" pass="83" run="99" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
-   <testResult status="pass" testName="key-002"/>
+   <testResult status="fail" testName="key-002"/>
    <testResult status="pass" testName="key-003"/>
    <testResult status="pass" testName="key-004"/>
    <testResult status="pass" testName="key-005"/>
@@ -38,7 +38,7 @@
    <testResult status="pass" testName="key-033"/>
    <testResult status="fail" testName="key-034"/>
    <testResult status="pass" testName="key-035"/>
-   <testResult status="fail" testName="key-036"/>
+   <testResult status="pass" testName="key-036"/>
    <testResult status="pass" testName="key-037"/>
    <testResult status="pass" testName="key-038"/>
    <testResult status="pass" testName="key-039"/>
@@ -80,8 +80,8 @@ java.lang.Exception: Line# : 14, Column# : 15 XPST0003: Expected ,, but found: n
    <testResult status="pass" testName="key-067"/>
    <testResult status="pass" testName="key-068"/>
    <testResult status="pass" testName="key-069"/>
-   <testResult status="fail" testName="key-070"/>
-   <testResult status="fail" testName="key-071"/>
+   <testResult status="pass" testName="key-070"/>
+   <testResult status="pass" testName="key-071"/>
    <testResult status="fail" testName="key-072">
       <outResult>
          <errTrace>org.xml.sax.SAXException: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: key
@@ -96,7 +96,7 @@ java.lang.Exception: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: k
    <testResult status="fail" testName="key-078"/>
    <testResult status="pass" testName="key-079"/>
    <testResult status="pass" testName="key-080"/>
-   <testResult status="fail" testName="key-081"/>
+   <testResult status="pass" testName="key-081"/>
    <testResult status="fail" testName="key-082"/>
    <testResult status="pass" testName="key-083"/>
    <testResult status="pass" testName="key-084"/>

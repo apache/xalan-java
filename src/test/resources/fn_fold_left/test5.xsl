@@ -15,7 +15,7 @@
   <xsl:template match="/">
      <result>
 	    <xsl:variable name="map1" select="fold-left(1 to 5, map {}, function($map, $n) {map:put($map, $n, $n*2)})"/>
-		<xsl:for-each select="map:keys($map1)">
+		<xsl:for-each select="sort(map:keys($map1))">
 		   <item key="{.}"><xsl:value-of select="$map1(.)"/></item>
 		</xsl:for-each>
 	 </result>

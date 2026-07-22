@@ -38,8 +38,9 @@ import org.apache.xpath.objects.XObject;
  * Class definition, supporting implementation for XPath 3.1 
  * operator 'intersect'. 
  * 
- * This class, evaluates XPath operator 'intersect', by using XPath expression 
- * string values for operator 'intersect' first and second operands.
+ * This class, evaluates XPath operator 'intersect', by using 
+ * XPath expression string values for operator 'intersect' first 
+ * and second operands.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

@@ -45,6 +45,13 @@ public class XString extends XObject implements XMLString
   public static final XString EMPTYSTRING = new XString("");
   
   private boolean m_xrTreeFragSelectWrapper_result = false;
+  
+  /**
+   * This class field, value shall be non-null if the string
+   * value computed is from a number, for example from
+   * xsl:key use.
+   */
+  private XNumber m_number_value = null;
 
   /**
    * Construct a XString object.  This constructor exists for derived classes.
@@ -388,21 +395,33 @@ public class XString extends XObject implements XMLString
    */
   public boolean equals(Object obj2)
   {
+	  
+	  if (null == obj2)
+		  return false;	  	  
 
-    if (null == obj2)
-      return false;
+	  if ((obj2 instanceof XString) && (this instanceof XString)) {
+		  XNumber xNum1 = ((XString)obj2).getNumber();	
+		  if ((xNum1 != null) && (m_number_value != null)) {
+			 return (xNum1.num() == m_number_value.num());
+		  }
+	  }
 
-      // In order to handle the 'all' semantics of 
-      // nodeset comparisons, we always call the 
-      // nodeset function.
-    else if (obj2 instanceof XMLNodeCursorImpl)
-      return obj2.equals(this);
-    else if (obj2 instanceof XNumber)
-      return obj2.equals(this);
-    else if (obj2 instanceof XSString)
-      return str().equals(((XSString)obj2).stringValue()); 
-    else
-      return str().equals(obj2.toString());
+	  // In order to handle the 'all' semantics of 
+	  // nodeset comparisons, we always call the 
+	  // nodeset function.
+	  if (obj2 instanceof XMLNodeCursorImpl)
+		  return obj2.equals(this);
+	  else if (obj2 instanceof XNumber)
+		  return obj2.equals(this);
+	  else if (obj2 instanceof XSString)
+		  return str().equals(((XSString)obj2).stringValue()); 
+	  else {
+		  String str1 = str();
+		  String str2 = obj2.toString();
+		  
+		  return str1.equals(str2);
+	  }
+
   }
 
   /**
@@ -639,7 +658,16 @@ public class XString extends XObject implements XMLString
    */
   public int hashCode()
   {
-    return str().hashCode();
+	 int result = 0;
+	 
+	 if (m_number_value == null) {
+		result = str().hashCode();  
+	 }
+	 else {
+		result = m_number_value.hashCode();  
+	 }
+	 
+     return result;
   }
 
   /**
@@ -1140,6 +1168,14 @@ public class XString extends XObject implements XMLString
 
   public void setXrTreeFragSelectWrapperResult(boolean xrTreeFragSelectWrapper_result) {
 	this.m_xrTreeFragSelectWrapper_result = xrTreeFragSelectWrapper_result;
+  }
+  
+  public XNumber getNumber() {
+	  return m_number_value;
+  }
+  
+  public void setNumber(XNumber xNum) {
+	  m_number_value = xNum;
   }
 
 }

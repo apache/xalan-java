@@ -38,8 +38,9 @@ import org.apache.xpath.objects.XObject;
  * Class definition, supporting implementation for XPath 3.1 
  * operator 'except'. 
  * 
- * This class, evaluates XPath operator 'except', by using XPath expression 
- * string values for operator 'except' first and second operands.
+ * This class, evaluates XPath operator 'except', by using 
+ * XPath expression string values for operator 'except' first 
+ * and second operands.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

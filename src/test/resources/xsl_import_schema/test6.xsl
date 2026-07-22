@@ -49,12 +49,12 @@
        <three>
          <xsl:value-of select="$val1 * $val2"/>
        </three>
-       <four>
+       <!--<four>
          <xsl:value-of select="$val1 div $val2"/>
-       </four>
-       <five>
+       </four>-->
+       <four>
          <xsl:value-of select="$val3 - $val1"/>
-       </five>
+       </four>
      </result>
   </xsl:template>
   

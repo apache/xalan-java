@@ -98,12 +98,12 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, 
 	            XslNodeTests.class, XslDateTests.class, XslNamespaceTests.class, XslStringTests.class, XslFnDeepEqualTests.class, 
-	            XslFnKeyTests.class, XslFnFormatNumberTests.class, XslRegexTests.class, XslRegexSyntaxTests.class,
+	            XslFnFormatNumberTests.class, XslRegexTests.class, XslRegexSyntaxTests.class,
 	            XslDocumentTests.class, XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class,
 	            XslBuiltInTemplateTests.class, XslModeTests.class, XslDisableOutputEscapingAttrTests.class, XslTunnelAttrTests.class,
 	            XslParamTests.class, XslStripSpaceTests.class, XslTemplateTests.class, XslFnXmlToJsonTests.class, XslMessageTests.class,
 	            XslConstructNodeTests.class, XslWhitespaceTests.class, XslPackageTests.class, XslGlobalContextItemTests.class, 
-	            XslContextItemTests.class, XslMapsTests.class })
+	            XslContextItemTests.class, XslMapsTests.class, XslFnKeyTests.class })
 public class W3CXSLT3Tests {
 
 }

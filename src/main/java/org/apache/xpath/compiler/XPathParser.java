@@ -1749,6 +1749,7 @@ public class XPathParser
         					  strBuff2.append(m_token);
         					  nextToken();
         				  }
+        				  
 
         				  xpathRStr = strBuff2.toString();
         			  }
@@ -2400,13 +2401,12 @@ public class XPathParser
 		  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
 				                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
 	  }
-      else {
-    	 if ((lookahead('+', 1) || lookahead('-', 1) || lookahead('*', 1) || lookahead("idiv", 1) || 
-    			                                        lookahead("div", 1) || lookahead("mod", 1) || 
-    			                                        lookahead("eq", 1) || lookahead("ne", 1) || lookahead("lt", 1) || 
-    			                                        lookahead("gt", 1) || lookahead("le", 1) || lookahead("ge", 1)) && 
-    			                                        lookahead('(', 2) && (lookahead("if", 3) || lookahead("some", 3) || 
-    			                                        lookahead("every", 3) || lookahead("let", 3) || lookahead("for", 3))) {
+      else if ((lookahead('+', 1) || lookahead('-', 1) || lookahead('*', 1) || lookahead("idiv", 1) || 
+    			                                                               lookahead("div", 1) || lookahead("mod", 1) || 
+    			                                                               lookahead("eq", 1) || lookahead("ne", 1) || lookahead("lt", 1) || 
+    			                                                               lookahead("gt", 1) || lookahead("le", 1) || lookahead("ge", 1)) && 
+    			                                                               lookahead('(', 2) && (lookahead("if", 3) || lookahead("some", 3) || 
+    			                                                               lookahead("every", 3) || lookahead("let", 3) || lookahead("for", 3))) {
     		 
     		int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     		 
@@ -2443,11 +2443,10 @@ public class XPathParser
     		insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQ_BINARY_EXPR);
 
     		m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-    				                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-    	 }
-    	 else { 
-            ExprSingle();
-    	 }
+    				                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);    	      		             
+      }
+      else {
+    	  ExprSingle();
       }
   }
 
@@ -9793,29 +9792,14 @@ public class XPathParser
   	  
     	boolean result = false;
 
-    	if (tokenIs('/')) {
-    		/*if (lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3)) && lookahead('(', 4) && 
-    				                                                                                    lookahead(')', 5) && lookahead('[', 6)) {*/
-    		
-    			// We're doing token lookahead way forward,
-    			// (which works for XPath parse few use cases)
-
-    			// Revisit
+    	if (tokenIs('/')) {    		
     		if (lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3))) {
-
     			nextToken();
-
+    			
     			result = true;
     		}
     	}
-    	/*else if (lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2)) && lookahead('(', 3) && 
-    			                                                                                        lookahead(')', 4) && lookahead('[', 5)) {*/
-    	else if (lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2))) {
-    		// We're doing token lookahead way forward,
-    		// (which works for XPath parse few use cases)
-
-    		// Revisit
-
+    	else if (lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2))) {    		
     		result = true;		  		  
     	}
 

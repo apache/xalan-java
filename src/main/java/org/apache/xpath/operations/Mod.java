@@ -676,11 +676,18 @@ public class Mod extends XPathArithmeticOp
 		  catch (ArithmeticException ex) {
 			  error(DIV_BY_ZERO_ERR_MESG, new java.lang.String[] {"FOAR0001"}, elemTemplateElement);
 		  }         
-	  }	       
+	  }
+	  else if ((left instanceof XString) || (left instanceof XSString)) {
+		  throw new TransformerException("XPTY0004 : An XPath operator 'mod' is not defined for schema type string valued operands.");
+	  }
+      else if ((right instanceof XString) || (right instanceof XSString)) {
+    	  throw new TransformerException("XPTY0004 : An XPath operator 'mod' is not defined for schema type string valued operands.");
+	  }
 	  else {
 		  try {
 			  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
-			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);            
+			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+			  
 			  result = new XSDecimal(BigDecimal.valueOf(Double.valueOf(lStrVal) % Double.valueOf(rStrVal)));
 		  }
 		  catch (NumberFormatException ex) {

@@ -54,7 +54,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
-import xml.xpath31.processor.types.XSAnySimpleType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
@@ -2068,16 +2067,22 @@ public class XObject extends Expression implements Serializable, Cloneable
   }
   
   public int hashCode() {
-	 String strVal = null;
+	  
+	 int result = 0;
 	 
-	 if (this instanceof XSAnySimpleType) {
-		strVal = ((XSAnySimpleType)this).stringValue();
+	 if ((this instanceof XSNumericType) || (this instanceof XNumber)) {
+		 String str1 = XslTransformEvaluationHelper.getStrVal(this);
+		 Double dbl = Double.valueOf(str1);
+		 
+		 result = dbl.hashCode();
 	 }
 	 else {
-		strVal = this.str(); 
+		 String str1 = XslTransformEvaluationHelper.getStrVal(this);
+		 
+		 result = str1.hashCode(); 
 	 }
 	 
-	 return strVal.hashCode();
+	 return result;
   }
   
   /**

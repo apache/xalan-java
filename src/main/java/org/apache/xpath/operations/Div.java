@@ -732,6 +732,12 @@ public class Div extends XPathArithmeticOp
     			 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
     		 }         
     	 }
+    	 else if ((left instanceof XString) || (left instanceof XSString)) {
+    		 throw new TransformerException("XPTY0004 : An XPath operator 'div' is not defined for schema type string valued operands.");
+    	 }
+    	 else if ((right instanceof XString) || (right instanceof XSString)) {
+    		 throw new TransformerException("XPTY0004 : An XPath operator 'div' is not defined for schema type string valued operands.");
+    	 }
     	 else {
     		 try {
     			 java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);

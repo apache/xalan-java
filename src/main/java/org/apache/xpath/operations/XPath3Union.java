@@ -23,6 +23,8 @@ import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
@@ -38,8 +40,9 @@ import org.apache.xpath.objects.XObject;
  * Class definition, supporting implementation for XPath 3.1 
  * operators '|' & 'union' (which are XPath equivalent operators). 
  * 
- * This class, evaluates XPath union operator, by using XPath expression 
- * string values for union operator's first and second operands.
+ * This class, evaluates XPath union operator, by using
+ * XPath expression string values for union operator's first 
+ * and second operands.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -101,14 +104,21 @@ public class XPath3Union extends Expression
 	  
 	  boolean isSuffixFuncPattern = false;
 	  
+	  m_lstr = normalizeStrBoundaryParens(m_lstr.trim());
+	  
+	  m_rstr = normalizeStrBoundaryParens(m_rstr.trim());
+	  
 	  int idx = m_lstr.lastIndexOf("/");
 	  
+	  // Regex pattern for strings like, text(), node()
 	  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(".*\\(\\s*\\)");
 	  
 	  // A java.util.List object, that shall contain list of
 	  // XML node handles for result of XPath 3.1 operator 'union'.
 	  
 	  List<Integer> nodeHandleResultLst = new ArrayList<Integer>();
+	  
+	  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 	  
 	  XMLNodeCursorImpl xmlNodeCursorImpl = null;
 	  
@@ -126,10 +136,15 @@ public class XPath3Union extends Expression
 		  XPath lxpath = null;
 
 		  if (isSuffixFuncPattern) {
+			  str1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str1, prefixTable);
+
 			  lxpath = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  
 		  }
 		  else {
-			  lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);  
+			  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable);
+
+			  lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			  
 		  }
 
 		  if (m_vars != null) {
@@ -140,21 +155,42 @@ public class XPath3Union extends Expression
 		  
 		  if (lxObj instanceof XMLNodeCursorImpl) {
 			  xmlNodeCursorImpl = (XMLNodeCursorImpl)lxObj; 
-			  if (isSuffixFuncPattern) {
-				  java.lang.String a1 = str2.replace(" ", "");
-				  if ("text()".equals(a1)) {
-					  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter(); 
-					  int nextNode = DTM.NULL;
-					  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-						  DTM dtm = xctxt.getDTM(nextNode);
-						  // This is assumed to be an xdm text node
-						  int child = dtm.getFirstChild(nextNode);				 
-						  nodeHandleResultLst.add(child);
-					  } 
+			  if (isSuffixFuncPattern) {				  				  
+				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+				  
+				  int nextNode = DTM.NULL;
+				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+					 str2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str2, prefixTable);
+					 str2 = str2.replaceAll("\\s*", "");
+					 
+					 XPath xpath_a = new XPath(str2, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					 
+					 xctxt.pushCurrentNode(nextNode);
+					 
+					 try {
+						 XObject xObj = xpath_a.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+						 
+						 if (xObj instanceof XMLNodeCursorImpl) {
+							XMLNodeCursorImpl xmlNodeCursorImpl2 = (XMLNodeCursorImpl)xObj;
+							DTMCursorIterator dtmCursorIterator2 = xmlNodeCursorImpl2.iter();
+							
+							int nextNode2 = DTM.NULL;
+							while ((nextNode2 = dtmCursorIterator2.nextNode()) != DTM.NULL) {
+							   nodeHandleResultLst.add(nextNode2);
+							}
+						 }
+						 else {
+							// error 
+						 }
+					 }
+					 finally {
+						 xctxt.popCurrentNode(); 
+					 }
 				  }
 			  }
 			  else {
-				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter(); 
+				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+				  
 				  int nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 					  nodeHandleResultLst.add(nextNode); 
@@ -182,10 +218,14 @@ public class XPath3Union extends Expression
 		  XPath rxpath = null;
 
 		  if (isSuffixFuncPattern) {
-			  rxpath = new XPath(str3, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  str3 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str3, prefixTable);
+
+			  rxpath = new XPath(str3, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			  
 		  }
 		  else {
-			  rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);  
+			  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+			  
+			  rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			   
 		  }
 
 		  if (m_vars != null) {
@@ -197,20 +237,41 @@ public class XPath3Union extends Expression
 		  if (rxObj instanceof XMLNodeCursorImpl) {
 			  xmlNodeCursorImpl = (XMLNodeCursorImpl)rxObj;
 			  if (isSuffixFuncPattern) {
-				  java.lang.String a1 = str4.replace(" ", "");
-				  if ("text()".equals(a1)) {
-					  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter(); 
-					  int nextNode = DTM.NULL;
-					  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-						  DTM dtm = xctxt.getDTM(nextNode);
-						  // This is assumed to be an xdm text node
-						  int child = dtm.getFirstChild(nextNode);				 
-						  nodeHandleResultLst.add(child);
-					  } 
+				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+				  
+				  int nextNode = DTM.NULL;
+				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+					 str4 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str4, prefixTable);
+					 str4 = str4.replaceAll("\\s*", "");
+					 
+					 XPath xpath_a = new XPath(str4, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					 
+					 xctxt.pushCurrentNode(nextNode);
+					 
+					 try {
+						 XObject xObj = xpath_a.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+						 
+						 if (xObj instanceof XMLNodeCursorImpl) {
+							XMLNodeCursorImpl xmlNodeCursorImpl2 = (XMLNodeCursorImpl)xObj;
+							DTMCursorIterator dtmCursorIterator2 = xmlNodeCursorImpl2.iter();
+							
+							int nextNode2 = DTM.NULL;
+							while ((nextNode2 = dtmCursorIterator2.nextNode()) != DTM.NULL) {
+							   nodeHandleResultLst.add(nextNode2);
+							}
+						 }
+						 else {
+							// error 
+						 }
+					 }
+					 finally {
+						 xctxt.popCurrentNode(); 
+					 }
 				  }
 			  }
 			  else {
-				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter(); 
+				  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+				  
 				  int nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 					  nodeHandleResultLst.add(nextNode); 
@@ -224,8 +285,12 @@ public class XPath3Union extends Expression
 		   * at, beginning of an XPath expression string.
 		   */
 		  		  
-		  m_lstr = m_lstr.replaceAll("\\s*", "");		  
-		  XPath lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		  m_lstr = m_lstr.replaceAll("\\s*", "");
+		  
+		  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable);
+
+		  XPath lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);		  
+		  
 		  XObject lXObj = lxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		  
 		  DTMCursorIterator dtmCursorIterator = null;
@@ -233,7 +298,8 @@ public class XPath3Union extends Expression
 		  
 		  if (lXObj instanceof XMLNodeCursorImpl) {
 			  xmlNodeCursorImpl = (XMLNodeCursorImpl)lXObj;
-			  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
+			  dtmCursorIterator = xmlNodeCursorImpl.iter();
+			  
 			  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 				  nodeHandleResultLst.add(nextNode); 
 			  }
@@ -254,10 +320,14 @@ public class XPath3Union extends Expression
 			  XPath rxpath = null;
 
 			  if (isSuffixFuncPattern) {
-				  rxpath = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				  str1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str1, prefixTable);
+
+				  rxpath = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);				  
 			  }
 			  else {
-				  rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);  
+				  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+
+				  rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);				    
 			  }
 
 			  if (m_vars != null) {
@@ -269,20 +339,41 @@ public class XPath3Union extends Expression
 			  if (rXObj instanceof XMLNodeCursorImpl) {
 				  xmlNodeCursorImpl = (XMLNodeCursorImpl)rXObj; 
 				  if (isSuffixFuncPattern) {
-					  java.lang.String a1 = str2.replace(" ", "");
-					  if ("text()".equals(a1)) {
-						  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
-						  nextNode = DTM.NULL;
-						  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-							  DTM dtm = xctxt.getDTM(nextNode);
-							  // This is assumed to be an xdm text node
-							  int child = dtm.getFirstChild(nextNode);				 
-							  nodeHandleResultLst.add(child);
-						  } 
+					  dtmCursorIterator = xmlNodeCursorImpl.iter();
+					  
+					  nextNode = DTM.NULL;
+					  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+						 str2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str2, prefixTable);
+						 str2 = str2.replaceAll("\\s*", "");
+						 
+						 XPath xpath_a = new XPath(str2, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						 
+						 xctxt.pushCurrentNode(nextNode);
+						 
+						 try {
+							 XObject xObj = xpath_a.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+							 
+							 if (xObj instanceof XMLNodeCursorImpl) {
+								XMLNodeCursorImpl xmlNodeCursorImpl2 = (XMLNodeCursorImpl)xObj;
+								DTMCursorIterator dtmCursorIterator2 = xmlNodeCursorImpl2.iter();
+								
+								int nextNode2 = DTM.NULL;
+								while ((nextNode2 = dtmCursorIterator2.nextNode()) != DTM.NULL) {
+								   nodeHandleResultLst.add(nextNode2);
+								}
+							 }
+							 else {
+								// error 
+							 }
+						 }
+						 finally {
+							 xctxt.popCurrentNode(); 
+						 }
 					  }
 				  }
 				  else {
-					  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
+					  dtmCursorIterator = xmlNodeCursorImpl.iter();
+					  
 					  nextNode = DTM.NULL;
 					  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 						  nodeHandleResultLst.add(nextNode); 
@@ -291,13 +382,18 @@ public class XPath3Union extends Expression
 		      }
 		  }
 		  else if (idx2 == 0) {
-			  m_rstr = m_rstr.replaceAll("\\s*", "");		  
-			  XPath rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  m_rstr = m_rstr.replaceAll("\\s*", "");
+			  
+			  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+			  
+			  XPath rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			  
+			  
 			  XObject rXObj = rxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 			  
 			  if (rXObj instanceof XMLNodeCursorImpl) {
 				  xmlNodeCursorImpl = (XMLNodeCursorImpl)rXObj;
-				  dtmCursorIterator = xmlNodeCursorImpl.iter(); 
+				  dtmCursorIterator = xmlNodeCursorImpl.iter();
+				  
 				  nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 					  nodeHandleResultLst.add(nextNode); 
@@ -367,6 +463,28 @@ public class XPath3Union extends Expression
   public boolean deepEquals(Expression expr) {
 	  // no op
 	  return false;
+  }
+  
+  /**
+   * Method definition, to normalize XPath expression string
+   * by removing parenthesis '(' from beginning and ')' from 
+   * the end of the supplied string value.
+   * 
+   * @param str1 					The supplied string value
+   * @return                        The normalized string value
+   */
+  private java.lang.String normalizeStrBoundaryParens(java.lang.String str1) {
+	  
+	  java.lang.String result = null;
+	  
+	  if (str1.startsWith("(") && str1.endsWith(")")) {
+		 result = str1.substring(1, str1.length() - 1);  
+	  }
+	  else {
+		 result = str1;  
+	  }
+	  
+	  return result;
   }
 
 }

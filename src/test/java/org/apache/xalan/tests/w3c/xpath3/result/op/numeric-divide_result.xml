@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:50Z" fail="46" name="op-numeric-divide" pass="73" run="119" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-22T17:00:52Z" fail="44" name="op-numeric-divide" pass="75" run="119" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-divideint2args-1"/>
    <testResult status="fail" testName="op-numeric-divideint2args-2"/>
    <testResult status="fail" testName="op-numeric-divideint2args-3"/>
@@ -54,7 +54,7 @@
    <testResult status="fail" testName="op-numeric-dividesht2args-4"/>
    <testResult status="pass" testName="op-numeric-dividesht2args-5"/>
    <testResult status="pass" testName="op-numeric-dividemix2args-1"/>
-   <testResult status="fail" testName="op-numeric-dividemix2args-2"/>
+   <testResult status="pass" testName="op-numeric-dividemix2args-2"/>
    <testResult status="pass" testName="op-numeric-dividemix2args-3"/>
    <testResult status="pass" testName="K-NumericDivide-1"/>
    <testResult status="pass" testName="K-NumericDivide-2"/>
@@ -87,7 +87,7 @@
    <testResult status="fail" testName="K-NumericDivide-29"/>
    <testResult status="fail" testName="K-NumericDivide-30"/>
    <testResult status="fail" testName="K-NumericDivide-31"/>
-   <testResult status="fail" testName="K-NumericDivide-32"/>
+   <testResult status="pass" testName="K-NumericDivide-32"/>
    <testResult status="fail" testName="K-NumericDivide-33"/>
    <testResult status="pass" testName="K-NumericDivide-34"/>
    <testResult status="pass" testName="K-NumericDivide-35"/>

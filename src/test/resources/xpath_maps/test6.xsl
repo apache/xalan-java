@@ -16,7 +16,7 @@
       <mapPutResult>
 	    <xsl:variable name="mapAfterPut" select="map:put($map1, 6, 'Sonnabend')"/>
 	    <mapNewContents>
-	       <xsl:for-each select="map:keys($mapAfterPut)"> 
+	       <xsl:for-each select="sort(map:keys($mapAfterPut))"> 
 	          <entry>
 	             <xsl:variable name="keyVal" select="."/>
 	             <key><xsl:value-of select="$keyVal"/></key>

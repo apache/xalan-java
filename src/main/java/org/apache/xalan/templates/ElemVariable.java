@@ -954,7 +954,7 @@ public class ElemVariable extends ElemTemplateElement
           var = XString.EMPTYSTRING;
       }      
       else {
-    	  int rootNodeHandleOfRtf = DTM.NULL;
+    	  int rootNodeHandleRtf = DTM.NULL;
     	  
     	  if (getFirstChildElem() instanceof ElemSequence) {
     		  // An xsl:variable instruction has a single xsl:sequence 
@@ -1015,7 +1015,7 @@ public class ElemVariable extends ElemTemplateElement
     	  
     	  if (m_parentNode instanceof Stylesheet) {
     		  // Global variable    		     		      		  
-    		  rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
+    		  rootNodeHandleRtf = transformer.transformToGlobalRTF(this);
 
     		  int attrCount = (SerializerUtils.m_xdmAttrList).size();
     		  if (attrCount > 0) {
@@ -1313,11 +1313,11 @@ public class ElemVariable extends ElemTemplateElement
     				  var = xpath1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());    				  
     			  }
     			  else {
-    				  rootNodeHandleOfRtf = transformer.transformToRTF(this); 
+    				  rootNodeHandleRtf = transformer.transformToRTF(this); 
     			  }
     		  }
     		  else {
-    		      rootNodeHandleOfRtf = transformer.transformToRTF(this);
+    		      rootNodeHandleRtf = transformer.transformToRTF(this);
     		  }
     	  }    	      	  
     	  
@@ -1369,7 +1369,7 @@ public class ElemVariable extends ElemTemplateElement
     		  ElemTemplateElement.m_xpath_map = null;
     	  }
     	  else if (var == null) {
-    	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
+    	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleRtf, xctxt, this)).convertToNodeset();    	  
     	     
     	     var = new XNodeSetForDOM(nodeList, xctxt);
     	  }
