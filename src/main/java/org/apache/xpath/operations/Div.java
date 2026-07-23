@@ -43,6 +43,8 @@ import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -55,6 +57,8 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
@@ -90,6 +94,57 @@ public class Div extends XPathArithmeticOp
      
      Object lObj = left.object();
 	 Object rObj = right.object();
+	 
+	 XPathSequenceTypeData xpathSeqTypeData = null;
+	 
+	 if ((left instanceof XSFloat) && (right instanceof XSDecimal)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
+	 }
+	 else if ((left instanceof XSDecimal) && (right instanceof XSFloat)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
+	 }
+	 else if ((left instanceof XSFloat) && (right instanceof XSInteger)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
+	 }
+	 else if ((left instanceof XSInteger) && (right instanceof XSFloat)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
+	 }
+	 else if ((left instanceof XSFloat) && (right instanceof XSFloat)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
+	 }
+	 else if ((left instanceof XSDecimal) && (right instanceof XSDouble)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+	 }
+	 else if ((left instanceof XSDouble) && (right instanceof XSDecimal)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+	 }
+	 else if ((left instanceof XSDouble) && (right instanceof XSFloat)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
+	 }
+	 else if ((left instanceof XSFloat) && (right instanceof XSDouble)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+	 }
+	 else if ((left instanceof XSDouble) && (right instanceof XSInteger)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
+	 }
+	 else if ((left instanceof XSInteger) && (right instanceof XSDouble)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
+	 }
+	 else if ((left instanceof XSDouble) && (right instanceof XSDouble)) {
+		xpathSeqTypeData = new XPathSequenceTypeData();
+		xpathSeqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+	 }
 	 
 	 XPathContext xctxt = null;
      
@@ -395,6 +450,10 @@ public class Div extends XPathArithmeticOp
     		 java.lang.String xpathInlineFuncExprStr = "function($arg0, $arg1) { $arg0 div $arg1 }";
     		 XPath xpathObj = new XPath(xpathInlineFuncExprStr, null, null, XPath.SELECT, null);
     		 result = xpathObj.execute(xctxt, DTM.NULL, null);
+    		 
+    		 if (xpathSeqTypeData != null) {
+    			result.setCastAsType(xpathSeqTypeData); 
+    		 }
 
     		 return result;
     	 }
@@ -403,6 +462,10 @@ public class Div extends XPathArithmeticOp
     		 java.lang.String xpathInlineFuncExprStr = "function($arg0) { $arg0 div " + rStr + " }";
     		 XPath xpathObj = new XPath(xpathInlineFuncExprStr, null, null, XPath.SELECT, null);
     		 result = xpathObj.execute(xctxt, DTM.NULL, null);
+    		 
+    		 if (xpathSeqTypeData != null) {
+     			result.setCastAsType(xpathSeqTypeData); 
+     		 }
 
     		 return result;
     	 }
@@ -411,6 +474,10 @@ public class Div extends XPathArithmeticOp
     		 java.lang.String xpathInlineFuncExprStr = "function($arg1) { " + lStr + " div $arg1 }";
     		 XPath xpathObj = new XPath(xpathInlineFuncExprStr, null, null, XPath.SELECT, null);
     		 result = xpathObj.execute(xctxt, DTM.NULL, null);
+    		 
+    		 if (xpathSeqTypeData != null) {
+     			result.setCastAsType(xpathSeqTypeData); 
+     		 }
 
     		 return result;
     	 }
@@ -782,6 +849,12 @@ public class Div extends XPathArithmeticOp
          else {
         	throw ex;
          }         
+     }
+     
+     if (result != null) {
+    	 if (xpathSeqTypeData != null) {
+    		 result.setCastAsType(xpathSeqTypeData); 
+    	 } 
      }
       
      return result; 

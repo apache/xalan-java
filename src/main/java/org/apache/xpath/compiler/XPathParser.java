@@ -5721,7 +5721,7 @@ public class XPathParser
 	       parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');
 
 	       
-	       if (tokenIs(')')) {
+	       if (tokenIs(')') && !lookahead(null, 1)) {
 	          consumeExpected(')');
 	       }
 	       else {	    	  

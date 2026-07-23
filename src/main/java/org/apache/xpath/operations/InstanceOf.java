@@ -151,6 +151,25 @@ public class InstanceOf extends Operation
       
       XPathContext xctxt = null;
       
+      if (left.getCastAsType() != null) {
+    	 XPathSequenceTypeData xpathSeqTypeData1 = left.getCastAsType();    	 
+    	 XPathSequenceTypeData xpathSeqTypeData2 = (XPathSequenceTypeData)right;
+    	 
+    	 int builtInSeqType1 = xpathSeqTypeData1.getBuiltInSequenceType();
+    	 int builtInSeqType2 = xpathSeqTypeData2.getBuiltInSequenceType();
+    	 
+    	 if (builtInSeqType1 != 0) {
+    		if (builtInSeqType1 == builtInSeqType2) {
+    			result = XBoolean.S_TRUE;
+    		}
+    		else {
+    			result = XBoolean.S_FALSE;
+    		}
+    		
+    		return result;
+    	 }
+      }
+      
       StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
       if (stylesheetRoot != null) {
  		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();

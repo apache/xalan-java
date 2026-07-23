@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-07-22T17:03:08Z" desc="W3C XPath 3.1 test suite results" fail="1560" pass="7330" run="8894" skipped="19" success="82.42%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-07-23T12:46:16Z" desc="W3C XPath 3.1 test suite results" fail="1530" pass="7360" run="8894" skipped="19" success="82.75%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="6" run="6" success="100.0%"/>
     <array-filter fail="0" pass="10" run="10" success="100.0%"/>
@@ -50,7 +50,7 @@
     <fn-path fail="1" pass="9" run="10" success="90.0%"/>
     <fn-replace fail="12" pass="76" run="88" skipped="1" success="86.36%"/>
     <fn-starts-with fail="0" pass="39" run="39" success="100.0%"/>
-    <fn-string-join fail="3" pass="36" run="39" success="92.31%"/>
+    <fn-string-join fail="2" pass="37" run="39" success="94.87%"/>
     <fn-string-length fail="0" pass="32" run="32" success="100.0%"/>
     <fn-string-to-codepoints fail="1" pass="43" run="44" success="97.73%"/>
     <fn-string fail="3" pass="67" run="70" success="95.71%"/>
@@ -128,7 +128,7 @@
     <op-node-after fail="12" pass="14" run="26" success="53.85%"/>
     <op-node-before fail="12" pass="14" run="26" success="53.85%"/>
     <op-numeric-add fail="33" pass="98" run="131" skipped="11" success="74.81%"/>
-    <op-numeric-divide fail="44" pass="75" run="119" success="63.03%"/>
+    <op-numeric-divide fail="15" pass="104" run="119" success="87.39%"/>
     <op-numeric-equal fail="6" pass="172" run="178" success="96.63%"/>
     <op-numeric-greater-than fail="7" pass="85" run="92" success="92.39%"/>
     <op-numeric-less-than fail="6" pass="148" run="154" success="96.1%"/>

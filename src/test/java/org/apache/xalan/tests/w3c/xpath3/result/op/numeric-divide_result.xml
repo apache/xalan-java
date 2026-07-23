@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-22T17:00:52Z" fail="44" name="op-numeric-divide" pass="75" run="119" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-23T12:44:08Z" fail="15" name="op-numeric-divide" pass="104" run="119" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-divideint2args-1"/>
-   <testResult status="fail" testName="op-numeric-divideint2args-2"/>
-   <testResult status="fail" testName="op-numeric-divideint2args-3"/>
-   <testResult status="fail" testName="op-numeric-divideint2args-4"/>
-   <testResult status="fail" testName="op-numeric-divideint2args-5"/>
+   <testResult status="pass" testName="op-numeric-divideint2args-2"/>
+   <testResult status="pass" testName="op-numeric-divideint2args-3"/>
+   <testResult status="pass" testName="op-numeric-divideint2args-4"/>
+   <testResult status="pass" testName="op-numeric-divideint2args-5"/>
    <testResult status="pass" testName="op-numeric-divideintg2args-1"/>
-   <testResult status="fail" testName="op-numeric-divideintg2args-2"/>
+   <testResult status="pass" testName="op-numeric-divideintg2args-2"/>
    <testResult status="pass" testName="op-numeric-divideintg2args-3"/>
-   <testResult status="fail" testName="op-numeric-divideintg2args-4"/>
+   <testResult status="pass" testName="op-numeric-divideintg2args-4"/>
    <testResult status="pass" testName="op-numeric-divideintg2args-5"/>
    <testResult status="pass" testName="op-numeric-divideintg2args-6"/>
    <testResult status="pass" testName="op-numeric-dividedec2args-1"/>
-   <testResult status="fail" testName="op-numeric-dividedec2args-2"/>
+   <testResult status="pass" testName="op-numeric-dividedec2args-2"/>
    <testResult status="pass" testName="op-numeric-dividedec2args-3"/>
-   <testResult status="fail" testName="op-numeric-dividedec2args-4"/>
+   <testResult status="pass" testName="op-numeric-dividedec2args-4"/>
    <testResult status="pass" testName="op-numeric-dividedec2args-5"/>
    <testResult status="pass" testName="op-numeric-dividedbl2args-1"/>
    <testResult status="pass" testName="op-numeric-dividedbl2args-2"/>
@@ -24,34 +24,34 @@
    <testResult status="pass" testName="op-numeric-divideflt2args-3"/>
    <testResult status="pass" testName="op-numeric-divideflt2args-4"/>
    <testResult status="pass" testName="op-numeric-dividelng2args-1"/>
-   <testResult status="fail" testName="op-numeric-dividelng2args-2"/>
+   <testResult status="pass" testName="op-numeric-dividelng2args-2"/>
    <testResult status="pass" testName="op-numeric-dividelng2args-3"/>
-   <testResult status="fail" testName="op-numeric-dividelng2args-4"/>
+   <testResult status="pass" testName="op-numeric-dividelng2args-4"/>
    <testResult status="pass" testName="op-numeric-dividelng2args-5"/>
    <testResult status="pass" testName="op-numeric-divideusht2args-1"/>
    <testResult status="pass" testName="op-numeric-divideusht2args-2"/>
    <testResult status="pass" testName="op-numeric-dividenint2args-1"/>
-   <testResult status="fail" testName="op-numeric-dividenint2args-2"/>
+   <testResult status="pass" testName="op-numeric-dividenint2args-2"/>
    <testResult status="pass" testName="op-numeric-dividenint2args-3"/>
-   <testResult status="fail" testName="op-numeric-dividenint2args-4"/>
+   <testResult status="pass" testName="op-numeric-dividenint2args-4"/>
    <testResult status="pass" testName="op-numeric-dividenint2args-5"/>
    <testResult status="pass" testName="op-numeric-dividepint2args-1"/>
    <testResult status="pass" testName="op-numeric-dividepint2args-2"/>
    <testResult status="pass" testName="op-numeric-dividepint2args-3"/>
-   <testResult status="fail" testName="op-numeric-dividepint2args-4"/>
+   <testResult status="pass" testName="op-numeric-dividepint2args-4"/>
    <testResult status="pass" testName="op-numeric-dividepint2args-5"/>
    <testResult status="pass" testName="op-numeric-divideulng2args-1"/>
    <testResult status="pass" testName="op-numeric-divideulng2args-2"/>
    <testResult status="pass" testName="op-numeric-dividenpi2args-1"/>
-   <testResult status="fail" testName="op-numeric-dividenpi2args-2"/>
+   <testResult status="pass" testName="op-numeric-dividenpi2args-2"/>
    <testResult status="pass" testName="op-numeric-dividenpi2args-3"/>
-   <testResult status="fail" testName="op-numeric-dividenpi2args-4"/>
+   <testResult status="pass" testName="op-numeric-dividenpi2args-4"/>
    <testResult status="pass" testName="op-numeric-dividenni2args-1"/>
    <testResult status="pass" testName="op-numeric-dividenni2args-2"/>
    <testResult status="pass" testName="op-numeric-dividesht2args-1"/>
-   <testResult status="fail" testName="op-numeric-dividesht2args-2"/>
+   <testResult status="pass" testName="op-numeric-dividesht2args-2"/>
    <testResult status="pass" testName="op-numeric-dividesht2args-3"/>
-   <testResult status="fail" testName="op-numeric-dividesht2args-4"/>
+   <testResult status="pass" testName="op-numeric-dividesht2args-4"/>
    <testResult status="pass" testName="op-numeric-dividesht2args-5"/>
    <testResult status="pass" testName="op-numeric-dividemix2args-1"/>
    <testResult status="pass" testName="op-numeric-dividemix2args-2"/>
@@ -75,18 +75,18 @@
    <testResult status="pass" testName="K-NumericDivide-17"/>
    <testResult status="pass" testName="K-NumericDivide-18"/>
    <testResult status="pass" testName="K-NumericDivide-19"/>
-   <testResult status="fail" testName="K-NumericDivide-20"/>
-   <testResult status="fail" testName="K-NumericDivide-21"/>
-   <testResult status="fail" testName="K-NumericDivide-22"/>
-   <testResult status="fail" testName="K-NumericDivide-23"/>
-   <testResult status="fail" testName="K-NumericDivide-24"/>
-   <testResult status="fail" testName="K-NumericDivide-25"/>
-   <testResult status="fail" testName="K-NumericDivide-26"/>
-   <testResult status="fail" testName="K-NumericDivide-27"/>
-   <testResult status="fail" testName="K-NumericDivide-28"/>
-   <testResult status="fail" testName="K-NumericDivide-29"/>
-   <testResult status="fail" testName="K-NumericDivide-30"/>
-   <testResult status="fail" testName="K-NumericDivide-31"/>
+   <testResult status="pass" testName="K-NumericDivide-20"/>
+   <testResult status="pass" testName="K-NumericDivide-21"/>
+   <testResult status="pass" testName="K-NumericDivide-22"/>
+   <testResult status="pass" testName="K-NumericDivide-23"/>
+   <testResult status="pass" testName="K-NumericDivide-24"/>
+   <testResult status="pass" testName="K-NumericDivide-25"/>
+   <testResult status="pass" testName="K-NumericDivide-26"/>
+   <testResult status="pass" testName="K-NumericDivide-27"/>
+   <testResult status="pass" testName="K-NumericDivide-28"/>
+   <testResult status="pass" testName="K-NumericDivide-29"/>
+   <testResult status="pass" testName="K-NumericDivide-30"/>
+   <testResult status="pass" testName="K-NumericDivide-31"/>
    <testResult status="pass" testName="K-NumericDivide-32"/>
    <testResult status="fail" testName="K-NumericDivide-33"/>
    <testResult status="pass" testName="K-NumericDivide-34"/>

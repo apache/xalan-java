@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:17Z" fail="3" name="fn-string-join" pass="36" run="39" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-23T12:46:06Z" fail="2" name="fn-string-join" pass="37" run="39" statusUnknown="0">
    <testResult status="pass" testName="fn-string-join2args-1"/>
    <testResult status="pass" testName="fn-string-join2args-2"/>
    <testResult status="pass" testName="fn-string-join2args-3"/>
@@ -16,7 +16,7 @@
    <testResult status="pass" testName="fn-string-join-10"/>
    <testResult status="pass" testName="fn-string-join-11"/>
    <testResult status="pass" testName="fn-string-join-12"/>
-   <testResult status="fail" testName="fn-string-join-13"/>
+   <testResult status="pass" testName="fn-string-join-13"/>
    <testResult status="pass" testName="fn-string-join-14"/>
    <testResult status="pass" testName="fn-string-join-15"/>
    <testResult status="pass" testName="fn-string-join-16"/>
