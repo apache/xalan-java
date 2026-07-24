@@ -150,9 +150,11 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_FOR_EXPR_3 = "ER_FOR_EXPR_3";
   public static final String ER_FOR_EXPR_4 = "ER_FOR_EXPR_4";
   public static final String ER_FOR_EXPR_5 = "ER_FOR_EXPR_5";
-  public static final String ER_FOR_EXPR_6 = "ER_FOR_EXPR_6";
+  public static final String ER_FOR_EXPR_6 = "ER_FOR_EXPR_6";  
+  public static final String ER_IS_EXPR_1 = "ER_IS_EXPR_1";  
+  public static final String ER_XPATH_NUMERIC_EXPR_SUFFIX = "ER_XPATH_NUMERIC_EXPR_SUFFIX";
   
-  public static final String ER_IS_EXPR_1 = "ER_IS_EXPR_1";
+  public static final String ER_UNEXPECTED_TOKEN = "ER_UNEXPECTED_TOKEN";
   
   public static final String ER_INCORRECT_PROGRAMMER_ASSERTION = 
 	 "ER_INCORRECT_PROGRAMMER_ASSERTION";
@@ -173,7 +175,7 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_PATTERN_LITERAL_NEEDS_BE_QUOTED = 
 	 "ER_PATTERN_LITERAL_NEEDS_BE_QUOTED";
   public static final String ER_COULDNOT_BE_FORMATTED_TO_NUMBER = 
-	 "ER_COULDNOT_BE_FORMATTED_TO_NUMBER";
+	 "ER_COULDNOT_BE_FORMATTED_TO_NUMBER";  
   public static final String ER_COULDNOT_CREATE_XMLPROCESSORLIAISON = 
 	 "ER_COULDNOT_CREATE_XMLPROCESSORLIAISON";
   public static final String ER_DIDNOT_FIND_XPATH_SELECT_EXP = 
@@ -540,9 +542,15 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_IS_EXPR_1,
      "XPST0003 : Unexpected token ''{0}'' after ''is''."},
+  
+  { ER_XPATH_NUMERIC_EXPR_SUFFIX,
+     "XPST0003 : Unexpected token ''{0}'' after a number."},
+  
+  { ER_UNEXPECTED_TOKEN,
+     "XPST0003 : Unexpected token ''{0}'' after ''{1}''."},
 
   { ER_INCORRECT_PROGRAMMER_ASSERTION,
-      "Programmer assertion is incorrect! - {0}"},
+      "Programmer assertion is incorrect, {0}"},
 
   { ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL,
       "boolean(...) argument is no longer optional with 19990709 XPath draft."},
@@ -572,7 +580,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "Pattern literal ({0}) needs to be quoted."},
 
   { ER_COULDNOT_BE_FORMATTED_TO_NUMBER,
-      "{0} could not be formatted to a number."},
+      "XPST0003 : {0} could not be formatted to a number."},
 
   { ER_COULDNOT_CREATE_XMLPROCESSORLIAISON,
       "Could not create XML TransformerFactory Liaison: {0}"},

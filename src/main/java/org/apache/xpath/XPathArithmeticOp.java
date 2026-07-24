@@ -32,6 +32,8 @@ import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -46,8 +48,8 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * A class definition, providing utility methods to support 
- * implementing XPath arithmetic operators +, -, div & mod.
+ * Class definition, providing utility methods to support 
+ * XPath arithmetic operator implementations.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
@@ -435,5 +437,83 @@ public class XPathArithmeticOp extends Operation {
     	
     	return result;
     }
+    
+    /**
+     * Method definition, to get an xdm sequence type run-time,
+     * object representing XPath operator 'div', 'mod' result type. 
+     * 
+     * @param xObj1                          An XPath operator 'div', 'mod' 
+     *                                       first operand.
+     * @param xObj2                          An XPath operator 'div', 'mod' 
+     *                                       second operand.
+     * @return
+     */
+    protected XPathSequenceTypeData getXdmSequenceTypeResultData(XObject xObj1, XObject xObj2) {
+  	  
+    	XPathSequenceTypeData result = null;
+
+    	if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSDecimal)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
+    	}
+    	else if ((xObj1 instanceof XSDecimal) && (xObj2 instanceof XSFloat)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
+    	}
+    	else if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSInteger)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
+    	}
+    	else if ((xObj1 instanceof XSInteger) && (xObj2 instanceof XSFloat)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
+    	}
+    	else if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSFloat)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
+    	}
+    	else if ((xObj1 instanceof XSDecimal) && (xObj2 instanceof XSDouble)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+    	}
+    	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSDecimal)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+    	}
+    	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSFloat)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
+    	}
+    	else if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSDouble)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+    	}
+    	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSInteger)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
+    	}
+    	else if ((xObj1 instanceof XSInteger) && (xObj2 instanceof XSDouble)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
+    	}
+    	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSDouble)) {
+    		result = new XPathSequenceTypeData();
+    		
+    		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
+    	}
+
+    	return result;
+  	}
 
 }

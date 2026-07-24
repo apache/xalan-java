@@ -39,14 +39,12 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathRelationalOp;
-import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
@@ -59,7 +57,8 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * The XPath 3.1 value comparison "eq" operation.
+ * An implementation of XPath 3.1 value comparison 
+ * operator 'eq'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -264,8 +263,6 @@ public class VcEquals extends XPathRelationalOp
 							 typeNs1 = xsTypeDefn.getNamespace();
 						 }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -294,8 +291,6 @@ public class VcEquals extends XPathRelationalOp
 						  typeNs1 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 			  else {
 				  typeName1 = "string";
@@ -400,8 +395,6 @@ public class VcEquals extends XPathRelationalOp
 							  typeNs2 = xsTypeDefn.getNamespace();
 						  }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -430,8 +423,6 @@ public class VcEquals extends XPathRelationalOp
 						  typeNs2 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 			  else {
 				  typeName2 = "string";

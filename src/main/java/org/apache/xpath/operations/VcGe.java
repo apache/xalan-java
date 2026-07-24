@@ -60,7 +60,8 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * The XPath 3.1 value comparison "ge" operation.
+ * An implementation of XPath 3.1 value comparison 
+ * operator 'ge'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -267,8 +268,6 @@ public class VcGe extends XPathRelationalOp
 							 typeNs1 = xsTypeDefn.getNamespace();
 						 }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -297,8 +296,6 @@ public class VcGe extends XPathRelationalOp
 						  typeNs1 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 			  else {
 				  typeName1 = "string";
@@ -403,8 +400,6 @@ public class VcGe extends XPathRelationalOp
 							  typeNs2 = xsTypeDefn.getNamespace();
 						  }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -433,8 +428,6 @@ public class VcGe extends XPathRelationalOp
 						  typeNs2 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 			  else {
 				  typeName2 = "string";

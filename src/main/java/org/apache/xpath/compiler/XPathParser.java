@@ -2873,7 +2873,8 @@ public class XPathParser
    */
   protected void ExprSingle() throws javax.xml.transform.TransformerException
   {
-      m_isXPathExprBeginParse = false;
+      
+	  m_isXPathExprBeginParse = false;
       
       if (tokenIs("for")) {
          String prevTokenStr = getTokenRelative(-2);
@@ -5592,7 +5593,18 @@ public class XPathParser
 	      	List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
 	      	funcArgUsedSeq.add(Boolean.valueOf(false));
 	      	
-	      	if (tokenIs("is")) {
+	      	if ((tokenIs("mod") || tokenIs("div")) && !lookahead(null, 1)) {	      	
+	      	   String str1 = m_token;
+	      	   
+	      	   nextToken();
+	      	   
+	      	   if (tokenIs(')') && lookahead(null, 1)) {
+	      		  error(XPATHErrorResources.ER_UNEXPECTED_TOKEN, new Object[]{ m_token, str1 });
+	      	   }
+	      	   
+	      	   nextToken();
+	      	}	      		      	
+	      	else if (tokenIs("is")) {
 	      		consumeExpected("is");
 	      		
 	      		if (tokenIs(',') || tokenIs(')')) {
@@ -7197,10 +7209,11 @@ public class XPathParser
   {
 
     if (m_token != null)
-    {
-    	
+    {    	
       XNumber xNumber = null;
       String numberStrValue = "";
+      
+      int prevQueueMark = m_queueMark;
       
       try
       {       	  
@@ -7241,6 +7254,10 @@ public class XPathParser
       m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       nextToken();
+      
+      if ((prevQueueMark == 1) && (m_token != null) && lookahead(null, 1)) {
+    	 error(XPATHErrorResources.ER_XPATH_NUMERIC_EXPR_SUFFIX, new Object[]{ m_token }); 
+      }
     }
   }
 

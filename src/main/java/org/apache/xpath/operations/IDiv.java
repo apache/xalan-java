@@ -61,7 +61,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * An XPath 'idiv' operation implementation.
+ * An implementation of XPath 3.1 operator 'idiv'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
@@ -71,17 +71,19 @@ public class IDiv extends XPathArithmeticOp
   private static final long serialVersionUID = 5138215729063791579L;
 
   /**
-   * Apply the operation to two operands, and return the result.
+   * Apply XPath operator to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated first operand.
+   * @param right non-null reference to the evaluated second operand.
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to an XObject object reference that,
+   *         represents the result of XPath expression evaluation.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
+	  
 	  XObject result = null;
 	  
 	  Object lObj = left.object();

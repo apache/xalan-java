@@ -71,7 +71,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * An XPath '+' operation implementation.
+ * An implementation of XPath operator '+'.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * 
@@ -83,12 +83,13 @@ public class Plus extends XPathArithmeticOp
    static final long serialVersionUID = -4492072861616504256L;
 
   /**
-   * Apply the operation to two operands, and return the result.
+   * Apply XPath operator to two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
+   * @param left non-null reference to the evaluated first operand.
+   * @param right non-null reference to the evaluated second operand.
    *
-   * @return non-null reference to the XObject that represents the result of the operation.
+   * @return non-null reference to an XObject object reference that,
+   *         represents the result of XPath expression evaluation.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -231,8 +232,6 @@ public class Plus extends XPathArithmeticOp
 							 typeNs1 = xsTypeDefn.getNamespace();
 						 }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -261,8 +260,6 @@ public class Plus extends XPathArithmeticOp
 						  typeNs1 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 
 			  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
@@ -330,8 +327,6 @@ public class Plus extends XPathArithmeticOp
 							  typeNs2 = xsTypeDefn.getNamespace();
 						  }
 					  }
-					  
-					  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 				  }
 			  }
 			  else if (node instanceof AttributePSVI) {
@@ -360,8 +355,6 @@ public class Plus extends XPathArithmeticOp
 						  typeNs2 = xsTypeDefn.getNamespace();
 					  }
 				  }
-				  
-				  // To do, xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_LIST
 			  }
 
 			  XMLString xmlStr2 = dtm.getStringValue(nodeHandle);
@@ -662,7 +655,7 @@ public class Plus extends XPathArithmeticOp
 			  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
 			  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
 			  
-			  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_PLUS, elemTemplateElement);
+			  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_PLUS, elemTemplateElement);			  
 		  }
 		  else if ((left instanceof XNumber) && (right instanceof XNumber)) {          
 			  XNumber lNumber = (XNumber)left;
