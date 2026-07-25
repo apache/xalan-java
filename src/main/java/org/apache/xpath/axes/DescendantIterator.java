@@ -29,7 +29,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.compiler.OpMap;
+import org.apache.xpath.compiler.XPathOpMap;
 import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.DOMException;
 
@@ -57,7 +57,7 @@ public class DescendantIterator extends LocPathIterator
 
     super(compiler, opPos, analysis, false);
 
-    int firstStepPos = OpMap.getFirstChildPos(opPos);
+    int firstStepPos = XPathOpMap.getFirstChildPos(opPos);
     int stepType = compiler.getOp(firstStepPos);
 
     boolean orSelf = (OpCodes.FROM_DESCENDANTS_OR_SELF == stepType);

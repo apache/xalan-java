@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-07-24T10:50:53Z" desc="W3C XPath 3.1 test suite results" fail="1488" pass="7402" run="8894" skipped="19" success="83.22%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-07-25T11:33:29Z" desc="W3C XPath 3.1 test suite results" fail="1484" pass="7406" run="8894" skipped="19" success="83.27%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="6" run="6" success="100.0%"/>
     <array-filter fail="0" pass="10" run="10" success="100.0%"/>
@@ -160,7 +160,7 @@
     <op-yearMonthDuration-less-than fail="4" pass="24" run="28" success="85.71%"/>
   </op>
   <prod>
-    <prod-ArrowPostfix fail="24" pass="16" run="40" success="40.0%"/>
+    <prod-ArrowPostfix fail="20" pass="20" run="40" success="50.0%"/>
     <prod-AxisStep.abbr fail="2" pass="13" run="15" success="86.67%"/>
     <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
     <prod-AxisStep.ancestor fail="1" pass="20" run="21" success="95.24%"/>

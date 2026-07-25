@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.compiler;
 
 import javax.xml.transform.TransformerException;
@@ -31,7 +28,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * This class represents the data structure basics of the XPath
  * object.
  */
-public class OpMap
+public class XPathOpMap
 {
 
   /**

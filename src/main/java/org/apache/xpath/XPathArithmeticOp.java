@@ -77,16 +77,25 @@ public class XPathArithmeticOp extends Operation {
     
     private static final String DIVISION_BY_ZERO = "Division by zero";
     
-    private static final int DEFAULT_DIV_SCALE = 18;
+    private static final int XPATH_DIV_OP_DEFAULT_SCALE = 18;
 	
-	/**
-	 * This method does an arithmetic operation on two XNumber object values.
-	 * 
-	 * A numeric literal from a text data source, is always constructed to
-	 * an XNumber object value by Xalan-J's XPath parser.
-	 *  
-	 * @throws TransformerException 
-	 */
+    
+    /**
+     * Method definition, to do arithmetic operation on two supplied
+     * XNumber object values.
+     * 
+     * @param lNumber                             An arithmetic operator's, supplied
+     *                                            first argument.
+     * @param rNumber                             An arithmetic operator's, supplied
+     *                                            second argument.
+     * @param opSymbol                            The supplied string value, representing
+     *                                            the type of arithmetic operation to be
+     *                                            performed.
+     * @param elemTemplateElement                 The supplied ElemTemplateElement object
+     *                                            instance.
+     * @return                                    The result of XPath arithmetic operation
+     * @throws TransformerException
+     */
 	protected XObject arithmeticOpOnXNumberValues(XNumber lNumber, XNumber rNumber, 
 			                                      String opSymbol, ElemTemplateElement elemTemplateElement) throws TransformerException {
 
@@ -114,6 +123,7 @@ public class XPathArithmeticOp extends Operation {
 			   }
 			   catch (ArithmeticException ex) {
 				   java.lang.String exceptionMesg = ex.getMessage();
+				   
 	     		   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
 			   }
 			}
@@ -121,6 +131,7 @@ public class XPathArithmeticOp extends Operation {
 			   try {
 				  BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr); 
 				  BigDecimal rBigDecimal = new BigDecimal(rXsIntegerStr);
+				  
 				  result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
 			   }
 			   catch (ArithmeticException ex) {				  
@@ -131,6 +142,7 @@ public class XPathArithmeticOp extends Operation {
 		else if (lNumber.isXsDecimal() && rNumber.isXsDecimal()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsDouble()) {
@@ -158,31 +170,37 @@ public class XPathArithmeticOp extends Operation {
 		else if (lNumber.isXsInteger() && rNumber.isXsDecimal()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsInteger() && rNumber.isXsDouble()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsInteger()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
-			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue()); 		 
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsDouble()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsInteger()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}      
 		else if (lNumber.isXsDouble() && rNumber.isXsDecimal()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
-			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());			
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
+			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}      
 		else {
@@ -210,7 +228,13 @@ public class XPathArithmeticOp extends Operation {
 	}
 	
 	/**
-	 * Get XNumber object value from an XSNumericType object value. 
+	 * Method definition, to get an XNumber object instance, from
+	 * the supplied XSNumericType object instance. 
+	 * 
+	 * @param xsNumericType                  The supplied XSNumericType object 
+	 *                                       instance. 
+	 * @return                               The constructed XNumber object
+	 *                                       instance. 
 	 */
 	protected XNumber getXNumberFromXSNumericType(XSNumericType xsNumericType) {
 	   
@@ -228,25 +252,33 @@ public class XPathArithmeticOp extends Operation {
 		  // will provide access to xs:integer and its subtypes
 		  XSInteger xsInteger = (XSInteger)xsNumericType;
 		  num = (xsInteger.getValue()).doubleValue();
+		  
 		  result = new XNumber(num);
+		  
 		  result.setXsInteger(xsInteger);
 	   }
 	   else if (xsNumericType instanceof XSDecimal) {
 		   XSDecimal xsDecimal = (XSDecimal)xsNumericType;
 		   num = (xsDecimal.getValue()).doubleValue();
+		   
 		   result = new XNumber(num);
+		   
 		   result.setXsDecimal(xsDecimal); 
 	   }
 	   else if (xsNumericType instanceof XSDouble) {
 		   XSDouble xsDouble = (XSDouble)xsNumericType;
 		   num = xsDouble.doubleValue();
+		   
 		   result = new XNumber(num);
+		   
 		   result.setXsDouble(xsDouble); 
 	   }
 	   else if (xsNumericType instanceof XSFloat) {
 		   XSFloat xsFloat = (XSFloat)xsNumericType;
 		   num = (double)(xsFloat.floatValue());
+		   
 		   result = new XNumber(num);
+		   
 		   result.setXsDouble(new XSDouble(num)); 
 	   }
 	   
@@ -254,15 +286,25 @@ public class XPathArithmeticOp extends Operation {
 	}
 	
 	/**
-	 * This method specifies the processing that takes place, when ArithmeticException occurs
-	 * on 'div' operator's evaluation.  
+	 * Method definition, to process an ArithmeticException during
+	 * XPath operator 'div' evaluation. 
+	 * 
+	 * @param lBigDecimal                     XPath operator 'div' first operand 
+	 * @param rBigDecimal                     XPath operator 'div' second operand
+	 * @param exceptionMesg                   A run-time error message string
+	 * @param elemTemplateElement             The supplied ElemTemplateElement object
+	 *                                        instance. 
+	 * @return                                An xdm result object when run-time
+	 *                                        exception is not raised.
+	 * @throws TransformerException
 	 */
 	protected XObject divOpArithmeticExceptionAction(BigDecimal lBigDecimal, BigDecimal rBigDecimal,
 			                                         java.lang.String exceptionMesg, ElemTemplateElement elemTemplateElement) throws TransformerException {
 		XObject result = null;
 
 		if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
-			BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
+			BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, XPATH_DIV_OP_DEFAULT_SCALE, RoundingMode.HALF_EVEN);
+			
 			result = new XSDecimal(resultBigDecimal);
 		}
 		else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
@@ -275,7 +317,13 @@ public class XPathArithmeticOp extends Operation {
 	/**
 	 * Method definition, to construct an concrete error message string 
 	 * value using information supplied as arguments, to be emitted as an 
-	 * javax.xml.transform.TransformerException object. 
+	 * javax.xml.transform.TransformerException object.
+	 * 
+	 * @param errMesg                  The supplied error message string value
+	 * @param args                     The supplied string valued arguments for
+	 *                                 an error message.
+	 * @param elemTemplateElement      The supplied ElemTemplateElement object
+	 *                                 instance.                                  
 	 */
 	protected void error(String errMesg, String[] args, ElemTemplateElement elemTemplateElement) 
 			                                                                                 throws javax.xml.transform.TransformerException {
@@ -287,12 +335,13 @@ public class XPathArithmeticOp extends Operation {
 	}
 	
 	/**
-	 * Given two double operands for arithmetic division, do the
-	 * division and return the result as an XDM numeric value.
+	 * Method definition, to do arithmetic division on two supplied
+	 * operand values.
 	 * 
-	 * @param lDouble			division left operand
-	 * @param rDouble           division left operand 
-	 * @return					An XSDouble or XSDecimal result value 
+	 * @param lDouble                   An arithmetic division's first operand
+	 * @param rDouble                   An arithmetic division's second operand
+	 * @return                          An xdm result object for an arithmetic 
+	 *                                  division.
 	 */
 	protected XObject doubleDiv(double lDouble, double rDouble) {
 
@@ -334,52 +383,16 @@ public class XPathArithmeticOp extends Operation {
 		DTM dtm = xctxt.getDTM(nodeHandle);
 
 		XMLString xmlString = dtm.getStringValue(nodeHandle);
-		java.lang.String rStrVal = xmlString.toString(); 
+		java.lang.String rStrVal = xmlString.toString();
+		
 		result = (Double.valueOf(rStrVal)).doubleValue();
 
 		return result;
 	}
 	
 	/**
-	 * This method does an arithmetic operation on two java.math.BigDecimal values. 
-	 */
-	private XObject arithmeticOpOnBigDecimalValues(BigDecimal lBigDecimal, BigDecimal rBigDecimal, 
-			                                       String opSymbol, ElemTemplateElement elemTemplateElement) throws TransformerException {
-		XObject result = null;
-
-		if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-		}
-		else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-		}
-		else if (opSymbol.equals(OP_SYMBOL_MULT)) {
-			result = new XSDecimal(lBigDecimal.multiply(rBigDecimal));
-		}
-		else if (opSymbol.equals(OP_SYMBOL_DIV)) {
-			try {
-			   result = new XSDecimal(lBigDecimal.divide(rBigDecimal));				
-			}
-			catch (ArithmeticException ex) {
-			   java.lang.String exceptionMesg = ex.getMessage();
-			   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
-			}
-		}
-		else if (opSymbol.equals(OP_SYMBOL_MOD)) {
-			try {
-				result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
-			}
-			catch (ArithmeticException ex) {				  
-				error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement);
-			}
-		}
-
-		return result;
-	}
-	
-	/**
-	 * Method definition, to check whether an XML Schema 1.0, 
-	 * supplied built-in type name is numeric.
+	 * Method definition, to check whether an XML Schema, supplied 
+	 * built-in type name represents a numeric type.
 	 * 
 	 * @param typeName					  The supplied XML Schema type 
 	 *                                    name string.
@@ -439,14 +452,15 @@ public class XPathArithmeticOp extends Operation {
     }
     
     /**
-     * Method definition, to get an xdm sequence type run-time,
-     * object representing XPath operator 'div', 'mod' result type. 
+     * Method definition, to get an xdm sequence type run-time, object 
+     * representing XPath operator 'div', 'mod' result type. 
      * 
      * @param xObj1                          An XPath operator 'div', 'mod' 
      *                                       first operand.
      * @param xObj2                          An XPath operator 'div', 'mod' 
      *                                       second operand.
-     * @return
+     * @return                               An XPathSequenceTypeData object instance,
+     *                                       or null.
      */
     protected XPathSequenceTypeData getXdmSequenceTypeResultData(XObject xObj1, XObject xObj2) {
   	  
@@ -515,5 +529,53 @@ public class XPathArithmeticOp extends Operation {
 
     	return result;
   	}
+    
+    /**
+     * Method definition, to do arithmetic operation on two java.math.BigDecimal 
+     * values. 
+     * 
+     * @param lBigDecimal                        Arithmetic operator's first operand
+     * @param rBigDecimal                        Arithmetic operator's second operand
+     * @param opSymbol                           Arithmetic operator's type, i.e,
+     *                                           whether its +, -, *, div, mod.
+     * @param elemTemplateElement                The supplied ElemTemplateElement object 
+     * @return                                   The result of arithmetic operation 
+     * @throws TransformerException
+     */
+	private XObject arithmeticOpOnBigDecimalValues(BigDecimal lBigDecimal, BigDecimal rBigDecimal, 
+			                                       String opSymbol, ElemTemplateElement elemTemplateElement) throws TransformerException {
+		
+		XObject result = null;
+
+		if (opSymbol.equals(OP_SYMBOL_PLUS)) {
+			result = new XSDecimal(lBigDecimal.add(rBigDecimal));
+		}
+		else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
+			result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
+		}
+		else if (opSymbol.equals(OP_SYMBOL_MULT)) {
+			result = new XSDecimal(lBigDecimal.multiply(rBigDecimal));
+		}
+		else if (opSymbol.equals(OP_SYMBOL_DIV)) {
+			try {
+			   result = new XSDecimal(lBigDecimal.divide(rBigDecimal));				
+			}
+			catch (ArithmeticException ex) {
+			   java.lang.String exceptionMesg = ex.getMessage();
+			   
+			   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg, elemTemplateElement);
+			}
+		}
+		else if (opSymbol.equals(OP_SYMBOL_MOD)) {
+			try {
+				result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
+			}
+			catch (ArithmeticException ex) {				  
+				error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement);
+			}
+		}
+
+		return result;
+	}
 
 }

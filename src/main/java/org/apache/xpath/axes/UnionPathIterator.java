@@ -28,7 +28,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.compiler.OpMap;
+import org.apache.xpath.compiler.XPathOpMap;
 
 /**
  * This class extends NodeSetDTM, which implements DTMIterator,
@@ -159,7 +159,7 @@ public class UnionPathIterator extends LocPathIterator
 
     super();
 
-    opPos = OpMap.getFirstChildPos(opPos);
+    opPos = XPathOpMap.getFirstChildPos(opPos);
 
     loadLocationPaths(compiler, opPos, 0);
   }

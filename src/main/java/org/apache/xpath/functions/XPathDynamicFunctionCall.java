@@ -801,8 +801,14 @@ public class XPathDynamicFunctionCall extends Expression {
 			result = elemFunction.evaluateXslFunction(transformerImpl, argSequence);
 		}
 		else {
+			ResultSequence argSeq = null;
+			if ((m_argList == null) && (m_ArrowOpArgObj != null)) {
+			   argSeq = new ResultSequence();
+			   argSeq.add(m_ArrowOpArgObj);
+			}
+			
 		    result = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)functionRef, m_argList, 
-																				   null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+		    		                                                               argSeq, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
 																				   xctxt);
 		}
 		

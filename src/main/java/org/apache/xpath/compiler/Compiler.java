@@ -64,7 +64,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
-import org.apache.xpath.operations.ArrowOp;
+import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.operations.CastAs;
 import org.apache.xpath.operations.CastableAs;
 import org.apache.xpath.operations.Div;
@@ -115,10 +115,10 @@ import org.w3c.dom.Element;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 
 /**
- * An instance of this class compiles an XPath string expression, into 
- * an XPath Expression object. This class compiles the string into a sequence 
- * of operation codes (op map) and then builds from that into an Expression 
- * tree.
+ * An instance of this class compiles an XPath expression string, 
+ * into an XPath expression object. This class compiles a string 
+ * value into a sequence of XPath op codes and then builds from 
+ * that into an XPath expression tree.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Myriam Midy <mmidy@apache.org>
@@ -132,7 +132,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
  * 
  * @xsl.usage advanced
  */
-public class Compiler extends OpMap
+public class Compiler extends XPathOpMap
 {
 	
 	/** The error listener where errors will be sent.  If this is null, errors 
@@ -777,7 +777,7 @@ public class Compiler extends OpMap
    */
   protected Expression arrowOp(int opPos) throws TransformerException
   {
-	return compileOperation(new ArrowOp(), opPos);
+	return compileOperation(new XPathArrowOp(), opPos);
   }
 
   /**
@@ -1513,7 +1513,7 @@ private static final boolean DEBUG = false;
       if (DEBUG)
         System.out.println("MATCH_FUNCTION: "+m_currentPattern); 
       addMagicSelf = false;
-      argLen = getOp(opPos + OpMap.MAPINDEX_LENGTH);
+      argLen = getOp(opPos + XPathOpMap.MAPINDEX_LENGTH);
       pattern = new FunctionPattern(compileFunction(opPos), Axis.PARENT, Axis.CHILD);
       break;
     case OpCodes.FROM_ROOT :

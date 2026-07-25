@@ -44,7 +44,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class ArrowOp extends Operation
+public class XPathArrowOp extends Operation
 {
 
 	private static final long serialVersionUID = 4577709194385888770L;
@@ -76,7 +76,9 @@ public class ArrowOp extends Operation
     	 XPathDynamicFunctionCall dfc = (XPathDynamicFunctionCall)m_right;    	     	 
     	 
     	 Expression lArg = m_left;
+    	 
     	 XObject lArgObj = lArg.execute(xctxt);
+    	 
     	 dfc.setArg0(lArgObj);
     	 
     	 result = dfc.execute(xctxt);
@@ -86,7 +88,9 @@ public class ArrowOp extends Operation
     	 Vector argVector = xsl3ConstructorOrExtensionFunction.getArgVector();
     	 
     	 Expression lArg = m_left;
+    	 
     	 XObject lArgObj = lArg.execute(xctxt);
+    	 
     	 argVector.add(0, lArgObj);
     	 
     	 result = xsl3ConstructorOrExtensionFunction.execute(xctxt);
@@ -156,7 +160,7 @@ public class ArrowOp extends Operation
     	  }    	  
       }
       
-      if (m_xpath_arrowOpRemainingExprStr != null) {         
+      if ((m_xpath_arrowOpRemainingExprStr != null) && m_xpath_arrowOpRemainingExprStr.contains("=>")) {         
 		  result = getXPathArrowOpFinalResult(result, m_xpath_arrowOpRemainingExprStr, xctxt);
 	  }
       

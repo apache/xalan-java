@@ -25,7 +25,7 @@ import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.compiler.OpMap;
+import org.apache.xpath.compiler.XPathOpMap;
 
 /**
  * Base for iterators that handle predicates.  Does the basic next 
@@ -75,7 +75,7 @@ public abstract class BasicTestIterator extends LocPathIterator
   {
     super(compiler, opPos, analysis, false);
     
-    int firstStepPos = OpMap.getFirstChildPos(opPos);
+    int firstStepPos = XPathOpMap.getFirstChildPos(opPos);
     int whatToShow = compiler.getWhatToShow(firstStepPos);
 
     if ((0 == (whatToShow

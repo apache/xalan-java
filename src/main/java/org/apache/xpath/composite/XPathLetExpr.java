@@ -54,19 +54,26 @@ public class XPathLetExpr extends Expression {
 
     private static final long serialVersionUID = 3063682088023616108L;
 
+    /**
+     * Class field, used to represent XPath 3.1 'let' expression's 
+     * variable bindings.
+     */
     private List<XPathLetExprVarBinding> m_letExprVarBindingList = 
                                                    new ArrayList<XPathLetExprVarBinding>();
     
+    /**
+     * Class field, used to represent XPath 3.1 'let' 
+     * expression's return clause XPath expression string.
+     */
     private String m_returnExprXPathStr = null;
     
+    // Class field, used to resolve variable references
+    // within an XPath expression.
     private Vector m_vars;
     
+    // Class field, used to resolve variable references
+    // within an XPath expression.
     private int m_globals_size;
-
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
-    }
     
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
@@ -75,7 +82,7 @@ public class XPathLetExpr extends Expression {
         
        SourceLocator srcLocator = xctxt.getSAXLocator();
         
-       int contextNode = xctxt.getContextNode();
+       final int sourceNode = xctxt.getContextNode();
        
        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
        
@@ -85,6 +92,7 @@ public class XPathLetExpr extends Expression {
        
        try {
     	   int size1 = m_letExprVarBindingList.size();
+    	   
     	   for (int idx = 0; idx < size1; idx++) {          
     		   XPathLetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
     		   String varName = letExprVarBinding.getVarName();
@@ -192,7 +200,7 @@ public class XPathLetExpr extends Expression {
     			   }
     		   }
     		   else if (varBindingEvalResult == null) {
-    			   varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    			   varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
     		   }
 
     		   if (varBindingEvalResult == null) {
@@ -218,7 +226,7 @@ public class XPathLetExpr extends Expression {
     		   returnExprXpath.fixupVariables(m_vars, m_globals_size);
     	   }
 
-    	   evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+    	   evalResult = returnExprXpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 
     	   if (evalResult == null) {
     		   // Return an empty sequence
@@ -242,9 +250,15 @@ public class XPathLetExpr extends Expression {
        m_vars = (Vector)(vars.clone());
        m_globals_size = globalsSize; 
     }
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+       // no op
+    }
 
     @Override
-    public boolean deepEquals(Expression expr) {        
+    public boolean deepEquals(Expression expr) {
+       // no op    	
        return false;
     }
 

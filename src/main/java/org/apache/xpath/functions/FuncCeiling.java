@@ -207,6 +207,7 @@ public class FuncCeiling extends FunctionDef1Arg
 			}
 			else {
 				XSDouble xsDoubleArg = new XSDouble(xNumber.num());
+				
 				if (xsDoubleArg.zero()) {
 					result = new XSDouble(0); 
 				}

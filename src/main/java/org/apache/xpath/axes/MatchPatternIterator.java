@@ -26,7 +26,7 @@ import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.compiler.OpMap;
+import org.apache.xpath.compiler.XPathOpMap;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -77,7 +77,7 @@ public class MatchPatternIterator extends LocPathIterator
 
     super(compiler, opPos, analysis, false);
 
-    int firstStepPos = OpMap.getFirstChildPos(opPos);
+    int firstStepPos = XPathOpMap.getFirstChildPos(opPos);
 
     m_pattern = WalkerFactory.loadSteps(this, compiler, firstStepPos, 0); 
 

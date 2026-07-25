@@ -27,7 +27,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.compiler.OpMap;
+import org.apache.xpath.compiler.XPathOpMap;
 
 /**
  * Location path iterator that uses Walkers.
@@ -57,7 +57,7 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
   {
     super(compiler, opPos, analysis, shouldLoadWalkers);
     
-    int firstStepPos = OpMap.getFirstChildPos(opPos);
+    int firstStepPos = XPathOpMap.getFirstChildPos(opPos);
 
     if (shouldLoadWalkers)
     {

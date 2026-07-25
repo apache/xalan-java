@@ -63,7 +63,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.ArrowOp;
+import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.DOMConfiguration;
@@ -253,8 +253,8 @@ public class XPath implements Serializable, ExpressionOwner
 		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
 
 	  Expression expr = compiler.compile(0);
-	  if (expr instanceof ArrowOp) {
-		  ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+	  if (expr instanceof XPathArrowOp) {
+		  ((XPathArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
 	  }
 
 	  this.setExpression(expr);
@@ -314,8 +314,8 @@ public class XPath implements Serializable, ExpressionOwner
 		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
 
 	  Expression expr = compiler.compile(0);
-	  if (expr instanceof ArrowOp) {
-		  ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+	  if (expr instanceof XPathArrowOp) {
+		  ((XPathArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
 	  }
 
 	  this.setExpression(expr);
@@ -418,8 +418,8 @@ public class XPath implements Serializable, ExpressionOwner
 		  expr = compiler.compile(0);
 	  }
 
-	  if (expr instanceof ArrowOp) {
-		  ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+	  if (expr instanceof XPathArrowOp) {
+		  ((XPathArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
 	  }
 
 	  this.setExpression(expr);

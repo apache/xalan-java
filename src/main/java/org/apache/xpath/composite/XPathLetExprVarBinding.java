@@ -17,11 +17,9 @@
 package org.apache.xpath.composite;
 
 /**
- * An object of this class, is used to store information about
- * XPath 3.1 "let" expression's single variable binding (i.e, 
- * run-time information details related to the grammar fragment 
- * "$" VarName ":=" ExprSingle for a particular XPath "let" 
- * expression that's currently been evaluated). 
+ * Class definition, used to represent XPath 3.1 'let' 
+ * expression's one variable binding (i.e, run-time information 
+ * details related to XPath grammar fragment "$" VarName ":=" ExprSingle. 
  *  
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

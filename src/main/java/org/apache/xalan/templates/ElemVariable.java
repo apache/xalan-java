@@ -83,7 +83,7 @@ import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.objects.XdmProcessingInstructionItem;
-import org.apache.xpath.operations.ArrowOp;
+import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
@@ -666,7 +666,7 @@ public class ElemVariable extends ElemTemplateElement
              
             return evalResult;
         }
-        else if ((selectExpression instanceof Range) || (selectExpression instanceof ArrowOp)) {
+        else if ((selectExpression instanceof Range) || (selectExpression instanceof XPathArrowOp)) {
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {

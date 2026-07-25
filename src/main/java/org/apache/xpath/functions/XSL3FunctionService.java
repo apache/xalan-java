@@ -960,6 +960,7 @@ public class XSL3FunctionService {
     				}
     				else {
     					XObject arg1 = argSeq.item(idx);
+    					
     					function.setArg(arg1, idx);
     				}
     			}
