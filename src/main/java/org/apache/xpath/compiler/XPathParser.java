@@ -241,8 +241,8 @@ public class XPathParser
   static XPathArrayConstructor m_xpathArrayConstructor = null;
   
   /**
-   * This class supports, implementation of literal array as XPath 
-   * function call arguments.
+   * Class definition, to support implementation of literal array 
+   * as, XPath function call argument.
    */
   static class XPathArrayConsFuncArgs {	 
 	  
@@ -270,8 +270,8 @@ public class XPathParser
   static XPathArrayConsFuncArgs m_xpathArrayConsFuncArgs = null;
   
   /**
-   * This class supports, implementation of literal sequence as XPath 
-   * function call arguments.
+   * Class definition, to support implementation of literal sequence 
+   * as, XPath function call argument.
    */
   static class XPathSequenceConsFuncArgs {	 
 	  
@@ -347,7 +347,7 @@ public class XPathParser
   
   private boolean m_isSequenceOperand = false;
   
-  private TokenQueueScanPosition m_prevTokQueueScanPosition = null;
+  private TokenQueuePosition m_prevTokenQueuePosition = null;
   
   private String m_xpathDefaultNamespace = null;
   
@@ -1529,7 +1529,7 @@ public class XPathParser
         	 consumeExpected('{'); 
           }
           
-          TokenQueueScanPosition prevTokenQueueScanPos = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+          TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
           
           if (isSequenceConstructor && tokenIs(')')) {
         	  if (lookahead(null, 1)) {
@@ -1658,7 +1658,7 @@ public class XPathParser
         		  return; 
         	  }
         	  else {
-        		  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+        		  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
         	  }
           }          
           else {
@@ -1749,11 +1749,11 @@ public class XPathParser
                 		  return;
         			  }
         			  else {
-        				  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+        				  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
         			  }
         		  }
         		  else {
-        			  restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
+        			  restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
         		  }        		          		  
         	  }
         	  else {        		          		          		  
@@ -1817,10 +1817,10 @@ public class XPathParser
                			  }               			  
                		  }
                		  
-               		  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+               		  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
         	      }
                	  else {
-            	      restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+            	      restoreTokenQueueXPathParsePos(prevTokenQueuePos);
                	  }
         	   }        	          	  
           }
@@ -1831,7 +1831,7 @@ public class XPathParser
         	   * between an xdm array on lhs and another appropriate XPath
         	   * operand on rhs.
         	   */        	  
-        	  boolean result = xpathParseLiteralArrayCmp(prevTokenQueueScanPos);        	  
+        	  boolean result = xpathParseLiteralArrayCmp(prevTokenQueuePos);        	  
         	  if (result) {
         		 return; 
         	  }
@@ -1844,13 +1844,13 @@ public class XPathParser
         	   * sequence or another appropriate XPath expression).
         	   */
         	  if (tokenIs("for") || tokenIs("let") || tokenIs("some") || tokenIs("every") || tokenIs("if")) {
-        		  boolean result = xpathParseExprSingleLiteralSeqCmp(prevTokenQueueScanPos);        	  
+        		  boolean result = xpathParseExprSingleLiteralSeqCmp(prevTokenQueuePos);        	  
         		  if (result) {
         			  return; 
         		  }
         	  }
         	  else {
-        		  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+        		  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
         	  }
           }
         	  
@@ -2426,12 +2426,12 @@ public class XPathParser
    *   
    *   OP := '=' | != | '<' | <= | '>' | >= 
    * 
-   * @param prevTokenQueueScanPos						The current XPath parse, token 
+   * @param prevTokenQueuePos						The current XPath parse, token 
    *                                                    queue scan state.
    * @return											Boolean result true or false
    * @throws TransformerException
    */
-  private boolean xpathParseLiteralArrayCmp(TokenQueueScanPosition prevTokenQueueScanPos) 
+  private boolean xpathParseLiteralArrayCmp(TokenQueuePosition prevTokenQueuePos) 
 		                                                                               throws TransformerException {
 	
 	  boolean result = false;
@@ -2480,11 +2480,11 @@ public class XPathParser
 			  result = true;
 		  }
 		  else {            		 
-			  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+			  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
 		  }
 	  }
 	  else {        		 
-		  restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
+		  restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
 	  }
 
 	  return result;
@@ -2504,12 +2504,12 @@ public class XPathParser
    *   
    *   OP := '=' | != | '<' | <= | '>' | >= 
    * 
-   * @param prevTokenQueueScanPos						The current XPath parse, token 
+   * @param prevTokenQueuePos						The current XPath parse, token 
    *                                                    queue scan state.
    * @return											Boolean result true or false
    * @throws TransformerException
    */
-  private boolean xpathParseExprSingleLiteralSeqCmp(TokenQueueScanPosition prevTokenQueueScanPos)
+  private boolean xpathParseExprSingleLiteralSeqCmp(TokenQueuePosition prevTokenQueuePos)
 			                                                                             throws TransformerException {
 		
 	  boolean result = false;
@@ -2541,7 +2541,7 @@ public class XPathParser
 		  xpathExprLhs = (strBuff.toString()).trim();         		 
 	  }
 	  else {
-		  restoreTokenQueueScanPosition(prevTokenQueueScanPos); 
+		  restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
 	  }
 
 	  if (m_token != null) {
@@ -2565,11 +2565,11 @@ public class XPathParser
 			  result = true;
 		  }
 		  else {            		 
-			  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+			  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
 		  }  
 	  }
 	  else {
-		  restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+		  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
 	  }
 
 	  return result;
@@ -3375,7 +3375,7 @@ public class XPathParser
       
       XPathIfExpr ifExpr = new XPathIfExpr();
       
-      m_prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+      m_prevTokenQueuePosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
       
       StringBuffer strBuff = new StringBuffer(); 
       boolean ifExprWithinPredicate = false;
@@ -3386,7 +3386,7 @@ public class XPathParser
     		strBuff.append(" " + m_token + " "); 
     	 }
     	 else if (m_isFunctionArgumentParse && !m_isXPathPredicateParsingActive && tokenIs("else")) {
-    		TokenQueueScanPosition prevTokQueueScanPosition1 = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);    		
+    		TokenQueuePosition prevTokQueueScanPosition1 = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);    		
     		strBuff.append(m_token + " ");    		    		    		
     		nextToken();    		    		
     		StringBuffer strBuff1 = new StringBuffer();    		
@@ -3407,7 +3407,7 @@ public class XPathParser
     					break;
     				 }    				  
     				 else {
-    					 restoreTokenQueueScanPosition(prevTokQueueScanPosition1);    					 
+    					 restoreTokenQueueXPathParsePos(prevTokQueueScanPosition1);    					 
     					 isExtraCheck = true;
     					 
     					 break;
@@ -3519,11 +3519,11 @@ public class XPathParser
              return ifExpr; 
     	 } 
     	 else {
-    		 restoreTokenQueueScanPosition(m_prevTokQueueScanPosition);
+    		 restoreTokenQueueXPathParsePos(m_prevTokenQueuePosition);
     	 }
       }
       else {    	     	      	 
-    	 restoreTokenQueueScanPosition(m_prevTokQueueScanPosition);
+    	 restoreTokenQueueXPathParsePos(m_prevTokenQueuePosition);
       }                  
             
       if (!lookahead('(', 1)) {
@@ -3916,7 +3916,7 @@ public class XPathParser
     	   * type (a,b,c ...), i.e a literal sequence.
     	   */
     	  
-    	  TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    	  TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(
                                                                                    m_queueMark, m_tokenChar, m_token);
     	  nextToken();
     	  if (tokenIs(')') && lookahead(null, 1)) {
@@ -3994,7 +3994,7 @@ public class XPathParser
                   return addPos;
               }
               else {
-            	  restoreTokenQueueScanPosition(prevTokQueueScanPosition); 
+            	  restoreTokenQueueXPathParsePos(prevTokQueueScanPosition); 
               }
     	   }
         }
@@ -4147,8 +4147,8 @@ public class XPathParser
         		
         	}
         	
-        	TokenQueueScanPosition prevTokQueueScanPosition = new 
-        			                                     TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+        	TokenQueuePosition prevTokQueueScanPosition = new 
+        			                                     TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
         	nextToken();
         	if (!tokenIs(')') && !lookahead(null, 1)) {
         		List<String> seqXPathItems = new ArrayList<String>();
@@ -4215,7 +4215,7 @@ public class XPathParser
         			return addPos;
         		}
         		else {
-        			restoreTokenQueueScanPosition(prevTokQueueScanPosition); 
+        			restoreTokenQueueXPathParsePos(prevTokQueueScanPosition); 
         		}
         	}
         }
@@ -4861,7 +4861,7 @@ public class XPathParser
     	String prevToken = getTokenRelative(-2);
     	
     	if (isTokenNodeCombining(prevToken) && tokenIs('(')) {
-    		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    		TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(
     																				m_queueMark, m_tokenChar, m_token);
     		StringBuffer seqExprStrBuff = new StringBuffer();
     		while (m_token != null) {
@@ -4890,7 +4890,7 @@ public class XPathParser
     			m_tokenChar = '$';
     		}
     		else {    		
-    		    restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    		    restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
     		}
     	}
     	
@@ -5540,7 +5540,7 @@ public class XPathParser
     if (tokenIs('(')) {
     	// XPath literal sequence as, function argument
     	
-    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    	TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(
     			                                                           m_queueMark, m_tokenChar, m_token);
     	if (lookahead(')', 1)) {
 	        // An XPath function argument is () (i.e, an empty sequence)	        
@@ -5696,14 +5696,72 @@ public class XPathParser
 	       }	       
 	       		
 	       List<String> seqConstructorXPathParts = new ArrayList<String>();
+	       
+	       TokenQueuePosition prevTokQueueScanPos1 = new TokenQueuePosition(
+                                                                                  m_queueMark, m_tokenChar, m_token);	       
 	       parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');
+	       
+	       boolean isXPathExprOk = false;	       
+	       String xpathExprStr = null;	       
+	       
+	       if (seqConstructorXPathParts.size() == 1) {
+	    	  String str1 = seqConstructorXPathParts.get(0);	    	  
+	    	  if (!StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+	    		 restoreTokenQueueXPathParsePos(prevTokQueueScanPos1);
+	    		 
+	    		 StringBuffer strBuff = new StringBuffer();	    		 
+	    		 strBuff.append("(");	    		
+	    			    		 
+	    		 while (m_token != null) {
+	    			strBuff.append(m_token + " ");
+	    			xpathExprStr = (strBuff.toString()).trim(); 
+	    			if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) && 
+	    					                                                 StringUtil.isStrHasBalancedParentheses(xpathExprStr, '(', ')')) {
+	    				isXPathExprOk = true;
+	    				
+	    				break;
+	    			}
+	    			
+	    			nextToken();
+	    		 }
+	    	  }
+	       }
+	       
+	       if (isXPathExprOk) {
+	    	   xpathExprStr = xpathExprStr.replace(" : ", ":");
 
+	    	   insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+	    	   List<String> seqConstructorXPathParts2 = new ArrayList<String>();
+	    	   seqConstructorXPathParts2.add(xpathExprStr);
+
+	    	   List<XPathSequenceConstructor> seqConsList = m_xpathSequenceConsFuncArgs.getSeqFuncArgList();
+	    	   XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+	    	   xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts2);    	
+	    	   seqConsList.add(xPathSeqConstructor);
+	    	   List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
+	    	   funcArgUsedSeq.add(Boolean.valueOf(false));
+
+	    	   m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH, 
+	    			                                       m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+
+	    	   m_isFunctionArgumentParse = false;
+
+	    	   return;
+	       }
+	       else {
+	    	   restoreTokenQueueXPathParsePos(prevTokQueueScanPos1);
+	    	   
+	    	   seqConstructorXPathParts = new ArrayList<String>();
+	    	   
+	    	   parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');
+	       }
 	       
 	       if (tokenIs(')') && !lookahead(null, 1)) {
 	          consumeExpected(')');
 	       }
 	       else {	    	  
-	    	  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+	    	  restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 	    	  
 	    	  StringBuffer strBuff = new StringBuffer();
 	    	  while (!lookahead(null, 1)) {
@@ -5725,7 +5783,7 @@ public class XPathParser
 	    		  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQ_INDEX_BINARY_EXPR);
 	    	  }
 	    	  else {
-	    		  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+	    		  restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 	    		  
 	    		  Expr();
 	    	  }
@@ -5748,7 +5806,7 @@ public class XPathParser
 	      	  funcArgUsedSeq.add(Boolean.valueOf(false));	      		          
 	       }
 	       else {
-	    	  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+	    	  restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 	    	  
 	          Expr();	          	          
 	       }
@@ -5843,7 +5901,7 @@ public class XPathParser
 
     	//appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
     	
-    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+    	TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 
     	m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
     	
@@ -5933,7 +5991,7 @@ public class XPathParser
     	else {
     		m_xpathTextAndNodeExpr = null;
     		
-    		restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    		restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
     		
     		Expr();
     	}
@@ -5944,7 +6002,7 @@ public class XPathParser
        m_xpath_inlineFunction = xpathInlineFunctionExpr();               
     }
     else {
-       TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+       TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
        
        StringBuffer strBuff = new StringBuffer();
        while (!tokenIs(',') && !(tokenIs(')') && lookahead(null, 1)) && (m_token != null)) {
@@ -6000,7 +6058,7 @@ public class XPathParser
 													    			  		xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
 													    			  		xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
 													    			  		xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
-              restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+              restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
               
     		  Expr(); 
     	  }
@@ -6020,13 +6078,13 @@ public class XPathParser
 			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);
     	  }
     	  else {
-    		  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    		  restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 			  
 			  Expr();
     	  }
        }
        else {
-    	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    	   restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
     	   
     	   if ((tokenIs("text") || tokenIs("node")) && lookahead('(', 1) && 
     			                                                      lookahead(')', 2) && lookahead(')', 3)) {
@@ -6332,7 +6390,7 @@ public class XPathParser
 		  // XPath parse for expression string like text()[..],
 		  // text()[..]/abc, or node() pattern equivalents.
 		  
-		  TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+		  TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 		  
 		  m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
 		  
@@ -6412,7 +6470,7 @@ public class XPathParser
 		  else {
 			  m_xpathTextAndNodeExpr = null;
 			  
-			  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+			  restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 		  }		  
 	}
 
@@ -6675,11 +6733,11 @@ public class XPathParser
     }
     else if (!isXPathPatternExcludeTrailingNodeFunctions() && (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))))
     {
-    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    	TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(
     			                                                                 m_queueMark, m_tokenChar, m_token);
     	funcMatchFound = FunctionCall();
     	if (funcMatchFound && (m_token != null)) {    		
-    	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    	   restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
     	   
     	   axesType = OpCodes.FROM_CHILDREN;
 
@@ -7671,7 +7729,7 @@ public class XPathParser
  		  while (!tokenIs('}')) {        	 
  			  String mapEntryKeyXPathExprStr = m_token;
  			  
- 			  TokenQueueScanPosition prevTokenQueueScanPos = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+ 			  TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
  			 
  			  if (lookahead(':', 1) && lookahead('(', 3)) {
  				 /**
@@ -7696,7 +7754,7 @@ public class XPathParser
 				    consumeExpected(':');
 				 }
 				 else {
-					restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+					restoreTokenQueueXPathParsePos(prevTokenQueuePos);
 					
 					nextToken();
 	 	 			consumeExpected(':'); 
@@ -7720,7 +7778,7 @@ public class XPathParser
  					 consumeExpected(':');
  				 }
  				 else {
- 					 restoreTokenQueueScanPosition(prevTokenQueueScanPos);
+ 					 restoreTokenQueueXPathParsePos(prevTokenQueuePos);
 
  					 nextToken();
  					 consumeExpected(':'); 
@@ -8790,16 +8848,18 @@ public class XPathParser
    }
    
    /**
-    * At various times during an XPath expression parse, the current parse
-    * attempt having occurred upto a point in token queue, needs to be 
-    * discarded and another parse choice has to be explored.
+    * Class definition, to save information for a specific XPath 
+    * parse position within token queue.
     * 
-    * An object of this class, saves information about a specific XPath 
-    * parse position.
+    * During various, times within an XPath expression parse, the 
+    * current parse attempt having occurred upto a position within 
+    * token queue, needs to be discarded, and another XPath parse 
+    * choice has to be used. This essentially supports, a backtracking
+    * mechanism for XPath parse.
     * 
     * Mukul Gandhi <mukulg@apache.org>
     */
-   private class TokenQueueScanPosition {
+   private class TokenQueuePosition {
 	   
 	  private int queueMark;
 	  
@@ -8810,7 +8870,7 @@ public class XPathParser
 	  /**
 	   * Class constructor.
 	   */
-	  public TokenQueueScanPosition(int queueMark, char tokenChar, 
+	  public TokenQueuePosition(int queueMark, char tokenChar, 
 			                        String token) {
 		 this.queueMark = queueMark;
 		 this.tokenChar = tokenChar;
@@ -8840,15 +8900,6 @@ public class XPathParser
 	  public void setToken(String token) {
 		 this.token = token;
 	  }
-   }
-   
-   /**
-    * Restore XPath parse position to, a particular previous saved state.
-    */
-   private void restoreTokenQueueScanPosition(TokenQueueScanPosition tokQueueScanPosition) {
-	  m_queueMark = tokQueueScanPosition.getQueueMark();
-	  m_tokenChar = tokQueueScanPosition.getTokenChar();
-	  m_token = tokQueueScanPosition.getToken();	
    }
 
    public XPathExprFunctionSuffix getXPathExprFunctionSuffix() {
@@ -8988,7 +9039,7 @@ public class XPathParser
 	   
  	  int result = 0;
  	  
- 	  m_prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);           
+ 	  m_prevTokenQueuePosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);           
  	  m_isSequenceOperand = true;
  	  
  	  Expr();
@@ -8996,7 +9047,7 @@ public class XPathParser
  	  if (!m_isSequenceOperand) {
  		  // The method Expr() has set variable m_isSequenceOperand to false
  		  
- 		  restoreTokenQueueScanPosition(m_prevTokQueueScanPosition);
+ 		  restoreTokenQueueXPathParsePos(m_prevTokenQueuePosition);
 
  		  int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
 
@@ -9033,7 +9084,7 @@ public class XPathParser
 			String funcNamespaceUri = m_token;
 			String nextTokenToAnalyze = getTokenRelative(1);
 			
-			TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+			TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 			
 			if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
 											 && xslFunctionService.isFuncArityWellFormed(nextTokenToAnalyze)) {				
@@ -9110,7 +9161,7 @@ public class XPathParser
 				}
 			}
 			else {
-				restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+				restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 
 				ExprSingle();
 			}
@@ -9119,7 +9170,7 @@ public class XPathParser
 			String funcNamespaceUri = m_token;
 			String nextTokenToAnalyze = getTokenRelative(1);
 			
-			TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+			TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 			
 			if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
 											 && xslFunctionService.isFuncArityWellFormed(nextTokenToAnalyze)) {
@@ -9146,13 +9197,13 @@ public class XPathParser
 						                               m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
 			}
 			else {
-				restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+				restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 
 				ExprSingle();
 			}
 		}
 		else if (lookahead(':', 1)) {
-			TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+			TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 			
 			StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 			String funcNamespaceUri = m_token;			
@@ -9197,7 +9248,7 @@ public class XPathParser
 				}
 			}
 			catch (Exception ex) {
-			   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+			   restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 			   
 			   ExprSingle();
 			}
@@ -9216,7 +9267,7 @@ public class XPathParser
 	 */
 	private void handleXPathParseNamedFuncRefWithoutNSQual(int opPos) throws TransformerException {
 
-		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+		TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 
 		String funcLocalName = m_token.substring(0, m_token.indexOf('#'));
 		
@@ -9294,7 +9345,7 @@ public class XPathParser
 						m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
 			}
 			else {
-				restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+				restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 
 				ExprSingle();
 			}
@@ -10122,7 +10173,7 @@ public class XPathParser
     	if (!tokenIs(')')) {
     		// Function call argument list is not empty
 
-    		TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
+    		TokenQueuePosition prevTokQueueScanPosition = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 
     		StringBuffer strBuff = new StringBuffer();
     		while (m_token != null) {
@@ -10168,7 +10219,7 @@ public class XPathParser
     		else {
     			List<String> argList = new ArrayList<>();
 
-    			restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    			restoreTokenQueueXPathParsePos(prevTokQueueScanPosition);
 
     			List<String> argDetailsStrPartsList = new ArrayList<String>();
 
@@ -10323,6 +10374,27 @@ public class XPathParser
     		nextToken();            		  
     		ExprSingle();
     	}
+    }
+    
+    /**
+     * Method definition, to restore XPath parse position to, 
+     * a particular previous saved state.
+     * 
+     * @param tokQueuePos                   The supplied XPath parse position represented 
+     *                                      by TokenQueuePosition object instance, within 
+     *                                      an XPath parse token queue, where the current 
+     *                                      XPath parse position has to be set. 
+     *                                    
+     *                                      After this method has been called, the function 
+     *                                      call nextToken(), shall read the token from the 
+     *                                      position specified by the supplied TokenQueuePosition 
+     *                                      object instance.
+     *                                        
+     */
+    private void restoreTokenQueueXPathParsePos(TokenQueuePosition tokQueuePos) {
+    	m_queueMark = tokQueuePos.getQueueMark();
+    	m_tokenChar = tokQueuePos.getTokenChar();
+    	m_token = tokQueuePos.getToken();	
     }
     
     /**

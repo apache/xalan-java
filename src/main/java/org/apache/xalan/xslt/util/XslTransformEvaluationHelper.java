@@ -414,7 +414,15 @@ public class XslTransformEvaluationHelper {
            if (resultObj instanceof ResultSequence) {
               ResultSequence resultSeq = (ResultSequence)resultObj;
               sum = sumResultSequence(resultSeq);          
-           }  
+           }
+           else if (resultObj instanceof XNumber) {
+        	  sum = ((XNumber)resultObj).num(); 
+           }
+           else if (resultObj instanceof XSNumericType) {
+        	  String str1 = ((XSNumericType)resultObj).stringValue();
+        	  
+        	  sum = Double.valueOf(str1);
+           }
         }
         else if (expr instanceof XPathForExpr) {
            XPathForExpr forExpr = (XPathForExpr)expr;
@@ -453,6 +461,18 @@ public class XslTransformEvaluationHelper {
            }
            
            nodes.detach();
+        }
+        else {
+           XObject xObj = expr.execute(xctxt);                      
+           
+           if (xObj instanceof XSNumericType) {
+        	  String str1 = ((XSNumericType)xObj).stringValue();
+        	  
+        	  sum = Double.valueOf(str1);
+           }
+           else if (xObj instanceof XNumber) {
+        	  sum = ((XNumber)xObj).num();   
+           }
         }
 
         return new XNumber(sum);    

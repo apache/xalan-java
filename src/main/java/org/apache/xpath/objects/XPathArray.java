@@ -24,7 +24,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import xml.xpath31.processor.types.XSAnyType;
 
 /**
- * This class represents, an XPath 3.1 xdm array.
+ * Class definition, to represent, an XPath 3.1 xdm array.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -34,93 +34,131 @@ public class XPathArray extends XObject {
 
    private static final long serialVersionUID = -2635521758204654450L;
  
-   private List<XObject> fList = new ArrayList<XObject>();
+   /**
+    * A java.util.List object instance, that is the native
+    * XObject list, store for this xdm array object instance.
+    */
+   private List<XObject> m_list = new ArrayList<XObject>();
     
-   /*
+   /**
     * Class constructor.
     */
-   public XPathArray() {}
+   public XPathArray() {
+	  // No op 
+   }
+  
+   /**
+    * Method definition, to get an xdm item from a
+    * particular index, within an xdm array.
+    * 
+    * @param index            The supplied xdm array
+    *                         index value.
+    * @return                 An XObject, object instance
+    *                         value.
+    */
+   public XObject get(int index) {
+	  return m_list.get(index);  
+   }
+   
+   /**
+    * Method definition, to append an xdm item,
+    * to an xdm array.
+    * 
+    * @param xObj             The supplied XObject, object 
+    *                         instance.
+    */
+   public void add(XObject xObj) {
+	  m_list.add(xObj);  
+   }
+   
+   /**
+    * Method definition, to get native list contents 
+    * from this xdm array object.
+    */
+   public List<XObject> getNativeArray() {
+       return m_list;   
+   }
+   
+   /**
+    * Method definition, to set a new native list
+    * object, as content for this xdm array.
+    * 
+    * @param list                 The supplied java.util.List,
+    *                             object instance
+    */
+   public void setNativeArray(List<XObject> list) {
+	  m_list = list;
+   }
+   
+   /**
+    * Method definition, to get the size for this 
+    * xdm array.
+    */
+   public int size() {
+      return m_list.size();
+   }
+   
+   /**
+    * Method definition, to get effective boolean
+    * value for this xdm array object instance.
+    *
+    * @return             Boolean value true, if the size of 
+    *                     this xdm array object is greater 
+    *                     than zero. Otherwise, false.
+    */
+   public boolean bool() {
+       return (m_list.size() > 0);       
+   }
+   
+   /**
+    * Method definition, to reset the contents
+    * of this xdm array object instance.
+    */
+   public void reset() {
+	   m_list.clear(); 
+   }
    
    public int getType()
    {
        return CLASS_ARRAY;
    }
-  
-   /**
-    * Get an item at a particular index of an array.
-    */
-   public XObject get(int index) {
-	  return fList.get(index);  
-   }
    
    /**
-    * Append an xdm item, to an array.
-    */
-   public void add(XObject value) {
-	  fList.add(value);  
-   }
-   
-   /**
-    * Get native contents of this array object.
-    */
-   public List<XObject> getNativeArray() {
-       return fList;   
-   }
-   
-   /**
-    * Set a new native array object, as content of this XPath array.
-    */
-   public void setNativeArray(List<XObject> arr) {
-	  fList = arr;
-   }
-   
-   /**
-    * Get number of entries in this array.
-    */
-   public int size() {
-      return fList.size();
-   }
-   
-   /**
-    * Cast result object to a boolean.
-    *
-    * @return    true, if the size of this 'XPathArray' object 
-    *            is greater than 0.
-    */
-   public boolean bool() {
-       return (fList.size() > 0);       
-   }
-   
-   public void reset() {
-	   fList.clear(); 
-   }
-   
-   /**
-    * Method definition, to atomize an XPath array 
-    * to a sequence.
+    * Method definition, to atomize an xdm array, 
+    * to an xdm sequence.
     * 
-    * @return		              The result of atomization of an XPath array		
+    * @return		              An xdm sequence, which is the 
+    *                             result of atomizing an xdm array.		
     */
    public ResultSequence atomize() {
 	   
 	   ResultSequence result = new ResultSequence();
 	   
-	   for (int i = 0; i < this.size(); i++) {
-		   XObject arrItem = this.get(i);
+	   int size1 = this.size();
+	   
+	   for (int idx = 0; idx < size1; idx++) {
+		   XObject arrItem = this.get(idx);
 		   
 		   if (arrItem instanceof ResultSequence) {
 		      ResultSequence expandedResultSeq = new ResultSequence();
-	          XslTransformEvaluationHelper.expandResultSequence((ResultSequence)arrItem, expandedResultSeq);
-	          for (int j = 0; j < expandedResultSeq.size(); j++) {
-	        	 XObject xObj = expandedResultSeq.item(j);
+	          
+		      XslTransformEvaluationHelper.expandResultSequence((ResultSequence)arrItem, expandedResultSeq);
+	          
+	          int size2 = expandedResultSeq.size();
+	          
+	          for (int idx2 = 0; idx2 < size2; idx2++) {
+	        	 XObject xObj = expandedResultSeq.item(idx2);
 	        	 result.add(xObj);
 	          }
 	       }
 		   if (arrItem instanceof XPathArray) {
 	          XPathArray xpathArr = (XPathArray)arrItem;
-	          ResultSequence rSeq = xpathArr.atomize(); 
-	          for (int j = 0; j < rSeq.size(); j++) {
-	        	  XObject xObj = rSeq.item(j);
+	          ResultSequence rSeq = xpathArr.atomize();
+	          
+	          int size2 = rSeq.size();
+	          
+	          for (int idx2 = 0; idx2 < size2; idx2++) {
+	        	  XObject xObj = rSeq.item(idx2);
 	        	  result.add(xObj);
 		      }
 	       }
@@ -133,24 +171,28 @@ public class XPathArray extends XObject {
    }
    
    /**
-    * Get the string value of this XPathArray object.
+    * Method definition, to get an xdm array's string value.
     * 
-    * This method, produces a default serialization of this
-    * string value, which is space separated string values 
-    * of the xdm items of this XPathArray.
+    * This method, produces a default string valued serialization 
+    * of an xdm array, which is space separated string values of 
+    * the xdm items of this xdm array object instance.
     */
    public String str() {
-       String resultStr = null;
+	   
+       String result = null;
        
        StringBuffer strBuff = new StringBuffer();
-       for (int idx = 0; idx < fList.size(); idx++) {
-          XObject item = fList.get(idx);
-          if (idx < (fList.size() - 1)) {
+       
+       int size1 = m_list.size();
+       
+       for (int idx = 0; idx < size1; idx++) {
+          XObject item = m_list.get(idx);
+          if (idx < (size1 - 1)) {
              if (item instanceof XSAnyType) {
                  strBuff.append(((XSAnyType)item).stringValue() + " ");    
              }
              else {
-                strBuff.append((fList.get(idx)).str() + " ");
+                strBuff.append((m_list.get(idx)).str() + " ");
              }
           }
           else {
@@ -158,14 +200,14 @@ public class XPathArray extends XObject {
                  strBuff.append(((XSAnyType)item).stringValue());     
              }
              else {
-                strBuff.append((fList.get(idx)).str());
+                strBuff.append((m_list.get(idx)).str());
              }
           }
        }
        
-       resultStr = strBuff.toString(); 
+       result = strBuff.toString(); 
        
-       return resultStr;
+       return result;
    }
 
 }

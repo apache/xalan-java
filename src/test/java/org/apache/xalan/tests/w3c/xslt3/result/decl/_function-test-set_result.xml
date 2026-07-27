@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-17T12:33:59Z" fail="21" name="function" pass="66" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-27T11:56:15Z" fail="20" name="function" pass="67" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -36,12 +36,12 @@
    <testResult status="pass" testName="function-0302b"/>
    <testResult status="pass" testName="function-0303"/>
    <testResult status="pass" testName="function-0401"/>
-   <testResult status="pass" testName="function-0501"/>
+   <testResult status="fail" testName="function-0501"/>
    <testResult status="pass" testName="function-0601"/>
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
       <outResult>
-         <errTrace>java.lang.NumberFormatException</errTrace>
+         <errTrace>XTTE0570 : The supplied value cannot be cast to type xs:integer*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-0901"/>
@@ -52,11 +52,7 @@
    <testResult status="fail" testName="function-1005"/>
    <testResult status="fail" testName="function-1007"/>
    <testResult status="fail" testName="function-1009"/>
-   <testResult status="fail" testName="function-1011">
-      <outResult>
-         <errTrace>FORG0006 : The string value 'INFXSL_SEQ_DOUBLE XSL_SEQ_DOUBLE100' cannot be cast to schema type double.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1011"/>
    <testResult status="pass" testName="function-1012"/>
    <testResult status="fail" testName="function-1013"/>
    <testResult reason="Xalan configured" status="skipped" testName="function-1014"/>
@@ -64,7 +60,7 @@
    <testResult status="pass" testName="function-1016"/>
    <testResult status="fail" testName="function-1017">
       <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
+         <errTrace>XTTE0570 : The supplied value cannot be cast to type xs:integer.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="function-1018">
@@ -140,12 +136,7 @@
    <testResult status="fail" testName="function-2108">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
    </testResult>
-   <testResult status="fail" testName="function-2109">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 63, Column# : 243 XPST0003: Expected ), but found: ,
-java.lang.Exception: Line# : 63, Column# : 243 XPST0003: Expected ), but found: ,</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-2109"/>
    <testResult feature="streaming" status="skipped" testName="function-5001"/>
    <testResult feature="streaming" status="skipped" testName="function-5002"/>
    <testResult feature="streaming" status="skipped" testName="function-5003"/>

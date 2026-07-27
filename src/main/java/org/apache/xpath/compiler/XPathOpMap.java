@@ -25,8 +25,15 @@ import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * This class represents the data structure basics of the XPath
- * object.
+ * This class represents the data structure, basics for 
+ * the XPath object.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Myriam Midy <mmidy@apache.org>
+ * @author Ilene Seelemann, Henry Zongaro <zongaro@ca.ibm.com>, 
+ *         Brian James Minchau, Morris Kwan
+ *         
+ * @xsl.usage general         
  */
 public class XPathOpMap
 {

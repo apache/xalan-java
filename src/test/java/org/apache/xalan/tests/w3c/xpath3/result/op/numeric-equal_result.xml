@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:50Z" fail="6" name="op-numeric-equal" pass="172" run="178" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-27T11:51:29Z" fail="5" name="op-numeric-equal" pass="173" run="178" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-equalint2args-1"/>
    <testResult status="pass" testName="op-numeric-equalint2args-2"/>
    <testResult status="pass" testName="op-numeric-equalint2args-3"/>
@@ -171,7 +171,7 @@
    <testResult status="pass" testName="K-NumericEqual-39"/>
    <testResult status="pass" testName="K-NumericEqual-40"/>
    <testResult status="fail" testName="K-NumericEqual-41"/>
-   <testResult status="fail" testName="K-NumericEqual-42"/>
+   <testResult status="pass" testName="K-NumericEqual-42"/>
    <testResult status="pass" testName="K-NumericEqual-43"/>
    <testResult status="fail" testName="K-NumericEqual-44"/>
    <testResult status="pass" testName="K-NumericEqual-45"/>
