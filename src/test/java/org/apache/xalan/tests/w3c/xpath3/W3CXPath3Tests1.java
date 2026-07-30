@@ -16,6 +16,14 @@
  */
 package org.apache.xalan.tests.w3c.xpath3;
 
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayAppendTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayFilterTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayFoldLeftTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayFoldRightTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayForeachTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayGetTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArrayHeadTests;
+import org.apache.xalan.tests.w3c.xpath3.array.XPath3FunctionArraySizeTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAbsTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustDateTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustDateToTimezoneTests;
@@ -53,7 +61,9 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
 	            XPath3IntersectTests.class, XPath3InlineFunctionExprTests.class, XPath3FnAdjustDateToTimezoneTests.class, 
 	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3GeneralCompTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
-	            XPath3FnSumTests.class })
+	            XPath3FnSumTests.class, XPath3FunctionArrayAppendTests.class, XPath3FunctionArraySizeTests.class, XPath3FunctionArrayFilterTests.class,
+	            XPath3FunctionArrayFoldLeftTests.class, XPath3FunctionArrayFoldRightTests.class, XPath3FunctionArrayForeachTests.class,
+	            XPath3FunctionArrayGetTests.class, XPath3FunctionArrayHeadTests.class  })
 public class W3CXPath3Tests1 {
 	
 

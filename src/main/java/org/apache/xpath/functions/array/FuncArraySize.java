@@ -26,7 +26,7 @@ import org.apache.xpath.objects.XPathArray;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of the array:size function.
+ * Implementation of an XPath 3.1 function array:size.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -61,7 +61,14 @@ public class FuncArraySize extends FunctionOneArg {
 		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 		if (xObj0 instanceof XPathArray) {
-			result = new XSInteger(((XPathArray)xObj0).size() + ""); 
+			XPathArray xpathArr = (XPathArray)xObj0;
+			
+			if (!isXdmArrayEmpty(xpathArr)) {
+			   result = new XSInteger(xpathArr.size() + "");
+			}
+			else {
+			   result = new XSInteger("0");
+			}
 		}
 		else {
 			throw new javax.xml.transform.TransformerException("FORG0006 : The first argument of array:size function call, "

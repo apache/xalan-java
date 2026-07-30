@@ -26,7 +26,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
 /**
- * Implementation of the array:tail function.
+ * Implementation of an XPath 3.1 function array:tail.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

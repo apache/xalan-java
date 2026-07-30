@@ -36,7 +36,7 @@ import org.apache.xpath.operations.Variable;
 import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
- * Implementation of XPath 3.1 function, array:fold-left.
+ * Implementation of an XPath 3.1 function array:fold-left.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -63,7 +63,8 @@ public class FuncArrayFoldLeft extends Function3Args {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
-        XObject evalResult = new ResultSequence();
+        
+		XObject evalResult = new ResultSequence();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();                
         

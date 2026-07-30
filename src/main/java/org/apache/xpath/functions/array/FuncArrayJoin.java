@@ -28,7 +28,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
 /**
- * Implementation of the array:join function.
+ * Implementation of an XPath 3.1 function array:join.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

@@ -62,6 +62,8 @@ public class FuncArrayAppend extends Function2Args {
 
 		if (xObj0 instanceof XPathArray) {
 			xpathArr = (XPathArray)xObj0;
+			
+			xpathArr = getNormalizedXdmArray(xpathArr); 
 		}
 		else {
 			throw new TransformerException("XPTY0004 : An XPath 3.1 function array 'append' requires an xdm array as its "

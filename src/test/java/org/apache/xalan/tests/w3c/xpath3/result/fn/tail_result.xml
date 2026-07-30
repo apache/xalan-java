@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-30T11:21:09Z" fail="0" name="fn-tail" pass="5" run="5" statusUnknown="0">
+   <testResult status="pass" testName="tail-001"/>
+   <testResult status="pass" testName="tail-002"/>
+   <testResult status="pass" testName="tail-003"/>
+   <testResult status="pass" testName="tail-004"/>
+   <testResult status="pass" testName="tail-005"/>
+</testrun>

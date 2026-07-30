@@ -315,7 +315,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	
 		Element docElem1 = document.getDocumentElement();
 		
-		Node node = docElem1.getFirstChild();		
+		Node node = docElem1.getFirstChild();
+		
 		while (node != null) {			
 			Element elemTestResult = null;
 
@@ -334,6 +335,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
 
 							xctxt = new XPathContext(true);
+							
 							xctxt.setIncremental(false);
 							(xctxt.getDTMManager()).setIncremental(false);
 							xctxt.setSource_location(false);
@@ -404,7 +406,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 														String envFileRoleNameStr = elem3.getAttribute(ROLE);                                            	
 														if (".".equals(envFileRoleNameStr)) {
-															constructXalanDtmFromXMLFile(srcFileName, xctxt, false);
+															constructXalanDtmFromXmlDocument(srcFileName, xctxt, false);
 														}
 														else {
 															roleFileNameMap1.put(envFileRoleNameStr.substring(1), srcFileName);
@@ -479,7 +481,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															resolveWithCatalog = true;
 
 															if (".".equals(envFileRoleNameStr)) {
-																constructXalanDtmFromXMLFile(srcFileName, xctxt, true);
+																constructXalanDtmFromXmlDocument(srcFileName, xctxt, true);
 															}
 															else {
 																roleFileNameMap1.put(envFileRoleNameStr.substring(1), srcFileName);
@@ -2476,7 +2478,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
      * @throws SAXException
      * @throws IOException
      */
-    protected void constructXalanDtmFromXMLFile(String xmlFile, XPathContext xctxt, boolean resolveWithCatalog) 
+    protected void constructXalanDtmFromXmlDocument(String xmlFile, XPathContext xctxt, boolean resolveWithCatalog) 
     		                                                                                                throws URISyntaxException, MalformedURLException, 
     																										                    SAXException, IOException {
     	

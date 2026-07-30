@@ -204,6 +204,16 @@ public class InstanceOf extends Operation
       
       int xsBuiltInType = seqTypedData.getBuiltInSequenceType();
       
+      if (sequenceTypeKindTest != null) {
+    	 if (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
+    		if (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) {
+    		   result = XBoolean.S_TRUE;
+    		   
+    		   return result;
+    		}
+    	 }
+      }
+      
       if (xsBuiltInType == XPathSequenceTypeSupport.XS_INTEGER) {
     	  if (left instanceof XNumber) {
     		  XNumber xNumber = (XNumber)left;

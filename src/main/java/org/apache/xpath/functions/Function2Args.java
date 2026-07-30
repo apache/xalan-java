@@ -216,7 +216,8 @@ public class Function2Args extends FunctionOneArg
   * @return							An XObject instance representing the returned sequence						
   */
  protected XObject castSingletonItemToResultSequence(XObject xObj) {	  
-	  XObject result = null;
+	  
+	 XObject result = null;
 	  
 	  ResultSequence rSeq = new ResultSequence();
 	  rSeq.add(xObj);

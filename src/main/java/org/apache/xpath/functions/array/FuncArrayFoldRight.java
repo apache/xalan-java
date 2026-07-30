@@ -35,7 +35,7 @@ import org.apache.xpath.operations.Variable;
 import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
- * Implementation of XPath 3.1 function, array:fold-right.
+ * Implementation of an XPath 3.1 function array:fold-right.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

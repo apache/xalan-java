@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-30T11:20:59Z" fail="0" name="array-size" pass="6" run="6" statusUnknown="0">
+   <testResult status="pass" testName="array-size-001"/>
+   <testResult status="pass" testName="array-size-002"/>
+   <testResult status="pass" testName="array-size-003"/>
+   <testResult status="pass" testName="array-size-004"/>
+   <testResult status="pass" testName="array-size-005"/>
+   <testResult status="pass" testName="array-size-006"/>
+</testrun>

@@ -100,7 +100,9 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	      String collationUri = null;
 	      
 		  if (m_arg2 != null) {
-			 // A collation uri was, explicitly provided during the function call fn:deep-equal
+			 // A collation uri has been, explicitly provided during 
+			 // the function call fn:deep-equal.
+			  
 		     XObject collationXObj = getFunctionArgEffectiveValue(m_arg2, xctxt);
 		     
 		     collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
@@ -167,6 +169,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	  boolean result = true;
 
 	  int size1 = resultSeq0.size();
+	  
 	  for (int idx1 = 0; idx1 < size1; idx1++) {
 		  int size2 = resultSeq1.size();
 		  for (int idx2 = 0; idx2 < size2; idx2++) {
@@ -180,6 +183,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 					  int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri);
 					  if (strComparisonResult != 0) {
 						  result = false;
+						  
 						  break;
 					  }
 				  }
@@ -189,6 +193,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 					  int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri);
 					  if (strComparisonResult != 0) {
 						  result = false;
+						  
 						  break;
 					  }
 				  }
@@ -198,6 +203,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 					  int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri);
 					  if (strComparisonResult != 0) {
 						  result = false;
+						  
 						  break;
 					  }
 				  }
@@ -207,35 +213,44 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 					  int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri);
 					  if (strComparisonResult != 0) {
 						  result = false;
+						  
 						  break;
 					  }
 				  }
 				  else if ((item1 instanceof XSAnyAtomicType) && (item2 instanceof XMLNodeCursorImpl)) {
 					  result = false;
+					  
 					  break; 
 				  }
 				  else if ((item1 instanceof XMLNodeCursorImpl) && (item2 instanceof XSAnyAtomicType)) {
 					  result = false;
+					  
 					  break; 
 				  }
 				  else if ((item1 instanceof XMLNodeCursorImpl) && (item2 instanceof XMLNodeCursorImpl)) {
 					  item1 = ((XMLNodeCursorImpl)item1).getFresh();
 					  item2 = ((XMLNodeCursorImpl)item2).getFresh();
+					  
 					  DTMCursorIterator dtmIter1 = ((XMLNodeCursorImpl)item1).iterRaw();
 					  DTMCursorIterator dtmIter2 = ((XMLNodeCursorImpl)item2).iterRaw();
+					  
 					  int nodeHandle1 = dtmIter1.nextNode();
 					  int nodeHandle2 = dtmIter2.nextNode();
+					  
 					  DTM dtm1 = xctxt.getDTM(nodeHandle1);
 					  Node node1 = dtm1.getNode(nodeHandle1);
 					  DTM dtm2 = xctxt.getDTM(nodeHandle2);
 					  Node node2 = dtm2.getNode(nodeHandle2);
+					  
 					  if (!isTwoXmlDomNodesEqual(node1, node2, collationUri)) {
 						  result = false;
+						  
 						  break; 
 					  }	 
 				  }
 				  else if (!item1.vcEquals(item2, null, null, true)) {
 					  result = false;
+					  
 					  break;
 				  }
 			  }			 			 
@@ -261,39 +276,40 @@ public class FuncDeepEqual extends FunctionMultiArgs {
    */
   private boolean isTwoXmlDomNodesEqual(Node node1, Node node2, String collationUri) throws Exception {
 	 
-	 boolean isTwoXmlDomNodesEqual = true;
+	 boolean result = true;
 	 
 	 if ((node1.getNodeType() == Node.ELEMENT_NODE) && 
-			                                     (node2.getNodeType() == Node.ELEMENT_NODE)) {
+			                                       (node2.getNodeType() == Node.ELEMENT_NODE)) {
 		String xmlStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node1);
 		String xmlStr2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
-		isTwoXmlDomNodesEqual = isTwoXmlDocumentStrEqual(xmlStr1, xmlStr2, collationUri);
+		
+		result = isTwoXmlDocumentStrEqual(xmlStr1, xmlStr2, collationUri);
 	 }
 	 else if ((node1.getNodeType() == Node.ATTRIBUTE_NODE) && 
-			                                     (node2.getNodeType() == Node.ATTRIBUTE_NODE)) {
+			                                              (node2.getNodeType() == Node.ATTRIBUTE_NODE)) {
 		String localName1 = node1.getLocalName();
 		String nsUri1 = node1.getNamespaceURI();		
 		String localName2 = node2.getLocalName();
 		String nsUri2 = node2.getNamespaceURI();		
 		if (localName1.equals(localName2)) {
 		   if ((nsUri1 != null) && (nsUri2 != null) && !nsUri1.equals(nsUri2)) {
-			  isTwoXmlDomNodesEqual = false;  
+			  result = false;  
 		   }
 		   else if (((nsUri1 != null) && (nsUri2 == null)) || 
-				                                ((nsUri1 == null) && (nsUri2 != null))) {
-			  isTwoXmlDomNodesEqual = false; 
+				                                		  ((nsUri1 == null) && (nsUri2 != null))) {
+			  result = false; 
 		   }
 		}
 		else {
-		   isTwoXmlDomNodesEqual = false;
+		   result = false;
 		}
 		
-		if (isTwoXmlDomNodesEqual) {
+		if (result) {
 		   String node1StrVal = node1.getNodeValue();
 		   String node2StrVal = node2.getNodeValue();
 		   int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(node1StrVal, node2StrVal, collationUri);
 		   if (strComparisonResult != 0) {
-			  isTwoXmlDomNodesEqual = false;  
+			  result = false;  
 		   }
 		}		
 	 }
@@ -303,7 +319,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		String node2StrVal = node2.getNodeValue();
 		int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(node1StrVal, node2StrVal, collationUri);
 		if (strComparisonResult != 0) {
-		   isTwoXmlDomNodesEqual = false;  
+		   result = false;  
 		}
 	 }
 	 else if ((node1.getNodeType() == Node.COMMENT_NODE) && 
@@ -312,11 +328,11 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		String node2StrVal = node2.getNodeValue();
 		int strComparisonResult = m_xpathCollationSupport.compareStringsUsingCollation(node1StrVal, node2StrVal, collationUri);
 		if (strComparisonResult != 0) {
-		   isTwoXmlDomNodesEqual = false;  
+		   result = false;  
 		}
 	 }
 	 
-	 return isTwoXmlDomNodesEqual; 
+	 return result; 
   }
   
   /**
@@ -331,7 +347,8 @@ public class FuncDeepEqual extends FunctionMultiArgs {
    */
   private boolean isTwoXmlDocumentStrEqual(String xmlStr1, String xmlStr2, String collationUri) 
 		                                                               throws Exception {
-	 boolean isTwoXmlDomElementNodesEqual = true;
+	 
+	 boolean result = true;
 	 
 	 System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
 	 
@@ -345,16 +362,19 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 Document document2 = dBuilder.parse(new ByteArrayInputStream(xmlStr2.getBytes()));
 	 ElementImpl elem2 = (ElementImpl)(document2.getDocumentElement());
 	 
-	 // The method 'isEqualNodeWithQName' used here, has been newly implemented
-	 // within Xerces-J's class org.apache.xerces.dom.ElementImpl to support
-	 // few of the use cases of XPath 3.1 fn:deep-equal function. The method
-	 // 'isEqualNodeWithQName' used here is very similar to the standard
-	 // XML DOM method 'isEqualNode', except for few enhancements to compare
-	 // XML namespace declarations on element nodes as specified for XPath 3.1 
-	 // fn:deep-equal function. 
-	 isTwoXmlDomElementNodesEqual = elem1.isEqualNodeWithQName(elem2, collationUri);
+	 /**
+	  * The method 'isEqualNodeWithQName' used here, has been newly implemented
+	  * within Xerces-J's class org.apache.xerces.dom.ElementImpl to support
+	  * few of the use cases of XPath 3.1 fn:deep-equal function. The method
+	  * 'isEqualNodeWithQName' used here is very similar to the standard
+	  * XML dom method 'isEqualNode', except for few enhancements to compare
+	  * XML namespace declarations on element nodes as specified for XPath 3.1
+	  * fn:deep-equal function.
+	  */
 	 
-	 return isTwoXmlDomElementNodesEqual;
+	 result = elem1.isEqualNodeWithQName(elem2, collationUri);
+	 
+	 return result;
   }
 
   public XPathCollationSupport getXPathCollationSupport() {

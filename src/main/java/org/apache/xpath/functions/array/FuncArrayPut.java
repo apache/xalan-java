@@ -30,7 +30,7 @@ import org.apache.xpath.objects.XPathArray;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the array:put function.
+ * Implementation of an XPath 3.1 function array:put.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

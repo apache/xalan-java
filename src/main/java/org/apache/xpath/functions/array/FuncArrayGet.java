@@ -35,7 +35,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the array:get function.
+ * Implementation of an XPath 3.1 function array:get.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -71,11 +71,13 @@ public class FuncArrayGet extends Function2Args {
 	    XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    
 	    if (arg0Value instanceof XPathArray) {
-	    	arg0Seq = getArg0Seq((XPathArray)arg0Value, srcLocator);
+	    	XPathArray xpathArr = getNormalizedXdmArray((XPathArray)arg0Value);
+	    	
+	    	arg0Seq = getXdmSeqFromArray(xpathArr);
 	    }
 	    else {
-	    	throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
-	    			                                                                                    + "needs to be of type array", srcLocator);  
+	    	throw new javax.xml.transform.TransformerException("XPTY0004 : The first argument of XPath 3.1 function array 'get', "
+	    			                                                                                                      + "should be of type xdm array.", srcLocator);  
 	    }
 	    
 	    if (m_arg1 instanceof SelfIteratorNoPredicate) {
@@ -85,8 +87,8 @@ public class FuncArrayGet extends Function2Args {
 		      result = getFuncResult(arg0Seq, xObj1, srcLocator);   
 		   }
 		   else {
-		      throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
-		    	  		                                                + "call, needs to be an xs:integer value", srcLocator); 
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : The second argument of XPath 3.1 function array 'get', "
+                                                                                                                            + "should be of type schema type integer.", srcLocator);
 		   }
 	    }
 	    else if (m_arg1 instanceof Variable) {
@@ -96,8 +98,8 @@ public class FuncArrayGet extends Function2Args {
 	    	  result = getFuncResult(arg0Seq, xObj1, srcLocator);   
 	       }
 	       else {
-	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
-	    	  		                                                    + "call, needs to be an xs:integer value", srcLocator); 
+	    	  throw new javax.xml.transform.TransformerException("XPTY0004 : The second argument of XPath 3.1 function array 'get', "
+                       																										+ "should be of type schema type integer.", srcLocator); 
 	       }
 	    }
 	    else {
@@ -107,8 +109,8 @@ public class FuncArrayGet extends Function2Args {
 		      result = getFuncResult(arg0Seq, xObj1, srcLocator);   
 		   }
 		   else {
-			  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
-                                                                         + "call, needs to be an xs:integer value", srcLocator);	   
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : The second argument of XPath 3.1 function array 'get', "
+                       																									  + "should be of type schema type integer.", srcLocator);	   
 		   }
 	    }
 	    
@@ -116,25 +118,65 @@ public class FuncArrayGet extends Function2Args {
 	}
 
 	/**
-	 * Get the value of array:get function's first argument, as ResultSequence object.
+	 * Method definition, to get an xdm sequence object, from the
+	 * supplied xdm array.
+	 * 
+	 * @param xpathArr                       The supplied xdm array, object
+	 *                                       instance.
+	 * @return                               An xdm sequence, object
 	 */
-	private ResultSequence getArg0Seq(XPathArray arg0Value, SourceLocator srcLocator) {
-		ResultSequence arg0Seq = null;
-
-	    List<XObject> nativeArr = arg0Value.getNativeArray();
-	    arg0Seq = ElemCopyOf.getResultSequenceFromXPathArray(nativeArr);
+	private ResultSequence getXdmSeqFromArray(XPathArray xpathArr) {
 		
-		return arg0Seq;
+		ResultSequence result = null;
+
+	    List<XObject> nativeArr = xpathArr.getNativeArray();
+	    
+	    result = ElemCopyOf.getResultSequenceFromXPathArray(nativeArr);
+		
+		return result;
 	}
 	
 	/**
-	 * Get the result of array:get function call. 
+	 * Method definition, to get an XPath 3.1 function array 'get'
+	 * result using the supplied contents of the array (as, sequence)
+	 * and value of an array index.
+	 * 
+	 * @param rSeq                               The supplied contents of the
+	 *                                           array, as an xdm sequence.
+	 * @param arrIndexObj                        An XObject instance, representing an 
+	 *                                           array index value, which is an array location 
+	 *                                           from which array 'get' function value is sought.
+	 *                                           
+	 * @param srcLocator                         An XSL transformation SourceLocator object 
+	 * @return                                   The result of XPath 3.1 function array 'get'.                          
+	 * @throws TransformerException
 	 */
-	private XObject getFuncResult(ResultSequence arg0Seq, XObject arg1, SourceLocator srcLocator) 			                                                                                   throws TransformerException {
+	private XObject getFuncResult(ResultSequence rSeq, XObject arrIndexObj, SourceLocator srcLocator) 			                                                                                   throws TransformerException {
+		
 		XObject result = null;
 		
-	    String secondArgStr = XslTransformEvaluationHelper.getStrVal(arg1);
-		result = arg0Seq.item((Integer.valueOf(secondArgStr)).intValue() - 1);
+	    String secondArgStr = XslTransformEvaluationHelper.getStrVal(arrIndexObj);
+	    
+	    int intValue1 = 0;
+	    
+	    try {
+	       intValue1 = (Integer.valueOf(secondArgStr)).intValue();
+	    }
+	    catch (NumberFormatException ex) {
+	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'get' second argument "
+	       		                                                                                     + "should be of schema type integer.", srcLocator);
+	    }
+	    
+	    int size1 = rSeq.size();
+	    
+	    if ((intValue1 >= 1) && (intValue1 <= size1)) {
+		   result = rSeq.item(intValue1 - 1);
+	    }
+	    else {
+	       throw new javax.xml.transform.TransformerException("FOAY0001 : An XPath 3.1 function array 'get' second argument "
+                                                                                                     + "should be of schema type integer with "
+                                                                                                     + "value between 1 and supplied array size inclusive.", srcLocator);
+	    }
 		
 		return result;
 	}

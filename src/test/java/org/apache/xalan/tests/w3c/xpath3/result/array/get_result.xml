@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-30T11:20:59Z" fail="0" name="array-get" pass="9" run="9" statusUnknown="0">
+   <testResult status="pass" testName="array-get-001"/>
+   <testResult status="pass" testName="array-get-002"/>
+   <testResult status="pass" testName="array-get-003"/>
+   <testResult status="pass" testName="array-get-004"/>
+   <testResult status="pass" testName="array-get-005"/>
+   <testResult status="pass" testName="array-get-006"/>
+   <testResult status="pass" testName="array-get-007"/>
+   <testResult status="pass" testName="array-get-008"/>
+   <testResult status="pass" testName="array-get-009"/>
+</testrun>

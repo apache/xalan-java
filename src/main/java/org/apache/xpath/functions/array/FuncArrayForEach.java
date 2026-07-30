@@ -107,6 +107,12 @@ public class FuncArrayForEach extends Function2Args {
         
         XObject xObjArg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
+        if (isXdmArrayEmpty((XPathArray)xObjArg0)) {
+           result = new XPathArray();
+           
+           return result;
+        }
+        
         if (!(xObjArg0 instanceof XPathArray)) {
            throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'for-each' first "
            		                                                                              + "argument is not an xdm array.", srcLocator);
@@ -114,6 +120,7 @@ public class FuncArrayForEach extends Function2Args {
                     
         if (m_arg1 instanceof XPathInlineFunction) {
             XPathInlineFunction inlineFuncArg = (XPathInlineFunction)m_arg1;
+            
             verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
             
             result = evaluateArrayForEach((XPathArray)xObjArg0, inlineFuncArg, xctxt); 

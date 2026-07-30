@@ -713,12 +713,20 @@ public class Div extends XPathArithmeticOp
     	 }
     	 else if (left instanceof XSDayTimeDuration) {
     		 try {
-    			 if (right instanceof XSDayTimeDuration) {
-    				 int days1 = ((XSDayTimeDuration)left).days();
-    				 int days2 = ((XSDayTimeDuration)right).days();
-    				 int resultInt = (days1 / days2);
+    			 if (right instanceof XSDayTimeDuration) {    				     				 
+    				 XSDayTimeDuration xsDaytimeDuration1 = (XSDayTimeDuration)left;
+    				 XSDayTimeDuration xsDaytimeDuration2 = (XSDayTimeDuration)right;
     				 
-    				 result = new XSDecimal(java.lang.String.valueOf(resultInt));
+    				 double dbl1 = xsDaytimeDuration1.value();
+    				 double dbl2 = xsDaytimeDuration2.value();
+    				 
+    				 if (dbl2 == 0) {
+    					throw new TransformerException("FOAR0001 : Divide by zero error, when dividing duration values."); 
+    				 }
+    				 
+    				 double dblResult = dbl1 / dbl2;
+    				 
+    				 result = new XSDecimal(dblResult + "");
     			 }
     			 else if (right instanceof XMLNodeCursorImpl) {
     				 result = ((XSDayTimeDuration)left).div(new XSDouble(rNodeStr)); 

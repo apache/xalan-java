@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:45Z" fail="46" name="date" pass="88" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-30T11:28:28Z" fail="47" name="date" pass="87" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -81,7 +81,7 @@
    <testResult status="pass" testName="date-076"/>
    <testResult status="pass" testName="date-076a"/>
    <testResult status="pass" testName="date-077"/>
-   <testResult status="pass" testName="date-078"/>
+   <testResult status="fail" testName="date-078"/>
    <testResult status="pass" testName="date-079"/>
    <testResult reason="Xalan configured" status="skipped" testName="date-080"/>
    <testResult reason="Xalan configured" status="skipped" testName="date-081"/>
@@ -93,12 +93,7 @@
    <testResult status="pass" testName="date-087"/>
    <testResult status="pass" testName="date-088"/>
    <testResult status="pass" testName="date-089"/>
-   <testResult status="fail" testName="date-090">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 17, Column# : 82 XPST0003: Expected ), but found: ,
-java.lang.Exception: Line# : 17, Column# : 82 XPST0003: Expected ), but found: ,</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="date-090"/>
    <testResult status="pass" testName="date-091"/>
    <testResult status="pass" testName="date-092"/>
    <testResult status="pass" testName="date-093"/>

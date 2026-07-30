@@ -29,7 +29,7 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the array:remove function.
+ * Implementation of an XPath 3.1 function array:remove.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

@@ -118,12 +118,26 @@ public class FuncArrayFilter extends Function2Args {
             
             verifyInlineFunctionParamArity(inlineFuncArg, srcLocator);
             
+            xObj0 = getNormalizedXdmArray((XPathArray)xObj0);
+            
+            if (((XPathArray)xObj0).size() == 0) {
+               result = new XPathArray();
+            	
+         	   return result;
+         	}
+            
             result = evaluateFnArrayFilter((XPathArray)xObj0, inlineFuncArg, xctxt); 
         }
         else if (m_arg1 instanceof Function) {
         	Function function = (Function)m_arg1;        	        	
         	        	
         	result = new XPathArray();
+        	
+        	xObj0 = getNormalizedXdmArray((XPathArray)xObj0);
+        	
+        	if (((XPathArray)xObj0).size() == 0) {
+        	   return result;
+        	}
         	
         	try {
         		Expression arg0 = null;

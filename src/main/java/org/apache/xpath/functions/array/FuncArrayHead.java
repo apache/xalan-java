@@ -24,7 +24,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
 /**
- * Implementation of the array:head function.
+ * Implementation of an XPath 3.1 function array:head.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -59,17 +59,19 @@ public class FuncArrayHead extends FunctionOneArg {
 	    
 	    if (xObject instanceof XPathArray) {
 	       XPathArray xpathArr = (XPathArray)xObject;
+	       
+	       xpathArr = getNormalizedXdmArray(xpathArr);
+	       
 	       if (xpathArr.size() > 0) {
 	          result = xpathArr.get(0);
 	       }
 	       else {
-	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : An array:head function call's argument "
-	    	  		                                                                     + "cannot be an empty array.", srcLocator);  
+	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : An XPath 3.1 function array 'head' argument "
+	    	  		                                                                                           + "cannot be an empty array.", srcLocator);  
 	       }
 	    }
 	    else {
-	       throw new javax.xml.transform.TransformerException("FOAY0001 : The 1st argument of function array:head, "
-	       		                                                                         + "needs to be an array.", srcLocator); 
+	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function array 'head' argument, needs to be an xdm array.", srcLocator); 
 	    }
 	    
 	    return result;

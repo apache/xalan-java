@@ -44,7 +44,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.util.XPath3ExpressionUtil;
 
 /**
- * Implementation of the array:sort() function.
+ * Implementation of an XPath 3.1 function array:sort.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
