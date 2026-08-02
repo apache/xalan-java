@@ -29,8 +29,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 
 /**
- * Class definition, to implement XSLT 3.0 instruction xsl:map 
- * implementation.
+ * Implementation of an XSLT 3.0 instruction xsl:map.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

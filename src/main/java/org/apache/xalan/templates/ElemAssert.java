@@ -43,7 +43,7 @@ import org.xml.sax.InputSource;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XSLT 3.0 xsl:assert instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:assert.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

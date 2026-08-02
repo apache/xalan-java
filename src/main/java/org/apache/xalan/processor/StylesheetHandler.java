@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import java.util.Hashtable;
@@ -435,8 +432,8 @@ public class StylesheetHandler extends DefaultHandler
 
     if (elemProcessor == null) {
        if (processorImportSchema == null) {
-    	   // added for XSLT 3.0
-    	   error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[] {rawName}), null);
+    	   // Added for XSLT 3.0
+    	   error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[] { rawName }), null);
        }
     }            
                 

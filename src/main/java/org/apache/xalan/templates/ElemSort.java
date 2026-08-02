@@ -28,8 +28,9 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 /**
- * A class definition, to implement XSLT 3.0's xsl:sort 
- * instruction. 
+ * Implementation of an XSLT 3.0 instruction xsl:sort.
+ *
+ * @xsl.usage advanced
  */
 public class ElemSort extends ElemTemplateElement
 {

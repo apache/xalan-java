@@ -72,7 +72,7 @@ import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an XSLT 3.0 xsl:value-of instruction.
+ * Implementation of an XSLT instruction xsl:value-of.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Ilene Seelemann

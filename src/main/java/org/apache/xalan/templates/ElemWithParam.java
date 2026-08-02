@@ -40,7 +40,7 @@ import org.apache.xpath.objects.XString;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of XSLT xsl:with-param element.
+ * Implementation of an XSLT instruction xsl:with-param.
  * 
  * @xsl.usage advanced
  */

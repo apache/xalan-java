@@ -56,9 +56,11 @@ import org.xml.sax.SAXException;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 
 /**
- * An implementation of XSLT 3.0 instruction xsl:evaluate.
+ * Implementation of an XSLT 3.0 instruction xsl:evaluate.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
 public class ElemEvaluate extends ElemTemplateElement {
 

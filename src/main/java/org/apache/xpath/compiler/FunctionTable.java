@@ -915,7 +915,7 @@ public class FunctionTable
 	   m_functions[FUNC_PATH] = org.apache.xpath.functions.FuncPath.class;
 	   
 	   m_functions[FUNC_DOCUMENT] = org.apache.xalan.templates.FuncDocument.class;
-	   m_functions[FUNC_FORMAT_NUMBER] = org.apache.xalan.templates.FuncFormatNumber.class;
+	   m_functions[FUNC_FORMAT_NUMBER] = org.apache.xpath.functions.FuncFormatNumber.class;
   }
 
   static {

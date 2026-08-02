@@ -19,12 +19,9 @@ package org.apache.xalan.templates;
 import java.util.List;
 
 /**
- * This class is used for an implementation, when xsl:for-each-group 
- * instruction has an attribute 'group-by' or 'group-adjacent'. 
- * 
- * An object of this class, has complete information about one group 
- * (which is grouping key of the group, and all members of the group) 
- * among all the possible groups formed by xsl:for-each-group instruction.
+ * Class definition, used by XSLT 3.0 instruction xsl:for-each-group 
+ * implementation, when xsl:for-each-group has an attribute 
+ * 'group-by', or 'group-adjacent'. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

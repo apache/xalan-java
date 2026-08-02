@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 
 /**
- * Implementation of the XSLT 3.0 xsl:iterate instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:iterate.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

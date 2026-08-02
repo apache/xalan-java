@@ -49,7 +49,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of XSLT xsl:copy instruction.
+ * Implementation of an XSLT instruction xsl:copy.
  * 
  * @xsl.usage advanced
  */

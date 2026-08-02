@@ -23,8 +23,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPath;
 
 /**
- * Implementation of XSLT 3.0 xsl:fallback instruction.
-
+ * Implementation of an XSLT 3.0 instruction xsl:fallback.
+ *
  * @xsl.usage advanced
  */
 public class ElemFallback extends ElemTemplateElement

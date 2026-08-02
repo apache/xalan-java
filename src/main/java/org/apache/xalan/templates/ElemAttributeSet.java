@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
@@ -29,15 +26,8 @@ import org.apache.xml.utils.QName;
 import org.w3c.dom.DOMException;
 
 /**
- * Implement xsl:attribute-set.
- * <pre>
- * &amp;!ELEMENT xsl:attribute-set (xsl:attribute)*>
- * &amp;!ATTLIST xsl:attribute-set
- *   name %qname; #REQUIRED
- *   use-attribute-sets %qnames; #IMPLIED
- * &amp;
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+ * Implementation of an XSLT instruction xsl:attribute-set.
+ * 
  * @xsl.usage advanced
  */
 public class ElemAttributeSet extends ElemUse

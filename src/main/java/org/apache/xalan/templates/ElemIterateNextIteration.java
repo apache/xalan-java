@@ -41,7 +41,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of the XSLT 3.0 xsl:next-iteration instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:next-iteration.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

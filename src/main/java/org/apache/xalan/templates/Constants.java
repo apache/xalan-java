@@ -541,6 +541,13 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String ATTRVAL_ABSENT = "absent";
   
+  /**
+   * An xsl:fork instruction's xsl:sequence run-time
+   * timeout, in seconds. Specification of this time-out
+   * value is Xalan-J specific.
+   */
+  public static final int XSL_FORK_SEQ_RUN_TIMEOUT = 30;
+  
   public static final String XSL_SER_NAMESACE = "http://www.w3.org/2010/xslt-xquery-serialization";
   
   public static final String XSL_SER_PARAMS = "serialization-parameters";

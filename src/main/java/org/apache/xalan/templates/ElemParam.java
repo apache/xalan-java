@@ -34,7 +34,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of XSLT 3.0 xsl:param element.
+ * Implementation of an XSLT instruction xsl:param.
  * 
  * @xsl.usage advanced
  */

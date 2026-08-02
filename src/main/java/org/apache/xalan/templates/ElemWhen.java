@@ -15,23 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import org.apache.xpath.XPath;
 
 /**
- * Implement xsl:when.
- * <pre>
- * <!ELEMENT xsl:when %template;>
- * <!ATTLIST xsl:when
- *   test %expr; #REQUIRED
- *   %space-att;
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
+ * Implementation of an XSLT instruction xsl:when.
+ *
  * @xsl.usage advanced
  */
 public class ElemWhen extends ElemTemplateElement

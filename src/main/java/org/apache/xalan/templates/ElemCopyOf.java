@@ -74,7 +74,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of XSLT xsl:copy-of instruction.
+ * Implementation of an XSLT instruction xsl:copy-of.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Morris Kwan <mkwan@apache.org>

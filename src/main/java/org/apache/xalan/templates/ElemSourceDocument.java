@@ -38,7 +38,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of the XSLT 3.0 xsl:source-document instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:source-document.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

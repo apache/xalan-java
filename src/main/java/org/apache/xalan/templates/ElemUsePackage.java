@@ -25,11 +25,11 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * Implementation of XSLT 3.0 instruction xsl:use-package.
+ * Implementation of an XSLT 3.0 instruction xsl:use-package.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
- * @xsl.usage internal
+ * @xsl.usage advanced
  */
 public class ElemUsePackage extends ElemTemplateElement
 {

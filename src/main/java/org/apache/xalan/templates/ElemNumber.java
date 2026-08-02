@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XSLT 3.0 xsl:number instruction. 
+ * Implementation of an XSLT instruction xsl:number. 
  * 
  * <xsl:number
  *    value? = expression

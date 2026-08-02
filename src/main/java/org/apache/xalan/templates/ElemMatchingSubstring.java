@@ -33,7 +33,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
-  * Implementation of XSLT 3.0 instruction xsl:matching-substring.
+  * Implementation of an XSLT 3.0 instruction xsl:matching-substring.
   *    
   * @author Mukul Gandhi <mukulg@apache.org>
   *   

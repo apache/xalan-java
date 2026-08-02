@@ -29,8 +29,8 @@ import org.apache.xml.serializer.SerializerBase;
 import org.xml.sax.SAXException;
 
 /**
- * Implement a text literal.
- * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+ * Implementation of an XSLT text literal.
+ *
  * @xsl.usage advanced
  */
 public class ElemTextLiteral extends ElemTemplateElement

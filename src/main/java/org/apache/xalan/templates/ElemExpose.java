@@ -23,15 +23,14 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
 
 /**
- * Implementation of XSLT 3.0 xsl:expose element.
+ * Implementation of an XSLT 3.0 instruction xsl:expose.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
- * @xsl.usage internal
+ * @xsl.usage advanced
  */
 public class ElemExpose extends ElemTemplateElement
 {

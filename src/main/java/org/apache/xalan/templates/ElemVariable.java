@@ -106,7 +106,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of an XSLT xsl:variable instruction.
+ * Implementation of an XSLT instruction xsl:variable.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Gary L Peskin <garyp@apache.org>

@@ -23,8 +23,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 
 /**
- * A class definition, supporting an implementation of 
- * XSLT 3.0 xsl:mode instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:mode.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

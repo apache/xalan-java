@@ -24,11 +24,11 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
- * Implementation of XSLT 3.0 xsl:accept element.
+ * Implementation of an XSLT 3.0 instruction xsl:accept.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
- * @xsl.usage internal
+ * @xsl.usage advanced
  */
 public class ElemAccept extends ElemTemplateElement
 {

@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of XSLT 3.0 xsl:template element.
+ * Implementation of an XSLT instruction xsl:template.
  * 
  * @xsl.usage advanced
  */

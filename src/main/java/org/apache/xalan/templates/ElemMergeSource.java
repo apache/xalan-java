@@ -27,10 +27,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 
 /**
- * Implementation of the XSLT 3.0 xsl:merge-source instruction.
- * 
- * One or more xsl:merge-source elements appear as child elements
- * of xsl:merge elements. 
+ * Implementation of an XSLT 3.0 instruction xsl:merge-source. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

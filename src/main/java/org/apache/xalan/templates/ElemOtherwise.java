@@ -15,20 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import org.apache.xpath.XPath;
 
 /**
- * Implement xsl:otherwise.
- * <pre>
- * <!ELEMENT xsl:otherwise %template;>
- * <!ATTLIST xsl:otherwise %space-att;>
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
+ * Implementation of an XSLT instruction xsl:otherwise.
+ * 
  * @xsl.usage advanced
  */
 public class ElemOtherwise extends ElemTemplateElement

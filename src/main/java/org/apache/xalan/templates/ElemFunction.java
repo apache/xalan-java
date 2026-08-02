@@ -100,7 +100,7 @@ import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * Implementation of an XSLT 3.0 xsl:function instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:function.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

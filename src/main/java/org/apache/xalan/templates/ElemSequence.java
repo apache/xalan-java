@@ -72,7 +72,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an XSLT 3.0 xsl:sequence instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:sequence.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *

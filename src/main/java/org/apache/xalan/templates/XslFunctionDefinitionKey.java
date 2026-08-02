@@ -21,7 +21,7 @@ import org.apache.xml.utils.QName;
 
 /**
  * A class definition, whose object instance uniquely identifies 
- * an xsl:function definition.
+ * an xsl:function declaration within an XSL stylesheet.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

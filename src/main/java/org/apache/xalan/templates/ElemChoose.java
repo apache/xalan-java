@@ -35,7 +35,7 @@ import org.w3c.dom.DOMException;
 import xml.xpath31.processor.types.XSAnyType;
 
 /**
- *  Implementation of the XSLT 3.0 xsl:choose instruction.
+ *  Implementation of an XSLT 3.0 instruction xsl:choose.
  *  
  *  @xsl.usage advanced
  */

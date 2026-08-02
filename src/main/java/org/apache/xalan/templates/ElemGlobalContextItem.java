@@ -28,7 +28,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 
 /**
- * Implementation of XSLT 3.0 xsl:global-context-item instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:global-context-item.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

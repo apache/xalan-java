@@ -23,9 +23,8 @@ import java.util.Map;
 import org.apache.xml.utils.QName;
 
 /**
- * A class definition, to encapsulate an XSL mode list indentified 
- * by xsl:mode instruction(s), and helps locate individual mode 
- * declarations.
+ * Class definition, to encapsulate an XSLT 3.0 mode list 
+ * identified by one or more xsl:mode instruction.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

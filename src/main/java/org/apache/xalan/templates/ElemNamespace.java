@@ -36,7 +36,7 @@ import org.apache.xpath.objects.XdmNamespaceItem;
 import org.w3c.dom.DOMException;
 
 /**
- * Implementation of XSLT 3.0 xsl:namespace instruction.
+ * Implementation of XSLT 3.0 instruction xsl:namespace.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

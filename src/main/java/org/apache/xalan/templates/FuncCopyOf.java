@@ -28,7 +28,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of an XSLT 3.0 function copy-of.
+ * Implementation of an XSLT 3.0 function fn:copy-of.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 

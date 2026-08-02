@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 /**
- * Implementation of XSLT 3.0 instruction xsl:call-template.
+ * Implementation of an XSLT 3.0 instruction xsl:call-template.
  * 
  * @xsl.usage advanced
  */

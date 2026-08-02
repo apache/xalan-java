@@ -34,7 +34,7 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
- * An implementation of, XSLT 3.0 xsl:catch instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:catch.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

@@ -32,15 +32,8 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
- * Implement xsl:processing-instruction.
- * <pre>
- * <!ELEMENT xsl:processing-instruction %char-template;>
- * <!ATTLIST xsl:processing-instruction
- *   name %avt; #REQUIRED
- *   %space-att;
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions">section-Creating-Processing-Instructions in XSLT Specification</a>
+ * Implementation of an XSLT instruction xsl:processing-instruction.
+ * 
  * @xsl.usage advanced
  */
 public class ElemPI extends ElemTemplateElement

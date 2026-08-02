@@ -29,7 +29,7 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 /**
- * Implementation of an XSLT 3.0 xsl:context-item instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:context-item.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

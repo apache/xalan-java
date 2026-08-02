@@ -24,10 +24,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -37,15 +40,15 @@ import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of the XSLT 3.0 xsl:fork instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:fork.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  
  * @xsl.usage advanced
  */
-public class ElemFork extends ElemTemplateElement 
-                                                implements ExpressionOwner
+public class ElemFork extends ElemTemplateElement implements ExpressionOwner
 {
+  
   private static final long serialVersionUID = 6132007133719632871L;
   
   /**
@@ -54,9 +57,11 @@ public class ElemFork extends ElemTemplateElement
   private XPath m_useWhen = null;
   
   /**
-   * The class constructor.
+   * Class constructor.
    */
-  public ElemFork() {}
+  public ElemFork() {
+	  // No op
+  }
   
   /**
    * Method definition, to set the value of XSL attribute 
@@ -146,114 +151,108 @@ public class ElemFork extends ElemTemplateElement
 	    	}
 	    	
 	    	/**
-	    	 * An xsl:fork instruction has zero or more xsl:sequence sibling child
-	    	 * elements, or has xsl:for-each-group as child element.
-	    	 * i.e, xsl:fork instruction XSL child content has following grammar,
-	    	 * (xsl:sequence* | xsl:for-each-group).
-	    	 * We validate this xsl:fork's grammar definition below.
+	    	 * An xsl:fork instruction may have zero or more xsl:sequence child
+	    	 * instructions, or one xsl:for-each-group instruction.
+	    	 * 
+	    	 * i.e, An xsl:fork instruction, content model is following:
+	    	 * 
+	    	 * xsl:sequence* | xsl:for-each-group
 	    	 */
 	    	
-	    	ElemTemplateElement xslForkLastChildElem = null;
-	    	
-	    	for (ElemTemplateElement t = this.m_firstChild; t != null;
-																	t = t.m_nextSibling) {
-	    		if (t.m_nextSibling != null) {
-	    		   if (!(t instanceof ElemSequence)) {
-	    			  throw new TransformerException("XPTY0004 : All XSL fork child elements other than last one, "
-	    			  																				 + "should be XSL 'sequence' elements.", srcLocator); 
-	    		   }
-	    		}
-	    		else if (!((t instanceof ElemSequence) || (t instanceof ElemForEachGroup))) {
-	    		   throw new TransformerException("XPTY0004 : An XSL fork's last child element can either be "
-	    		   		                                                                                + "XSL 'sequence' or 'for-each-group'.", srcLocator);
-	    		}
-	    		else {
-	    		   xslForkLastChildElem = t;	
-	    		}
-	    	}
+	    	ElemTemplateElement xslForkChildElem = getFirstChildElem();	    		    	
 	    		    	
-	    	if (!(xslForkLastChildElem instanceof ElemForEachGroup)) {
+	    	if (!(xslForkChildElem instanceof ElemForEachGroup)) {
 	    		/**
-	    		 * Evaluate xsl:fork's xsl:sequence child elements in parallel threads,
-	    		 * and emit xsl:fork's evaluation result to an XSL transformation serializer
-	    		 * in sequential order as per xsl:sequence element siblings (i.e, first
-	    		 * xsl:sequence's evaluation result will be emitted first, then for the
-	    		 * next xsl:sequence sibling element and so on).
+	    		 * Evaluate xsl:fork's xsl:sequence child instructions in parallel 
+	    		 * threads, and emit results of xsl:sequence instructions in order 
+	    		 * as specified within an XSL stylesheet.
 	    		 */
 	    		
 	    		List<XslSequenceAndResultPair> xslSequenceEvalResultList = new ArrayList<XslSequenceAndResultPair>();
 	    		
-	    		List<XslForkWithSequenceCallable> xslForkTaskCallableList = new ArrayList<XslForkWithSequenceCallable>();
+	    		List<XslForkSequenceCallable> xslForkTaskCallableList = new ArrayList<XslForkSequenceCallable>();
 
-	    		// Determine the number of xsl:fork's xsl:sequence child elements, by 
-	    		// analyzing an XSL stylesheet's compiled object statically.
-	    		int noOfXslSeqElems = 0;	    		
+	    		int xslSeqElemCount = 0;	    		
 	    		for (ElemTemplateElement t = this.m_firstChild; t != null;
 																		t = t.m_nextSibling) {
-	    			noOfXslSeqElems++;
+	    			xslSeqElemCount++;
 	    		}
 	    		
 	    		/**
-	    		 * Instantiate java.util.concurrent.ExecutorService, with thread pool size
-	    		 * equal to the number of xsl:sequence sibling instructions within
-	    		 * xsl:fork element.
+	    		 * Instantiate java.util.concurrent.ExecutorService, to run 
+	    		 * evaluation of each xsl:sequence instruction (XSL stylesheet 
+	    		 * sibling instructions, that are child of xsl:fork instruction) 
+	    		 * within a separate thread. 
 	    		 */
-	    		ExecutorService executorServiceObj = Executors.newFixedThreadPool(noOfXslSeqElems);	    		
+	    		
+	    		ExecutorService threadpool = Executors.newFixedThreadPool((Runtime.getRuntime()).availableProcessors());	    		
 	    		
 	    		for (ElemTemplateElement t = this.m_firstChild; t != null;
-	    																t = t.m_nextSibling) {
+	    																  t = t.m_nextSibling) {
 	    			ElemSequence elemSequence = (ElemSequence)t;
 	    			elemSequence.setIsCalledFromXslFork(true);   
-	    			XslForkWithSequenceCallable xslForkWithSequenceCallable = new 
-	    																XslForkWithSequenceCallable(xctxt, transformer, elemSequence);
+	    			
+	    			XslForkSequenceCallable xslForkWithSequenceCallable = new XslForkSequenceCallable(elemSequence, transformer, xctxt);
 	    			xslForkTaskCallableList.add(xslForkWithSequenceCallable);
-	    		}	    			    		
+	    		}
 	    		
-	    		while (xslSequenceEvalResultList.size() != noOfXslSeqElems) {
-	    			for (int idx = 0; idx < xslForkTaskCallableList.size(); idx++) {
-	    				XslForkWithSequenceCallable xslForkWithSequenceCallable = xslForkTaskCallableList.get(idx);
-	    				Future<XslSequenceAndResultPair> futureObj = executorServiceObj.submit(xslForkWithSequenceCallable);
+	    		while (xslSequenceEvalResultList.size() != xslSeqElemCount) {
+	    			int size1 = xslForkTaskCallableList.size();
+	    			
+	    			for (int idx = 0; idx < size1; idx++) {
+	    				XslForkSequenceCallable xslForkSequenceCallable = xslForkTaskCallableList.get(idx);
+	    				Future<XslSequenceAndResultPair> futureObj = threadpool.submit(xslForkSequenceCallable);
+	    				
 	    				try { 
-	    				   XslSequenceAndResultPair resultObj1 = futureObj.get();
+	    				   XslSequenceAndResultPair resultObj1 = futureObj.get(Constants.XSL_FORK_SEQ_RUN_TIMEOUT, TimeUnit.SECONDS);
 	    				   xslSequenceEvalResultList.add(resultObj1);
 	    				} 
 	    				catch (InterruptedException ex) {
 	    					throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating "
-	    							                                        + "xsl:sequence instruction within xsl:fork instruction, "
-	    							                                        + "with following error trace : " + ex.getMessage() + ".", srcLocator);
+									    							                                        + "an XSL 'sequence' instruction within, XSL 'fork' instruction, "
+									    							                                        + "with following error trace : " + ex.getMessage() + ".", srcLocator);
 	    				} 
 	    				catch (ExecutionException ex) {
 	    					throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating "
-	    							                                        + "xsl:sequence instruction within xsl:fork instruction, "
-	    							                                        + "with following error trace : " + ex.getMessage() + ".", srcLocator);
-	    				}
+																		                                    + "an XSL 'sequence' instruction within, XSL 'fork' instruction, "
+																		                                    + "with following error trace : " + ex.getMessage() + ".", srcLocator);
+	    				} 
+	    				catch (TimeoutException ex) {
+	    					throw new javax.xml.transform.TransformerException("XTDE1665 : An XSL stylesheet dynamic error has occured. An xsl:fork's xsl:sequence instruction "
+	    							                                                                        + "took too long to run.", srcLocator);
+						}
 	    			}
 	    		}
 	    		
 	    		for (int idx = 0; idx < xslSequenceEvalResultList.size(); idx++) {
 	    			XslSequenceAndResultPair xslSequenceAndResultPair = xslSequenceEvalResultList.get(idx);	    			
+	    			
 	    			try {
 	    				ElemSequence elemSequence = xslSequenceAndResultPair.getElemSequence();
 						elemSequence.emitXdmItemToXSLResultTree(xctxt, transformer, 
 								                                         xslSequenceAndResultPair.getEvalResult());
 								                                         
-					} catch (TransformerException ex) {
-						throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating "
-                                													+ "xsl:sequence instruction within xsl:fork instruction, "
-                                													+ "with following error trace : " + ex.getMessage() + ".", srcLocator);
-					} catch (SAXException ex) {
-						throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating "
-																					+ "xsl:sequence instruction within xsl:fork instruction, "
-																					+ "with following error trace : " + ex.getMessage() + ".", srcLocator);
+					} 
+	    			catch (TransformerException ex) {
+	    				throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating "
+																		                                + "an XSL 'sequence' instruction within, XSL 'fork' instruction, "
+																		                                + "with following error trace : " + ex.getMessage() + ".", srcLocator);
+					} 
+	    			catch (SAXException ex) {
+	    				throw new javax.xml.transform.TransformerException("XPTY0004 : An error occured while evaluating "
+																		                                + "an XSL 'sequence' instruction within, XSL 'fork' instruction, "
+																		                                + "with following error trace : " + ex.getMessage() + ".", srcLocator);
 					}
 	    		}
 	    		
-	    		executorServiceObj.shutdown();
+	    		threadpool.shutdown();
 	    	}
-	    	else {	     	    		    	
-	    		xctxt.setSAXLocator(xslForkLastChildElem);
-    			transformer.setCurrentElement(xslForkLastChildElem);                   
-    			xslForkLastChildElem.execute(transformer);	
+	    	else {
+	    		// Evaluate an xsl:for-each-group instruction
+	    		
+	    		xctxt.setSAXLocator(xslForkChildElem);
+    			transformer.setCurrentElement(xslForkChildElem);                   
+    			xslForkChildElem.execute(transformer);	
 	    	}	    	
         }
         finally {
@@ -264,7 +263,119 @@ public class ElemFork extends ElemTemplateElement
             transformer.popCurrentTemplateRuleIsNull();
         }
   }
+  
+  /**
+   * Class definition, to represent an xsl:sequence 
+   * evaluation task.
+   */
+  class XslForkSequenceCallable implements Callable<XslSequenceAndResultPair> {	  	 
+	  	  	  
+	  private ElemSequence m_elemSequence;
+	  
+	  private TransformerImpl m_transformer;
+	  
+	  private XPathContext m_xctxt;
+	  
+	  private XslSequenceAndResultPair m_xslSeqAndResultPair;
+	  
+	  /**
+	   * Class constructor.
+	   */
+	  public XslForkSequenceCallable(ElemSequence elemSequence, TransformerImpl transformer, 
+			                                                        XPathContext xctxt) {		 
+		 this.m_elemSequence = elemSequence;
+		 this.m_transformer = transformer;
+		 this.m_xctxt = xctxt;		 
+	  }
+	  
+	  /**
+	   * Method definition, to represent the workload of a 
+	   * task to be run by java.util.concurrent.ExecutorService.
+	   */
+	  public XslSequenceAndResultPair call() {		  
+		  
+		  try {				  
+			  m_xctxt.setSAXLocator(m_elemSequence);
+			  m_transformer.setCurrentElement(m_elemSequence);                   
+			  m_elemSequence.execute(m_transformer);
+			  XObject xslSequenceEvalResult = m_elemSequence.getXslSequenceEvalResult();
+			  m_xslSeqAndResultPair = new XslSequenceAndResultPair(m_elemSequence, xslSequenceEvalResult);
+			  
+			  return m_xslSeqAndResultPair;
+		  }
+		  catch (TransformerException ex) {
+			  // No op
+		  }
+		  
+		  return null;
+	  }
+	  
+	  public ElemSequence getElemSequence() {
+		  return m_elemSequence;
+	  }
 
+	  public void setElemSequence(ElemSequence elemSequence) {
+		  this.m_elemSequence = elemSequence;
+	  }
+
+	  public TransformerImpl getTransformer() {
+		  return m_transformer;
+	  }
+
+	  public void setTransformer(TransformerImpl transformer) {
+		  this.m_transformer = transformer;
+	  }
+
+	  public XPathContext getXPathContext() {
+		  return m_xctxt;
+	  }
+
+	  public void setXPathContext(XPathContext xctxt) {
+		  this.m_xctxt = xctxt;
+	  }
+	  
+	  public XslSequenceAndResultPair getXslSequenceEvalResult() {
+		 return m_xslSeqAndResultPair; 
+	  }	  
+  }
+  
+  /**
+   * Class definition, to represent a pair of values, 
+   * comprising of an xsl:sequence instruction instance and 
+   * an XObject object, instance which is the result of 
+   * xsl:sequence instruction evaluation.
+   */
+  class XslSequenceAndResultPair {
+	  
+	  private ElemSequence m_elemSequence;
+	  
+	  private XObject m_evalResult;
+	  
+	  /**
+	   * Class constructor.
+	   */
+	  public XslSequenceAndResultPair(ElemSequence elemSequence, XObject xObj) {
+		  this.m_elemSequence = elemSequence;
+		  this.m_evalResult = xObj;
+	  }
+
+	  public ElemSequence getElemSequence() {
+		  return m_elemSequence;
+	  }
+
+	  public void setElemSequence(ElemSequence elemSequence) {
+		  this.m_elemSequence = elemSequence;
+	  }
+
+	  public XObject getEvalResult() {
+		  return m_evalResult;
+	  }
+
+	  public void setEvalResult(XObject xObject) {
+		  this.m_evalResult = xObject;
+	  }	  
+   }
+  
   /**
    * Add an XSL stylesheet child information.
    *
@@ -274,9 +385,27 @@ public class ElemFork extends ElemTemplateElement
    */
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
-      return super.appendChild(newChild);
+
+	  ElemTemplateElement result = null;
+
+	  ElemTemplateElement elemTemplateElement = getFirstChildElem();
+
+	  if (elemTemplateElement == null) {
+		  result = super.appendChild(newChild);  
+	  }
+	  else if ((elemTemplateElement instanceof ElemSequence) && (newChild instanceof ElemSequence)) {
+		  result = super.appendChild(newChild);  
+	  }
+	  else {		 
+		  int lineNo = newChild.getLineNumber();
+		  int colNo = newChild.getColumnNumber();
+
+		  error(XSLTErrorResources.ER_XSL_FORK, new Object[] { "'" + newChild.getNodeName() + "'", lineNo, colNo }); 
+	  }
+
+	  return result;
   }
-  
+
   /**
    * Call the children visitors.
    * 
@@ -284,7 +413,7 @@ public class ElemFork extends ElemTemplateElement
    */
   public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
   {    
-      super.callChildVisitors(visitor, callAttributes);
+	  super.callChildVisitors(visitor, callAttributes);
   }
 
   @Override
@@ -294,116 +423,7 @@ public class ElemFork extends ElemTemplateElement
 
   @Override
   public void setExpression(Expression exp) {
-	  // no op
-  }
-  
-  /**
-   * An object of this class, represents an xsl:sequence evaluation task.
-   * Multiple such task objects shall be provided to 
-   * java.util.concurrent.ExecutorService to run in parallel.
-   */
-  class XslForkWithSequenceCallable implements Callable<XslSequenceAndResultPair> {
-	  
-	  private XPathContext xctxt;
-	  
-	  private TransformerImpl transformer;
-	  
-	  private ElemSequence elemSequence;
-	  
-	  private XslSequenceAndResultPair xslSequenceAndResultPair;
-	  
-	  /**
-	   * Class constructor.
-	   */
-	  public XslForkWithSequenceCallable(XPathContext xctxt, TransformerImpl transformer, 
-			                                                              ElemSequence elemSequence) {
-		 this.xctxt = xctxt;
-		 this.transformer = transformer;
-		 this.elemSequence = elemSequence;  
-	  }
-	  
-	  /**
-	   * This method definition represents the workload of a 
-	   * task to be run by java.util.concurrent.ExecutorService.
-	   */
-	  public XslSequenceAndResultPair call() {		  
-		  try {				  
-			  xctxt.setSAXLocator(elemSequence);
-			  transformer.setCurrentElement(elemSequence);                   
-			  elemSequence.execute(transformer);
-			  XObject xslSequenceEvalResult = elemSequence.getXslSequenceEvalResult();
-			  xslSequenceAndResultPair = new XslSequenceAndResultPair(elemSequence, xslSequenceEvalResult);
-			  
-			  return xslSequenceAndResultPair;
-		  }
-		  catch (TransformerException ex) {
-			  // no op
-		  }
-		  
-		  return null;
-	  }
-
-	  public XPathContext getXPathContext() {
-		 return xctxt;
-	  }
-
-	  public void setXPathContext(XPathContext xctxt) {
-		 this.xctxt = xctxt;
-	  }
-
-	  public TransformerImpl getTransformer() {
-		 return transformer;
-	  }
-
-	  public void setTransformer(TransformerImpl transformer) {
-		 this.transformer = transformer;
-	  }
-	  
-	  public ElemSequence getElemSequence() {
-		 return elemSequence;
-	  }
-
-	  public void setElemSequence(ElemSequence elemSequence) {
-		 this.elemSequence = elemSequence;
-	  }
-	  
-	  public XslSequenceAndResultPair getXslSequenceEvalResult() {
-		 return xslSequenceAndResultPair; 
-	  }	  
-  }
-  
-  /**
-   * An object is of this class represents a pair of values, 
-   * comprising of an xsl:sequence instruction instance and 
-   * an XObject object instance representing result of it's 
-   * evaluation.
-   */
-  class XslSequenceAndResultPair {
-	  
-	  private ElemSequence elemSequence;
-	  
-	  private XObject evalResult;
-	  
-	  public XslSequenceAndResultPair(ElemSequence elemSequence, XObject xObj) {
-		  this.elemSequence = elemSequence;
-		  this.evalResult = xObj;
-	  }
-
-	  public ElemSequence getElemSequence() {
-		  return elemSequence;
-	  }
-
-	  public void setElemSequence(ElemSequence elemSequence) {
-		  this.elemSequence = elemSequence;
-	  }
-
-	  public XObject getEvalResult() {
-		  return evalResult;
-	  }
-
-	  public void setEvalResult(XObject xObject) {
-		  this.evalResult = xObject;
-	  }
+	  // No op
   }
 
 }

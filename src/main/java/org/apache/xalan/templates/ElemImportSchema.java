@@ -23,7 +23,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPath;
 
 /**
- *  Implementation of the XSLT 3.0 xsl:import-schema instruction.
+ *  Implementation of an XSLT 3.0 instruction xsl:import-schema.
  *  
  *  @author Mukul Gandhi <mukulg@apache.org>
  *  

@@ -29,8 +29,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of xsl:merge instruction's current-merge-group() 
- * function.
+ * Implementation of an XSLT 3.0 function fn:current-merge-group.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

@@ -56,7 +56,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of an XSLT 3.0 function fn:key.
+ * Implementation of an XSLT function fn:key.
  * 
  * @xsl.usage advanced
  */

@@ -26,7 +26,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
 /**
- * Implementation of the XSLT 3.0 xsl:merge-action instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:merge-action.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

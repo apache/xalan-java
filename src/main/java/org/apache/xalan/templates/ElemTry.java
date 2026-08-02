@@ -42,7 +42,7 @@ import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * An implementation of, XSLT 3.0 xsl:try instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:try.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

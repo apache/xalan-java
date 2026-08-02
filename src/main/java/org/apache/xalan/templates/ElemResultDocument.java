@@ -64,7 +64,7 @@ import org.xml.sax.InputSource;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of the XSLT 3.0 xsl:result-document instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:result-document.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

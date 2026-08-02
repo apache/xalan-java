@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
@@ -28,11 +25,8 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPath;
 
 /**
- * Implement xsl:apply-imports.
- * <pre>
- * <!ELEMENT xsl:apply-imports EMPTY>
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#apply-imports">apply-imports in XSLT Specification</a>
+ * Implementation of an XSLT instruction xsl:apply-imports.
+ *  
  * @xsl.usage advanced
  */
 public class ElemApplyImport extends ElemTemplateElement

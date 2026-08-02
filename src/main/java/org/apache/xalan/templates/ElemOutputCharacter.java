@@ -24,9 +24,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 
-/**
- * Implementation of XSLT 3.0 xsl:output-character element within
- * xsl:character-map element.
+/** 
+ * Implementation of an XSLT 3.0 instruction xsl:output-character.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import java.io.IOException;
@@ -44,7 +41,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of an XSLT 3.0 function fn:document.
+ * Implementation of an XSLT function fn:document.
  *
  * When the document function has exactly one argument and the argument
  * is a node-set, then the result is the union, for each node in the
@@ -56,6 +53,7 @@ import org.apache.xpath.objects.XObject;
  * of the result of calling the document function with the first argument
  * being the string-value of the node, and with the second argument being
  * the second argument passed to the document function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncDocument extends Function2Args

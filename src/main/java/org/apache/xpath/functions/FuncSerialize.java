@@ -34,7 +34,6 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.FuncFormatNumber;
 import org.apache.xalan.templates.OutputProperties;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;

@@ -50,9 +50,7 @@ import org.xml.sax.SAXException;
 import org.apache.xml.dtm.DTM;
 
 /**
- * Implementation of XSL stylesheet instruction xsl:attribute.
- * 
- * @see <a href="https://www.w3.org/TR/xslt-30/#creating-attributes">xsl:attribute in XSLT 3.0 Specification</a>
+ * Implementation of an XSLT 3.0 instruction xsl:attribute.
  * 
  * @xsl.usage advanced
  */

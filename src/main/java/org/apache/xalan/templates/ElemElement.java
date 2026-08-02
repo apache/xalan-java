@@ -38,9 +38,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of XSL stylesheet instruction xsl:element.
- * 
- * @see <a href="https://www.w3.org/TR/xslt-30/#xsl-element">xsl:element in XSLT 3.0 Specification</a>
+ * Implementation of an XSLT 3.0 instruction xsl:element.
  * 
  * @xsl.usage advanced
  */

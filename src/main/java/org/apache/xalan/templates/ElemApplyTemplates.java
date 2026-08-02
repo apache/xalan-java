@@ -67,8 +67,8 @@ import org.xml.sax.SAXException;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
 
-/**
- * Implementation of XSLT 3.0 xsl:apply-templates element.
+/** 
+ * Implementation of an XSLT 3.0 instruction xsl:apply-templates.
  * 
  * @xsl.usage advanced
  */

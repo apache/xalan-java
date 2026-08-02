@@ -53,7 +53,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 
 /**
- * Implementation of the XSLT 3.0 xsl:merge instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:merge.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *  

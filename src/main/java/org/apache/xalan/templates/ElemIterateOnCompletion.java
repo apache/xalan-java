@@ -35,7 +35,7 @@ import org.apache.xpath.operations.XPath3UnaryOperation;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of the XSLT 3.0 xsl:on-completion instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:on-completion.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

@@ -28,7 +28,7 @@ import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of the XSLT 3.0 xsl:break instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:break.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

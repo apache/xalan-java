@@ -30,7 +30,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.regex.Matcher;
 
 /**
- * Implementation of XSLT 3.0 function fn:regex-group.
+ * Implementation of an XSLT 3.0 function fn:regex-group.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

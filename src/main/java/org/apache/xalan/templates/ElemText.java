@@ -26,7 +26,7 @@ import org.apache.xpath.XPath;
 import org.w3c.dom.DOMException;
 
 /**
- * Implementation of XSLT 3.0 xsl:text instruction.
+ * Implementation of XSLT instruction xsl:text.
  * 
  * @xsl.usage advanced
  */

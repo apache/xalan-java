@@ -28,8 +28,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of xsl:merge instruction's current-merge-key()
- * function.
+ * Implementation of an XSLT 3.0 function fn:current-merge-key.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

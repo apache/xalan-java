@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
 import xml.xpath31.processor.types.XSAnyType;
 
 /**
- * Implementation of XSL stylesheet literal result element.
+ * Implementation of an XSL stylesheet literal result element.
  * 
  * @xsl.usage advanced
  */

@@ -39,7 +39,7 @@ import org.apache.xpath.regex.Matcher;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XSLT 3.0 instruction xsl:analyze-string.
+ * Implementation of an XSLT 3.0 instruction xsl:analyze-string.
  *   
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

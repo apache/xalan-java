@@ -44,7 +44,7 @@ import org.xml.sax.InputSource;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XSLT 3.0 xsl:message instruction.
+ * Implementation of an XSLT 3.0 instruction xsl:message.
  * 
  * @xsl.usage advanced
  */

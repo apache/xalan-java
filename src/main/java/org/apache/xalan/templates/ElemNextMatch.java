@@ -24,9 +24,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPath;
 
 /**
- * Implementation of XSLT 3.0 xsl:next-match instruction.
- * 
- * @see <a href="https://www.w3.org/TR/xslt-30/#element-next-match">xsl:next-match XSLT 3.0 specification</a>
+ * Implementation of an XSLT 3.0 instruction xsl:next-match.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
