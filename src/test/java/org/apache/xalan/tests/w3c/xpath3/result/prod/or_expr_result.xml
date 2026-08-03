@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:11:00Z" fail="126" name="prod-OrExpr" pass="203" run="329" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-03T10:48:31Z" fail="16" name="prod-OrExpr" pass="313" run="329" statusUnknown="0">
    <testResult status="pass" testName="op-logical-and-038"/>
    <testResult status="pass" testName="op-logical-and-039"/>
    <testResult status="pass" testName="op-logical-and-040"/>
@@ -134,9 +134,9 @@
    <testResult status="pass" testName="op-logical-or-011"/>
    <testResult status="pass" testName="op-logical-or-012"/>
    <testResult status="pass" testName="op-logical-or-013"/>
-   <testResult status="fail" testName="op-logical-or-014"/>
-   <testResult status="fail" testName="op-logical-or-015"/>
-   <testResult status="fail" testName="op-logical-or-016"/>
+   <testResult status="pass" testName="op-logical-or-014"/>
+   <testResult status="pass" testName="op-logical-or-015"/>
+   <testResult status="pass" testName="op-logical-or-016"/>
    <testResult status="pass" testName="op-logical-or-017"/>
    <testResult status="pass" testName="op-logical-or-018"/>
    <testResult status="pass" testName="op-logical-or-019"/>
@@ -182,104 +182,104 @@
    <testResult status="pass" testName="op-logical-or-059"/>
    <testResult status="pass" testName="op-logical-or-060"/>
    <testResult status="pass" testName="op-logical-or-061"/>
-   <testResult status="fail" testName="op-logical-or-062"/>
-   <testResult status="fail" testName="op-logical-or-063"/>
-   <testResult status="fail" testName="op-logical-or-064"/>
-   <testResult status="fail" testName="op-logical-or-065"/>
-   <testResult status="fail" testName="op-logical-or-066"/>
-   <testResult status="fail" testName="op-logical-or-067"/>
-   <testResult status="fail" testName="op-logical-or-068"/>
-   <testResult status="fail" testName="op-logical-or-069"/>
-   <testResult status="fail" testName="op-logical-or-070"/>
-   <testResult status="fail" testName="op-logical-or-071"/>
-   <testResult status="fail" testName="op-logical-or-072"/>
-   <testResult status="fail" testName="op-logical-or-073"/>
-   <testResult status="fail" testName="op-logical-or-074"/>
-   <testResult status="fail" testName="op-logical-or-075"/>
-   <testResult status="fail" testName="op-logical-or-076"/>
-   <testResult status="fail" testName="op-logical-or-077"/>
-   <testResult status="fail" testName="op-logical-or-078"/>
-   <testResult status="fail" testName="op-logical-or-079"/>
-   <testResult status="fail" testName="op-logical-or-080"/>
-   <testResult status="fail" testName="op-logical-or-081"/>
-   <testResult status="fail" testName="op-logical-or-082"/>
-   <testResult status="fail" testName="op-logical-or-083"/>
-   <testResult status="fail" testName="op-logical-or-084"/>
-   <testResult status="fail" testName="op-logical-or-085"/>
-   <testResult status="fail" testName="op-logical-or-086"/>
-   <testResult status="fail" testName="op-logical-or-087"/>
-   <testResult status="fail" testName="op-logical-or-088"/>
-   <testResult status="fail" testName="op-logical-or-089"/>
-   <testResult status="fail" testName="op-logical-or-090"/>
-   <testResult status="fail" testName="op-logical-or-091"/>
-   <testResult status="fail" testName="op-logical-or-092"/>
-   <testResult status="fail" testName="op-logical-or-093"/>
-   <testResult status="fail" testName="op-logical-or-094"/>
-   <testResult status="fail" testName="op-logical-or-095"/>
-   <testResult status="fail" testName="op-logical-or-096"/>
-   <testResult status="fail" testName="op-logical-or-097"/>
-   <testResult status="fail" testName="op-logical-or-098"/>
-   <testResult status="fail" testName="op-logical-or-099"/>
-   <testResult status="fail" testName="op-logical-or-100"/>
-   <testResult status="fail" testName="op-logical-or-101"/>
-   <testResult status="fail" testName="op-logical-or-102"/>
-   <testResult status="fail" testName="op-logical-or-103"/>
-   <testResult status="fail" testName="op-logical-or-104"/>
-   <testResult status="fail" testName="op-logical-or-105"/>
-   <testResult status="fail" testName="op-logical-or-106"/>
-   <testResult status="fail" testName="op-logical-or-107"/>
-   <testResult status="fail" testName="op-logical-or-108"/>
-   <testResult status="fail" testName="op-logical-or-109"/>
-   <testResult status="fail" testName="op-logical-or-110"/>
-   <testResult status="fail" testName="op-logical-or-111"/>
-   <testResult status="fail" testName="op-logical-or-112"/>
-   <testResult status="fail" testName="op-logical-or-113"/>
-   <testResult status="fail" testName="op-logical-or-114"/>
-   <testResult status="fail" testName="op-logical-or-115"/>
-   <testResult status="fail" testName="op-logical-or-116"/>
-   <testResult status="fail" testName="op-logical-or-117"/>
-   <testResult status="fail" testName="op-logical-or-118"/>
-   <testResult status="fail" testName="op-logical-or-119"/>
-   <testResult status="fail" testName="op-logical-or-120"/>
-   <testResult status="fail" testName="op-logical-or-121"/>
-   <testResult status="fail" testName="op-logical-or-122"/>
-   <testResult status="fail" testName="op-logical-or-123"/>
-   <testResult status="fail" testName="op-logical-or-124"/>
-   <testResult status="fail" testName="op-logical-or-125"/>
-   <testResult status="fail" testName="op-logical-or-126"/>
-   <testResult status="fail" testName="op-logical-or-127"/>
-   <testResult status="fail" testName="op-logical-or-128"/>
-   <testResult status="fail" testName="op-logical-or-129"/>
-   <testResult status="fail" testName="op-logical-or-130"/>
-   <testResult status="fail" testName="op-logical-or-131"/>
-   <testResult status="fail" testName="op-logical-or-132"/>
-   <testResult status="fail" testName="op-logical-or-133"/>
-   <testResult status="fail" testName="op-logical-or-134"/>
-   <testResult status="fail" testName="op-logical-or-135"/>
-   <testResult status="fail" testName="op-logical-or-136"/>
-   <testResult status="fail" testName="op-logical-or-137"/>
-   <testResult status="fail" testName="op-logical-or-138"/>
-   <testResult status="fail" testName="op-logical-or-139"/>
-   <testResult status="fail" testName="op-logical-or-140"/>
-   <testResult status="fail" testName="op-logical-or-141"/>
-   <testResult status="fail" testName="op-logical-or-142"/>
-   <testResult status="fail" testName="op-logical-or-143"/>
-   <testResult status="fail" testName="op-logical-or-144"/>
-   <testResult status="fail" testName="op-logical-or-145"/>
-   <testResult status="fail" testName="op-logical-or-146"/>
-   <testResult status="fail" testName="op-logical-or-147"/>
-   <testResult status="fail" testName="op-logical-or-148"/>
-   <testResult status="fail" testName="op-logical-or-149"/>
-   <testResult status="fail" testName="op-logical-or-150"/>
-   <testResult status="fail" testName="op-logical-or-151"/>
-   <testResult status="fail" testName="op-logical-or-152"/>
-   <testResult status="fail" testName="op-logical-or-153"/>
-   <testResult status="fail" testName="op-logical-or-154"/>
-   <testResult status="fail" testName="op-logical-or-155"/>
-   <testResult status="fail" testName="op-logical-or-156"/>
-   <testResult status="fail" testName="op-logical-or-157"/>
-   <testResult status="fail" testName="op-logical-or-158"/>
-   <testResult status="fail" testName="op-logical-or-159"/>
+   <testResult status="pass" testName="op-logical-or-062"/>
+   <testResult status="pass" testName="op-logical-or-063"/>
+   <testResult status="pass" testName="op-logical-or-064"/>
+   <testResult status="pass" testName="op-logical-or-065"/>
+   <testResult status="pass" testName="op-logical-or-066"/>
+   <testResult status="pass" testName="op-logical-or-067"/>
+   <testResult status="pass" testName="op-logical-or-068"/>
+   <testResult status="pass" testName="op-logical-or-069"/>
+   <testResult status="pass" testName="op-logical-or-070"/>
+   <testResult status="pass" testName="op-logical-or-071"/>
+   <testResult status="pass" testName="op-logical-or-072"/>
+   <testResult status="pass" testName="op-logical-or-073"/>
+   <testResult status="pass" testName="op-logical-or-074"/>
+   <testResult status="pass" testName="op-logical-or-075"/>
+   <testResult status="pass" testName="op-logical-or-076"/>
+   <testResult status="pass" testName="op-logical-or-077"/>
+   <testResult status="pass" testName="op-logical-or-078"/>
+   <testResult status="pass" testName="op-logical-or-079"/>
+   <testResult status="pass" testName="op-logical-or-080"/>
+   <testResult status="pass" testName="op-logical-or-081"/>
+   <testResult status="pass" testName="op-logical-or-082"/>
+   <testResult status="pass" testName="op-logical-or-083"/>
+   <testResult status="pass" testName="op-logical-or-084"/>
+   <testResult status="pass" testName="op-logical-or-085"/>
+   <testResult status="pass" testName="op-logical-or-086"/>
+   <testResult status="pass" testName="op-logical-or-087"/>
+   <testResult status="pass" testName="op-logical-or-088"/>
+   <testResult status="pass" testName="op-logical-or-089"/>
+   <testResult status="pass" testName="op-logical-or-090"/>
+   <testResult status="pass" testName="op-logical-or-091"/>
+   <testResult status="pass" testName="op-logical-or-092"/>
+   <testResult status="pass" testName="op-logical-or-093"/>
+   <testResult status="pass" testName="op-logical-or-094"/>
+   <testResult status="pass" testName="op-logical-or-095"/>
+   <testResult status="pass" testName="op-logical-or-096"/>
+   <testResult status="pass" testName="op-logical-or-097"/>
+   <testResult status="pass" testName="op-logical-or-098"/>
+   <testResult status="pass" testName="op-logical-or-099"/>
+   <testResult status="pass" testName="op-logical-or-100"/>
+   <testResult status="pass" testName="op-logical-or-101"/>
+   <testResult status="pass" testName="op-logical-or-102"/>
+   <testResult status="pass" testName="op-logical-or-103"/>
+   <testResult status="pass" testName="op-logical-or-104"/>
+   <testResult status="pass" testName="op-logical-or-105"/>
+   <testResult status="pass" testName="op-logical-or-106"/>
+   <testResult status="pass" testName="op-logical-or-107"/>
+   <testResult status="pass" testName="op-logical-or-108"/>
+   <testResult status="pass" testName="op-logical-or-109"/>
+   <testResult status="pass" testName="op-logical-or-110"/>
+   <testResult status="pass" testName="op-logical-or-111"/>
+   <testResult status="pass" testName="op-logical-or-112"/>
+   <testResult status="pass" testName="op-logical-or-113"/>
+   <testResult status="pass" testName="op-logical-or-114"/>
+   <testResult status="pass" testName="op-logical-or-115"/>
+   <testResult status="pass" testName="op-logical-or-116"/>
+   <testResult status="pass" testName="op-logical-or-117"/>
+   <testResult status="pass" testName="op-logical-or-118"/>
+   <testResult status="pass" testName="op-logical-or-119"/>
+   <testResult status="pass" testName="op-logical-or-120"/>
+   <testResult status="pass" testName="op-logical-or-121"/>
+   <testResult status="pass" testName="op-logical-or-122"/>
+   <testResult status="pass" testName="op-logical-or-123"/>
+   <testResult status="pass" testName="op-logical-or-124"/>
+   <testResult status="pass" testName="op-logical-or-125"/>
+   <testResult status="pass" testName="op-logical-or-126"/>
+   <testResult status="pass" testName="op-logical-or-127"/>
+   <testResult status="pass" testName="op-logical-or-128"/>
+   <testResult status="pass" testName="op-logical-or-129"/>
+   <testResult status="pass" testName="op-logical-or-130"/>
+   <testResult status="pass" testName="op-logical-or-131"/>
+   <testResult status="pass" testName="op-logical-or-132"/>
+   <testResult status="pass" testName="op-logical-or-133"/>
+   <testResult status="pass" testName="op-logical-or-134"/>
+   <testResult status="pass" testName="op-logical-or-135"/>
+   <testResult status="pass" testName="op-logical-or-136"/>
+   <testResult status="pass" testName="op-logical-or-137"/>
+   <testResult status="pass" testName="op-logical-or-138"/>
+   <testResult status="pass" testName="op-logical-or-139"/>
+   <testResult status="pass" testName="op-logical-or-140"/>
+   <testResult status="pass" testName="op-logical-or-141"/>
+   <testResult status="pass" testName="op-logical-or-142"/>
+   <testResult status="pass" testName="op-logical-or-143"/>
+   <testResult status="pass" testName="op-logical-or-144"/>
+   <testResult status="pass" testName="op-logical-or-145"/>
+   <testResult status="pass" testName="op-logical-or-146"/>
+   <testResult status="pass" testName="op-logical-or-147"/>
+   <testResult status="pass" testName="op-logical-or-148"/>
+   <testResult status="pass" testName="op-logical-or-149"/>
+   <testResult status="pass" testName="op-logical-or-150"/>
+   <testResult status="pass" testName="op-logical-or-151"/>
+   <testResult status="pass" testName="op-logical-or-152"/>
+   <testResult status="pass" testName="op-logical-or-153"/>
+   <testResult status="pass" testName="op-logical-or-154"/>
+   <testResult status="pass" testName="op-logical-or-155"/>
+   <testResult status="pass" testName="op-logical-or-156"/>
+   <testResult status="pass" testName="op-logical-or-157"/>
+   <testResult status="pass" testName="op-logical-or-158"/>
+   <testResult status="pass" testName="op-logical-or-159"/>
    <testResult status="pass" testName="K-LogicExpr-1"/>
    <testResult status="pass" testName="K-LogicExpr-2"/>
    <testResult status="pass" testName="K-LogicExpr-3"/>
@@ -295,12 +295,12 @@
    <testResult status="pass" testName="K-LogicExpr-13"/>
    <testResult status="fail" testName="K-LogicExpr-14"/>
    <testResult status="fail" testName="K-LogicExpr-15"/>
-   <testResult status="fail" testName="K-LogicExpr-16"/>
-   <testResult status="fail" testName="K-LogicExpr-17"/>
-   <testResult status="fail" testName="K-LogicExpr-18"/>
-   <testResult status="fail" testName="K-LogicExpr-19"/>
-   <testResult status="fail" testName="K-LogicExpr-20"/>
-   <testResult status="fail" testName="K-LogicExpr-21"/>
+   <testResult status="pass" testName="K-LogicExpr-16"/>
+   <testResult status="pass" testName="K-LogicExpr-17"/>
+   <testResult status="pass" testName="K-LogicExpr-18"/>
+   <testResult status="pass" testName="K-LogicExpr-19"/>
+   <testResult status="pass" testName="K-LogicExpr-20"/>
+   <testResult status="pass" testName="K-LogicExpr-21"/>
    <testResult status="fail" testName="K-LogicExpr-22"/>
    <testResult status="fail" testName="K-LogicExpr-23"/>
    <testResult status="fail" testName="K-LogicExpr-24"/>
@@ -313,10 +313,10 @@
    <testResult status="pass" testName="K-LogicExpr-31"/>
    <testResult status="fail" testName="K-LogicExpr-32"/>
    <testResult status="fail" testName="K-LogicExpr-33"/>
-   <testResult status="fail" testName="K-LogicExpr-34"/>
+   <testResult status="pass" testName="K-LogicExpr-34"/>
    <testResult status="pass" testName="K-LogicExpr-35"/>
    <testResult status="pass" testName="K-LogicExpr-36"/>
-   <testResult status="fail" testName="K-LogicExpr-37"/>
+   <testResult status="pass" testName="K-LogicExpr-37"/>
    <testResult status="pass" testName="K-LogicExpr-38"/>
    <testResult status="fail" testName="K-LogicExpr-39"/>
    <testResult status="fail" testName="K-LogicExpr-40"/>
@@ -324,7 +324,7 @@
    <testResult status="fail" testName="K-LogicExpr-42"/>
    <testResult status="fail" testName="K-LogicExpr-43"/>
    <testResult status="pass" testName="K-LogicExpr-44"/>
-   <testResult status="fail" testName="K-LogicExpr-45"/>
+   <testResult status="pass" testName="K-LogicExpr-45"/>
    <testResult status="pass" testName="K-LogicExpr-46"/>
    <testResult status="fail" testName="K2-LogicExpr-1"/>
    <testResult status="fail" testName="K2-LogicExpr-2"/>

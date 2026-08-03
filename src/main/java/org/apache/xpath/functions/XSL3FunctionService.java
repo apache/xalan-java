@@ -83,6 +83,7 @@ import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.types.XSBase64Binary;
@@ -190,6 +191,38 @@ public class XSL3FunctionService {
     		
     		String funcName = funcObj.getFunctionName();
     		String funcNamespace = funcObj.getNamespace();
+    		
+    		Vector argVector2 = funcObj.getArgVector();    		
+    		int size1 = argVector2.size();
+    		
+    		boolean argVectorModified = false;
+    		
+    		for (int idx = 0; idx < size1; idx++) {
+    			Object argObj1 = argVector2.elementAt(idx); 
+    			
+    			if (argObj1 instanceof XNumber) {
+    				XNumber xNumber = (XNumber)argObj1;
+    				if (xNumber.getXsDecimal() != null) {
+    					argVector2.setElementAt(xNumber.getXsDecimal(), idx);
+    					
+    					argVectorModified = true;
+    				}
+    				else if (xNumber.getXsDouble() != null) {
+    					argVector2.setElementAt(xNumber.getXsDouble(), idx);
+    					
+    					argVectorModified = true;
+    				}
+    				else if (xNumber.getXsInteger() != null) {
+    					argVector2.setElementAt(xNumber.getXsInteger(), idx);
+    					
+    					argVectorModified = true;
+    				}
+    			}
+    		}
+    		
+    		if (argVectorModified) {
+    			funcObj.setArgVector(argVector2);
+    		}
     		
     		if (!((Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace) || (Constants.S_EXTENSIONS_XALANLIB_URL).equals(funcNamespace))) {
     			/**

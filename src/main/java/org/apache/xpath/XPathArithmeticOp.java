@@ -37,7 +37,7 @@ import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.XPath3Operator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -53,7 +53,7 @@ import xml.xpath31.processor.types.XSNumericType;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class XPathArithmeticOp extends Operation {
+public class XPathArithmeticOp extends XPath3Operator {
 	
 	private static final long serialVersionUID = 7567257906066639674L;
 

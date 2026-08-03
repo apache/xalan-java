@@ -31,7 +31,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class NodeComparisonIs extends Operation
+public class NodeComparisonIs extends XPath3Operator
 {
     
     private static final long serialVersionUID = 7254558212157001252L;

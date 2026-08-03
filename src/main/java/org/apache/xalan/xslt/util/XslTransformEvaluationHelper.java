@@ -72,7 +72,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
-import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.XPath3Operator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
@@ -531,8 +531,8 @@ public class XslTransformEvaluationHelper {
                 ResultSequence resultSeq = (ResultSequence)(((XPathForExpr)expr).execute(xctxt));
                 xdmSequenceSize = resultSeq.size();   
             }
-            else if (expr instanceof Operation) {
-            	Operation opn1 = (Operation)expr;
+            else if (expr instanceof XPath3Operator) {
+            	XPath3Operator opn1 = (XPath3Operator)expr;
             	Expression lOpn = opn1.getLeftOperand();
             	Expression rOpn = opn1.getRightOperand();            	
             	XObject lObj1 = lOpn.execute(xctxt);

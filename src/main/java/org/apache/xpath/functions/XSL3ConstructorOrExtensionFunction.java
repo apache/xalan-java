@@ -223,6 +223,7 @@ public class XSL3ConstructorOrExtensionFunction extends Function
        // Making a call to an XPath constructor function, or XSL 
        // stylesheet function implementations.
        XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
+       
        result = xslFunctionService.callFunction(this, null, xctxt);
     } 
     catch (TransformerException ex) {        
@@ -479,6 +480,10 @@ public class XSL3ConstructorOrExtensionFunction extends Function
   
   public Vector getArgVector() {
 	 return m_argVec;  
+  }
+  
+  public void setArgVector(Vector v1) {
+	  m_argVec = v1;  
   }
   
   /**

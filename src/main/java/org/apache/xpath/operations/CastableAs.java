@@ -47,7 +47,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * 
  * @xsl.usage advanced
  */
-public class CastableAs extends Operation
+public class CastableAs extends XPath3Operator
 {
 
   private static final long serialVersionUID = 7722658885378043019L;

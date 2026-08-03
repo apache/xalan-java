@@ -24,9 +24,9 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
 /** 
- * An XPath 3.1 unary operator base class.
+ * An XPath 3.1 unary operator abstract base class.
  */
-public abstract class XPath3UnaryOperation extends Expression implements ExpressionOwner
+public abstract class XPath3UnaryOperator extends Expression implements ExpressionOwner
 {
   static final long serialVersionUID = 6536083808424286166L;
 
@@ -148,7 +148,7 @@ public abstract class XPath3UnaryOperation extends Expression implements Express
 	  if (!isSameClass(expr))
 		  return false;
 
-	  if (!m_right.deepEquals(((XPath3UnaryOperation)expr).m_right))
+	  if (!m_right.deepEquals(((XPath3UnaryOperator)expr).m_right))
 		  return false;
 
 	  return true;

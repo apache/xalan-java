@@ -26,7 +26,7 @@ import xml.xpath31.processor.types.XSNumericType;
 /**
  * An XPath 3.1 unary minus operator expression evaluator.
  */
-public class Neg extends XPath3UnaryOperation
+public class Neg extends XPath3UnaryOperator
 {
   
   private static final long serialVersionUID = -6280607702375702291L;

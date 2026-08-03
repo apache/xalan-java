@@ -27,8 +27,8 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.FunctionDef1Arg;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.FunctionOneArg;
-import org.apache.xpath.operations.Operation;
-import org.apache.xpath.operations.XPath3UnaryOperation;
+import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPath3UnaryOperator;
 
 /**
  * A class definition, specifying few method definitions for
@@ -60,8 +60,8 @@ public class XPath3ExpressionUtil {
 																									  + "inline function expression, erroneous function body is '" 
 																									  + funcBodyStr + "'.", srcLocator);			  			  
 		  }
-		  else if (xpathInlineFuncBodyExr instanceof Operation) {
-			  Operation opn1 = (Operation)xpathInlineFuncBodyExr;
+		  else if (xpathInlineFuncBodyExr instanceof XPath3Operator) {
+			  XPath3Operator opn1 = (XPath3Operator)xpathInlineFuncBodyExr;
 			  Expression exprL = opn1.getLeftOperand();
 			  Expression exprR = opn1.getRightOperand();
 
@@ -72,8 +72,8 @@ public class XPath3ExpressionUtil {
 																									  + funcBodyStr + "'.", srcLocator); 
 			  }
 		  }
-		  else if (xpathInlineFuncBodyExr instanceof XPath3UnaryOperation) {
-			  XPath3UnaryOperation opn1 = (XPath3UnaryOperation)xpathInlineFuncBodyExr;
+		  else if (xpathInlineFuncBodyExr instanceof XPath3UnaryOperator) {
+			  XPath3UnaryOperator opn1 = (XPath3UnaryOperator)xpathInlineFuncBodyExr;
 			  Expression exprR = opn1.getOperand();
 
 			  if (exprR instanceof SelfIteratorNoPredicate) {

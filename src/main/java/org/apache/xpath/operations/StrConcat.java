@@ -30,7 +30,7 @@ import org.apache.xpath.objects.XString;
  * 
  * @xsl.usage advanced
  */
-public class StrConcat extends Operation
+public class StrConcat extends XPath3Operator
 {
 
    private static final long serialVersionUID = -820873651965512508L;

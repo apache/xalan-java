@@ -42,7 +42,7 @@ import xml.xpath31.processor.types.XSString;
 /**
  * An XPath 3.1 operator '>=' evaluator.
  */
-public class Gte extends Operation
+public class Gte extends XPath3Operator
 {
   static final long serialVersionUID = 9142945909906680220L;
 

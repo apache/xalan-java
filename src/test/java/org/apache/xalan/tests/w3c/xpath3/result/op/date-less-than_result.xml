@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:02Z" fail="5" name="op-date-less-than" pass="34" run="39" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-03T10:46:39Z" fail="1" name="op-date-less-than" pass="38" run="39" statusUnknown="0">
    <testResult status="pass" testName="op-date-less-than2args-1"/>
    <testResult status="pass" testName="op-date-less-than2args-2"/>
    <testResult status="pass" testName="op-date-less-than2args-3"/>
@@ -19,10 +19,10 @@
    <testResult status="pass" testName="op-date-less-than-8"/>
    <testResult status="pass" testName="op-date-less-than-9"/>
    <testResult status="pass" testName="op-date-less-than-10"/>
-   <testResult status="fail" testName="op-date-less-than-11"/>
-   <testResult status="fail" testName="op-date-less-than-12"/>
-   <testResult status="fail" testName="op-date-less-than-13"/>
-   <testResult status="fail" testName="op-date-less-than-14"/>
+   <testResult status="pass" testName="op-date-less-than-11"/>
+   <testResult status="pass" testName="op-date-less-than-12"/>
+   <testResult status="pass" testName="op-date-less-than-13"/>
+   <testResult status="pass" testName="op-date-less-than-14"/>
    <testResult status="pass" testName="K-DateLT-1"/>
    <testResult status="pass" testName="K-DateLT-2"/>
    <testResult status="pass" testName="K-DateLT-3"/>

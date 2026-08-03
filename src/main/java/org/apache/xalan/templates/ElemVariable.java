@@ -84,11 +84,11 @@ import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.objects.XdmProcessingInstructionItem;
 import org.apache.xpath.operations.XPathArrowOp;
-import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.XPath3Operator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.operations.XPath3UnaryOperation;
+import org.apache.xpath.operations.XPath3UnaryOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.util.XPath3ExpressionUtil;
 import org.w3c.dom.NodeList;
@@ -679,8 +679,8 @@ public class ElemVariable extends ElemTemplateElement
              
             return evalResult; 
         }
-        else if (selectExpression instanceof Operation) {
-        	Operation xpathOp = (Operation)selectExpression;            
+        else if (selectExpression instanceof XPath3Operator) {
+        	XPath3Operator xpathOp = (XPath3Operator)selectExpression;            
             XObject leftOperand = (xpathOp.getLeftOperand()).execute(xctxt);
             XObject rightOperand = (xpathOp.getRightOperand()).execute(xctxt);
             
@@ -2619,7 +2619,7 @@ public class ElemVariable extends ElemTemplateElement
     			else if (expr1 instanceof XPathNamedFunctionReference) {
     				return (XObject)expr1;
     			}
-    			else if ((expr1 instanceof Function) || (expr1 instanceof XPath3UnaryOperation)) {
+    			else if ((expr1 instanceof Function) || (expr1 instanceof XPath3UnaryOperator)) {
     				// no op
     			}
     			else if ((expr1 instanceof XString) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic) 
@@ -2633,7 +2633,7 @@ public class ElemVariable extends ElemTemplateElement
     					                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof Range)) {
     				// no op
     			}
-    			else if (expr1 instanceof Operation) {
+    			else if (expr1 instanceof XPath3Operator) {
     				// no op
     			}
     			else if (expr1 instanceof XPathForExpr) {

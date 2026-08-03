@@ -9,7 +9,8 @@ import java.math.BigInteger;
 import org.apache.xpath.objects.ResultSequence;
 
 /**
- * An XML Schema data type representation, of the xs:long datatype.
+ * An XML Schema data type representation, for the 
+ * xs:long datatype.
  */
 public class XSLong extends XSInteger {
 
@@ -55,14 +56,16 @@ public class XSLong extends XSInteger {
         try {
             BigInteger bigInt = new BigInteger(xsAnyType.stringValue());     
 
-            if (bigInt.compareTo(MIN_INCLUSIVE) == -1 || 
-                                         bigInt.compareTo(MAX_INCLUSIVE) == 1) {
-                throw new RuntimeException("An instance of type xs:long cannot be created. The numeric argument "
-                                                                     + "'" + xsAnyType.stringValue() + "' provided is out of range for type xs:long.");  
+            if ((bigInt.compareTo(MIN_INCLUSIVE) == -1) || 
+                                                       (bigInt.compareTo(MAX_INCLUSIVE) == 1)) {
+                throw new RuntimeException("An instance of XML schema type 'long' cannot be created. The numeric argument "
+                                                                                                    + "'" + xsAnyType.stringValue() 
+                                                                                                    + "' provided is out of range for schema type 'long'.");  
             }
             
             resultSeq.add(new XSLong(bigInt));
-        } catch (NumberFormatException ex) {
+        } 
+        catch (NumberFormatException ex) {
             throw new RuntimeException(ex.getMessage());
         }
         

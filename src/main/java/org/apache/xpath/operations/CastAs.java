@@ -38,7 +38,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * @xsl.usage advanced
  */
-public class CastAs extends Operation
+public class CastAs extends XPath3Operator
 {
 
    private static final long serialVersionUID = -4194858144694864568L;

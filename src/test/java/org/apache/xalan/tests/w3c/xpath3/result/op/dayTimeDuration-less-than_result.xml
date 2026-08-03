@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:03Z" fail="4" name="op-dayTimeDuration-less-than" pass="24" run="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-03T10:46:40Z" fail="0" name="op-dayTimeDuration-less-than" pass="28" run="28" statusUnknown="0">
    <testResult status="pass" testName="op-dayTimeDuration-less-than2args-1"/>
    <testResult status="pass" testName="op-dayTimeDuration-less-than2args-2"/>
    <testResult status="pass" testName="op-dayTimeDuration-less-than2args-3"/>
@@ -17,10 +17,10 @@
    <testResult status="pass" testName="op-dayTimeDuration-less-than-8"/>
    <testResult status="pass" testName="op-dayTimeDuration-less-than-9"/>
    <testResult status="pass" testName="op-dayTimeDuration-less-than-10"/>
-   <testResult status="fail" testName="op-dayTimeDuration-less-than-11"/>
-   <testResult status="fail" testName="op-dayTimeDuration-less-than-12"/>
-   <testResult status="fail" testName="op-dayTimeDuration-less-than-13"/>
-   <testResult status="fail" testName="op-dayTimeDuration-less-than-14"/>
+   <testResult status="pass" testName="op-dayTimeDuration-less-than-11"/>
+   <testResult status="pass" testName="op-dayTimeDuration-less-than-12"/>
+   <testResult status="pass" testName="op-dayTimeDuration-less-than-13"/>
+   <testResult status="pass" testName="op-dayTimeDuration-less-than-14"/>
    <testResult status="pass" testName="K-DayTimeDurationLT-1"/>
    <testResult status="pass" testName="K-DayTimeDurationLT-2"/>
    <testResult status="pass" testName="K-DayTimeDurationLT-3"/>

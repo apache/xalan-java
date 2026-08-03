@@ -30,7 +30,7 @@ import xml.xpath31.processor.types.XSNumericType;
  * 
  * @xsl.usage advanced
  */
-public class Pos extends XPath3UnaryOperation
+public class Pos extends XPath3UnaryOperator
 {
 
   private static final long serialVersionUID = 7884742480397069969L;

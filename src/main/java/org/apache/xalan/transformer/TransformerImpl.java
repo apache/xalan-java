@@ -148,7 +148,7 @@ import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.XPath3Operator;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 import org.w3c.dom.Node;
@@ -4866,8 +4866,8 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 				}
 			}
 		} 
-		else if (xpathExpr instanceof Operation) {
-			Operation opnExpr = (Operation)xpathExpr;
+		else if (xpathExpr instanceof XPath3Operator) {
+			XPath3Operator opnExpr = (XPath3Operator)xpathExpr;
 			Expression leftOperand = opnExpr.getLeftOperand();
 			Expression rightOperand = opnExpr.getRightOperand();			
 			checkXslFunctionDeclaration(leftOperand, templList);

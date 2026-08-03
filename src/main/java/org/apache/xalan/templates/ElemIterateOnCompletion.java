@@ -30,8 +30,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Operation;
-import org.apache.xpath.operations.XPath3UnaryOperation;
+import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPath3UnaryOperator;
 import org.xml.sax.SAXException;
 
 /**
@@ -263,8 +263,8 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     		   if (expr instanceof SelfIteratorNoPredicate) {
     			   result = true; 
     		   }
-    		   else if (expr instanceof Operation) {
-    			   Operation opn1 = (Operation)expr;
+    		   else if (expr instanceof XPath3Operator) {
+    			   XPath3Operator opn1 = (XPath3Operator)expr;
     			   Expression lOp = opn1.getLeftOperand();
     			   Expression rOp = opn1.getRightOperand();
     			   result = isXslIterOnCompletionExprAccXPathCtxt(lOp);
@@ -272,8 +272,8 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     				  result = isXslIterOnCompletionExprAccXPathCtxt(rOp); 
     			   }
     		   }
-    		   else if (expr instanceof XPath3UnaryOperation) {
-    			   XPath3UnaryOperation opn1 = (XPath3UnaryOperation)expr;
+    		   else if (expr instanceof XPath3UnaryOperator) {
+    			   XPath3UnaryOperator opn1 = (XPath3UnaryOperator)expr;
     			   Expression rOp = opn1.getExpression();
     			   result = isXslIterOnCompletionExprAccXPathCtxt(rOp);
     		   }

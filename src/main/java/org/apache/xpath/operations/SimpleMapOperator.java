@@ -33,7 +33,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class SimpleMapOperator extends Operation
+public class SimpleMapOperator extends XPath3Operator
 {
     
    private static final long serialVersionUID = -1467842928587523219L;

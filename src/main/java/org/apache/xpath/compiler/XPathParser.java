@@ -324,6 +324,9 @@ public class XPathParser
   
   static XPathSequenceIndexBinaryOp m_sequenceIndexBinaryOp = null;
   
+  static String m_or_expr_lstr = null;
+  static String m_or_expr_rstr = null;
+  
   static String m_union_lstr = null;
   static String m_union_rstr = null;
   
@@ -3820,10 +3823,73 @@ public class XPathParser
   {
 
 	  int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
+	  
+	  String str1 = null;
+	  String str2 = null;
 
-	  if (tokenIs('(') && lookahead(')', 1)) {
-		  consumeExpected('(');    	
-		  parseXPathEmptyLiteralSequence();
+	  if (tokenIs('(')) {
+		  if (lookahead(')', 1)) {
+			  consumeExpected('(');
+			  
+			  parseXPathEmptyLiteralSequence();
+		  }
+		  else if (!m_isXPathPredicateParsingActive) {
+			  TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
+			  
+              StringBuffer strBuff = new StringBuffer();
+              boolean isXPathExprOk = false;
+              
+              while (m_token != null) {
+            	  strBuff.append(m_token + " ");
+            	  str1 = (strBuff.toString()).trim();
+            	  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+            		  isXPathExprOk = true;
+
+            		  consumeExpected(')');
+
+            		  break;
+            	  }
+
+            	  nextToken();
+              }
+              
+              if (isXPathExprOk && tokenIs("or")) {
+            	  consumeExpected("or");
+            	  
+            	  strBuff = new StringBuffer();
+                  isXPathExprOk = false;
+                  
+                  while (m_token != null) {
+                	  strBuff.append(m_token + " ");
+                	  str2 = (strBuff.toString()).trim();
+                	  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+                		  isXPathExprOk = true;
+
+                		  consumeExpected(')');
+
+                		  break;
+                	  }
+
+                	  nextToken();
+                  }
+                  
+                  if (isXPathExprOk) {
+                	  insertOp(opPos, 2, OpCodes.OP_OR);
+                	  
+                	  m_or_expr_lstr = str1;
+                	  m_or_expr_rstr = str2;
+                	  
+                	  m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+                                                                  m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+                  }
+                  else {
+                	  restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
+                  }
+              }
+              else {
+            	  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
+              }
+		  }
 	  }
 
 	  if ((m_token != null) && tokenIs("or"))
@@ -3833,7 +3899,8 @@ public class XPathParser
 		  insertOp(opPos, 2, OpCodes.OP_OR);
 		  
 		  if (tokenIs('(') && lookahead(')', 1)) {
-			  consumeExpected('(');    	
+			  consumeExpected('(');
+			  
 			  parseXPathEmptyLiteralSequence();
 		  }
 		  else {
@@ -3850,7 +3917,8 @@ public class XPathParser
 		  insertOp(opPos, 2, OpCodes.OP_AND);
 		  
 		  if (tokenIs('(') && lookahead(')', 1)) {    	 
-			  consumeExpected('(');    	
+			  consumeExpected('(');
+			  
 			  parseXPathEmptyLiteralSequence();
 		  }
 		  else {
@@ -3891,6 +3959,7 @@ public class XPathParser
 
 	  if (tokenIs('(') && lookahead(')', 1)) {
 		  consumeExpected('(');
+		  
 		  parseXPathEmptyLiteralSequence();
 	  }
 	  else {		  		  

@@ -42,7 +42,7 @@ import xml.xpath31.processor.types.XSString;
 /**
  * An XPath 3.1 operator '!=' evaluator.
  */
-public class NotEquals extends Operation
+public class NotEquals extends XPath3Operator
 {
    static final long serialVersionUID = -7869072863070586900L;
 

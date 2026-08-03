@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:49Z" fail="7" name="op-gYearMonth-equal" pass="33" run="40" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-03T10:47:08Z" fail="3" name="op-gYearMonth-equal" pass="37" run="40" statusUnknown="0">
    <testResult status="pass" testName="op-gYearMonth-equal2args-1"/>
    <testResult status="pass" testName="op-gYearMonth-equal2args-2"/>
    <testResult status="pass" testName="op-gYearMonth-equal2args-3"/>
@@ -19,10 +19,10 @@
    <testResult status="pass" testName="op-gYearMonth-equalNew-8"/>
    <testResult status="pass" testName="op-gYearMonth-equalNew-9"/>
    <testResult status="pass" testName="op-gYearMonth-equalNew-10"/>
-   <testResult status="fail" testName="op-gYearMonth-equalNew-11"/>
-   <testResult status="fail" testName="op-gYearMonth-equalNew-12"/>
-   <testResult status="fail" testName="op-gYearMonth-equalNew-13"/>
-   <testResult status="fail" testName="op-gYearMonth-equalNew-14"/>
+   <testResult status="pass" testName="op-gYearMonth-equalNew-11"/>
+   <testResult status="pass" testName="op-gYearMonth-equalNew-12"/>
+   <testResult status="pass" testName="op-gYearMonth-equalNew-13"/>
+   <testResult status="pass" testName="op-gYearMonth-equalNew-14"/>
    <testResult status="fail" testName="K-gYearMonthEQ-1"/>
    <testResult status="pass" testName="K-gYearMonthEQ-2"/>
    <testResult status="pass" testName="K-gYearMonthEQ-3"/>

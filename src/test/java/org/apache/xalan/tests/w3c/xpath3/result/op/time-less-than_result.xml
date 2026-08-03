@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:49Z" fail="8" name="op-time-less-than" pass="30" run="38" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-03T10:47:08Z" fail="4" name="op-time-less-than" pass="34" run="38" statusUnknown="0">
    <testResult status="pass" testName="op-time-less-than2args-1"/>
    <testResult status="pass" testName="op-time-less-than2args-2"/>
    <testResult status="pass" testName="op-time-less-than2args-3"/>
@@ -19,10 +19,10 @@
    <testResult status="pass" testName="op-time-less-than-8"/>
    <testResult status="pass" testName="op-time-less-than-9"/>
    <testResult status="pass" testName="op-time-less-than-10"/>
-   <testResult status="fail" testName="op-time-less-than-11"/>
-   <testResult status="fail" testName="op-time-less-than-12"/>
-   <testResult status="fail" testName="op-time-less-than-13"/>
-   <testResult status="fail" testName="op-time-less-than-14"/>
+   <testResult status="pass" testName="op-time-less-than-11"/>
+   <testResult status="pass" testName="op-time-less-than-12"/>
+   <testResult status="pass" testName="op-time-less-than-13"/>
+   <testResult status="pass" testName="op-time-less-than-14"/>
    <testResult status="pass" testName="K-TimeLT-1"/>
    <testResult status="pass" testName="K-TimeLT-2"/>
    <testResult status="pass" testName="K-TimeLT-3"/>

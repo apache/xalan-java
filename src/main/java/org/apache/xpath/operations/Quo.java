@@ -27,7 +27,7 @@ import org.apache.xpath.objects.XObject;
  * The 'quo' operation expression executer. (no longer supported by XPath).
  * @deprecated
  */
-public class Quo extends Operation
+public class Quo extends XPath3Operator
 {
     static final long serialVersionUID = 693765299196169905L;
 
