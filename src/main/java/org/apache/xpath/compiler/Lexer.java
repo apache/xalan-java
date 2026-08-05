@@ -43,7 +43,7 @@ class Lexer
    * Class definition, to represent XPath expression parse, 
    * compiler object instance.
    */
-  private Compiler m_compiler;
+  private static Compiler m_compiler;
 
   /**
    * An XML namespace prefix resolver object instance, to map 
@@ -1073,6 +1073,22 @@ class Lexer
 
   public void setIsMatchPattern(boolean isMatchPattern) {
 	  this.m_is_xpath_match_pattern = isMatchPattern; 	
+  }
+  
+  /**
+   * Method definition, to reset an XPath parse op map.
+   * 
+   * @param pat                    An XPath expression string
+   * @param xpathOpMap             An XPathOpMap object instance
+   */
+  public static void resetXPathOpMap(String pat, XPathOpMap xpathOpMap) {
+	 int nChars = pat.length();
+
+ 	 int initTokQueueSize = ((nChars < XPathOpMap.MAXTOKENQUEUESIZE) ? nChars :  XPathOpMap.MAXTOKENQUEUESIZE) * 5;
+ 	 m_compiler.m_opMap = new OpMapVector(initTokQueueSize, XPathOpMap.BLOCKTOKENQUEUESIZE * 5, XPathOpMap.MAPINDEX_LENGTH);
+ 	 
+ 	 xpathOpMap.setOp(0, OpCodes.OP_XPATH);
+ 	 xpathOpMap.setOp(XPathOpMap.MAPINDEX_LENGTH, 2);
   }
   
 }

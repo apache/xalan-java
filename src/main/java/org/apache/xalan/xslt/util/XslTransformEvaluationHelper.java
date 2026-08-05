@@ -1178,6 +1178,34 @@ public class XslTransformEvaluationHelper {
 		
 		return result;
 	}
+	
+	/**
+	 * Method definition, to get an xdm numeric value,
+	 * from the supplied XNumber object instance. 
+	 * 
+	 * @param xNumber                   The supplied XNumber object 
+	 *                                  instance. 
+	 * @return                          An xdm numeric value
+	 */
+	public static XObject getXdmNumericValueFromXNumber(XNumber xNumber) {
+
+		XObject result = null;
+
+		if (xNumber.getXsDecimal() != null) {
+			result = xNumber.getXsDecimal();  
+		}
+		else if (xNumber.getXsDouble() != null) {
+			result = xNumber.getXsDouble(); 
+		}
+		else if (xNumber.getXsInteger() != null) {
+			result = xNumber.getXsInteger(); 
+		}
+		else {
+		    result = xNumber; 
+		}
+
+		return result;
+	}
     
     /**
      * Method definition, to get numerical sum from xdm sequence items.

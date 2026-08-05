@@ -414,7 +414,7 @@ public class Compiler extends XPathOpMap
 
 		  if ((lStr != null) && (rStr != null)) {
 		  	  // This can handle all XPath built-in functions, from
-			  // all XPath 3.1 F&O specified function XML namespace.
+			  // all XPath 3.1 F&O specified function XML namespaces.
 			  
 			  lStr = lStr.replace(" : ", ":");
 			  rStr = rStr.replace(" : ", ":");
@@ -464,6 +464,79 @@ public class Compiler extends XPathOpMap
 			  m_xpath_ignore_compile_err = false;
 			  
 			  result = xpathOp1; 
+		  }
+	  }
+	  else if (xpathOp1 instanceof Equals) {
+		  int leftPos = getFirstChildPos(opPos);
+		  int rightPos = getNextOpPos(leftPos);
+		  
+		  try {
+			 m_xpath_ignore_compile_err = true;		     
+			 
+			 xpathOp1.setLeftRight(compile(leftPos), compile(rightPos));		     
+		     
+		     result = xpathOp1;
+		     
+		     return result;
+		  }
+		  catch (Exception ex) {
+			 // No op
+		  }
+		  		  
+		  Equals equals = (Equals)xpathOp1;
+
+		  String lStr = equals.getXPathOpToLstr();
+		  String rStr = equals.getXPathOpToRstr();
+		  
+		  if ((lStr != null) && (rStr != null)) {			  
+			  // This can handle all XPath built-in functions, from
+			  // all XPath 3.1 F&O specified function XML namespaces.
+			  
+			  lStr = lStr.replace(" : ", ":");
+			  rStr = rStr.replace(" : ", ":");
+			  			  
+			  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
+
+			  lStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(lStr, prefixTable);
+			  rStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(rStr, prefixTable);
+
+			  XPath xpathObj1 = null;
+
+			  try {
+				  xpathObj1 = new XPath(lStr + " to " + rStr, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
+			  }
+			  catch (Exception ex) {
+				  lStr = lStr.replaceAll("\\s*", "");
+				  rStr = rStr.replaceAll("\\s*", "");
+
+				  if (lStr.startsWith("(") && lStr.endsWith(")")) {
+					  lStr = lStr.substring(1, lStr.length() - 1);  
+				  }
+
+				  if (rStr.startsWith("(") && rStr.endsWith(")")) {
+					  rStr = rStr.substring(1, rStr.length() - 1);  
+				  }
+
+				  try {
+					  xpathObj1 = new XPath(lStr + " to " + rStr, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
+				  }
+				  catch (Exception ex2) {
+					  throw new TransformerException(ex2.getMessage()); 
+				  }
+			  }
+			  
+			  xpathOp1.setLeftRight(compile(leftPos), xpathObj1.getExpression());
+
+			  m_xpath_ignore_compile_err = false;
+			  
+			  result = xpathOp1;      
+		  }
+		  else {
+              xpathOp1.setLeftRight(compile(leftPos), compile(rightPos));
+			  
+			  m_xpath_ignore_compile_err = false;
+			  
+			  result = xpathOp1;			
 		  }
 	  }
 	  else {
@@ -518,14 +591,14 @@ public class Compiler extends XPathOpMap
 	     result = compileXPath3Operator(new Or(), opPos);
 	  }
 	  catch (Exception ex) {		 
-		 if ((XPathParser.m_or_expr_lstr != null) && (XPathParser.m_or_expr_rstr != null)) {
-			String str1 = XPathParser.m_or_expr_lstr;
-			String str2 = XPathParser.m_or_expr_rstr;
+		 if ((XPathParser.m_xpath_or_expr_lstr != null) && (XPathParser.m_xpath_or_expr_rstr != null)) {
+			String str1 = XPathParser.m_xpath_or_expr_lstr;
+			String str2 = XPathParser.m_xpath_or_expr_rstr;
 			
 			result = compileXPath3Operator(new Or(str1, str2), opPos);
 			
-			XPathParser.m_or_expr_lstr = null;
-			XPathParser.m_or_expr_rstr = null;
+			XPathParser.m_xpath_or_expr_lstr = null;
+			XPathParser.m_xpath_or_expr_rstr = null;
 		 }
 		 else {
 			throw ex; 
@@ -574,7 +647,8 @@ public class Compiler extends XPathOpMap
    */
   protected Expression equals(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Equals(), opPos);
+    return compileXPath3Operator(new Equals(XPathParser.m_xpath_op_to_lstr, 
+    		                                XPathParser.m_xpath_op_to_rstr), opPos);
   }
   
   /**
@@ -1155,8 +1229,8 @@ public class Compiler extends XPathOpMap
   {
 	  locPathDepth++;
 
-	  String lStr = XPathParser.m_union_lstr;
-	  String rStr = XPathParser.m_union_rstr;
+	  String lStr = XPathParser.m_xpath_union_lstr;
+	  String rStr = XPathParser.m_xpath_union_rstr;
 
 	  if ((lStr != null) && (rStr != null)) {
 		  try {
@@ -1176,8 +1250,8 @@ public class Compiler extends XPathOpMap
 			  if (ex instanceof TransformerException) {    			
 				  String errMesg = ex.getMessage();
 				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath operator '|', or 'union'")) {
-					  XPathParser.m_union_lstr = null;
-					  XPathParser.m_union_rstr = null;
+					  XPathParser.m_xpath_union_lstr = null;
+					  XPathParser.m_xpath_union_rstr = null;
 
 					  throw (TransformerException)ex; 
 				  }
@@ -1201,8 +1275,8 @@ public class Compiler extends XPathOpMap
 			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
 
 			  if (a1 && a2) {
-				  XPathParser.m_union_lstr = null;
-				  XPathParser.m_union_rstr = null;
+				  XPathParser.m_xpath_union_lstr = null;
+				  XPathParser.m_xpath_union_rstr = null;
 
 				  return new XPath3Union(lStr, rStr);
 			  }
@@ -1233,8 +1307,8 @@ public class Compiler extends XPathOpMap
 	  
 	  Expression result = null;
 	  
-	  String lStr = XPathParser.m_intersect_lstr;
-	  String rStr = XPathParser.m_intersect_rstr;
+	  String lStr = XPathParser.m_xpath_intersect_lstr;
+	  String rStr = XPathParser.m_xpath_intersect_rstr;
 	  
 	  if ((lStr != null) && (rStr != null)) {
 		  try {
@@ -1254,8 +1328,8 @@ public class Compiler extends XPathOpMap
 			  if (ex instanceof TransformerException) {    			
 				  String errMesg = ex.getMessage();
 				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath operator 'intersect'")) {
-					  XPathParser.m_intersect_lstr = null;
-					  XPathParser.m_intersect_rstr = null;
+					  XPathParser.m_xpath_intersect_lstr = null;
+					  XPathParser.m_xpath_intersect_rstr = null;
 
 					  throw (TransformerException)ex; 
 				  }
@@ -1278,8 +1352,8 @@ public class Compiler extends XPathOpMap
 			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
 
 			  if (a1 && a2) {
-				  XPathParser.m_intersect_lstr = null;
-				  XPathParser.m_intersect_rstr = null;
+				  XPathParser.m_xpath_intersect_lstr = null;
+				  XPathParser.m_xpath_intersect_rstr = null;
 
 				  return new XPath3Intersect(lStr, rStr);
 			  }
@@ -1311,8 +1385,8 @@ public class Compiler extends XPathOpMap
 	  
 	  Expression result = null;
 	  
-	  String lStr = XPathParser.m_except_lstr;
-	  String rStr = XPathParser.m_except_rstr;
+	  String lStr = XPathParser.m_xpath_except_lstr;
+	  String rStr = XPathParser.m_xpath_except_rstr;
 	  
 	  if ((lStr != null) && (rStr != null)) {
 		  try {
@@ -1332,8 +1406,8 @@ public class Compiler extends XPathOpMap
 			  if (ex instanceof TransformerException) {    			
 				  String errMesg = ex.getMessage();
 				  if ((errMesg != null) && errMesg.startsWith("XPTY0004 : An XPath operator 'except'")) {
-					  XPathParser.m_except_lstr = null;
-					  XPathParser.m_except_rstr = null;
+					  XPathParser.m_xpath_except_lstr = null;
+					  XPathParser.m_xpath_except_rstr = null;
 
 					  throw (TransformerException)ex; 
 				  }
@@ -1356,8 +1430,8 @@ public class Compiler extends XPathOpMap
 			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
 
 			  if (a1 && a2) {
-				  XPathParser.m_except_lstr = null;
-				  XPathParser.m_except_rstr = null;
+				  XPathParser.m_xpath_except_lstr = null;
+				  XPathParser.m_xpath_except_rstr = null;
 
 				  return new XPath3Except(lStr, rStr);
 			  }

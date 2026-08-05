@@ -282,16 +282,21 @@ public class XMLNodeCursorImpl extends NodeCursor
    */
   public XMLString getStringFromNode(int n)
   {
-    // %OPT%
-    // I guess we'll have to get a static instance of the DTM manager...
-    if (DTM.NULL != n)
-    {
-      return m_dtmMgr.getDTM(n).getStringValue(n);
-    }
-    else
-    {
-      return org.apache.xpath.objects.XString.EMPTYSTRING;
-    }
+      // %OPT%
+      // I guess we'll have to get a static instance of the DTM manager...
+	  if (DTM.NULL != n)
+	  {
+		  if (m_dtmMgr != null) {
+			  return m_dtmMgr.getDTM(n).getStringValue(n);
+		  }
+		  else {
+			  return org.apache.xpath.objects.XString.EMPTYSTRING; 
+		  }
+	  }
+	  else
+	  {
+		  return org.apache.xpath.objects.XString.EMPTYSTRING;
+	  }
   }
   
   /**

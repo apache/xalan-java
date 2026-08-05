@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:59Z" fail="55" name="op-to" pass="111" run="166" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-05T16:46:06Z" fail="45" name="op-to" pass="121" run="166" statusUnknown="0">
    <testResult status="pass" testName="rangeExpr-1"/>
    <testResult status="pass" testName="rangeExpr-2"/>
    <testResult status="pass" testName="rangeExpr-3"/>
    <testResult status="pass" testName="rangeExpr-4"/>
-   <testResult status="fail" testName="rangeExpr-5"/>
+   <testResult status="pass" testName="rangeExpr-5"/>
    <testResult status="pass" testName="rangeExpr-6"/>
    <testResult status="pass" testName="rangeExpr-7"/>
    <testResult status="pass" testName="rangeExpr-8"/>
@@ -26,11 +26,11 @@
    <testResult status="pass" testName="rangeExpr-25"/>
    <testResult status="pass" testName="rangeExpr-26"/>
    <testResult status="pass" testName="rangeExpr-27"/>
-   <testResult status="fail" testName="rangeExpr-28"/>
-   <testResult status="fail" testName="rangeExpr-29"/>
-   <testResult status="fail" testName="rangeExpr-30"/>
-   <testResult status="fail" testName="rangeExpr-31"/>
-   <testResult status="fail" testName="rangeExpr-32"/>
+   <testResult status="pass" testName="rangeExpr-28"/>
+   <testResult status="pass" testName="rangeExpr-29"/>
+   <testResult status="pass" testName="rangeExpr-30"/>
+   <testResult status="pass" testName="rangeExpr-31"/>
+   <testResult status="pass" testName="rangeExpr-32"/>
    <testResult status="fail" testName="rangeExpr-33"/>
    <testResult status="fail" testName="rangeExpr-34"/>
    <testResult status="pass" testName="rangeExpr-35"/>
@@ -50,7 +50,7 @@
    <testResult status="pass" testName="K-RangeExpr-7"/>
    <testResult status="pass" testName="K-RangeExpr-8"/>
    <testResult status="pass" testName="K-RangeExpr-9"/>
-   <testResult status="fail" testName="K-RangeExpr-10"/>
+   <testResult status="pass" testName="K-RangeExpr-10"/>
    <testResult status="pass" testName="K-RangeExpr-11"/>
    <testResult status="pass" testName="K-RangeExpr-12"/>
    <testResult status="pass" testName="K-RangeExpr-13"/>
@@ -123,9 +123,9 @@
    <testResult status="fail" testName="RangeExpr-408d"/>
    <testResult status="pass" testName="RangeExpr-408e"/>
    <testResult status="fail" testName="RangeExpr-409"/>
-   <testResult status="fail" testName="RangeExpr-409a"/>
-   <testResult status="fail" testName="RangeExpr-409b"/>
-   <testResult status="fail" testName="RangeExpr-409c"/>
+   <testResult status="pass" testName="RangeExpr-409a"/>
+   <testResult status="pass" testName="RangeExpr-409b"/>
+   <testResult status="pass" testName="RangeExpr-409c"/>
    <testResult status="fail" testName="RangeExpr-409d"/>
    <testResult status="fail" testName="RangeExpr-409e"/>
    <testResult status="fail" testName="RangeExpr-410"/>

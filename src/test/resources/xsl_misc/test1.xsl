@@ -6,20 +6,18 @@
    
    <!-- use with test1.xml -->
    
-   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
-        by reading input data from an XML external source document.
-   
-        This stylesheet example, first sorts an XML input element list using
-        fn:sort function, and then reverses that produced sequence using a 
-        dynamic function call to a function item, which provides us the
-        final resulting information in descending order.
+   <!-- An XSL stylesheet test case, to test XPath 3.1 function 
+        fn:sort, by reading input data from an XML source document.
+        
+        This stylesheet also, uses an XPath 3.1 inline function expression,
+        to reverse an xdm sequence items.
    -->                             
 
    <xsl:output method="xml" indent="yes"/>
    
-   <!-- A variable, defining a function item, that reverses the order of an xdm 
-        input sequence. -->
-   <xsl:variable name="fnReverse" select="function($seq) { for $idx in (-1 * count($seq)) to -1 return $seq[abs($idx)]}"/>
+   <!-- A variable, defining a function item, that reverses 
+        an xdm sequence items. -->
+   <xsl:variable name="fnReverse" select="function($seq) { for $idx in 1 to count($seq) return $seq[count($seq) - $idx + 1]}"/>
    
    <xsl:template match="/document">
       <document>        
@@ -30,9 +28,6 @@
       </document>
    </xsl:template>
    
-   <!-- XSL transformation of XML person element, transforming an XML element 
-        information to attribute. Using a 'mode' attribute allows us to
-        unambiguously select this XSL template during transformation. -->
    <xsl:template match="person" mode="m1">
       <person id="{id}">
          <xsl:copy-of select="name"/>

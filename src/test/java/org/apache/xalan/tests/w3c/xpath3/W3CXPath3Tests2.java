@@ -42,6 +42,7 @@ import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsThreePart1;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsThreePart2;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsTwo;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3QnameEqualTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3RangeExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3ForClauseTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3IfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LetClauseTests;
@@ -69,7 +70,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3OrExprTests.class, XPath3FnMatchesTests.class, XPath3FnReplaceTests.class, XPath3FnTokenizeTests.class, XPath3QnameEqualTests.class,
 	            XPath3FnContainsTests.class, XPath3FnContainsTokenTests.class, XPath3FnXmlInscopePrefixesTests.class,
 	            XPath3FnLowerCaseTests.class, XPath3FnUpperCaseTests.class, XPath3FunctionStringTests.class, XPath3FnStringJoinTests.class,
-	            XPath3XsType2Tests.class })
+	            XPath3XsType2Tests.class, XPath3RangeExprTests.class })
 public class W3CXPath3Tests2 {
 
 }

@@ -39,14 +39,14 @@ public class XPath3OpTestsThreePart1 extends W3CXPath3TestsUtil {
         m_test_set_fileArr = new String[] { "date-equal.xml", "date-greater-than.xml", "date-less-than.xml", "dateTime-equal.xml", "dateTime-greater-than.xml", 
         		                            "dateTime-less-than.xml", "dayTimeDuration-greater-than.xml", "dayTimeDuration-less-than.xml", "divide-dayTimeDuration.xml", 
         		                            "divide-dayTimeDuration-by-dayTimeDuration.xml", "divide-yearMonthDuration.xml", "divide-yearMonthDuration-by-yearMonthDuration.xml",
-        		                            "duration-equal.xml", "multiply-dayTimeDuration.xml", "multiply-yearMonthDuration.xml" };
+        		                            "multiply-dayTimeDuration.xml", "multiply-yearMonthDuration.xml" };
         
         m_resultSubFolderName = "op";
         
         m_test_set_result_fileArr = new String[] { "date-equal_result.xml", "date-greater-than_result.xml", "date-less-than_result.xml", "dateTime-equal_result.xml", "dateTime-greater-than_result.xml", 
                                                    "dateTime-less-than_result.xml", "dayTimeDuration-greater-than_result.xml", "dayTimeDuration-less-than_result.xml", "divide-dayTimeDuration_result.xml", 
                                                    "divide-dayTimeDuration-by-dayTimeDuration_result.xml", "divide-yearMonthDuration_result.xml", "divide-yearMonthDuration-by-yearMonthDuration_result.xml",
-                                                   "duration-equal_result.xml", "multiply-dayTimeDuration_result.xml", "multiply-yearMonthDuration_result.xml" };
+                                                   "multiply-dayTimeDuration_result.xml", "multiply-yearMonthDuration_result.xml" };
     }
 
     @AfterClass

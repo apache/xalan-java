@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-08-03T10:48:59Z" desc="W3C XPath 3.1 test suite results" fail="1314" pass="7821" run="9139" skipped="19" success="85.58%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-08-05T16:57:33Z" desc="W3C XPath 3.1 test suite results" fail="1298" pass="7837" run="9139" skipped="19" success="85.75%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="7" run="7" success="100.0%"/>
     <array-filter fail="0" pass="11" run="11" success="100.0%"/>
@@ -159,7 +159,7 @@
     <op-time-equal fail="1" pass="51" run="52" success="98.08%"/>
     <op-time-greater-than fail="0" pass="38" run="38" success="100.0%"/>
     <op-time-less-than fail="4" pass="34" run="38" success="89.47%"/>
-    <op-to fail="55" pass="111" run="166" success="66.87%"/>
+    <op-to fail="45" pass="121" run="166" success="72.89%"/>
     <op-union fail="2" pass="25" run="27" success="92.59%"/>
     <op-yearMonthDuration-greater-than fail="0" pass="28" run="28" success="100.0%"/>
     <op-yearMonthDuration-less-than fail="0" pass="28" run="28" success="100.0%"/>
@@ -176,12 +176,12 @@
     <prod-AxisStep fail="55" pass="181" run="236" success="76.69%"/>
     <prod-CastableExpr fail="148" pass="700" run="848" success="82.55%"/>
     <prod-ForClause fail="16" pass="58" run="74" success="78.38%"/>
-    <prod-GeneralComp.eq fail="39" pass="80" run="119" success="67.23%"/>
-    <prod-GeneralComp.ge fail="18" pass="40" run="58" success="68.97%"/>
+    <prod-GeneralComp.eq fail="36" pass="83" run="119" success="69.75%"/>
+    <prod-GeneralComp.ge fail="17" pass="41" run="58" success="70.69%"/>
     <prod-GeneralComp.gt fail="17" pass="50" run="67" success="74.63%"/>
     <prod-GeneralComp.le fail="16" pass="41" run="57" success="71.93%"/>
     <prod-GeneralComp.lt fail="20" pass="54" run="74" success="72.97%"/>
-    <prod-GeneralComp.ne fail="35" pass="54" run="89" success="60.67%"/>
+    <prod-GeneralComp.ne fail="33" pass="56" run="89" success="62.92%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
     <prod-InlineFunctionExpr fail="9" pass="17" run="26" success="65.38%"/>
     <prod-InstanceofExpr fail="57" pass="216" run="273" success="79.12%"/>

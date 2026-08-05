@@ -17,6 +17,8 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,8 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
@@ -95,6 +99,137 @@ public class Lte extends XPath3Operator
 		  result = XBoolean.S_FALSE;
 
 		  return result;
+	  }
+	  
+	  BigInteger bigInt1 = null;
+	  BigInteger bigInt2 = null;
+	  
+	  BigDecimal bigDecimal1 = null;
+	  BigDecimal bigDecimal2 = null;
+	  
+	  if ((left instanceof XNumber) && !(right instanceof ResultSequence)) {
+		  XNumber xNumber = (XNumber)left;
+		  
+		  if (xNumber.getXsDecimal() != null) {
+			  left = xNumber.getXsDecimal();
+			  XSDecimal xsDecimal =(XSDecimal)left;
+			  
+			  bigDecimal1 = xsDecimal.getValue(); 
+		  }
+		  else if (xNumber.getXsDouble() != null) {
+			  left = xNumber.getXsDouble();  
+		  }
+		  else if (xNumber.getXsInteger() != null) {			  			  
+			  left = xNumber.getXsInteger();
+			  XSInteger xsInteger =(XSInteger)left;
+			  
+			  bigInt1 = xsInteger.intValue();
+		  }
+		  
+		  if (right instanceof XMLNodeCursorImpl) {
+			  right = right.getFresh();
+			  
+			  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;			  			  
+			  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+			  
+			  int nextNode = DTM.NULL;			  
+			  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+				 XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, m_xctxt); 
+				 java.lang.String str1 = node1.str();
+				 
+				 BigDecimal bigDecimalVal = null;
+				 
+				 try {
+				    bigDecimalVal = new BigDecimal(str1);
+				 }
+				 catch (NumberFormatException ex) {
+					throw new TransformerException("FORG0001 : A string value '" + str1 + "' cannot be converted to double."); 
+				 }
+				 
+				 if (bigInt1 != null) {
+					bigDecimal1 = new BigDecimal(bigInt1);
+				 }
+				 
+				 if (bigDecimal1 != null) {
+					if (bigDecimal1.compareTo(bigDecimalVal) <= 0) {
+					   return XBoolean.S_TRUE;	
+					}					
+				 }
+			  }
+			  
+			  return XBoolean.S_FALSE;
+		  }
+	  }
+	  
+	  if ((right instanceof XNumber) && !(left instanceof ResultSequence)) {
+		  XNumber xNumber = (XNumber)right;
+		  
+		  if (xNumber.getXsDecimal() != null) {
+			  right = xNumber.getXsDecimal();
+			  XSDecimal xsDecimal =(XSDecimal)right;
+			  
+			  bigDecimal2 = xsDecimal.getValue(); 
+		  }
+		  else if (xNumber.getXsDouble() != null) {
+			  right = xNumber.getXsDouble();  
+		  }
+		  else if (xNumber.getXsInteger() != null) {
+			  right = xNumber.getXsInteger();
+			  XSInteger xsInteger =(XSInteger)right;
+			  
+			  bigInt2 = xsInteger.intValue();  
+		  }
+		  
+		  if (left instanceof XMLNodeCursorImpl) {
+			  left = left.getFresh();
+			  
+			  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;			  			  
+			  DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+			  
+			  int nextNode = DTM.NULL;
+			  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+				 XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, m_xctxt); 
+				 java.lang.String str1 = node1.str();
+				 
+				 BigDecimal bigDecimalVal = null;
+				 
+				 try {
+				    bigDecimalVal = new BigDecimal(str1);
+				 }
+				 catch (NumberFormatException ex) {
+					throw new TransformerException("FORG0001 : A string value '" + str1 + "' cannot be converted to double."); 
+				 }
+				 
+				 if (bigInt2 != null) {
+					bigDecimal2 = new BigDecimal(bigInt2);
+				 }
+				 
+				 if (bigDecimal2 != null) {
+					if (bigDecimalVal.compareTo(bigDecimal2) <= 0) {
+					   return XBoolean.S_TRUE;	
+					}					
+				 }
+			  }
+			  
+			  return XBoolean.S_FALSE;
+		  }
+	  }
+	  
+	  if ((bigInt1 != null) && (bigInt2 != null)) {
+		  if (bigInt1.compareTo(bigInt2) <= 0) {
+			  return XBoolean.S_TRUE; 
+		  }
+		  else {
+			  return XBoolean.S_FALSE;
+		  }
+	  }
+	  else if ((bigDecimal1 != null) && (bigDecimal2 != null)) {
+		  if (bigDecimal1.compareTo(bigDecimal2) <= 0) {
+			  return XBoolean.S_TRUE; 
+		  }
+		  else {
+			  return XBoolean.S_FALSE;
+		  }
 	  }
 	  
 	  XObject lObj = null;

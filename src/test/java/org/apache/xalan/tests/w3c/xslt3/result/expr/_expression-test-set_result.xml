@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:35Z" fail="12" name="expression" pass="88" run="100" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-05T16:59:52Z" fail="11" name="expression" pass="89" run="100" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="expression-0101"/>
    <testResult status="pass" testName="expression-0301"/>
    <testResult status="pass" testName="expression-0302"/>
@@ -14,7 +14,11 @@
    <testResult status="pass" testName="expression-0801"/>
    <testResult status="fail" testName="expression-0802"/>
    <testResult status="pass" testName="expression-0803"/>
-   <testResult status="fail" testName="expression-0804"/>
+   <testResult status="fail" testName="expression-0804">
+      <outResult>
+         <errTrace>java.lang.NullPointerException</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="expression-0901"/>
    <testResult reason="Xalan configured" status="skipped" testName="expression-0902"/>
    <testResult status="pass" testName="expression-0903"/>
@@ -46,11 +50,7 @@
    <testResult status="pass" testName="expression-0929"/>
    <testResult status="pass" testName="expression-0930"/>
    <testResult status="fail" testName="expression-0931">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}nilled()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="expression-0932">
       <outResult>
@@ -72,11 +72,7 @@
    <testResult status="pass" testName="expression-1401"/>
    <testResult status="pass" testName="expression-1501"/>
    <testResult status="fail" testName="expression-1601">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}escape-html-uri()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="expression-1701"/>
    <testResult status="pass" testName="expression-1702"/>
@@ -121,9 +117,7 @@
    <testResult status="pass" testName="expression-4210"/>
    <testResult status="pass" testName="expression-4301"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="expression-4302"/>
-   <testResult status="fail" testName="expression-4303">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;span&gt;false&lt;/span&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="expression-4303"/>
    <testResult status="pass" testName="expression-4401"/>
    <testResult status="fail" testName="expression-4402"/>
 </testrun>

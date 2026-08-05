@@ -156,6 +156,8 @@ public class XPATHErrorResources extends ListResourceBundle
   
   public static final String ER_UNEXPECTED_TOKEN = "ER_UNEXPECTED_TOKEN";
   
+  public static final String ER_UNEXPECTED_TOKEN_1 = "ER_UNEXPECTED_TOKEN_1";
+  
   public static final String ER_INCORRECT_PROGRAMMER_ASSERTION = 
 	 "ER_INCORRECT_PROGRAMMER_ASSERTION";
   public static final String ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL = 
@@ -548,6 +550,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_UNEXPECTED_TOKEN,
      "XPST0003 : Unexpected token ''{0}'' after ''{1}''."},
+  
+  { ER_UNEXPECTED_TOKEN_1,
+     "XPST0003 : Unexpected token ''{0}''."},
 
   { ER_INCORRECT_PROGRAMMER_ASSERTION,
       "Programmer assertion is incorrect, {0}"},

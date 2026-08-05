@@ -11,7 +11,7 @@
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="fnReverse" select="function($seq) { for $idx in (-1 * count($seq)) to -1 return $seq[abs($idx)]}"/>
+   <xsl:variable name="fnReverse" select="function($seq) { for $idx in 1 to count($seq) return $seq[count($seq) - $idx + 1]}"/>
    
    <xsl:template match="/">
       <result>

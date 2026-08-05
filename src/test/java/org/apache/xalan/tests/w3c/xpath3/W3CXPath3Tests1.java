@@ -35,6 +35,7 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnSumTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3ExceptTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3IntersectTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3UnionTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3XsDurationEqualTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3ArrowPostfixTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepAbbrTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisTestCollection;
@@ -63,7 +64,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3GeneralCompTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
 	            XPath3FnSumTests.class, XPath3FunctionArrayAppendTests.class, XPath3FunctionArraySizeTests.class, XPath3FunctionArrayFilterTests.class,
 	            XPath3FunctionArrayFoldLeftTests.class, XPath3FunctionArrayFoldRightTests.class, XPath3FunctionArrayForeachTests.class,
-	            XPath3FunctionArrayGetTests.class, XPath3FunctionArrayHeadTests.class  })
+	            XPath3FunctionArrayGetTests.class, XPath3FunctionArrayHeadTests.class, XPath3XsDurationEqualTests.class })
 public class W3CXPath3Tests1 {
 	
 

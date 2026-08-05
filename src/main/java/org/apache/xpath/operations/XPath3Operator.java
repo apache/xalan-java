@@ -38,6 +38,8 @@ import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
@@ -136,6 +138,34 @@ public class XPath3Operator extends Expression implements ExpressionOwner
     m_xctxt = xctxt; 
     
     XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
+    
+    if (this instanceof Equals) {
+    	if ((m_left instanceof XNumber) && (m_right instanceof Range)) {
+    		XNumber xNumber = (XNumber)m_left;
+    		
+    		Range range = (Range)m_right;
+    		Expression lOp = range.getLeftOperand();
+    		Expression rOp = range.getRightOperand();
+    		
+    		XObject xObj1 = lOp.execute(xctxt);
+    		XObject xObj2 = rOp.execute(xctxt);
+    		
+    		Gte gte = new Gte();
+    		gte.setLeftRight(xNumber, xObj1);
+    		XObject result1 = gte.execute(xctxt);
+    		
+    		Lte lte = new Lte();
+    		lte.setLeftRight(xNumber, xObj2);
+    		XObject result2 = lte.execute(xctxt);
+    		
+    		if (result1.bool() && result2.bool()) {
+    			return XBoolean.S_TRUE;
+    		}
+    		else {
+    			return XBoolean.S_FALSE;
+    		}
+    	}
+    }
     
     if (m_left instanceof XSL3ConstructorOrExtensionFunction) {
     	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_left;

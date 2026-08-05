@@ -23,25 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 operator tests.
+ * for XPath 3.1 XML Schema duration equal tests.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3OpTestsTwo extends W3CXPath3TestsUtil {
+public class XPath3XsDurationEqualTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "op/duration-equal.xml";
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "op/";
-    	
-        m_test_set_fileArr = new String[] { "boolean-equal.xml", "boolean-greater-than.xml", "boolean-less-than.xml", "concat.xml" };
-        
         m_resultSubFolderName = "op";
-        
-        m_test_set_result_fileArr = new String[] { "boolean-equal_result.xml", "boolean-greater-than_result.xml", "boolean-less-than_result.xml", 
-        		                                   "concat_result.xml" };
+    	
+    	m_testResultFileName = "duration-equal_result.xml";
     }
 
     @AfterClass
@@ -53,8 +49,8 @@ public class XPath3OpTestsTwo extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslOpTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslXsDurationEqualTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

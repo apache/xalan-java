@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-22T16:58:13Z" fail="16" name="key" pass="83" run="99" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-05T17:00:05Z" fail="15" name="key" pass="84" run="99" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002"/>
    <testResult status="pass" testName="key-003"/>
@@ -104,21 +104,15 @@ java.lang.Exception: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: k
    <testResult status="pass" testName="key-085b"/>
    <testResult status="pass" testName="key-086"/>
    <testResult status="fail" testName="key-087"/>
-   <testResult status="fail" testName="key-088">
-      <outResult>
-         <errTrace>Found ',' but no preceding argument!</errTrace>
-         <errTrace>org.xml.sax.SAXException: Line# : 25, Column# : 67 XPST0003 : A location path was expected, but the following token was encountered ,.
-java.lang.Exception: Line# : 25, Column# : 67 XPST0003 : A location path was expected, but the following token was encountered ,.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="key-088"/>
    <testResult status="pass" testName="key-089"/>
    <testResult status="fail" testName="key-090"/>
    <testResult status="pass" testName="key-091"/>
    <testResult status="pass" testName="key-092"/>
    <testResult status="fail" testName="key-093">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 18, Column# : 126 XPST0003: Expected ), but found: ,
-java.lang.Exception: Line# : 18, Column# : 126 XPST0003: Expected ), but found: ,</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 18, Column# : 126 XPST0003: Expected ], but found: )
+java.lang.Exception: Line# : 18, Column# : 126 XPST0003: Expected ], but found: )</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-094"/>
@@ -126,8 +120,8 @@ java.lang.Exception: Line# : 18, Column# : 126 XPST0003: Expected ), but found: 
    <testResult status="pass" testName="key-096"/>
    <testResult status="fail" testName="key-097">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 22, Column# : 165 XPST0003: Expected ), but found: ,
-java.lang.Exception: Line# : 22, Column# : 165 XPST0003: Expected ), but found: ,</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 22, Column# : 165 XPST0003: Expected ], but found: )
+java.lang.Exception: Line# : 22, Column# : 165 XPST0003: Expected ], but found: )</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="key-098"/>
