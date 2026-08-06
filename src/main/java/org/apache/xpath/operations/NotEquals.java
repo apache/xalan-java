@@ -52,16 +52,19 @@ public class NotEquals extends XPath3Operator
 {
    static final long serialVersionUID = -7869072863070586900L;
 
-  /**
-   * Apply the operation to two operands, and return the result.
-   *
-   * @param left non-null reference to the evaluated left operand
-   * @param right non-null reference to the evaluated right operand
-   *
-   * @return non-null reference to the XObject that represents the result of the operation
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
+   /**
+    * Apply an XPath operator to its two operands, and return the result.
+    *
+    * @param left  non-null reference to an XPath operator's evaluated 
+    *              first operand.              
+    * @param right non-null reference to an XPath operator's evaluated 
+    *              second operand.
+    *
+    * @return non-null reference to an XObject object instance, that 
+    *         represents the result of XPath operator evaluation. 
+    *
+    * @throws javax.xml.transform.TransformerException
+    */
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
   {	  

@@ -138,7 +138,7 @@ public class XPathExprFunctionCallSuffix extends Expression {
     				}
     			}
     			else if (!isXPathLhsExprMutated && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr))) {    				
-    				XPathTextAndNodeExpr xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
+    				XPathBuiltInNodeKindExpr xpathTextAndNodeExpr = new XPathBuiltInNodeKindExpr();    		      		  
     				xpathTextAndNodeExpr.setNodeStr(xpathRhsStr);    		  
     				if (xpathLhsStr.length() > 0) {
     					xpathTextAndNodeExpr.setXpathPrefixStr(xpathLhsStr);

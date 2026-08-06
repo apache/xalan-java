@@ -350,7 +350,7 @@ public class Compiler extends XPathOpMap
       expr = xpath3ExpressionSingleComparison(opPos); break;
     case OpCodes.XPath3OpCodes.OP_FUNC_ARG_PLACEHOLDER :
       expr = funcArgumentPlaceholder(opPos); break;
-    case OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR:
+    case OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR:
       expr = xpathTextAndNodeExpr(opPos); break;
     case OpCodes.XPath3OpCodes.OP_SEQ_BINARY_EXPR:
       expr = seqBinaryExpr(opPos); break;
@@ -2291,7 +2291,7 @@ private static final boolean DEBUG = false;
    * Compile XPath text and node, expression.
    */
   Expression xpathTextAndNodeExpr(int opPos) throws TransformerException {
-	  return XPathParser.m_xpathTextAndNodeExpr;
+	  return XPathParser.m_xpathBuiltInNodeKindExpr;
   }
   
   /**

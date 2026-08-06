@@ -51,12 +51,15 @@ public class Gte extends XPath3Operator
   static final long serialVersionUID = 9142945909906680220L;
 
   /**
-   * Apply the operation to two operands, and return the result.
+   * Apply an XPath operator to its two operands, and return the result.
    *
-   * @param left non-null reference to the evaluated left operand
-   * @param right non-null reference to the evaluated right operand
+   * @param left  non-null reference to an XPath operator's evaluated 
+   *              first operand.              
+   * @param right non-null reference to an XPath operator's evaluated 
+   *              second operand.
    *
-   * @return non-null reference to the XObject that represents the result of the operation
+   * @return non-null reference to an XObject object instance, that 
+   *         represents the result of XPath operator evaluation. 
    *
    * @throws javax.xml.transform.TransformerException
    */

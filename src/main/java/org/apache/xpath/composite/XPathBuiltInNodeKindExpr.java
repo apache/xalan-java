@@ -37,7 +37,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Method definition, to support XPath parse of expressions like
+ * Method definition, to support XPath parse for expressions like
  * /info/text()[. = 'there']/following-sibling::* etc. These are
  * introduced with XPath 2.0+
  * 
@@ -45,7 +45,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class XPathTextAndNodeExpr extends Expression {
+public class XPathBuiltInNodeKindExpr extends Expression {
 	
 	private static final long serialVersionUID = 410225432741175797L;
 
@@ -56,8 +56,8 @@ public class XPathTextAndNodeExpr extends Expression {
 	private String m_xpathPrefixStr = null;
 	
 	/**
-	 * Run-time non null string value, that is either text() 
-	 * or node().
+	 * Run-time non-null string value, that is either text() 
+	 * node(), comment().
 	 */
 	private String m_nodeStr = null;
 	
@@ -101,7 +101,8 @@ public class XPathTextAndNodeExpr extends Expression {
 		if ((m_xpathPrefixStr == null) && (m_xpathPredicateValStr == null) 
 				                                                 && (m_xpathSuffixValStr == null)) {
 			xpathObj = new XPath(m_nodeStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-		    if (m_vars != null) {
+		    
+			if (m_vars != null) {
 				xpathObj.fixupVariables(m_vars, m_globals_size);
 			}
 		    
@@ -144,6 +145,7 @@ public class XPathTextAndNodeExpr extends Expression {
 		for (int idx = 0; idx < nodeSetLength; idx++) {
 			int localContextNode = (nodeHandleSeq.get(idx)).intValue();
 			xpathObj = new XPath(m_nodeStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			
 			if (m_vars != null) {
 				xpathObj.fixupVariables(m_vars, m_globals_size);
 			}
@@ -179,6 +181,7 @@ public class XPathTextAndNodeExpr extends Expression {
 		   }
 		   
 		   int nodeCount = rSeq.size();
+		   
 		   if (predicateIntVal != null) {
 			  if (!((predicateIntVal.intValue() < 1) || (predicateIntVal.intValue() > nodeCount))) {
 				 XObject xObj = rSeq.item(predicateIntVal - 1);
@@ -193,6 +196,7 @@ public class XPathTextAndNodeExpr extends Expression {
 				   XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)(rSeq.item(idx));
 				   int contextNode1 = (nodeRef.iter()).nextNode();
 				   xpathObj = new XPath(m_xpathPredicateValStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				   
 				   if (m_vars != null) {
 					   xpathObj.fixupVariables(m_vars, m_globals_size);
 				   }
@@ -212,11 +216,13 @@ public class XPathTextAndNodeExpr extends Expression {
 				   XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)(rSeq2.item(idx));
 				   int contextNode1 = (nodeRef.iter()).nextNode();
 				   xpathObj = new XPath(m_xpathSuffixValStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				   
 				   if (m_vars != null) {
 					   xpathObj.fixupVariables(m_vars, m_globals_size);
 				   }
 
 				   xObjResult = xpathObj.execute(xctxt, contextNode1, xctxt.getNamespaceContext());
+				   
 				   if (xObjResult instanceof XMLNodeCursorImpl) {
 					   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;					   
 					   DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iter();

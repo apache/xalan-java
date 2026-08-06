@@ -59,7 +59,7 @@ import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
-import org.apache.xpath.composite.XPathTextAndNodeExpr;
+import org.apache.xpath.composite.XPathBuiltInNodeKindExpr;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
@@ -920,8 +920,8 @@ public class ElemVariable extends ElemTemplateElement
         	   ((XString)var).setXrTreeFragSelectWrapperResult(true);
         	}
         }
-        else if (selectExpression instanceof XPathTextAndNodeExpr) {
-        	var = ((XPathTextAndNodeExpr)selectExpression).execute(xctxt);
+        else if (selectExpression instanceof XPathBuiltInNodeKindExpr) {
+        	var = ((XPathBuiltInNodeKindExpr)selectExpression).execute(xctxt);
         }
   
         if (var == null) {        	        	

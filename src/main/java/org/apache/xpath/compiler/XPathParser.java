@@ -89,6 +89,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.composite.XPathArrayComparison;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathBuiltInNodeKindExpr;
 import org.apache.xpath.composite.XPathContextItemWithPredicate;
 import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathExprFunctionCallSuffix;
@@ -113,7 +114,6 @@ import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.composite.XPathTextAndNodeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.Function;
@@ -316,7 +316,7 @@ public class XPathParser
   
   static List<FuncArgPlaceholder> m_funcArgPlaceHolderList = new ArrayList<FuncArgPlaceholder>();
   
-  static XPathTextAndNodeExpr m_xpathTextAndNodeExpr = null;
+  static XPathBuiltInNodeKindExpr m_xpathBuiltInNodeKindExpr = null;
   
   static XPathFunctionCall2 m_xpathFunctionCall2 = null;
   
@@ -928,7 +928,30 @@ public class XPathParser
 
     if ((relative > 0) && (relative < m_ops.getTokenQueueSize()))
     {
-      tok = (String) m_ops.m_tokenQueue.elementAt(relative);
+    	Object token = m_ops.m_tokenQueue.elementAt(relative);
+
+    	if (!(token instanceof XNumber)) {
+    		tok = (String)token;
+    	}
+    	else {
+    		XNumber xNumber = (XNumber)token;
+
+    		if (xNumber.getXsDecimal() != null) {
+    			XSDecimal xsDecimal = xNumber.getXsDecimal();
+    			tok = xsDecimal.stringValue(); 
+    		}
+    		else if (xNumber.getXsDouble() != null) {
+    			XSDouble xsDouble = xNumber.getXsDouble();
+    			tok = xsDouble.stringValue();
+    		}
+    		else if (xNumber.getXsInteger() != null) {
+    			XSInteger xsInteger = xNumber.getXsInteger();
+    			tok = xsInteger.stringValue();
+    		}
+    		else {
+    			tok = xNumber.num() + "";  
+    		}
+    	}
     }
     else
     {
@@ -4173,6 +4196,7 @@ public class XPathParser
       }
       else if (tokenIs('='))
       {        
+    	  
     	  if (lookahead("to", 2)) {    		 
     		 ObjectVector tokenQueue = m_ops.getTokenQueue();
     		 
@@ -4234,7 +4258,7 @@ public class XPathParser
   }
 
   /**
-   * .
+   * 
    * @returns an Object which is either a String, a Number, a Boolean, or a vector
    * of nodes.
    *
@@ -4450,6 +4474,13 @@ public class XPathParser
         	  parseXPathEmptyLiteralSequence();
           }
           else {
+        	  // $to (variable reference), @to (XML attribute reference) 
+        	  // are valid XPath expressions.
+        	  
+        	  if (!(tokenIs('$') || tokenIs('@')) && lookahead("to", 1)) {
+        		 error(XPATHErrorResources.ER_UNEXPECTED_TOKEN, new Object[]{ "to", m_token });
+        	  }
+        	  
         	  insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_TO);
 
         	  int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -5527,14 +5558,14 @@ public class XPathParser
       matchFound = true;
          
     }
-    else if ((tokenIs("text") || tokenIs("node")) && lookahead('(', 1) && 
-    		                                                       lookahead(')', 2) && lookahead('[', 3)) {
+    else if (((tokenIs("text") || tokenIs("node") || tokenIs("comment")) 
+    		                                                         && lookahead('(', 1) && lookahead(')', 2) && lookahead('[', 3))) {
     	// XPath parse for expression string like text()[..],
     	// text()[..]/abc, or node() pattern equivalents.
     	
-    	appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
+    	appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR);
         
-        m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
+        m_xpathBuiltInNodeKindExpr = new XPathBuiltInNodeKindExpr();
         
         String nodeStr = null;
         if (tokenIs("text")) {
@@ -5545,8 +5576,12 @@ public class XPathParser
            nodeStr = "node()";
            consumeExpected("node");
         }
+        else if (tokenIs("comment")) {
+           nodeStr = "comment()";
+           consumeExpected("comment");
+        }
         
-        m_xpathTextAndNodeExpr.setNodeStr(nodeStr);
+        m_xpathBuiltInNodeKindExpr.setNodeStr(nodeStr);
     	
     	consumeExpected('(');
     	consumeExpected(')');
@@ -5566,7 +5601,7 @@ public class XPathParser
     	
     	String xpathPredicateValStr = (strBuff.toString()).trim();
     	if (xpathPredicateValStr.length() > 0) {
-    	   m_xpathTextAndNodeExpr.setXpathPredicateValStr(xpathPredicateValStr);
+    	   m_xpathBuiltInNodeKindExpr.setXpathPredicateValStr(xpathPredicateValStr);
     	}
     	
     	strBuff = new StringBuffer(); 
@@ -5584,7 +5619,7 @@ public class XPathParser
     	
     	String xpathSuffixValStr = (strBuff.toString()).trim();
     	if (xpathSuffixValStr.length() > 0) {
-    	   m_xpathTextAndNodeExpr.setXpathSuffixValStr(xpathSuffixValStr);
+    	   m_xpathBuiltInNodeKindExpr.setXpathSuffixValStr(xpathSuffixValStr);
     	}
         
         m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
@@ -6249,18 +6284,16 @@ public class XPathParser
     else if (tokenIs("if") || tokenIs("some") || tokenIs("every") || tokenIs("let") || tokenIs("for")) {
        ExprSingle();
     }
-    else if (isTextAndNodeExpr()) {
+    else if (isXPathBuiltInNodeKindExpr()) {
     	// XPath parse for expression string like text()[..],
     	// text()[..]/abc, or node() pattern equivalents.
-
-    	//appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
     	
     	TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 
-    	m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
+    	m_xpathBuiltInNodeKindExpr = new XPathBuiltInNodeKindExpr();
     	
     	String xpathPrefixStr = m_token; 
-    	m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathPrefixStr);
+    	m_xpathBuiltInNodeKindExpr.setXpathPrefixStr(xpathPrefixStr);
 
     	nextToken();
     	consumeExpected('/');
@@ -6274,18 +6307,20 @@ public class XPathParser
     		nodeStr = "node()";    		
     		consumeExpected("node");
     	}
+    	else if (tokenIs("comment")) {
+    		nodeStr = "comment()";    		
+    		consumeExpected("comment");
+    	}
 
-    	m_xpathTextAndNodeExpr.setNodeStr(nodeStr);
+    	m_xpathBuiltInNodeKindExpr.setNodeStr(nodeStr);
 
     	if (tokenIs('(')) {
     		consumeExpected('(');
     		consumeExpected(')');
     		
-    		appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR);
     		
-    		if (tokenIs('[')) {
-    			//appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
-    			
+    		if (tokenIs('[')) {    			
     			consumeExpected('[');
 
     			StringBuffer strBuff = new StringBuffer();
@@ -6303,7 +6338,7 @@ public class XPathParser
     			String xpathPredicateValStr = (strBuff.toString()).trim();
 
     			if (xpathPredicateValStr.length() > 0) {
-    				m_xpathTextAndNodeExpr.setXpathPredicateValStr(xpathPredicateValStr);
+    				m_xpathBuiltInNodeKindExpr.setXpathPredicateValStr(xpathPredicateValStr);
     			}
 
     			strBuff = new StringBuffer();
@@ -6331,12 +6366,12 @@ public class XPathParser
     			String xpathSuffixValStr = (strBuff.toString()).trim();
 
     			if (xpathSuffixValStr.length() > 0) {
-    				m_xpathTextAndNodeExpr.setXpathSuffixValStr(xpathSuffixValStr);
+    				m_xpathBuiltInNodeKindExpr.setXpathSuffixValStr(xpathSuffixValStr);
     			}    			    			
     		}    		
     	}
     	else {
-    		m_xpathTextAndNodeExpr = null;
+    		m_xpathBuiltInNodeKindExpr = null;
     		
     		restoreTokenQueueXPathParsePos(prevTokenQueuePos);
     		
@@ -6410,13 +6445,14 @@ public class XPathParser
               
     		  Expr(); 
     	  }
-    	  else if (isXPathBuiltInFunctionCall(xpathLhsStr) && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr))) {
-    		  appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
+    	  else if (isXPathBuiltInFunctionCall(xpathLhsStr) && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr) 
+    			                                                                            || "comment()".equals(xpathRhsStr))) {
+    		  appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR);
 
-    		  m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
-    		  m_xpathTextAndNodeExpr.setNodeStr(xpathRhsStr);    		  
+    		  m_xpathBuiltInNodeKindExpr = new XPathBuiltInNodeKindExpr();    		      		  
+    		  m_xpathBuiltInNodeKindExpr.setNodeStr(xpathRhsStr);    		  
     		  if (xpathLhsStr.length() > 0) {
-    			  m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathLhsStr);
+    			  m_xpathBuiltInNodeKindExpr.setXpathPrefixStr(xpathLhsStr);
     		  } 
     	  }
     	  else if (!isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {
@@ -6434,14 +6470,15 @@ public class XPathParser
        else {
     	   restoreTokenQueueXPathParsePos(prevTokenQueuePos);
     	   
-    	   if ((tokenIs("text") || tokenIs("node")) && lookahead('(', 1) && 
-    			   														lookahead(')', 2) && lookahead(')', 3)) {
-    		   appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);    		       		   
+    	   if ((tokenIs("text") || tokenIs("node") || tokenIs("comment")) 
+    			                                                       && lookahead('(', 1) && lookahead(')', 2) && lookahead(')', 3)) {
+    		   appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR);    		       		   
 
-    		   m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();    		      		  
-    		   m_xpathTextAndNodeExpr.setNodeStr(m_token + "(" + ")");
+    		   m_xpathBuiltInNodeKindExpr = new XPathBuiltInNodeKindExpr();    		      		  
+    		   m_xpathBuiltInNodeKindExpr.setNodeStr(m_token + "(" + ")");
 
     		   nextToken();
+    		   
     		   consumeExpected('(');
     		   consumeExpected(')');
     	   }
@@ -6735,13 +6772,13 @@ public class XPathParser
 
 	  int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
 	  
-	  if (isTextAndNodeExpr()) {		  		  
+	  if (isXPathBuiltInNodeKindExpr()) {		  		  
 		  // XPath parse for expression string like text()[..],
 		  // text()[..]/abc, or node() pattern equivalents.
 		  
 		  TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 		  
-		  m_xpathTextAndNodeExpr = new XPathTextAndNodeExpr();
+		  m_xpathBuiltInNodeKindExpr = new XPathBuiltInNodeKindExpr();
 		  
 		  ObjectVector tokenQueue = m_ops.m_tokenQueue;		  		  
 		  String str1 = (String)(tokenQueue.elementAt(m_queueMark - 1));
@@ -6751,7 +6788,7 @@ public class XPathParser
 		  }
 		  
 		  String xpathPrefixStr = (str2 != null) ? (str2 + str1) : str1;
-		  m_xpathTextAndNodeExpr.setXpathPrefixStr(xpathPrefixStr);
+		  m_xpathBuiltInNodeKindExpr.setXpathPrefixStr(xpathPrefixStr);
 		  
 		  nextToken();
 		  consumeExpected('/');
@@ -6765,14 +6802,18 @@ public class XPathParser
 			  nodeStr = "node()";
 			  consumeExpected("node");
 		  }
+		  else if (tokenIs("comment")) {
+			  nodeStr = "comment()";
+			  consumeExpected("comment");
+		  }
 
-		  m_xpathTextAndNodeExpr.setNodeStr(nodeStr);
+		  m_xpathBuiltInNodeKindExpr.setNodeStr(nodeStr);
 
 		  if (tokenIs('(')) {
 			  consumeExpected('(');
 			  consumeExpected(')');
 			  
-			  appendOp(2, OpCodes.XPath3OpCodes.OP_TEXT_AND_NODE_EXPR);
+			  appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR);
 			  
 			  if (tokenIs('[')) {				  
 				  consumeExpected('[');
@@ -6791,7 +6832,7 @@ public class XPathParser
 
 				  String xpathPredicateValStr = (strBuff.toString()).trim();
 				  if (xpathPredicateValStr.length() > 0) {
-					  m_xpathTextAndNodeExpr.setXpathPredicateValStr(xpathPredicateValStr);
+					  m_xpathBuiltInNodeKindExpr.setXpathPredicateValStr(xpathPredicateValStr);
 				  }
 
 				  strBuff = new StringBuffer();
@@ -6809,7 +6850,7 @@ public class XPathParser
 
 				  String xpathSuffixValStr = (strBuff.toString()).trim();
 				  if (xpathSuffixValStr.length() > 0) {
-					  m_xpathTextAndNodeExpr.setXpathSuffixValStr(xpathSuffixValStr);
+					  m_xpathBuiltInNodeKindExpr.setXpathSuffixValStr(xpathSuffixValStr);
 				  }
 			  }
 			  
@@ -6819,7 +6860,7 @@ public class XPathParser
               return;
 		  }
 		  else {
-			  m_xpathTextAndNodeExpr = null;
+			  m_xpathBuiltInNodeKindExpr = null;
 			  
 			  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
 		  }		  
@@ -8609,12 +8650,10 @@ public class XPathParser
 		   }
 		   
 		   xpathSequenceTypeExpr.setXsSequenceTypeDefinition(xsTypeDefinition);
-
-		   // TO DO
-		   // handle XPath sequence type occurrence indicator
 	   }
 	   else {
 		   String typeExpandedName = (typeNamespace == null) ? typeName : "{" + typeNamespace + "}:" + typeName;   
+		   
 		   throw new javax.xml.transform.TransformerException("FODC0005 : The schema built via xs:import-schema instruction doesn't "
 		   		                                                             + "contain a type definition with expanded name " + 
 				                                                                 typeExpandedName + ".", m_sourceLocator);							
@@ -10172,18 +10211,20 @@ public class XPathParser
      * 
      * @return							Boolean value true or false
      */
-    private boolean isTextAndNodeExpr() {
+    private boolean isXPathBuiltInNodeKindExpr() {
   	  
     	boolean result = false;
 
     	if (tokenIs('/')) {    		
-    		if (lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3))) {
+    		if (lookahead('/', 2) && (lookahead("text", 3) || lookahead("node", 3) 
+    				                                       || lookahead("comment", 3))) {
     			nextToken();
     			
     			result = true;
     		}
     	}
-    	else if (lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2))) {    		
+    	else if (lookahead('/', 1) && (lookahead("text", 2) || lookahead("node", 2) 
+    			                                            || lookahead("comment", 2))) {    		
     		result = true;		  		  
     	}
 

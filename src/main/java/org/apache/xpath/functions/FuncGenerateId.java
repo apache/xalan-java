@@ -97,10 +97,15 @@ public class FuncGenerateId extends FunctionDef1Arg
 			   if (rSeq.size() == 1) {
 				  xObj0 = rSeq.item(0);				  
 			   }
+			   else if (rSeq.size() == 0) {
+				  result = new XSString("");
+				  
+				  return result;
+			   }
 			   else {
-				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument "
-                                                                                                           + "is an xdm sequence whose size "
-                                                                                                           + "is not one.", srcLocator); 
+				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is "
+				  		                                                                          + "an xdm sequence with size "
+				  		                                                                          + "greater than one.", srcLocator); 
 			   }
 			   
 			   if (xObj0 instanceof XMLNodeCursorImpl) {
