@@ -10,6 +10,9 @@ import java.util.TimeZone;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.datetime.FuncAdjustTimeToTimezone;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -365,25 +368,61 @@ public class XSTime extends XSCalendarType {
      * xs:time value).
      */
      public XObject subtract(XObject xObject) throws TransformerException {
-          XObject result = null;
+          
+    	 XObject result = null;
           
           if (!((xObject instanceof XSTime) || (xObject instanceof XSDayTimeDuration))) {
-             throw new TransformerException("XPTY0004 : The values of types xs:time and xs:dayTimeDuration "
+             throw new TransformerException("XPTY0004 : The values of schema type 'time' and 'dayTimeDuration' "
              		                                                     + "are only ones that may be subtracted "
-             		                                                     + "from an xs:time value.");
+             		                                                     + "from an 'time' value.");
           }
           
-          if (xObject instanceof XSTime) {
-             Calendar cal1 = getCalendar();
-             Calendar cal2 = ((XSTime)xObject).getCalendar();
-             long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
-             result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+          if (xObject instanceof XSTime) {       	          	          	 
+        	 XPathContext xctxt = new XPathContext();
+        	 
+        	 XSDuration tz = null;        	 
+        	 boolean tzEqual = false;
+        	 
+        	 if (_timezoned) {
+        		tz = _tz;
+        		
+        		XSTime xsTime = (XSTime)xObject;
+        		XSDuration tz2 = xsTime.getTimezone();
+        		
+        		if (tz2.equals(tz)) {
+        		   tzEqual = true;
+        		}
+        	 }
+        	 else {
+        		tz = xctxt.getTimezone();  
+        	 }        	         		         		 
+
+        	 try {
+        		 if (!tzEqual) {
+        			 FuncAdjustTimeToTimezone funcAdjustTimeToTimezone = new FuncAdjustTimeToTimezone();
+
+        			 funcAdjustTimeToTimezone.setArg(xObject, 0);
+        			 funcAdjustTimeToTimezone.setArg(tz, 1);
+
+        			 xObject = funcAdjustTimeToTimezone.execute(xctxt);
+        		 }
+
+        		 Calendar cal1 = getCalendar();
+        		 Calendar cal2 = ((XSTime)xObject).getCalendar();
+        		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
+
+        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+        	 }
+        	 catch (WrongNumberArgsException ex) {
+        		 // No op 
+        	 }        	 
           }          
           else if (xObject instanceof XSDayTimeDuration) {
              XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
              double argValSecs = argVal.value();
              Calendar cal1 = (Calendar)((getCalendar()).clone());
              cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
+             
              result = new XSTime(cal1, getTimezone());
           }
           

@@ -10,6 +10,9 @@ import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.datetime.FuncAdjustDateToTimezone;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -381,18 +384,45 @@ public class XSDate extends XSCalendarType {
                                                                                  + "xs:dayTimeDuration are only ones that may be subtracted from an xs:date value.");
         }
         
-        if (xObject instanceof XSDate) {                   	        	
-        	Calendar cal1 = getCalendar();
-            Calendar cal2 = ((XSDate)xObject).getCalendar();            
-            long diff1 = (cal1.getTimeInMillis() - cal2.getTimeInMillis());
-            long daysFactor = (1000 * 60 * 60 * 24); 
-            long days = (diff1 / daysFactor);
-            long modulusValue = (diff1 % daysFactor); 
-            if (modulusValue > 0) {
-               days++;
-            }
-            
-            result = XSDayTimeDuration.parseDayTimeDuration("P" + days + "D");
+        if (xObject instanceof XSDate) {                   	        	        	
+        	XPathContext xctxt = new XPathContext();
+
+        	XSDuration tz = null;        	 
+        	boolean tzEqual = false;
+
+        	if (_timezoned) {
+        		tz = _tz;
+
+        		XSDate xsDate = (XSDate)xObject;
+        		XSDuration tz2 = xsDate.getTimezone();
+
+        		if (tz2.equals(tz)) {
+        			tzEqual = true;
+        		}
+        	}
+        	else {
+        		tz = xctxt.getTimezone();  
+        	}
+        	
+        	try {
+        		if (!tzEqual) {
+        			FuncAdjustDateToTimezone funcAdjustDateToTimezone = new FuncAdjustDateToTimezone();
+
+        			funcAdjustDateToTimezone.setArg(xObject, 0);
+        			funcAdjustDateToTimezone.setArg(tz, 1);
+
+        			xObject = funcAdjustDateToTimezone.execute(xctxt);
+        		}
+
+        		Calendar cal1 = getCalendar();
+        		Calendar cal2 = ((XSDate)xObject).getCalendar();
+        		long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
+
+        		result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+        	}
+        	catch (WrongNumberArgsException ex) {
+        		// No op 
+        	} 
         }
         else if (xObject instanceof XSYearMonthDuration) {
            XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;           

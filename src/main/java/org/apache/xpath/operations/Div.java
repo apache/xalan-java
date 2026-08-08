@@ -43,7 +43,7 @@ import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -138,7 +138,15 @@ public class Div extends XPathArithmeticOp
 																												   + "type which cannot be atomized.", this); 
 	 }
 	 
-	 XPathSequenceTypeData xpathSeqTypeResultData = getXdmSequenceTypeResultData(left, right);
+	 if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 0)) {
+		 return new ResultSequence();  
+	 }
+
+	 if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
+		 return new ResultSequence();  
+	 }
+	 
+	 XPathSequenceType xpathSeqTypeResultData = getXdmSequenceTypeResultData(left, right);
 
 	 java.lang.String lNodeStr = null;
 	 java.lang.String rNodeStr = null;
@@ -150,10 +158,12 @@ public class Div extends XPathArithmeticOp
 	 
 	 if (left instanceof XMLNodeCursorImpl) {
 		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
-		 int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
-		 if (nodeHandle != DTM.NULL) {
-			 DTM dtm = xctxt.getDTM(nodeHandle);
-			 Node node = dtm.getNode(nodeHandle);
+		 
+		 int nextNode = xmlNodeCursorImpl.asNode(xctxt);
+		 
+		 if (nextNode != DTM.NULL) {
+			 DTM dtm = xctxt.getDTM(nextNode);
+			 Node node = dtm.getNode(nextNode);
 			 if (node instanceof ElementPSVI) {
 				 ElementPSVI elementPsvi = (ElementPSVI)node;
 				 XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
@@ -214,7 +224,7 @@ public class Div extends XPathArithmeticOp
 				 }
 			 }
 
-			 XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
+			 XMLString xmlStr1 = dtm.getStringValue(nextNode);
 			 lNodeStr = xmlStr1.toString();
 		 }
 	 }
@@ -224,10 +234,12 @@ public class Div extends XPathArithmeticOp
 
 	 if (right instanceof XMLNodeCursorImpl) {
 		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
-		 int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
-		 if (nodeHandle != DTM.NULL) {
-			 DTM dtm = xctxt.getDTM(nodeHandle);
-			 Node node = dtm.getNode(nodeHandle);
+		 
+		 int nextNode = xmlNodeCursorImpl.asNode(xctxt);
+		 
+		 if (nextNode != DTM.NULL) {
+			 DTM dtm = xctxt.getDTM(nextNode);
+			 Node node = dtm.getNode(nextNode);
 			 if (node instanceof ElementPSVI) {
 				 ElementPSVI elementPsvi = (ElementPSVI)node;
 				 XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
@@ -288,7 +300,7 @@ public class Div extends XPathArithmeticOp
 				 }
 			 }
 
-			 XMLString xmlStr2 = dtm.getStringValue(nodeHandle);
+			 XMLString xmlStr2 = dtm.getStringValue(nextNode);
 			 rNodeStr = xmlStr2.toString();
 		 }
 	 }

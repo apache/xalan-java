@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:45Z" fail="5" name="fn-ceiling" pass="78" run="83" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-08T16:47:20Z" fail="1" name="fn-ceiling" pass="86" run="87" statusUnknown="0">
    <testResult status="pass" testName="fn-ceilingint1args-1"/>
    <testResult status="pass" testName="fn-ceilingint1args-2"/>
    <testResult status="pass" testName="fn-ceilingint1args-3"/>
@@ -61,7 +61,7 @@
    <testResult status="pass" testName="fn-ceiling-decimal-2"/>
    <testResult status="pass" testName="fn-ceiling-decimal-3"/>
    <testResult status="pass" testName="fn-ceiling-decimal-4"/>
-   <testResult status="fail" testName="fn-ceiling-decimal-5"/>
+   <testResult status="pass" testName="fn-ceiling-decimal-5"/>
    <testResult status="pass" testName="fn-ceiling-decimal-6"/>
    <testResult status="pass" testName="fn-ceiling-decimal-7"/>
    <testResult status="pass" testName="fn-ceiling-double-1"/>
@@ -69,17 +69,21 @@
    <testResult status="pass" testName="fn-ceiling-double-3"/>
    <testResult status="pass" testName="fn-ceiling-double-4"/>
    <testResult status="pass" testName="fn-ceiling-double-5"/>
-   <testResult status="fail" testName="fn-ceiling-double-6"/>
-   <testResult status="fail" testName="fn-ceiling-double-7"/>
+   <testResult status="pass" testName="fn-ceiling-double-6"/>
+   <testResult status="pass" testName="fn-ceiling-double-7"/>
    <testResult status="pass" testName="fn-ceiling-double-8"/>
+   <testResult status="pass" testName="fn-ceiling-double-9"/>
+   <testResult status="pass" testName="fn-ceiling-double-10"/>
    <testResult status="pass" testName="fn-ceiling-double-11"/>
    <testResult status="pass" testName="fn-ceiling-float-1"/>
    <testResult status="pass" testName="fn-ceiling-float-2"/>
-   <testResult status="fail" testName="fn-ceiling-float-3"/>
+   <testResult status="pass" testName="fn-ceiling-float-3"/>
    <testResult status="pass" testName="fn-ceiling-float-4"/>
    <testResult status="pass" testName="fn-ceiling-float-5"/>
    <testResult status="pass" testName="fn-ceiling-float-6"/>
    <testResult status="pass" testName="fn-ceiling-float-7"/>
    <testResult status="pass" testName="fn-ceiling-float-8"/>
+   <testResult status="pass" testName="fn-ceiling-float-9"/>
+   <testResult status="pass" testName="fn-ceiling-float-10"/>
    <testResult status="pass" testName="fn-ceiling-float-11"/>
 </testrun>

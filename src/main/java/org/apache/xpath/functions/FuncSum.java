@@ -25,7 +25,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -303,14 +303,14 @@ public class FuncSum extends FunctionMultiArgs
 					   result = xsDayTimeDurationSum; 
 					}
 					
-					XPathSequenceTypeData xpathSeqTypeResultData = null;
+					XPathSequenceType xpathSeqTypeResultData = null;
 					
 					if (xsIntegerCount == size1) {
-						xpathSeqTypeResultData = new XPathSequenceTypeData();
+						xpathSeqTypeResultData = new XPathSequenceType();
 						xpathSeqTypeResultData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_INTEGER);
 					}
 					else if (xsDecimalCount == size1) {
-						xpathSeqTypeResultData = new XPathSequenceTypeData();
+						xpathSeqTypeResultData = new XPathSequenceType();
 						xpathSeqTypeResultData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DECIMAL);
 					}
 					else if (xsFloatCount == size1) {												
@@ -324,11 +324,11 @@ public class FuncSum extends FunctionMultiArgs
 						   result = new XSDouble(Double.POSITIVE_INFINITY);
 						}
 						
-						xpathSeqTypeResultData = new XPathSequenceTypeData();
+						xpathSeqTypeResultData = new XPathSequenceType();
 						xpathSeqTypeResultData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
 					}
 					else if (xsDoubleCount == size1) {
-						xpathSeqTypeResultData = new XPathSequenceTypeData();
+						xpathSeqTypeResultData = new XPathSequenceType();
 						xpathSeqTypeResultData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
 					}
 					

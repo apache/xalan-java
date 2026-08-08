@@ -27,7 +27,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -164,7 +164,7 @@ public class ElemDocument extends ElemTemplateElement {
 		 if (asAttrValue != null) { 			 
 			 XPath seqTypeXPath = new XPath(asAttrValue, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 			 XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-			 XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+			 XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
 			 
 			 XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
 			 if ((seqTypeKindTest != null) && !(seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND)) {
@@ -179,7 +179,7 @@ public class ElemDocument extends ElemTemplateElement {
 				                                                                                 && !(elemTemplateElement instanceof ElemFunction)) { 			 
 			 XPath seqTypeXPath = new XPath(asAttrValue, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 			 XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-			 XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+			 XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
 			 
 			 XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
 			 int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();

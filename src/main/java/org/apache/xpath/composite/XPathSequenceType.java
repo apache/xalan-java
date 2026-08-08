@@ -32,7 +32,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class XPathSequenceTypeData extends XObject {
+public class XPathSequenceType extends XObject {
     
     private static final long serialVersionUID = -8207360998434418776L;
 
@@ -115,7 +115,7 @@ public class XPathSequenceTypeData extends XObject {
      *                                              SequenceTypeData object instance.
      * @return									    Boolean value true or false
      */
-	public boolean equal(XPathSequenceTypeData sequenceTypeData2) {
+	public boolean equal(XPathSequenceType sequenceTypeData2) {
 		
 		boolean result = false;
 	    

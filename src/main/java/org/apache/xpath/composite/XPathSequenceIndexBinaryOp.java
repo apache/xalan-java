@@ -160,7 +160,7 @@ public class XPathSequenceIndexBinaryOp extends Expression {
 					                                                                             || "treat".equals(m_opStr)) {
 				XPath seqTypeXPath = new XPath(m_rightStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
 				XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());            
-				XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;				
+				XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;				
 				
 				if ("cast".equals(m_opStr)) {
 					CastAs castAs = new CastAs();

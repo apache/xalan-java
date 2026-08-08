@@ -78,7 +78,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.InlineFunctionParameter;
@@ -1391,7 +1391,7 @@ public class XSL3FunctionService {
     		}
 
     		String funcParamName = funcParam.getParamName();
-    		XPathSequenceTypeData paramType = funcParam.getParamType();
+    		XPathSequenceType paramType = funcParam.getParamType();
 
     		if (paramType != null) {
     			try {
@@ -1439,7 +1439,7 @@ public class XSL3FunctionService {
 
     	evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
-    	XPathSequenceTypeData funcReturnType = xpathInlineFunction.getReturnType();
+    	XPathSequenceType funcReturnType = xpathInlineFunction.getReturnType();
     	if (funcReturnType != null) {
     		try {
     			evalResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
@@ -1493,15 +1493,15 @@ public class XSL3FunctionService {
     	for (int idx = 0; idx < funcArgCount; idx++) {
 			Expression funcArg = funcObj.getArg(idx);    						
 			String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-			Constructor cons = dataType.getConstructor(new Class[] {String.class});
-			Object obj = cons.newInstance(new Object[] {argStr});
+			Constructor cons = dataType.getConstructor(new Class[] { String.class });
+			Object obj = cons.newInstance(new Object[] { argStr });
 			argSequence.add((XObject)obj);
 		}
     	
     	Object obj = dataType.newInstance();
     	
-    	Method method = dataType.getMethod("constructor", new Class[] {ResultSequence.class});
-    	evalResultSequence = (ResultSequence)(method.invoke(obj, new Object[] {argSequence}));
+    	Method method = dataType.getMethod("constructor", new Class[] { ResultSequence.class });
+    	evalResultSequence = (ResultSequence)(method.invoke(obj, new Object[] { argSequence }));
 
 		evalResult = evalResultSequence.item(0);
     	

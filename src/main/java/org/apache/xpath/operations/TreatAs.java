@@ -20,7 +20,7 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
@@ -53,7 +53,7 @@ public class TreatAs extends XPath3Operator
   {
 	  XObject result = null;
       
-      XPathSequenceTypeData seqTypedData = (XPathSequenceTypeData)right;
+      XPathSequenceType seqTypedData = (XPathSequenceType)right;
       
       result = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
       

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:10:59Z" fail="4" name="fn-floor" pass="80" run="84" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-08T16:47:34Z" fail="1" name="fn-floor" pass="83" run="84" statusUnknown="0">
    <testResult status="pass" testName="fn-floorint1args-1"/>
    <testResult status="pass" testName="fn-floorint1args-2"/>
    <testResult status="pass" testName="fn-floorint1args-3"/>
@@ -69,9 +69,9 @@
    <testResult status="pass" testName="fn-floor-double-2"/>
    <testResult status="pass" testName="fn-floor-double-3"/>
    <testResult status="pass" testName="fn-floor-double-4"/>
-   <testResult status="fail" testName="fn-floor-double-5"/>
-   <testResult status="fail" testName="fn-floor-double-6"/>
-   <testResult status="fail" testName="fn-floor-double-7"/>
+   <testResult status="pass" testName="fn-floor-double-5"/>
+   <testResult status="pass" testName="fn-floor-double-6"/>
+   <testResult status="pass" testName="fn-floor-double-7"/>
    <testResult status="pass" testName="fn-floor-double-8"/>
    <testResult status="pass" testName="fn-floor-double-11"/>
    <testResult status="pass" testName="fn-floor-float-1"/>

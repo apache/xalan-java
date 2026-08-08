@@ -29,9 +29,9 @@ public class XPathSequenceTypeMapTest {
 
     private boolean fIsAnyMapTest;
 
-    private XPathSequenceTypeData keySequenceTypeData;
+    private XPathSequenceType keySequenceTypeData;
     
-    private XPathSequenceTypeData valueSequenceTypeData;
+    private XPathSequenceType valueSequenceTypeData;
 
 	public boolean isAnyMapTest() {
 		return fIsAnyMapTest;
@@ -41,19 +41,19 @@ public class XPathSequenceTypeMapTest {
 		this.fIsAnyMapTest = isAnyMapTest;
 	}
 
-	public XPathSequenceTypeData getKeySequenceTypeData() {
+	public XPathSequenceType getKeySequenceTypeData() {
 		return keySequenceTypeData;
 	}
 
-	public void setKeySequenceTypeData(XPathSequenceTypeData keySequenceTypeData) {
+	public void setKeySequenceTypeData(XPathSequenceType keySequenceTypeData) {
 		this.keySequenceTypeData = keySequenceTypeData;
 	}
 
-	public XPathSequenceTypeData getValueSequenceTypeData() {
+	public XPathSequenceType getValueSequenceTypeData() {
 		return valueSequenceTypeData;
 	}
 
-	public void setValueSequenceTypeData(XPathSequenceTypeData valueSequenceTypeData) {
+	public void setValueSequenceTypeData(XPathSequenceType valueSequenceTypeData) {
 		this.valueSequenceTypeData = valueSequenceTypeData;
 	}
 

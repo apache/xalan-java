@@ -32,7 +32,7 @@ import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -462,67 +462,67 @@ public class XPathArithmeticOp extends XPath3Operator {
      * @return                               An XPathSequenceTypeData object instance,
      *                                       or null.
      */
-    protected XPathSequenceTypeData getXdmSequenceTypeResultData(XObject xObj1, XObject xObj2) {
+    protected XPathSequenceType getXdmSequenceTypeResultData(XObject xObj1, XObject xObj2) {
   	  
-    	XPathSequenceTypeData result = null;
+    	XPathSequenceType result = null;
 
     	if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSDecimal)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
     	}
     	else if ((xObj1 instanceof XSDecimal) && (xObj2 instanceof XSFloat)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
     	}
     	else if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSInteger)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT);
     	}
     	else if ((xObj1 instanceof XSInteger) && (xObj2 instanceof XSFloat)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
     	}
     	else if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSFloat)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_FLOAT); 
     	}
     	else if ((xObj1 instanceof XSDecimal) && (xObj2 instanceof XSDouble)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
     	}
     	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSDecimal)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
     	}
     	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSFloat)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
     	}
     	else if ((xObj1 instanceof XSFloat) && (xObj2 instanceof XSDouble)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
     	}
     	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSInteger)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
     	}
     	else if ((xObj1 instanceof XSInteger) && (xObj2 instanceof XSDouble)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE);
     	}
     	else if ((xObj1 instanceof XSDouble) && (xObj2 instanceof XSDouble)) {
-    		result = new XPathSequenceTypeData();
+    		result = new XPathSequenceType();
     		
     		result.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DOUBLE); 
     	}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:10:59Z" fail="51" name="fn-format-integer" pass="22" run="73" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-08T16:47:34Z" fail="50" name="fn-format-integer" pass="23" run="73" statusUnknown="0">
    <testResult status="pass" testName="format-integer-001"/>
    <testResult status="fail" testName="format-integer-002"/>
    <testResult status="fail" testName="format-integer-003"/>
@@ -36,7 +36,7 @@
    <testResult status="fail" testName="format-integer-033"/>
    <testResult status="pass" testName="format-integer-034"/>
    <testResult status="fail" testName="format-integer-035"/>
-   <testResult status="fail" testName="format-integer-036"/>
+   <testResult status="pass" testName="format-integer-036"/>
    <testResult status="pass" testName="format-integer-037"/>
    <testResult status="fail" testName="format-integer-038"/>
    <testResult status="pass" testName="format-integer-039"/>

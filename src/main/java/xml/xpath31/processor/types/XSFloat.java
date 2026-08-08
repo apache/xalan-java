@@ -110,12 +110,16 @@ public class XSFloat extends XSNumericType {
                 } else {
                     floatVal = new Float("0.0E0");
                 }
-            } 
+            }
+            else if (xsAnyType instanceof XSFloat) {
+            	floatVal = ((XSFloat)xsAnyType).floatValue();
+            }
             else {
                 floatVal = new Float(xsAnyType.stringValue());
             }
             
             resultSeq.add(new XSFloat(floatVal.floatValue()));
+            
         } catch (NumberFormatException e) {
             // to do
             return null;

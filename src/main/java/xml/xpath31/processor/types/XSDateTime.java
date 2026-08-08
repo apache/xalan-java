@@ -11,6 +11,9 @@ import java.util.TimeZone;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.datetime.FuncAdjustDateTimeToTimezone;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -872,10 +875,46 @@ public class XSDateTime extends XSCalendarType {
          }
          
          if (xObject instanceof XSDateTime) {
-            Calendar cal1 = getCalendar();
-            Calendar cal2 = ((XSDateTime)xObject).getCalendar();
-            long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
-            result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+        	 XPathContext xctxt = new XPathContext();
+        	 
+        	 XSDuration tz = null;        	 
+        	 boolean tzEqual = false;
+        	 
+        	 if (_timezoned) {
+        		tz = _tz;
+        		
+        		XSDateTime xsDateTime = (XSDateTime)xObject;
+        		XSDuration tz2 = xsDateTime.getTimezone();
+        		
+        		if (tz2.equals(tz)) {
+        		   tzEqual = true;
+        		}
+        	 }
+        	 else {
+        		tz = xctxt.getTimezone();  
+        	 }        	         		         		 
+
+        	 try {
+        		 if (!tzEqual) {
+        			 FuncAdjustDateTimeToTimezone funcAdjustDateTimeToTimezone = new FuncAdjustDateTimeToTimezone();
+
+        			 funcAdjustDateTimeToTimezone.setArg(xObject, 0);
+        			 funcAdjustDateTimeToTimezone.setArg(tz, 1);
+
+        			 xObject = funcAdjustDateTimeToTimezone.execute(xctxt);
+        		 }
+
+        		 Calendar cal1 = getCalendar();
+        		 Calendar cal2 = ((XSDateTime)xObject).getCalendar();
+        		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
+
+        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+        	 }
+        	 catch (WrongNumberArgsException ex) {
+        		 // No op 
+        	 }
+        	 
+        	
          }
          else if (xObject instanceof XSYearMonthDuration) {
             XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;

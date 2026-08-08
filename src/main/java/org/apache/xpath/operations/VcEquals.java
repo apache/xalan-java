@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -52,6 +53,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -105,6 +107,20 @@ public class VcEquals extends XPathRelationalOp
 		 result = (str1.equals(str2)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
 		 
 		 return result;
+	  }
+	  
+	  if ((left instanceof XSDecimal) && (right instanceof XSDouble)) {
+		 BigDecimal bigDecimal1 = ((XSDecimal)left).getValue();
+		 
+		 double dblR = ((XSDouble)right).doubleValue();
+		 BigDecimal bigDecimal2 = BigDecimal.valueOf(dblR);
+		 
+		 if (bigDecimal1.compareTo(bigDecimal2) == 0) {
+			return XBoolean.S_TRUE; 
+		 }
+		 else {
+			return XBoolean.S_FALSE;
+		 }
 	  }
 	  
 	  if (left instanceof XNumber) {

@@ -40,7 +40,7 @@ import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
@@ -567,7 +567,7 @@ public class ElemSequence extends ElemTemplateElement
         		                                                             XPath.SELECT, null, true);
          XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), 
                                                                              xctxt.getNamespaceContext());
-         XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+         XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
          if (seqExpectedTypeData.getSequenceTypeKindTest() != null) {
             result = false; 
          }

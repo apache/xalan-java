@@ -107,8 +107,8 @@ import org.apache.xpath.composite.XPathQuantifiedExpr;
 import org.apache.xpath.composite.XPathSequenceBinaryOp;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceIndexBinaryOp;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
-import org.apache.xpath.composite.XPathSequenceTypeData;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
@@ -2343,15 +2343,15 @@ public class XPathParser
     	 // functions & stylesheet functions    	  
     	 
     	 int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
-    	 
-    	 handleXPathParseNamedFuncRefWithNSQual(opPos);
+         
+         xpathParseNamedFuncRefNsQual(opPos);
 	  }
 	  else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {	    	
 	     // XPath parse for named function reference, for XPath built-in functions
 		  
 	     int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
 	     
-	     handleXPathParseNamedFuncRefWithoutNSQual(opPos);
+	     xpathParseNamedFuncRefWithoutNsQual(opPos);
 	     
 	     if (tokenIs('+') || tokenIs('-') || tokenIs('*') || 
 	    		                                         tokenIs("div") || tokenIs("idiv") || tokenIs("mod")) {
@@ -4738,7 +4738,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_PLUS);
         
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_PLUS);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_PLUS);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -4761,7 +4761,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_MINUS);
         
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_MINUS);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_MINUS);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -4819,7 +4819,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_MULT);
         
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_MULT);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_MULT);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -4841,7 +4841,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_DIV);
         
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_DIV);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_DIV);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -4863,7 +4863,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_IDIV);
 
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.XPath3OpCodes.OP_IDIV);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.XPath3OpCodes.OP_IDIV);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -4885,7 +4885,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_MOD);
 
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_MOD);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_MOD);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -4903,7 +4903,7 @@ public class XPathParser
         insertOp(addPos, 2, OpCodes.OP_QUO);
 
         if (tokenIs('(')) {
-            addPos = handleXPathParseRhsSequenceOperand(addPos, OpCodes.OP_QUO);
+            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_QUO);
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -5667,7 +5667,7 @@ public class XPathParser
                      inlineFunctionParameter.setParamName(m_token);                     
                      nextToken();
                      nextToken();                     
-                     XPathSequenceTypeData paramType = new XPathSequenceTypeData();
+                     XPathSequenceType paramType = new XPathSequenceType();
                      XPathSequenceTypeExpr seqTypeExpr = SequenceTypeExpr(true);
                      paramType.setBuiltInSequenceType(seqTypeExpr.getBuiltInSequenceType());
                      paramType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
@@ -5704,7 +5704,7 @@ public class XPathParser
       if (tokenIs("as")) {
          nextToken();
          XPathSequenceTypeExpr seqTypeExpr = SequenceTypeExpr(true);
-         XPathSequenceTypeData returnType = new XPathSequenceTypeData();
+         XPathSequenceType returnType = new XPathSequenceType();
          returnType.setBuiltInSequenceType(seqTypeExpr.getBuiltInSequenceType());
          returnType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
          returnType.setSequenceTypeKindTest(seqTypeExpr.getSequenceTypeKindTest());
@@ -6274,12 +6274,13 @@ public class XPathParser
     }
     else if (lookahead(':', 1)) {
        // XPath parse for named function reference, for XPath built-in functions 
-   	   // and stylesheet functions.    	
-       handleXPathParseNamedFuncRefWithNSQual(opPos);
+   	   // and stylesheet functions.
+       
+       xpathParseNamedFuncRefNsQual(opPos);
     }
     else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
        // XPath parse for named function reference, for XPath built-in functions    	
-       handleXPathParseNamedFuncRefWithoutNSQual(opPos);
+       xpathParseNamedFuncRefWithoutNsQual(opPos);
     }
     else if (tokenIs("if") || tokenIs("some") || tokenIs("every") || tokenIs("let") || tokenIs("for")) {
        ExprSingle();
@@ -7255,9 +7256,10 @@ public class XPathParser
     * a java.lang.ClassCastException needs to be handled.
     */
    protected void handleClassCastExceptionOnNextToken(ClassCastException ex) {
-	  String str = ex.getMessage();
 	  
-	  if (STRING_CLASSCAST_ERROR_MESSAGE.equals(str)) {
+	   String errMesg = ex.getMessage();
+	  
+	  if (STRING_CLASSCAST_ERROR_MESSAGE.equals(errMesg)) {
 		  Object tokenQueueObj1 = m_ops.m_tokenQueue.elementAt(m_queueMark - 1);
 		  m_token = "'" + tokenQueueObj1.toString() + "'";      
 		  m_tokenChar = m_token.charAt(0);
@@ -8936,8 +8938,8 @@ public class XPathParser
  		  nextToken();
  		  consumeExpected('(');
  		  
- 		  XPathSequenceTypeData keySequenceTypeData = new XPathSequenceTypeData();    		  
- 		  XPathSequenceTypeData valueSequenceTypeData = new XPathSequenceTypeData();
+ 		  XPathSequenceType keySequenceTypeData = new XPathSequenceType();    		  
+ 		  XPathSequenceType valueSequenceTypeData = new XPathSequenceType();
  		  
  		  while ((m_token != null) && !tokenIs(',')) {
  			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
@@ -9025,7 +9027,7 @@ public class XPathParser
  		  nextToken();
  		  consumeExpected('(');
  		  
- 		  XPathSequenceTypeData arrayItemSequenceType = new XPathSequenceTypeData();
+ 		  XPathSequenceType arrayItemSequenceType = new XPathSequenceType();
  		  while ((m_token != null) && !tokenIs(')')) {
  			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -9100,7 +9102,7 @@ public class XPathParser
     * Method definition, to support XPath parse for map and array sequence
     * type expressions.
     */
-   private void populateSequenceTypeData(XPathSequenceTypeData seqTypeData) throws TransformerException {
+   private void populateSequenceTypeData(XPathSequenceType seqTypeData) throws TransformerException {
  	  
  	switch (m_token) {
  	    case Keywords.FUNC_BOOLEAN_STRING :
@@ -9423,7 +9425,7 @@ public class XPathParser
     * rhs operand of XPath binary operators like +, -, *, div,
     * idiv, mod, quo.
     */
-   private int handleXPathParseRhsSequenceOperand(int addPos, int opCode) throws TransformerException {
+   private int xpathParseRhsSequenceOperand(int addPos, int opCode) throws TransformerException {
 	   
  	  int result = 0;
  	  
@@ -9465,7 +9467,7 @@ public class XPathParser
     * @param opPos
     * @throws TransformerException
     */
-	private void handleXPathParseNamedFuncRefWithNSQual(int opPos) throws TransformerException {				    	  
+	private void xpathParseNamedFuncRefNsQual(int opPos) throws TransformerException {
 
 		if (tokenIs(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI) || tokenIs(XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
 																	    tokenIs(XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) || 
@@ -9583,7 +9585,7 @@ public class XPathParser
 				}
 
 				m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH, 
-						                                    m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+						                                    m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);				
 			}
 			else {
 				restoreTokenQueueXPathParsePos(prevTokenQueuePos);
@@ -9654,7 +9656,7 @@ public class XPathParser
 	 * @param opPos
 	 * @throws TransformerException
 	 */
-	private void handleXPathParseNamedFuncRefWithoutNSQual(int opPos) throws TransformerException {
+	private void xpathParseNamedFuncRefWithoutNsQual(int opPos) throws TransformerException {
 
 		TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
 

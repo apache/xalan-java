@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:43Z" fail="3" name="fn-abs" pass="179" run="182" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-08T16:47:19Z" fail="2" name="fn-abs" pass="180" run="182" statusUnknown="0">
    <testResult status="pass" testName="fn-absint1args-1"/>
    <testResult status="pass" testName="fn-absint1args-2"/>
    <testResult status="pass" testName="fn-absint1args-3"/>
@@ -159,7 +159,7 @@
    <testResult status="pass" testName="K2-ABSFunc-28"/>
    <testResult status="pass" testName="K2-ABSFunc-29"/>
    <testResult status="pass" testName="K2-ABSFunc-30"/>
-   <testResult status="fail" testName="K2-ABSFunc-31"/>
+   <testResult status="pass" testName="K2-ABSFunc-31"/>
    <testResult status="pass" testName="K2-ABSFunc-32"/>
    <testResult status="pass" testName="K2-ABSFunc-33"/>
    <testResult status="pass" testName="K2-ABSFunc-34"/>

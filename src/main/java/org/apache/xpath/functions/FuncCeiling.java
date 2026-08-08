@@ -112,6 +112,7 @@ public class FuncCeiling extends FunctionDef1Arg
 		
 		if (arg0Obj instanceof XSFloat) {
 			XSFloat xsFloatArg = (XSFloat)arg0Obj;
+			
 			if (xsFloatArg.zero()) {
 			    result = new XSFloat(0); 
 			}
@@ -121,12 +122,15 @@ public class FuncCeiling extends FunctionDef1Arg
 			else if ((xsFloatArg.floatValue() > -1) && (xsFloatArg.floatValue() < 0)) {
 			    result = new XSFloat(-0.0f); 
 			}
-			else {				
-				result = new XSFloat((float)(Math.ceil(Float.valueOf(arg0Str))));
+			else {
+				float flt = ((XSFloat)arg0Obj).floatValue();
+				
+				result = new XSFloat((float)(Math.ceil(flt)));
 			}
 		}
 		else if (arg0Obj instanceof XSDouble) {
 			XSDouble xsDoubleArg = (XSDouble)arg0Obj;
+			
 			if (xsDoubleArg.zero()) {
 			    result = new XSDouble(0); 
 			}
@@ -136,8 +140,10 @@ public class FuncCeiling extends FunctionDef1Arg
 			else if ((xsDoubleArg.doubleValue() > -1) && (xsDoubleArg.doubleValue() < 0)) {
 			    result = new XSDouble(-0.0d); 
 			}
-			else {				
-				result = new XSDouble(Math.ceil(Double.valueOf(arg0Str)));
+			else {
+				double dbl = xsDoubleArg.doubleValue(); 
+				
+				result = new XSDouble(Math.ceil(dbl));
 			}
 		}
 		else if (arg0Obj instanceof XSByte) {                                    

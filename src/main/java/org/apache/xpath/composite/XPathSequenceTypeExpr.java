@@ -55,7 +55,7 @@ public class XPathSequenceTypeExpr extends Expression {
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-       XPathSequenceTypeData sequenceTypeData = new XPathSequenceTypeData();
+       XPathSequenceType sequenceTypeData = new XPathSequenceType();
        
        sequenceTypeData.setBuiltInSequenceType(builtInSequenceType);
        sequenceTypeData.setXsTypeDefinition(xsTypeDefinition);

@@ -22,7 +22,7 @@ import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.OpCodes;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
@@ -61,7 +61,7 @@ public class CastAs extends XPath3Operator
   {
 	  XObject result = null;
       
-      XPathSequenceTypeData seqTypedData = (XPathSequenceTypeData)right;
+      XPathSequenceType seqTypedData = (XPathSequenceType)right;
       
       ExpressionNode exprNode = getExpressionOwner();
       XPathContext xpathContext = null;

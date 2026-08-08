@@ -23,7 +23,7 @@ import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.xs.XSTypeDefinition;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -70,7 +70,7 @@ public class CastableAs extends XPath3Operator
   {
 	  XObject result = null;
       
-      XPathSequenceTypeData seqTypedData = (XPathSequenceTypeData)right;
+      XPathSequenceType seqTypedData = (XPathSequenceType)right;
       
       try {    	  
     	 if ((left instanceof XSAnyAtomicType) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) || 

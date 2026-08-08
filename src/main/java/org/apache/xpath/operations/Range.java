@@ -46,6 +46,24 @@ public class Range extends XPath3Operator
 {
     
    private static final long serialVersionUID = 7722428363208837859L;
+   
+   /**
+    * This class field, represents maximum number of xs:integer
+    * values that may be returned by XPath 3.1 range 'to' expression.
+    * This is for optimization purpose and is Xalan-J specific. 
+    * Otherwise an XPath range expression takes long time to complete 
+    * running for very large differences between XPath range's maximum 
+    * and minimum values.
+    * 
+    * Beyond MAX_RANGE_SIZE limit, this class returns two xs:integer values,
+    * the first one of which is lower bound of the range, and the
+    * second one is upper bound of the range. The returned ResultSequence
+    * object has boolean value m_is_seq_expanded set to false.
+    * 
+    * For fully populated XPath 3.1 range expression results, the boolean
+    * value m_is_seq_expanded is set to true, which is default.
+    */
+   private static final int MAX_RANGE_SIZE = 100000;
 
    /**
     * Apply an XPath operator to two operands, and return the result.
@@ -123,34 +141,48 @@ public class Range extends XPath3Operator
     	}      
 
     	if (rBigInt.compareTo(lBigInt) >= 0) {
-    		BigInteger maxIntValue = BigInteger.valueOf(Integer.valueOf(Integer.MAX_VALUE - 1));
-    		BigInteger maxLongValue = BigInteger.valueOf(Long.valueOf(Long.MAX_VALUE - 1)); 
-
-    		if (rBigInt.compareTo(maxIntValue) <= 0) {
-    			// Using primitive int value comparisons to produce the result    			
-    			int lInt = lBigInt.intValue();
-    			int rInt = rBigInt.intValue();    			
-    			for (int idx = lInt; idx < (rInt + 1); idx++) {
-    				XSInteger xsInteger = new XSInteger(idx + "");    				    				
-    				result.add(xsInteger); 
-    			}
-    		}
-    		else if (rBigInt.compareTo(maxLongValue) <= 0) {
-    			// Using primitive long value comparisons to produce the result    			
-    			long lLong = lBigInt.longValue();
-    			long rLong = rBigInt.longValue();    			
-    			for (long idx = lLong; idx < (rLong + 1); idx++) {
-    				XSInteger xsInteger = new XSInteger(idx + "");    				    				
-    				result.add(xsInteger); 
-    			}
+    		
+    		BigInteger diff1 = rBigInt.subtract(lBigInt);
+    		BigInteger const1 = BigInteger.valueOf(MAX_RANGE_SIZE - 1);
+    		
+    		if (diff1.compareTo(const1) > 0) {
+    			XSInteger lValue = new XSInteger(lBigInt);
+    			XSInteger rValue = new XSInteger(rBigInt);
+    			result.add(lValue);
+    			result.add(rValue);
+    			
+    			result.setSequenceExpanded(false);    			
     		}
     		else {
-    			// Using BigInteger value comparisons to produce the result     			
-    			while (lBigInt.compareTo(rBigInt) <= 0) {
-    				XSInteger xsInteger = new XSInteger(lBigInt);    				
-    				result.add(xsInteger);
-    				
-    				lBigInt = lBigInt.add(BigInteger.ONE);
+    			BigInteger maxIntValue = BigInteger.valueOf(Integer.valueOf(Integer.MAX_VALUE - 1));
+    			BigInteger maxLongValue = BigInteger.valueOf(Long.valueOf(Long.MAX_VALUE - 1)); 
+
+    			if (rBigInt.compareTo(maxIntValue) <= 0) {
+    				// Using primitive int value comparisons to produce the result    			
+    				int lInt = lBigInt.intValue();
+    				int rInt = rBigInt.intValue();    			
+    				for (int idx = lInt; idx < (rInt + 1); idx++) {
+    					XSInteger xsInteger = new XSInteger(idx + "");    				    				
+    					result.add(xsInteger); 
+    				}
+    			}
+    			else if (rBigInt.compareTo(maxLongValue) <= 0) {
+    				// Using primitive long value comparisons to produce the result    			
+    				long lLong = lBigInt.longValue();
+    				long rLong = rBigInt.longValue();    			
+    				for (long idx = lLong; idx < (rLong + 1); idx++) {
+    					XSInteger xsInteger = new XSInteger(idx + "");    				    				
+    					result.add(xsInteger); 
+    				}
+    			}
+    			else {
+    				// Using BigInteger value comparisons to produce the result     			
+    				while (lBigInt.compareTo(rBigInt) <= 0) {
+    					XSInteger xsInteger = new XSInteger(lBigInt);    				
+    					result.add(xsInteger);
+
+    					lBigInt = lBigInt.add(BigInteger.ONE);
+    				}
     			}
     		}
     	}      

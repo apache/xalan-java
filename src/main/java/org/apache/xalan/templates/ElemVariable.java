@@ -54,7 +54,7 @@ import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
@@ -546,7 +546,7 @@ public class ElemVariable extends ElemTemplateElement
 		
 		if (var != null) {			
 			if (m_asAttr != null) {
-			   XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
+			   XPathSequenceType seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
 			   var = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, seqExpectedTypeData, false);
 			   if (var != null) {
 				  return var; 
@@ -582,7 +582,7 @@ public class ElemVariable extends ElemTemplateElement
             
             if (evalResult != null) {
             	if ((m_asAttr != null) && ((evalResult instanceof XPathMap) || (evalResult instanceof XPathArray))) {
-            		XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
+            		XPathSequenceType seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
             		XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             		if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
             			return evalResult;
@@ -590,7 +590,7 @@ public class ElemVariable extends ElemTemplateElement
             	}
             	
             	if ((m_asAttr != null) && (evalResult instanceof XSUntypedAtomic)) {
-            		XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
+            		XPathSequenceType seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, srcLocator);
             		int xsBuiltInTypeId = seqExpectedTypeData.getBuiltInSequenceType();
             		if ((xsBuiltInTypeId == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC) || (xsBuiltInTypeId == XPathSequenceTypeSupport.ITEM_KIND)) {
             		   return evalResult;
@@ -970,7 +970,7 @@ public class ElemVariable extends ElemTemplateElement
     			  if (m_asAttr != null) {    				  
     				  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
     				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());            
-    				  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;    				      				  
+    				  XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;    				      				  
     				  int occIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();    				      				      				  
     				  XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
@@ -1033,7 +1033,7 @@ public class ElemVariable extends ElemTemplateElement
     				  
     				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
     				  
-    				  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+    				  XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
     				  XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     				  int seqTypeKindVal = seqTypeKindTest.getKindVal(); 
     				  
@@ -1093,7 +1093,7 @@ public class ElemVariable extends ElemTemplateElement
     				  
     				  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
     				  
-    				  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+    				  XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
     				  XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     				  int seqTypeKindVal = seqTypeKindTest.getKindVal(); 
     				  
@@ -1234,7 +1234,7 @@ public class ElemVariable extends ElemTemplateElement
     		  if ((rSeq.size() > 0) && isSeqConstructOk) {
     			  XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	
     			  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
-    			  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+    			  XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
     			  
     			  if (seqExpectedTypeData.getBuiltInSequenceType() != 0) {
     				 int rSeqLength = rSeq.size();
@@ -1665,7 +1665,7 @@ public class ElemVariable extends ElemTemplateElement
 		
 		XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
 		
-		XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+		XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
 		XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
 		
 		int seqTypeOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
@@ -1797,12 +1797,12 @@ public class ElemVariable extends ElemTemplateElement
 		                            	  elemParamAs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elemParamAs, prefixTable);                                    	   
 		                            	  XPath seqTypeXPath1 = new XPath(elemParamAs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 		                               	  XObject seqTypeExpressionEvalResult1 = seqTypeXPath1.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
-		                               	  XPathSequenceTypeData seqExpectedTypeData1 = (XPathSequenceTypeData)seqTypeExpressionEvalResult1;
+		                               	  XPathSequenceType seqExpectedTypeData1 = (XPathSequenceType)seqTypeExpressionEvalResult1;
 		                               	  
 		                               	  paramSpec1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(paramSpec1, prefixTable);
 		                               	  XPath seqTypeXPath2 = new XPath(paramSpec1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 		                             	  XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
-		                             	  XPathSequenceTypeData seqExpectedTypeData2 = (XPathSequenceTypeData)seqTypeExpressionEvalResult2;
+		                             	  XPathSequenceType seqExpectedTypeData2 = (XPathSequenceType)seqTypeExpressionEvalResult2;
 		                             	  
 		                             	  if (!seqExpectedTypeData1.equal(seqExpectedTypeData2)) {
 		                             		 throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
@@ -1829,12 +1829,12 @@ public class ElemVariable extends ElemTemplateElement
 							  elemFuncAs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elemFuncAs, prefixTable);
 							  XPath seqTypeXPath1 = new XPath(elemFuncAs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 							  XObject seqTypeExpressionEvalResult1 = seqTypeXPath1.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
-							  XPathSequenceTypeData seqExpectedTypeData1 = (XPathSequenceTypeData)seqTypeExpressionEvalResult1;
+							  XPathSequenceType seqExpectedTypeData1 = (XPathSequenceType)seqTypeExpressionEvalResult1;
 
 							  funcReturnTypeSpec = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcReturnTypeSpec, prefixTable);
 							  XPath seqTypeXPath2 = new XPath(funcReturnTypeSpec, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 							  XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
-							  XPathSequenceTypeData seqExpectedTypeData2 = (XPathSequenceTypeData)seqTypeExpressionEvalResult2;
+							  XPathSequenceType seqExpectedTypeData2 = (XPathSequenceType)seqTypeExpressionEvalResult2;
 
 							  if (!seqExpectedTypeData1.equal(seqExpectedTypeData2)) {    							      							  
 								  throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
@@ -2456,7 +2456,7 @@ public class ElemVariable extends ElemTemplateElement
     				 * and the remaining xsl:variable type check are done further down this method.
     				 */
     				try {
-    					XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, this);
+    					XPathSequenceType seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(m_asAttr, xctxt, this);
     					XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     					if (seqTypeKindTest != null) {            			            			
     						if (expr1 instanceof LocPathIterator) {
@@ -2669,7 +2669,7 @@ public class ElemVariable extends ElemTemplateElement
     					DTM dtm = xctxt.getDTM(sourceNode);
     					short nodeType = dtm.getNodeType(sourceNode);
     					String nodeTypeStr = xctxt.getNodeTypeStr(nodeType);
-    					XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(xslGlobalContextItemAsValue, xctxt, srcLocator);
+    					XPathSequenceType seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(xslGlobalContextItemAsValue, xctxt, srcLocator);
     					XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     					if (seqTypeKindTest != null) {
     						if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ELEMENT_KIND) || (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {

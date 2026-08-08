@@ -100,20 +100,24 @@ public class XSDouble extends XSNumericType {
         
         XSAnyType xsAnyType = (XSAnyType)arg.item(0);
         
-        XSDouble xsAnyTypeConvertedToDouble = null;
+        XSDouble xsDoubleResult = null;
         
         if (xsAnyType instanceof XSBoolean) {
             if (xsAnyType.stringValue().equals("true")) {
-                xsAnyTypeConvertedToDouble = new XSDouble(1.0E0);
+                xsDoubleResult = new XSDouble(1.0E0);
             } else {
-                xsAnyTypeConvertedToDouble = new XSDouble(0.0E0);
+                xsDoubleResult = new XSDouble(0.0E0);
             }
         }
+        else if (xsAnyType instanceof XSDouble) {
+        	double dbl = ((XSDouble)xsAnyType).doubleValue();
+        	xsDoubleResult = new XSDouble(dbl);
+        }
         else {
-            xsAnyTypeConvertedToDouble = parseDouble(xsAnyType.stringValue());
+            xsDoubleResult = parseDouble(xsAnyType.stringValue());
         }
         
-        resultSeq.add(xsAnyTypeConvertedToDouble);
+        resultSeq.add(xsDoubleResult);
         
         return resultSeq;
     }

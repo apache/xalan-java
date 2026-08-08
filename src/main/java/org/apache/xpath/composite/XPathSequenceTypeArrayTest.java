@@ -29,7 +29,7 @@ public class XPathSequenceTypeArrayTest {
 
     private boolean fIsAnyArrayTest;
 
-    private XPathSequenceTypeData arrayItemTypeInfo;
+    private XPathSequenceType arrayItemTypeInfo;
 
 	public boolean isAnyArrayTest() {
 		return fIsAnyArrayTest;
@@ -39,11 +39,11 @@ public class XPathSequenceTypeArrayTest {
 		this.fIsAnyArrayTest = isAnyArrayTest;
 	}
 
-	public XPathSequenceTypeData getArrayItemTypeInfo() {
+	public XPathSequenceType getArrayItemTypeInfo() {
 		return arrayItemTypeInfo;
 	}
 
-	public void setArrayItemTypeInfo(XPathSequenceTypeData arrayItemTypeInfo) {
+	public void setArrayItemTypeInfo(XPathSequenceType arrayItemTypeInfo) {
 		this.arrayItemTypeInfo = arrayItemTypeInfo;
 	}
 

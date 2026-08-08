@@ -41,7 +41,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.types.DateTimeUtil;
 import org.apache.xpath.types.XSGDay;
@@ -138,7 +138,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    * This helps to, correctly infer the type of this XPath object
    * within XPath 3.1 expressions like "instance of".
    */
-  private XPathSequenceTypeData m_cast_as_type = null;
+  private XPathSequenceType m_cast_as_type = null;
 
   /**
    * Create an XObject.
@@ -2802,11 +2802,11 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  this.m_homogeneous_source = homogeneousSource;
   }
   
-  public XPathSequenceTypeData getCastAsType() {
+  public XPathSequenceType getCastAsType() {
 	  return m_cast_as_type;
   }
 
-  public void setCastAsType(XPathSequenceTypeData seqTypedData) {
+  public void setCastAsType(XPathSequenceType seqTypedData) {
 	  this.m_cast_as_type = seqTypedData;	
   }
 

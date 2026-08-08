@@ -57,11 +57,13 @@ public class FuncHead extends FunctionOneArg {
         
         if (xObj0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;
-           DTMCursorIterator dtmIter = nodeSet.iterRaw();
+           DTMCursorIterator dtmIter = nodeSet.iter();
+           
            result = new XMLNodeCursorImpl(dtmIter.nextNode(), xctxt);
         }
         else if (xObj0 instanceof ResultSequence) {
            ResultSequence resultSeq = (ResultSequence)xObj0;
+           
            if (resultSeq.size() > 0) {
               result = resultSeq.item(0);
            }

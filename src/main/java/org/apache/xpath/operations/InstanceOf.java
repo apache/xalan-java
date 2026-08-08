@@ -54,7 +54,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
@@ -155,8 +155,8 @@ public class InstanceOf extends XPath3Operator
       XPathContext xctxt = null;
       
       if (left.getCastAsType() != null) {
-    	 XPathSequenceTypeData xpathSeqTypeData1 = left.getCastAsType();    	 
-    	 XPathSequenceTypeData xpathSeqTypeData2 = (XPathSequenceTypeData)right;
+    	 XPathSequenceType xpathSeqTypeData1 = left.getCastAsType();    	 
+    	 XPathSequenceType xpathSeqTypeData2 = (XPathSequenceType)right;
     	 
     	 int builtInSeqType1 = xpathSeqTypeData1.getBuiltInSequenceType();
     	 int builtInSeqType2 = xpathSeqTypeData2.getBuiltInSequenceType();
@@ -184,11 +184,11 @@ public class InstanceOf extends XPath3Operator
 	  	  
 	  PrefixResolver xmlNsPrefixResolver = xctxt.getNamespaceContext();
 	  
-      XPathSequenceTypeData seqTypedData = null;      
-      XPathSequenceTypeData castAsType = left.getCastAsType();
+      XPathSequenceType seqTypedData = null;      
+      XPathSequenceType castAsType = left.getCastAsType();
       
       if (castAsType != null) {    	  
-    	  if (castAsType.equal((XPathSequenceTypeData)right)) {
+    	  if (castAsType.equal((XPathSequenceType)right)) {
     		 result = XBoolean.S_TRUE; 
     	  }
     	  else {
@@ -198,7 +198,7 @@ public class InstanceOf extends XPath3Operator
     	  return result;
       }
       else {    	  	  	  
-    	  seqTypedData = (XPathSequenceTypeData)right;  
+    	  seqTypedData = (XPathSequenceType)right;  
       }
       
       int xsBuiltInSeqType = seqTypedData.getBuiltInSequenceType();      
@@ -266,7 +266,12 @@ public class InstanceOf extends XPath3Operator
     			  return XBoolean.S_FALSE; 
     		  }
     	  }
-      }      
+      }  
+      else if (xsBuiltInType == XPathSequenceTypeSupport.XS_DECIMAL) {
+    	  if ((left instanceof XNumber) || (left instanceof XSDouble) || (left instanceof XSFloat)) {
+    		 return XBoolean.S_TRUE; 
+    	  }
+      }
       
       if (left instanceof ElemFunctionItem) {
     	  /**
@@ -446,7 +451,7 @@ public class InstanceOf extends XPath3Operator
    * @throws TransformerException
    * @throws Exception
    */
-  private boolean isInstanceOf(XObject xdmValue, XPathSequenceTypeData seqTypeData) 
+  private boolean isInstanceOf(XObject xdmValue, XPathSequenceType seqTypeData) 
 		                                                                    throws ParserConfigurationException, SAXException, 
                                                                                    IOException, TransformerException, Exception {
     
@@ -801,7 +806,7 @@ public class InstanceOf extends XPath3Operator
    * @throws TransformerException
    * @throws Exception
    */
-  private boolean isNodesetInstanceOfType(XMLNodeCursorImpl nodeSet, XPathSequenceTypeData seqTypeData) throws 
+  private boolean isNodesetInstanceOfType(XMLNodeCursorImpl nodeSet, XPathSequenceType seqTypeData) throws 
                                                                          ParserConfigurationException, SAXException, 
                                                                          IOException, TransformerException, Exception {
 	  
@@ -1177,7 +1182,7 @@ public class InstanceOf extends XPath3Operator
    * @throws TransformerException
    * @throws Exception
    */
-  private boolean isSequenceInstanceOfType(ResultSequence resultSeq, XPathSequenceTypeData seqTypeData) 
+  private boolean isSequenceInstanceOfType(ResultSequence resultSeq, XPathSequenceType seqTypeData) 
 		                                                                            throws ParserConfigurationException, 
                                                                                            SAXException, IOException, 
                                                                                            TransformerException, Exception {
@@ -1196,7 +1201,7 @@ public class InstanceOf extends XPath3Operator
 		  result = false;
 	  }
 
-	  XPathSequenceTypeData sequenceTypeDataNew = new XPathSequenceTypeData();          
+	  XPathSequenceType sequenceTypeDataNew = new XPathSequenceType();          
 	  if (seqTypeData.getSequenceTypeKindTest() != null) {
 		  sequenceTypeDataNew.setSequenceTypeKindTest(seqTypeData.getSequenceTypeKindTest()); 
 	  }
@@ -1228,7 +1233,7 @@ public class InstanceOf extends XPath3Operator
    * @param seqTypeData						An xdm sequence type information
    * @return                                Boolean value true or false
    */
-  private boolean isXdmMapConformsWithSeqType(XPathMap xpathMap, XPathSequenceTypeData seqTypeData) {
+  private boolean isXdmMapConformsWithSeqType(XPathMap xpathMap, XPathSequenceType seqTypeData) {
 	  
 	  boolean result = false;
 	  
@@ -1246,8 +1251,8 @@ public class InstanceOf extends XPath3Operator
 			
 			result = true;
 			
-			XPathSequenceTypeData mapKeyTypeInfo = sequenceTypeMapTest.getKeySequenceTypeData();
-			XPathSequenceTypeData mapValueTypeInfo = sequenceTypeMapTest.getValueSequenceTypeData();
+			XPathSequenceType mapKeyTypeInfo = sequenceTypeMapTest.getKeySequenceTypeData();
+			XPathSequenceType mapValueTypeInfo = sequenceTypeMapTest.getValueSequenceTypeData();
 			
 			Iterator<Entry<XObject, XObject>> iter1 = entrySet.iterator();
 			while (iter1.hasNext()) {
@@ -1292,7 +1297,7 @@ public class InstanceOf extends XPath3Operator
    * @param seqTypeData						An xdm sequence type information
    * @return                                Boolean value true or false
    */
-  private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, XPathSequenceTypeData seqTypeData) {
+  private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, XPathSequenceType seqTypeData) {
 	  
 	  boolean result = false;
 	  
@@ -1310,7 +1315,7 @@ public class InstanceOf extends XPath3Operator
 			  
 			  result = true;
 			  
-			  XPathSequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
+			  XPathSequenceType arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
 			  
 			  while (arrIter.hasNext()) {
 				  XObject arrItem = arrIter.next();

@@ -49,7 +49,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
@@ -631,7 +631,7 @@ public class ElemFunction extends ElemTemplate
 
     	  if (funcAsAttrStrVal != null) {    	  
     		  try {
-    			  XPathSequenceTypeData seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+    			  XPathSequenceType seqExpectedTypeData = XPathSequenceTypeSupport.getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
 
     			  XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     			  int seqTypeItemOccrIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
@@ -955,7 +955,7 @@ public class ElemFunction extends ElemTemplate
      XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
      XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
-     XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;     
+     XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;     
      XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
      
      int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
@@ -1076,7 +1076,7 @@ public class ElemFunction extends ElemTemplate
     				 result = new ResultSequence();    			 
     				 for (int idx = 0; idx < rSeqLength; idx++) {
     					 XObject xObj1 = rSeq.item(idx);
-    					 XPathSequenceTypeData seqTypeData = new XPathSequenceTypeData();
+    					 XPathSequenceType seqTypeData = new XPathSequenceType();
     					 seqTypeData.setSequenceTypeMapTest(sequenceTypeMapTest);
     					 seqTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
     					 XObject xObj2 = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
@@ -1117,7 +1117,7 @@ public class ElemFunction extends ElemTemplate
     				 result = new ResultSequence();    			 
     				 for (int idx = 0; idx < rSeqLength; idx++) {
     					 XObject xObj1 = rSeq.item(idx);
-    					 XPathSequenceTypeData seqTypeData = new XPathSequenceTypeData();
+    					 XPathSequenceType seqTypeData = new XPathSequenceType();
     					 seqTypeData.setSequenceTypeArrayTest(sequenceTypeArrayTest);
     					 seqTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT);    				 
     					 XObject xObj2 = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj1, null, seqTypeData, xctxt);
@@ -1757,7 +1757,7 @@ public class ElemFunction extends ElemTemplate
 	  try {		  
 		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);		  
 		  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-		  XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;          
+		  XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;          
 
 		  XMLNodeCursorImpl nodeSet = XPathSequenceTypeSupport.getNodeReference(srcValue);
 		  

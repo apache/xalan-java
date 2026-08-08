@@ -39,11 +39,22 @@ public class ResultSequence extends XObject
     private List<XObject> m_list = new ArrayList<XObject>();
     
     /**
-     * Class field to represent, whether a ResultSequence object
+     * Class field, to represent whether a ResultSequence object
      * represents an xdm sequence of nodes that don't have an
      * xdm parent item. 
      */
     private boolean m_xdm_parentless_sibling_nodes = false;
+    
+    /**
+     * Class field, to represent whether this sequence object
+     * contains fully populated data, or only the two boundary
+     * xs:integer values.
+     * 
+     * When the size of sequence is two, and value of m_is_seq_expanded 
+     * is false, the this sequence object has been populated by XPath 3.1 
+     * range 'to' expression's evaluation. 
+     */
+    private boolean m_is_seq_expanded = true;
     
     /**
      * Class constructor.
@@ -200,6 +211,14 @@ public class ResultSequence extends XObject
 
 	public void setXdmParentlessSiblingNodes(boolean xdmParentlessSiblingNodes) {
 		this.m_xdm_parentless_sibling_nodes = xdmParentlessSiblingNodes;
+	}
+	
+	public boolean getSequenceExpanded() {
+		return m_is_seq_expanded;
+	}
+
+	public void setSequenceExpanded(boolean seqExpanded) {
+		this.m_is_seq_expanded = seqExpanded; 		
 	}
 
 }

@@ -37,7 +37,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.XPathSequenceTypeData;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -632,7 +632,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 			XPath seqTypeXPath = new XPath(m_asAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																						XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-			XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+			XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
 				resultWithAsAttribute = XslTransformData.m_xpathInlineFunction;
 				XslTransformData.m_xpathInlineFunction = null;
@@ -721,7 +721,7 @@ public class ElemEvaluate extends ElemTemplateElement {
 			XPath seqTypeXPath = new XPath(withParamAsAttrVal, srcLocator, xctxt.getNamespaceContext(), 
 																									XPath.SELECT, null, true);
 			XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-			XPathSequenceTypeData seqExpectedTypeData = (XPathSequenceTypeData)seqTypeExpressionEvalResult;
+			XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
 			if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
 				result = XslTransformData.m_xpathInlineFunction;
 				XslTransformData.m_xpathInlineFunction = null;
