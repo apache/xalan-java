@@ -2409,7 +2409,13 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if (this instanceof XSYearMonthDuration) {
 		  if (obj2 instanceof XSYearMonthDuration) {
-			  result = ((XSYearMonthDuration)this).equals((XSYearMonthDuration)obj2);
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }
+		  else if (obj2 instanceof XSDayTimeDuration) {
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }
+		  else if (obj2 instanceof XSDuration) {
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
 		  }
 		  else {
 			  result = false; 
@@ -2421,7 +2427,13 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if (this instanceof XSDayTimeDuration) {
 		  if (obj2 instanceof XSDayTimeDuration) {
-			  result = ((((XSDayTimeDuration)this).value() - ((XSDayTimeDuration)obj2).value()) == 0);
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }
+		  else if (obj2 instanceof XSYearMonthDuration) {
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }		  
+		  else if (obj2 instanceof XSDuration) {
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
 		  }
 		  else {
 			  result = false; 
@@ -2435,6 +2447,12 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  if (obj2 instanceof XSDuration) {
 			  result = ((XSDuration)this).equals((XSDuration)obj2);
 		  }
+		  else if (obj2 instanceof XSYearMonthDuration) {
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }
+		  else if (obj2 instanceof XSDayTimeDuration) {
+			  result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }		  
 		  else {
 			  result = false; 
 		  }

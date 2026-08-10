@@ -72,11 +72,11 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
-import org.apache.xpath.operations.XPath3Operator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
+import org.apache.xpath.operations.XPath3Operator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.Attr;
@@ -96,12 +96,15 @@ import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
+import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * A class definition, that has few utility methods that provide 
@@ -609,6 +612,7 @@ public class XslTransformEvaluationHelper {
     	boolean result = false;
 
     	int size1 = resultSeq.size();
+    	
     	for (int idx = 0; idx < size1; idx++) {
     		XObject resultSeqItem = resultSeq.item(idx);
     		
@@ -649,7 +653,7 @@ public class XslTransformEvaluationHelper {
         			}
         		}
         		catch (TransformerException ex) {
-        		   // no op
+        		   // No op
         		}
     		}
     		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {    			
@@ -665,7 +669,7 @@ public class XslTransformEvaluationHelper {
         			}
         		}
         		catch (TransformerException ex) {
-        		   // no op
+        		   // No op
         		}
     		}
     		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {    			
@@ -681,7 +685,7 @@ public class XslTransformEvaluationHelper {
         			}
         		}
         		catch (TransformerException ex) {
-        		   // no op
+        		   // No op
         		}
     		}
     		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {    			
@@ -697,8 +701,30 @@ public class XslTransformEvaluationHelper {
         			}
         		}
         		catch (TransformerException ex) {
-        		   // no op
+        		   // No op
         		}
+    		}
+    		else if ((resultSeqItem instanceof XSYearMonthDuration) && (srch instanceof XSDayTimeDuration)) {
+    			if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
+    			   XSDuration xsDayTimeDurationRef = XSDayTimeDuration.parseDayTimeDuration("P0D"); 	
+    			   if (((XSDayTimeDuration)srch).equals(xsDayTimeDurationRef)) {
+    				   result = true;
+       				   break; 
+    			   }
+    			}
+    			
+    			result = false;
+    		}
+            else if ((resultSeqItem instanceof XSDayTimeDuration) && (srch instanceof XSYearMonthDuration)) {
+            	if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
+     			   XSDuration xsDayTimeDurationRef = XSDayTimeDuration.parseDayTimeDuration("P0D"); 	
+     			   if (((XSDayTimeDuration)resultSeqItem).equals(xsDayTimeDurationRef)) {
+     				   result = true;
+        			   break; 
+     			   }
+     			}
+     			
+     			result = false;
     		}
     		else if ((resultSeqItem instanceof XSAnyType) && (srch instanceof XSAnyType)) {
     			if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
@@ -719,7 +745,7 @@ public class XslTransformEvaluationHelper {
         			}
         		}
         		catch (TransformerException ex) {
-        		   // no op
+        		   // No op
         		}
     		}
     	}
@@ -1006,7 +1032,7 @@ public class XslTransformEvaluationHelper {
     		   result = (StylesheetRoot)stylesheetRootExprNode;
     		}
     		catch (Exception ex) {
-    		   // no op	
+    		   // No op	
     		}
     	}
 
@@ -1085,7 +1111,7 @@ public class XslTransformEvaluationHelper {
     		}
     	}
     	catch (Exception ex) {
-    		// no op
+    		// No op
     	}
 
     	return result;  	  

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:07:58Z" fail="3" name="op-add-yearMonthDuration-to-date" pass="21" run="24" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-10T11:04:12Z" fail="1" name="op-add-yearMonthDuration-to-date" pass="23" run="24" statusUnknown="0">
    <testResult status="pass" testName="op-add-yearMonthDuration-to-date2args-1"/>
    <testResult status="pass" testName="op-add-yearMonthDuration-to-date2args-2"/>
    <testResult status="pass" testName="op-add-yearMonthDuration-to-date2args-3"/>
@@ -21,6 +21,6 @@
    <testResult status="pass" testName="op-add-yearMonthDuration-to-date-16"/>
    <testResult status="pass" testName="K-DateAddYMD-1"/>
    <testResult status="pass" testName="K-DateAddYMD-2"/>
-   <testResult status="fail" testName="K-DateAddYMD-3"/>
-   <testResult status="fail" testName="K-DateAddYMD-4"/>
+   <testResult status="pass" testName="K-DateAddYMD-3"/>
+   <testResult status="pass" testName="K-DateAddYMD-4"/>
 </testrun>

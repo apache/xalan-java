@@ -4,6 +4,8 @@
  */
 package xml.xpath31.processor.types;
 
+import java.math.BigDecimal;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
@@ -62,9 +64,17 @@ public class XSDuration extends XSCtrType {
 		}
 
 		if (_seconds >= 60) {
-			int isec = (int) _seconds;
-			double rem = _seconds - (isec);
+			int isec = (int)_seconds;
+			
+			// Subtracting double values, using java.math.BigDecimal 
+			// doesn't cause loss of precision with results.
+			
+			BigDecimal bdDouble = new BigDecimal(Double.toString(_seconds));
+	        BigDecimal bdInt = new BigDecimal(isec);
 
+	        BigDecimal result = bdDouble.subtract(bdInt);
+	        double rem = result.doubleValue(); 
+			
 			_minutes += isec / 60;
 			_seconds = isec % 60;
 			_seconds += rem;
@@ -442,10 +452,28 @@ public class XSDuration extends XSCtrType {
 	 * another XSDuration value. 
 	 */
 	public boolean equals(XSDuration xsDuration) {
-       double val1 = value();
-       double val2 = xsDuration.value();
-       
-       return val1 == val2;
+		
+	   boolean result = false;
+	   
+	   if (xsDuration != null) {	   
+		   if ((_year == xsDuration.year()) && (_month == xsDuration.month()) 
+				                            && (_days == xsDuration.days())
+				                            && (_hours == xsDuration.hours())
+				                            && (_minutes == xsDuration.minutes())
+				                            && (_seconds == xsDuration.seconds())) {
+			   if ((_year == 0) && (_month == 0) && (_days == 0) 
+					                        && (_hours == 0) 
+					                        && (_minutes == 0) 
+					                        && (_seconds == 0)) {
+				   result = true;
+			   }
+			   else if (_negative == xsDuration.negative()) {
+				   result = true; 
+			   }
+		   }
+	   }
+	   
+	   return result;
     }
 	
 	/**

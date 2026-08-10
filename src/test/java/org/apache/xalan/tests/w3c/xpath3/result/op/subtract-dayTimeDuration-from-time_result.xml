@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:08:48Z" fail="5" name="op-subtract-dayTimeDuration-from-time" pass="21" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-10T11:04:14Z" fail="1" name="op-subtract-dayTimeDuration-from-time" pass="25" run="26" statusUnknown="0">
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-1"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-2"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time2args-3"/>
@@ -21,8 +21,8 @@
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-16"/>
    <testResult status="pass" testName="op-subtract-dayTimeDuration-from-time-17"/>
    <testResult status="pass" testName="K-TimeSubtractDTD-1"/>
-   <testResult status="fail" testName="K-TimeSubtractDTD-2"/>
-   <testResult status="fail" testName="K-TimeSubtractDTD-3"/>
-   <testResult status="fail" testName="K-TimeSubtractDTD-4"/>
-   <testResult status="fail" testName="K-TimeSubtractDTD-5"/>
+   <testResult status="pass" testName="K-TimeSubtractDTD-2"/>
+   <testResult status="pass" testName="K-TimeSubtractDTD-3"/>
+   <testResult status="pass" testName="K-TimeSubtractDTD-4"/>
+   <testResult status="pass" testName="K-TimeSubtractDTD-5"/>
 </testrun>

@@ -18,8 +18,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An XML Schema data type representation, of the xs:dateTime 
- * datatype.
+ * An XML Schema data type representation, for the 
+ * xs:dateTime data type.
  */
 public class XSDateTime extends XSCalendarType {
     
@@ -41,6 +41,7 @@ public class XSDateTime extends XSCalendarType {
      * fn:current-dateTime().
      */
     private boolean isPopulatedFromFnCurrentDateTime = false;
+    
     
     /**
      * Class constructor.
@@ -398,7 +399,7 @@ public class XSDateTime extends XSCalendarType {
             int idx = strVal.indexOf('T');
             if (idx == -1) {
                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                  + "cannot be parsed to a xs:dateTime value.");
+                                                                                       + "cannot be parsed to schema type 'dateTime' value.");
             }
     
             String date = strVal.substring(0, idx);
@@ -419,8 +420,8 @@ public class XSDateTime extends XSCalendarType {
     
             int d[] = parseDate(date);
             if (d == null) {
-               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                             + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+               																				    + "schema type 'dateTime' value.");
             }
     
             TimeZone defaultTimezone = TimeZone.getDefault();
@@ -438,24 +439,24 @@ public class XSDateTime extends XSCalendarType {
             gregorianCalObj1.set(Calendar.MONTH, 2);
     
             if (!setItem(gregorianCalObj1, Calendar.YEAR, year)) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																    + "schema type 'dateTime' value.");
             }
     
             if (!setItem(gregorianCalObj1, Calendar.MONTH, d[1] - 1)) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																	+ "schema type 'dateTime' value.");
             }
     
             if (!setItem(gregorianCalObj1, Calendar.DAY_OF_MONTH, d[2])) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																	+ "schema type 'dateTime' value.");
             }
     
             double t[] = parseTime(time);
             if (t == null) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																    + "schema type 'dateTime' value.");
             }
             
             if (t[0] == 24.0) {
@@ -472,8 +473,8 @@ public class XSDateTime extends XSCalendarType {
             }
     
             if (!setItem(gregorianCalObj1, Calendar.HOUR_OF_DAY, (int) t[0])) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																    + "schema type 'dateTime' value.");
             }
             
             if (((int)t[0]) < 12) {
@@ -484,20 +485,20 @@ public class XSDateTime extends XSCalendarType {
             }
     
             if (!setItem(gregorianCalObj1, Calendar.MINUTE, (int) t[1])) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    															        + "schema type 'dateTime' value.");
             }
     
             if (!setItem(gregorianCalObj1, Calendar.SECOND, (int) t[2])) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																	+ "schema type 'dateTime' value.");
             }
     
             double ms = t[2] - ((int) t[2]);
             ms *= 1000;
             if (!setItem(gregorianCalObj1, Calendar.MILLISECOND, (int) ms)) {
-                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                              + "cannot be parsed to a xs:dateTime value.");
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+						    																    + "schema type 'dateTime' value.");
             }
     
             int tz[] = null;
@@ -506,8 +507,8 @@ public class XSDateTime extends XSCalendarType {
                 tz = parseTimezone(timezone);
     
                 if (tz == null) {
-                   throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                                                 + "cannot be parsed to a xs:dateTime value.");
+                   throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+							    																    + "schema type 'dateTime' value.");
                 }
     
                 timezoneVal = new XSDayTimeDuration(0, tz[1], tz[2], 0.0, tz[0] < 0);
@@ -519,8 +520,8 @@ public class XSDateTime extends XSCalendarType {
             throw ex;  
         }
         catch (Exception ex) {
-            throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                               + "cannot be parsed to a xs:dateTime value."); 
+        	throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+					    																	 + "schema type 'dateTime' value."); 
         }
 
         return xsDateTime;
@@ -614,10 +615,10 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Check whether this XSDateTime object has an, timezone associated with it.
+     * Method definition, to determine whether this xs:dateTime
+     * value has a non-null timezone component.
      * 
-     * @return true    if there is a timezone associated with this XSDateTime object.
-     *                 false otherwise.
+     * @return                          Boolean value true or false
      */
     public boolean isDateTimeTimezoned() {
         return _timezoned;
@@ -689,10 +690,15 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Determine whether, two XSDateTime objects are equal.
+     * Method definition, to determine whether this xs:dateTime
+     * value is equal to the supplied xs:dateTime value instance.
+     * 
+     * @param xsDate                    The supplied xs:dateTime value instance
+     * @return                          Boolean value true or false
      */
     public boolean equals(XSDateTime xsDateTime) {
-        boolean isDateTimeEqual = false;
+        
+    	boolean result = false;
         
         Calendar cal1 = getCalendar();
         Calendar cal2 = xsDateTime.getCalendar();
@@ -714,12 +720,12 @@ public class XSDateTime extends XSCalendarType {
         XSDuration tz1 = getTimezone();
         XSDuration tz2 = xsDateTime.getTimezone();
         
-        isDateTimeEqual = ((year1 == year2) && (month1 == month2) && (date1 == date2) && 
+        result = ((year1 == year2) && (month1 == month2) && (date1 == date2) && 
                            (hour1 == hour2) && (mins1 == mins2) && (secs1 == secs2)) && 
                                                     isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentDateTime, 
                                                                     xsDateTime.isPopulatedFromFnCurrentDateTime());
         
-        return isDateTimeEqual;
+        return result;
     }
     
     @Override
@@ -741,11 +747,15 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Determine whether, this XSDateTime object is less than, the 
-     * XSDateTime object provided as an argument to this method. 
+     * Method definition, to determine whether this xs:dateTime
+     * value is less than the supplied xs:dateTime value instance.
+     * 
+     * @param xsDate               			The supplied xs:dateTime value instance
+     * @return                     			Boolean value true or false
      */
     public boolean lt(XSDateTime xsDateTime) {
-        boolean isDateTimeBefore = false;
+        
+    	boolean result = false;
         
         Calendar cal1 = getCalendar();
         Calendar cal2 = xsDateTime.getCalendar();
@@ -756,7 +766,7 @@ public class XSDateTime extends XSCalendarType {
                                                                      cal2.get(Calendar.DATE));
         
         if (date1.before(date2)) {
-           isDateTimeBefore = true;  
+           result = true;  
         }
         else if (date1.equals(date2)) {
             int hour1 = hour();
@@ -768,29 +778,33 @@ public class XSDateTime extends XSCalendarType {
             double secs2 = xsDateTime.second();
             
             if (hour1 < hour2) {
-               isDateTimeBefore = true; 
+               result = true; 
             }
             else if (hour1 == hour2) {
                if (mins1 < mins2) {
-                  isDateTimeBefore = true;  
+                  result = true;  
                }
                else if (mins1 == mins2) {
                   if (secs1 < secs2) {
-                     isDateTimeBefore = true;  
+                     result = true;  
                   }
                }
             }
         }
         
-        return isDateTimeBefore;
+        return result;
     }
     
     /**
-     * Determine whether, this XSDateTime object is greater than, the 
-     * XSDateTime object provided as an argument to this method. 
+     * Method definition, to determine whether this xs:dateTime
+     * value is greater than the supplied xs:dateTime value instance.
+     * 
+     * @param xsDate               The supplied xs:dateTime value instance
+     * @return                     Boolean value true or false
      */
     public boolean gt(XSDateTime xsDateTime) {
-        boolean isDateTimeAfter = false;
+        
+    	boolean result = false;
         
         Calendar cal1 = getCalendar();
         Calendar cal2 = xsDateTime.getCalendar();
@@ -801,7 +815,7 @@ public class XSDateTime extends XSCalendarType {
                                                                      cal2.get(Calendar.DATE));
         
         if (date1.after(date2)) {
-           isDateTimeAfter = true;  
+           result = true;  
         }
         else if (date1.equals(date2)) {
             int hour1 = hour();
@@ -813,47 +827,57 @@ public class XSDateTime extends XSCalendarType {
             double secs2 = xsDateTime.second();
             
             if (hour1 > hour2) {
-               isDateTimeAfter = true; 
+               result = true; 
             }
             else if (hour1 == hour2) {
                if (mins1 > mins2) {
-                  isDateTimeAfter = true;  
+                  result = true;  
                }
                else if (mins1 == mins2) {
                   if (secs1 > secs2) {
-                     isDateTimeAfter = true;  
+                     result = true;  
                   }
                }
             }
         }
         
-        return isDateTimeAfter;
+        return result;
     }
     
     /**
-    * Implementation of addition operation between this XSDateTime value, and a supplied value
-    * (as per XPath 3.1 spec, xs:yearMonthDuration and xs:dayTimeDuration are the only permissible 
-    * data type values, that may be added to an xs:dateTime value).
-    */
-    public XObject add(XObject xObject) throws TransformerException {
-        XObject result = null;
+     * Method definition, to add supplied xs:yearMonthDuration, or xs:dayTimeDuration
+     * value to an xs:dateTime value, to get a new xs:dateTime value.   
+     * 
+     * @param xObj								The supplied xs:yearMonthDuration, or 
+     *                                          xs:dayTimeDuration value. 
+     * @return                                  An xs:dateTime value instance                        
+     * @throws TransformerException
+     */
+    public XObject add(XObject xObj) throws TransformerException {
         
-        if (!((xObject instanceof XSYearMonthDuration) || (xObject instanceof XSDayTimeDuration))) {
-           throw new TransformerException("XPTY0004 : The values of types xs:yearMonthDuration or "
-                                                                               + "xs:dayTimeDuration are only ones that may be added to an xs:dateTime value.");
+    	XObject result = null;
+        
+        if (!((xObj instanceof XSYearMonthDuration) || (xObj instanceof XSDayTimeDuration))) {
+           throw new TransformerException("XPTY0004 : The values of schema types 'yearMonthDuration', or "
+                                                                                 + "'dayTimeDuration' are the only ones "
+                                                                                 + "that may be added to an 'dateTime' value.");
         }
         
-        if (xObject instanceof XSYearMonthDuration) {
-           XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+        if (xObj instanceof XSYearMonthDuration) {
+           XSYearMonthDuration xsYearMonthDuration = (XSYearMonthDuration)xObj;
+           
            Calendar cal1 = (Calendar)((getCalendar()).clone());
-           cal1.add(Calendar.MONTH, argVal.monthValue());
+           cal1.add(Calendar.MONTH, xsYearMonthDuration.monthValue());
+           
            result = new XSDateTime(cal1, getTimezone());
         }
-        else if (xObject instanceof XSDayTimeDuration) {
-           XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
-           double argValSecs = argVal.value();
+        else if (xObj instanceof XSDayTimeDuration) {
+           XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObj;
+           double secsVal = xsDayTimeDuration.value();
+           
            Calendar cal1 = (Calendar)((getCalendar()).clone());
-           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
+           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)secsVal * 1000))));
+           
            result = new XSDateTime(cal1, getTimezone());
         }
         
@@ -861,20 +885,26 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Implementation of subtraction operation between this XSDateTime value, and a supplied value
-     * (as per XPath 3.1 spec, xs:dateTime, xs:yearMonthDuration and xs:dayTimeDuration are the only
-     * permissible data type values, that may be subtracted from an xs:dateTime value).
+     * Method definition, to subtract supplied xs:dateTime, xs:yearMonthDuration, or 
+     * xs:dayTimeDuration value from an xs:dateTime value.
+     * 
+     * @param xObj                            The supplied xs:dateTime, xs:yearMonthDuration, 
+     *                                        or xs:dayTimeDuration value. 
+     * @return                                An xs:dayTimeDuration, or xs:date value
+     * @throws TransformerException
      */
-     public XObject subtract(XObject xObject) throws TransformerException {
-         XObject result = null;
+     public XObject subtract(XObject xObj) throws TransformerException {
          
-         if (!((xObject instanceof XSDateTime) || (xObject instanceof XSYearMonthDuration)
-                                               || (xObject instanceof XSDayTimeDuration))) {
-            throw new TransformerException("XPTY0004 : The values of types xs:dateTime, xs:yearMonthDuration or "
-                                                                                  + "xs:dayTimeDuration are only ones that may be subtracted from an xs:dateTime value.");
+    	 XObject result = null;
+         
+         if (!((xObj instanceof XSDateTime) || (xObj instanceof XSYearMonthDuration)
+                                            || (xObj instanceof XSDayTimeDuration))) {
+            throw new TransformerException("XPTY0004 : The values of schema types 'dateTime', 'yearMonthDuration' or "
+                                                                                              + "'dayTimeDuration' are the only ones "
+                                                                                              + "that may be subtracted from an 'dateTime' value.");
          }
          
-         if (xObject instanceof XSDateTime) {
+         if (xObj instanceof XSDateTime) {
         	 XPathContext xctxt = new XPathContext();
         	 
         	 XSDuration tz = null;        	 
@@ -883,10 +913,10 @@ public class XSDateTime extends XSCalendarType {
         	 if (_timezoned) {
         		tz = _tz;
         		
-        		XSDateTime xsDateTime = (XSDateTime)xObject;
+        		XSDateTime xsDateTime = (XSDateTime)xObj;
         		XSDuration tz2 = xsDateTime.getTimezone();
         		
-        		if (tz2.equals(tz)) {
+        		if (tz.equals(tz2)) {
         		   tzEqual = true;
         		}
         	 }
@@ -898,47 +928,41 @@ public class XSDateTime extends XSCalendarType {
         		 if (!tzEqual) {
         			 FuncAdjustDateTimeToTimezone funcAdjustDateTimeToTimezone = new FuncAdjustDateTimeToTimezone();
 
-        			 funcAdjustDateTimeToTimezone.setArg(xObject, 0);
+        			 funcAdjustDateTimeToTimezone.setArg(xObj, 0);
         			 funcAdjustDateTimeToTimezone.setArg(tz, 1);
 
-        			 xObject = funcAdjustDateTimeToTimezone.execute(xctxt);
+        			 xObj = funcAdjustDateTimeToTimezone.execute(xctxt);
         		 }
 
         		 Calendar cal1 = getCalendar();
-        		 Calendar cal2 = ((XSDateTime)xObject).getCalendar();
+        		 Calendar cal2 = ((XSDateTime)xObj).getCalendar();
         		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
 
-        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);        		 
         	 }
         	 catch (WrongNumberArgsException ex) {
         		 // No op 
-        	 }
-        	 
-        	
+        	 }        	         	
          }
-         else if (xObject instanceof XSYearMonthDuration) {
-            XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+         else if (xObj instanceof XSYearMonthDuration) {
+            XSYearMonthDuration xsYearMonthDuration = (XSYearMonthDuration)xObj;
+            
             Calendar cal1 = (Calendar)((getCalendar()).clone());
-            cal1.add(Calendar.MONTH, argVal.monthValue() * -1);
+            cal1.add(Calendar.MONTH, xsYearMonthDuration.monthValue() * -1);
+            
             result = new XSDateTime(cal1, getTimezone());
          }
-         else if (xObject instanceof XSDayTimeDuration) {
-            XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
-            double argValSecs = argVal.value();
+         else if (xObj instanceof XSDayTimeDuration) {
+            XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObj;
+            double secsVal = xsDayTimeDuration.value();
+            
             Calendar cal1 = (Calendar)((getCalendar()).clone());
-            cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
+            cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)secsVal * 1000)) * -1));
+            
             result = new XSDateTime(cal1, getTimezone());
          }
          
          return result;
-    }
-    
-    public boolean isPopulatedFromFnCurrentDateTime() {
-        return isPopulatedFromFnCurrentDateTime;
-    }
-    
-    public void setPopulatedFromFnCurrentDateTime(boolean isPopulatedFromFnCurrentDateTime) {
-        this.isPopulatedFromFnCurrentDateTime = isPopulatedFromFnCurrentDateTime;
     }
     
     public int getType() {
@@ -946,17 +970,22 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Do a data type cast, of an XSAnyType argument passed to this method, to
-     * an XSDateTime object.
+     * Method definition, to cast the supplied XSAnyType object value
+     * to xs:dateTime value. 
+     * 
+     * @param xsAnyType                         The supplied XSAnyType object value
+     * @return                                  An xs:dateTime value
+     * @throws TransformerException
      */
     private XSDateTime castToDateTime(XSAnyType xsAnyType) throws TransformerException {
-        if (xsAnyType instanceof XSDate) {
-            XSDate xsDate = (XSDate) xsAnyType;
+        
+    	if (xsAnyType instanceof XSDate) {
+            XSDate xsDate = (XSDate)xsAnyType;
             return new XSDateTime(xsDate.getCalendar(), xsDate.getTimezone());
         }
 
         if (xsAnyType instanceof XSDateTime) {
-            XSDateTime xsDateTime = (XSDateTime) xsAnyType;
+            XSDateTime xsDateTime = (XSDateTime)xsAnyType;
             return new XSDateTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
         }
 
@@ -964,13 +993,15 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Set a particular field within an java.util.Calendar object.
+     * Method definition, to set a particular field within 
+     * an java.util.Calendar object.
      * 
-     * @param cal           the Calendar object to set the field in
-     * @param fieldId       the field to set
-     * @param fieldval      the value to set the field to
+     * @param cal                   The Calendar object, to set the field in
+     * @param fieldId               The calendar field to set
+     * @param fieldval              The value to set the field to
      * 
-     * @return              true if successfully set. false otherwise
+     * @return                      Boolean value true if successfully 
+     *                              set, false otherwise.
      */
     private static boolean setItem(Calendar cal, int fieldId, int fieldval) {
 
@@ -985,6 +1016,14 @@ public class XSDateTime extends XSCalendarType {
         cal.set(fieldId, fieldval);
         
         return true;
+    }
+    
+    public boolean isPopulatedFromFnCurrentDateTime() {
+        return isPopulatedFromFnCurrentDateTime;
+    }
+    
+    public void setPopulatedFromFnCurrentDateTime(boolean isPopulatedFromFnCurrentDateTime) {
+        this.isPopulatedFromFnCurrentDateTime = isPopulatedFromFnCurrentDateTime;
     }
 
 }

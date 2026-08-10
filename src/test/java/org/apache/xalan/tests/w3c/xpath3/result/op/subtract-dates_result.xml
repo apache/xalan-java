@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-08T16:47:31Z" fail="10" name="op-subtract-dates" pass="20" run="30" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-10T11:04:14Z" fail="5" name="op-subtract-dates" pass="25" run="30" statusUnknown="0">
    <testResult status="pass" testName="op-subtract-dates-yielding-DTD-1"/>
-   <testResult status="fail" testName="op-subtract-dates-yielding-DTD-2"/>
-   <testResult status="fail" testName="op-subtract-dates-yielding-DTD-3"/>
+   <testResult status="pass" testName="op-subtract-dates-yielding-DTD-2"/>
+   <testResult status="pass" testName="op-subtract-dates-yielding-DTD-3"/>
    <testResult status="pass" testName="op-subtract-dates-yielding-DTD-4"/>
    <testResult status="pass" testName="op-subtract-dates-yielding-DTD-5"/>
-   <testResult status="fail" testName="op-subtract-dates-yielding-DTD-6"/>
+   <testResult status="pass" testName="op-subtract-dates-yielding-DTD-6"/>
    <testResult status="pass" testName="op-subtract-dates-yielding-DTD-7"/>
    <testResult status="fail" testName="op-subtract-dates-yielding-DTD-8"/>
    <testResult status="pass" testName="op-subtract-dates-yielding-DTD-9"/>
@@ -21,12 +21,12 @@
    <testResult status="pass" testName="op-subtract-dates-yielding-DTD-20"/>
    <testResult status="pass" testName="K-DatesSubtract-1"/>
    <testResult status="pass" testName="K-DatesSubtract-2"/>
-   <testResult status="fail" testName="K-DatesSubtract-3"/>
+   <testResult status="pass" testName="K-DatesSubtract-3"/>
    <testResult status="pass" testName="K-DatesSubtract-4"/>
    <testResult status="pass" testName="K-DatesSubtract-5"/>
    <testResult status="pass" testName="K-DatesSubtract-6"/>
    <testResult status="fail" testName="cbcl-subtract-dates-001"/>
    <testResult status="fail" testName="cbcl-subtract-dates-002"/>
-   <testResult status="fail" testName="cbcl-subtract-dates-003"/>
+   <testResult status="pass" testName="cbcl-subtract-dates-003"/>
    <testResult status="fail" testName="cbcl-subtract-dates-004"/>
 </testrun>

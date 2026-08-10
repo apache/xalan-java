@@ -479,30 +479,30 @@ public class Plus extends XPathArithmeticOp
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		 if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 			                                                                       (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
                                                                                                                      + "types " + typeName1 + " and " + typeName2 + ".");
 		 }
 		 else if ("date".equals(typeName1) && !("yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
 			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		 }		 
 		 else if ("date".equals(typeName2) && !("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
 			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		 }
 		 else if (("time".equals(typeName1) && !"dayTimeDuration".equals(typeName2)) ||
 				  ("dayTimeDuration".equals(typeName1) && !("date".equals(typeName2) || "time".equals(typeName2) || 
 						                                                                "dateTime".equals(typeName2) ||
 						                                                                "dayTimeDuration".equals(typeName2)))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
                                                                                                                      + "types " + typeName1 + " and " + typeName2 + ".");
 		 }		 
 		 else if ("dateTime".equals(typeName1) && !("yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
 			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		 }
 		 else if ("dateTime".equals(typeName2) && !("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
 			 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		 }
 		 else if (("yearMonthDuration".equals(typeName1) && !("date".equals(typeName2) || "dateTime".equals(typeName2) || 
@@ -510,7 +510,7 @@ public class Plus extends XPathArithmeticOp
 				  ("dayTimeDuration".equals(typeName1) && !("date".equals(typeName2) || "time".equals(typeName2) || 
 						                                                                "dateTime".equals(typeName2) || 
 						                                                                "dayTimeDuration".equals(typeName2)))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' cannot add values of schema "
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
                                                                                                                      + "types " + typeName1 + " and " + typeName2 + ".");
 		 }
 		 
@@ -824,6 +824,9 @@ public class Plus extends XPathArithmeticOp
 		  }
 		  else if ((left instanceof XSDayTimeDuration) && (right instanceof XSDayTimeDuration)) {
 			  result = ((XSDayTimeDuration)left).add((XSDayTimeDuration)right);  
+		  }
+		  else if ((left instanceof XSDayTimeDuration) && (right instanceof XSTime)) {
+			  result = ((XSDayTimeDuration)left).add((XSTime)right);  
 		  }
 		  else if (left instanceof XSDate) {
 			  result = ((XSDate)left).add(right);  

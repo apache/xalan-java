@@ -438,28 +438,28 @@ public class Minus extends XPathArithmeticOp
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                    (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
+					                                                                                               + "type " + typeName2 + " value from " + typeName1 + ".");
 		  }
 		  else if ("date".equals(typeName1) && !("date".equals(typeName2) || "yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
+                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
 		  }
 		  else if ("time".equals(typeName1) && !("time".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
+                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
 		  }
 		  else if ("dateTime".equals(typeName1) && !("dateTime".equals(typeName2) || "yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
+                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
 		  }
 		  else if ("yearMonthDuration".equals(typeName1) && !"yearMonthDuration".equals(typeName2)) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
+                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
 		  }
 		  else if ("dayTimeDuration".equals(typeName1) && !"dayTimeDuration".equals(typeName2)) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName1 + " value from " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
+                      																							   + "type " + typeName2 + " value from " + typeName1 + ".");
 		  }
 
 		  List<XMLNSDecl> nsPrefixTable = null;	  

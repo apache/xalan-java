@@ -546,9 +546,17 @@ public class VcEquals extends XPathRelationalOp
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'eq' cannot, compare values of schema "
 				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
-		  else if (("duration".equals(typeName1) && !"duration".equals(typeName2)) || ("duration".equals(typeName2) && !"duration".equals(typeName1))) {
+		  else if ("duration".equals(typeName1) && !("duration".equals(typeName2) || "dayTimeDuration".equals(typeName2) || "yearMonthDuration".equals(typeName2))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'eq' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+                                                                                                                         + "types " + typeName1 + " and " + typeName2 + "."); 
+		  }
+          else if ("dayTimeDuration".equals(typeName1) && !("duration".equals(typeName2) || "dayTimeDuration".equals(typeName2) || "yearMonthDuration".equals(typeName2))) {
+        	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'eq' cannot, compare values of schema "
+                                                                                                                         + "types " + typeName1 + " and " + typeName2 + ".");
+		  }
+          else if ("yearMonthDuration".equals(typeName1) && !("duration".equals(typeName2) || "dayTimeDuration".equals(typeName2) || "yearMonthDuration".equals(typeName2))) {
+        	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'eq' cannot, compare values of schema "
+                                                                                                                         + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gYearMonth".equals(typeName1) && !"gYearMonth".equals(typeName2)) || ("gYearMonth".equals(typeName2) && !"gYearMonth".equals(typeName1))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'eq' cannot, compare values of schema "

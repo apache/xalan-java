@@ -204,20 +204,129 @@ public class XSDayTimeDuration extends XSDuration {
 	 * Method to add an XSDayTimeDuration value, to this 
 	 * XSDayTimeDuration value.
 	 */
-	public XSDayTimeDuration add(XSDayTimeDuration xsDayTimeDuration) {       
-        double sum = value() + xsDayTimeDuration.value();
+	public XSDayTimeDuration add(XSDayTimeDuration xsDayTimeDuration) {       		
+		
+		double secs1 = 0.0;		
+		int secs_temp = ((_days * 24 * 60 * 60) + (_hours * 60 * 60) + (_minutes * 60));
+		
+		// Adding and subtracting double values, using java.math.BigDecimal 
+		// doesn't cause loss of precision with results.
+		
+		if (_seconds != 0) {
+			BigDecimal bdInt = new BigDecimal(secs_temp);
+			BigDecimal bdDouble = new BigDecimal(Double.toString(_seconds));	        
 
-        return new XSDayTimeDuration(sum);
+	        BigDecimal result = bdInt.add(bdDouble);
+	        secs1 = result.doubleValue(); 
+		}
+		else {
+			secs1 = secs_temp; 
+		}
+		
+		if (_negative) {
+			secs1 = secs1 * -1; 
+		}
+		
+		double secs2 = 0.0;				
+		int secs_temp2 = ((xsDayTimeDuration.days() * 24 * 60 * 60) + (xsDayTimeDuration.hours() * 60 * 60) 
+				                                                    + (xsDayTimeDuration.minutes() * 60));
+		
+		if (xsDayTimeDuration.seconds() != 0) {			
+			BigDecimal bdInt = new BigDecimal(secs_temp2);
+			BigDecimal bdDouble = new BigDecimal(Double.toString(xsDayTimeDuration.seconds()));	        
+
+	        BigDecimal result = bdInt.add(bdDouble);
+	        secs2 = result.doubleValue();
+		}
+		else {
+			secs2 = secs_temp2; 
+		}
+		
+		if (xsDayTimeDuration.negative()) {
+			secs2 = secs2 * -1; 
+		}
+
+		double secs = 0.0;
+		
+		BigDecimal bdDouble1 = new BigDecimal(Double.toString(secs1));
+		BigDecimal bdDouble2 = new BigDecimal(Double.toString(secs2));
+		BigDecimal result = bdDouble1.add(bdDouble2);
+		
+		secs = result.doubleValue(); 
+        
+		return new XSDayTimeDuration(secs);
     }
+	
+	/**
+	 * Method to add an XSTime value, to this XSDayTimeDuration 
+	 * value.
+	 * 
+	 * @throws TransformerException 
+	 */
+	public XSTime add(XSTime xsTime) throws TransformerException {
+		
+		XSTime result = null;
+		
+		result = (XSTime)(xsTime.add(this)); 
+		
+		return result;
+	}
 	
     /**
      * Method to subtract an XSDayTimeDuration value, from this 
      * XSDayTimeDuration value.
      */
     public XSDayTimeDuration subtract(XSDayTimeDuration xsDayTimeDuration) {       
-        double diff = value() - xsDayTimeDuration.value();
+        
+		double secs1 = 0.0;		
+		int secs_temp = ((_days * 24 * 60 * 60) + (_hours * 60 * 60) + (_minutes * 60));
+		
+		// Adding and subtracting double values, using java.math.BigDecimal 
+		// doesn't cause loss of precision with results.
+		
+		if (_seconds != 0) {
+			BigDecimal bdInt = new BigDecimal(secs_temp);
+			BigDecimal bdDouble = new BigDecimal(Double.toString(_seconds));	        
 
-        return new XSDayTimeDuration(diff);
+	        BigDecimal result = bdInt.add(bdDouble);
+	        secs1 = result.doubleValue(); 
+		}
+		else {
+			secs1 = secs_temp; 
+		}
+		
+		if (_negative) {
+			secs1 = secs1 * -1; 
+		}
+		
+		double secs2 = 0.0;				
+		int secs_temp2 = ((xsDayTimeDuration.days() * 24 * 60 * 60) + (xsDayTimeDuration.hours() * 60 * 60) 
+				                                                    + (xsDayTimeDuration.minutes() * 60));
+		
+		if (xsDayTimeDuration.seconds() != 0) {			
+			BigDecimal bdInt = new BigDecimal(secs_temp2);
+			BigDecimal bdDouble = new BigDecimal(Double.toString(xsDayTimeDuration.seconds()));	        
+
+	        BigDecimal result = bdInt.add(bdDouble);
+	        secs2 = result.doubleValue();
+		}
+		else {
+			secs2 = secs_temp2; 
+		}
+		
+		if (xsDayTimeDuration.negative()) {
+			secs2 = secs2 * -1; 
+		}
+
+		double secs = 0.0;
+		
+		BigDecimal bdDouble1 = new BigDecimal(Double.toString(secs1));
+		BigDecimal bdDouble2 = new BigDecimal(Double.toString(secs2));
+		BigDecimal result = bdDouble1.subtract(bdDouble2);
+		
+		secs = result.doubleValue(); 
+        
+		return new XSDayTimeDuration(secs);
     }
     
     /**
@@ -315,7 +424,7 @@ public class XSDayTimeDuration extends XSDuration {
      */
 	private XSDuration castToDayTimeDuration(XSAnyType xsAnyType) throws TransformerException {        
 	    if (xsAnyType instanceof XSDuration) {
-            XSDuration xsDuration = (XSDuration) xsAnyType;
+            XSDuration xsDuration = (XSDuration)xsAnyType;
             
             return new XSDayTimeDuration(xsDuration.days(), xsDuration.hours(), 
                                          xsDuration.minutes(), xsDuration.seconds(), 

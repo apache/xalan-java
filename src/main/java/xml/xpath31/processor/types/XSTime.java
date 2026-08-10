@@ -17,7 +17,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An XML Schema data type representation, of the xs:time datatype.
+ * An XML Schema data type representation, for the 
+ * xs:time data type.
  */
 public class XSTime extends XSCalendarType {
 
@@ -36,6 +37,7 @@ public class XSTime extends XSCalendarType {
      * XSTime object is constructed via XPath function call fn:current-time().
      */
     private boolean isPopulatedFromFnCurrentTime = false;
+    
     
     /**
      * Class constructor.
@@ -95,7 +97,7 @@ public class XSTime extends XSCalendarType {
         XSDateTime xsDateTime = XSDateTime.parseDateTime(refDate + strVal);
         if (xsDateTime == null) {
            throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
-                                                                       + "cannot be parsed to a xs:time value.");
+                                                                                   + "cannot be parsed to schema type 'time' value.");
         }
 
         return new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
@@ -172,10 +174,10 @@ public class XSTime extends XSCalendarType {
     }
     
     /**
-     * Check whether this XSTime object has an, timezone associated with it.
+     * Method definition, to determine whether this xs:time
+     * value has a non-null timezone component.
      * 
-     * @return true    if there is a timezone associated with this XSTime object.
-     *                 false otherwise.
+     * @return                          Boolean value true or false
      */
     public boolean isTimetimezoned() {
         return _timezoned;
@@ -235,10 +237,15 @@ public class XSTime extends XSCalendarType {
     }
     
     /**
-     * Determine whether, two XSTime objects are equal.
+     * Method definition, to determine whether this xs:time
+     * value is equal to the supplied xs:time value instance.
+     * 
+     * @param xsDate                    The supplied xs:time value instance
+     * @return                          Boolean value true or false
      */
     public boolean equals(XSTime xsTime) {
-        boolean isXsTimeEqual = false;
+        
+    	boolean result = false;
         
         int hour1 = hour();
         int mins1 = minute();
@@ -250,11 +257,11 @@ public class XSTime extends XSCalendarType {
         XSDuration tz1 = getTimezone();
         XSDuration tz2 = xsTime.getTimezone();
         
-        isXsTimeEqual = ((hour1 == hour2) && (mins1 == mins2) && (secs1 == secs2)) && 
-                                                            isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentTime, 
-                                                                            xsTime.isPopulatedFromFnCurrentTime());
+        result = ((hour1 == hour2) && (mins1 == mins2) && (secs1 == secs2)) && 
+                                                                            isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentTime, 
+                                                                                                     xsTime.isPopulatedFromFnCurrentTime());
         
-        return isXsTimeEqual;
+        return result;
     }
     
     @Override
@@ -276,11 +283,15 @@ public class XSTime extends XSCalendarType {
     }
     
     /**
-     * Determine whether, this XSTime object is less than, the XSTime 
-     * object provided as an argument to this method. 
+     * Method definition, to determine whether this xs:time
+     * value is less than the supplied xs:time value instance.
+     * 
+     * @param xsDate               The supplied xs:time value instance
+     * @return                     Boolean value true or false
      */
     public boolean lt(XSTime xsTime) {
-       boolean isTimeBefore = false;
+       
+    	boolean result = false;
        
        int hour1 = hour();
        int mins1 = minute();
@@ -291,28 +302,32 @@ public class XSTime extends XSCalendarType {
        double secs2 = xsTime.second();
        
        if (hour1 < hour2) {
-    	  isTimeBefore = true; 
+    	  result = true; 
        }
        else if (hour1 == hour2) {
           if (mins1 < mins2) {
-        	 isTimeBefore = true;  
+        	 result = true;  
           }
           else if (mins1 == mins2) {
              if (secs1 < secs2) {
-            	isTimeBefore = true;  
+            	result = true;  
              }
           }
        }
     
-       return isTimeBefore;
+       return result;
     }
     
     /**
-     * Determine whether, this XSTime object is greater than, the 
-     * XSTime object provided as an argument to this method. 
+     * Method definition, to determine whether this xs:time
+     * value is greater than the supplied xs:time value instance.
+     * 
+     * @param xsDate               The supplied xs:time value instance
+     * @return                     Boolean value true or false
      */
     public boolean gt(XSTime xsTime) {
-    	boolean isTimeAfter = false;
+    	
+    	boolean result = false;
         
         int hour1 = hour();
         int mins1 = minute();
@@ -323,61 +338,71 @@ public class XSTime extends XSCalendarType {
         double secs2 = xsTime.second();
         
         if (hour1 > hour2) {
-        	isTimeAfter = true; 
+        	result = true; 
         }
         else if (hour1 == hour2) {
            if (mins1 > mins2) {
-        	   isTimeAfter = true;  
+        	   result = true;  
            }
            else if (mins1 == mins2) {
               if (secs1 > secs2) {
-            	  isTimeAfter = true;  
+            	  result = true;  
               }
            }
         }
      
-        return isTimeAfter;
+        return result;
     }
     
     /**
-     * Implementation of addition operation between this XSTime value, and a
-     * supplied value (as per XPath 3.1 spec, xs:dayTimeDuration is the only 
-     * permissible data type value, that may be added to an xs:time value).
+     * Method definition, to add supplied xs:dayTimeDuration
+     * value to xs:time value, and get a new xs:time value instance.   
+     * 
+     * @param xObj								The supplied xs:dayTimeDuration value 
+     * @return                                  An xs:time value instance                        
+     * @throws TransformerException
      */
     public XObject add(XObject xObject) throws TransformerException {
-         XObject result = null;
+         
+    	 XObject result = null;
          
          if (!(xObject instanceof XSDayTimeDuration)) {
-            throw new TransformerException("XPTY0004 : The value of type xs:dayTimeDuration is the only "
-            		                                                                      + "one that may be added to an xs:time value.");
+            throw new TransformerException("XPTY0004 : The value of schema type 'dayTimeDuration' is the only "
+            		                                                                             + "one that may be added "
+            		                                                                             + "to schema type 'time' value.");
          }
          
-         XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
-         double argValSecs = argVal.value();
+         XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObject;
+         double secsVal = xsDayTimeDuration.value();
+         
          Calendar cal1 = (Calendar)((getCalendar()).clone());
-         cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
+         cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)secsVal * 1000))));
+         
          result = new XSTime(cal1, getTimezone());
          
          return result;
     }
-     
+    
     /**
-     * Implementation of subtraction operation between this XSTime value, and a
-     * supplied value (as per XPath 3.1 spec, xs:time and xs:dayTimeDuration are
-     * the only permissible data type values, that may be subtracted from an 
-     * xs:time value).
+     * Method definition, to subtract supplied xs:time, xs:dayTimeDuration 
+     * value from an xs:time value.
+     * 
+     * @param xObj                            The supplied xs:time, xs:dayTimeDuration
+     *                                        value. 
+     * @return                                An xs:dayTimeDuration, or xs:time value
+     * @throws TransformerException
      */
-     public XObject subtract(XObject xObject) throws TransformerException {
+     public XObject subtract(XObject xObj) throws TransformerException {
           
     	 XObject result = null;
           
-          if (!((xObject instanceof XSTime) || (xObject instanceof XSDayTimeDuration))) {
+          if (!((xObj instanceof XSTime) || (xObj instanceof XSDayTimeDuration))) {
              throw new TransformerException("XPTY0004 : The values of schema type 'time' and 'dayTimeDuration' "
-             		                                                     + "are only ones that may be subtracted "
-             		                                                     + "from an 'time' value.");
+             		                                                                         + "are the only ones that may be subtracted "
+             		                                                                         + "from schema type 'time' value.");
           }
           
-          if (xObject instanceof XSTime) {       	          	          	 
+          if (xObj instanceof XSTime) {       	          	          	 
         	 XPathContext xctxt = new XPathContext();
         	 
         	 XSDuration tz = null;        	 
@@ -386,10 +411,10 @@ public class XSTime extends XSCalendarType {
         	 if (_timezoned) {
         		tz = _tz;
         		
-        		XSTime xsTime = (XSTime)xObject;
+        		XSTime xsTime = (XSTime)xObj;
         		XSDuration tz2 = xsTime.getTimezone();
         		
-        		if (tz2.equals(tz)) {
+        		if (tz.equals(tz2)) {
         		   tzEqual = true;
         		}
         	 }
@@ -401,14 +426,14 @@ public class XSTime extends XSCalendarType {
         		 if (!tzEqual) {
         			 FuncAdjustTimeToTimezone funcAdjustTimeToTimezone = new FuncAdjustTimeToTimezone();
 
-        			 funcAdjustTimeToTimezone.setArg(xObject, 0);
+        			 funcAdjustTimeToTimezone.setArg(xObj, 0);
         			 funcAdjustTimeToTimezone.setArg(tz, 1);
 
-        			 xObject = funcAdjustTimeToTimezone.execute(xctxt);
+        			 xObj = funcAdjustTimeToTimezone.execute(xctxt);
         		 }
 
         		 Calendar cal1 = getCalendar();
-        		 Calendar cal2 = ((XSTime)xObject).getCalendar();
+        		 Calendar cal2 = ((XSTime)xObj).getCalendar();
         		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
 
         		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
@@ -417,11 +442,12 @@ public class XSTime extends XSCalendarType {
         		 // No op 
         	 }        	 
           }          
-          else if (xObject instanceof XSDayTimeDuration) {
-             XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
-             double argValSecs = argVal.value();
+          else if (xObj instanceof XSDayTimeDuration) {
+             XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObj;
+             double secsVal = xsDayTimeDuration.value();
+             
              Calendar cal1 = (Calendar)((getCalendar()).clone());
-             cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
+             cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)secsVal * 1000)) * -1));
              
              result = new XSTime(cal1, getTimezone());
           }
@@ -432,6 +458,32 @@ public class XSTime extends XSCalendarType {
     public int getType() {
         return CLASS_XS_TIME;
     }
+
+    /**
+     * Method definition, to cast the supplied XSAnyType object value
+     * to xs:time value. 
+     * 
+     * @param xsAnyType                         The supplied XSAnyType object value
+     * @return                                  An xs:time value
+     * @throws TransformerException
+     */
+    private XSTime castToTime(XSAnyType xsAnyType) throws TransformerException {        
+        
+    	XSTime result = null;
+        
+        if (xsAnyType instanceof XSTime) {
+           result = (XSTime)xsAnyType;
+        }        
+        else if (xsAnyType instanceof XSDateTime) {
+           XSDateTime xsDateTime = (XSDateTime)xsAnyType;
+           result = new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
+        }
+        else {
+           result = parseTime(xsAnyType.stringValue());
+        }
+        
+        return result;
+    }
     
     public boolean isPopulatedFromFnCurrentTime() {
 		return isPopulatedFromFnCurrentTime;
@@ -440,26 +492,5 @@ public class XSTime extends XSCalendarType {
 	public void setPopulatedFromFnCurrentTime(boolean isPopulatedFromFnCurrentTime) {
 		this.isPopulatedFromFnCurrentTime = isPopulatedFromFnCurrentTime;
 	}
-
-	/**
-     * Do a data type cast, of an XSAnyType argument passed to this method, to
-     * an XSTime object.
-     */
-    private XSTime castToTime(XSAnyType xsAnyType) throws TransformerException {        
-        XSTime xsTime = null;
-        
-        if (xsAnyType instanceof XSTime) {
-           xsTime = (XSTime)xsAnyType;
-        }        
-        else if (xsAnyType instanceof XSDateTime) {
-           XSDateTime xsDateTime = (XSDateTime)xsAnyType;
-           xsTime = new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
-        }
-        else {
-           xsTime = parseTime(xsAnyType.stringValue());
-        }
-        
-        return xsTime;
-    }
 
 }
