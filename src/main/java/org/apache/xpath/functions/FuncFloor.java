@@ -18,6 +18,7 @@
 package org.apache.xpath.functions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -101,37 +102,34 @@ public class FuncFloor extends FunctionDef1Arg
 			throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'floor' argument is not numeric.", srcLocator);
 		}
 		
-		String arg0Str = null;
-		
-		try {
-		    arg0Str = (getArg0AsString(xctxt)).toString();
-		}
-		catch (NumberFormatException ex) {
-			throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'floor' argument is not numeric.", srcLocator);
-		}
-		
 		if (arg0Obj instanceof XSFloat) {
 			XSFloat xsFloatArg = (XSFloat)arg0Obj;
+			
 			if (xsFloatArg.zero()) {
 			    result = new XSFloat(0); 
 			}
 			else if (xsFloatArg.negativeZero()) {
 				result = new XSFloat(-0.0f);
 			}			
-			else {				
-				result = new XSFloat((float)(Math.floor(Float.valueOf(arg0Str))));
+			else {
+				float flt1 = ((XSFloat)arg0Obj).floatValue();
+				
+				result = new XSFloat((float)(Math.floor(flt1)));
 			}
 		}
 		else if (arg0Obj instanceof XSDouble) {
 			XSDouble xsDoubleArg = (XSDouble)arg0Obj;
+			
 			if (xsDoubleArg.zero()) {
 			    result = new XSDouble(0); 
 			}
 			else if (xsDoubleArg.negativeZero()) {
 				result = new XSDouble(-0.0d);
 			}			
-			else {				
-				result = new XSDouble(Math.floor(Double.valueOf(arg0Str)));
+			else {
+				double dbl1 = ((XSDouble)arg0Obj).doubleValue();
+				
+				result = new XSDouble(Math.floor(dbl1));
 			}
 		}
 		else if (arg0Obj instanceof XSByte) {                                    
@@ -159,27 +157,23 @@ public class FuncFloor extends FunctionDef1Arg
 			result = arg0Obj;
 		}
 		else if (arg0Obj instanceof XSDecimal) {			 			
-			if (!arg0Str.contains(".")) {
-			   result = arg0Obj; 	
-			}
-			else {
-			   BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.floor(Double.valueOf(arg0Str))));
-				
-			   result = new XSDecimal(bigDecimal);
-			}
+            XSDecimal xsDecimal = (XSDecimal)arg0Obj;
+			
+			BigDecimal bigDecimal = xsDecimal.getValue();			
+			bigDecimal = bigDecimal.setScale(0, RoundingMode.FLOOR);
+
+			result = new XSDecimal(bigDecimal);
 		}
 		else if (arg0Obj instanceof XNumber) {						
 			XNumber xNumber = (XNumber)arg0Obj;
 			
 			if (xNumber.getXsDecimal() != null) {				
-				if (!arg0Str.contains(".")) {
-					result = xNumber.getXsDecimal(); 	
-				}
-				else {
-					BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.floor(Double.valueOf(arg0Str))));
+                XSDecimal xsDecimal = xNumber.getXsDecimal();
+				
+				BigDecimal bigDecimal = xsDecimal.getValue();			
+				bigDecimal = bigDecimal.setScale(0, RoundingMode.FLOOR);
 
-					result = new XSDecimal(bigDecimal);
-				}
+				result = new XSDecimal(bigDecimal);
 			}
 			else if (xNumber.getXsDouble() != null) {
 				XSDouble xsDoubleArg = xNumber.getXsDouble();
@@ -190,7 +184,7 @@ public class FuncFloor extends FunctionDef1Arg
 					result = new XSDouble(-0.0d);
 				}				
 				else {				
-					result = new XSDouble(Math.floor(Double.valueOf(arg0Str)));
+				    result = new XSDouble(Math.floor(xsDoubleArg.doubleValue()));
 				}
 			}
 			else if (xNumber.getXsInteger() != null) {
@@ -198,6 +192,7 @@ public class FuncFloor extends FunctionDef1Arg
 			}
 			else {
 				XSDouble xsDoubleArg = new XSDouble(xNumber.num());
+				
 				if (xsDoubleArg.zero()) {
 					result = new XSDouble(0); 
 				}
@@ -205,7 +200,7 @@ public class FuncFloor extends FunctionDef1Arg
 					result = new XSDouble(-0.0d);
 				}				
 				else {									
-					double dbl = Math.floor(Double.valueOf(arg0Str));
+                    double dbl = Math.floor(xsDoubleArg.doubleValue());
 					
 					return new XSDecimal(dbl + "");
 				}
@@ -232,7 +227,9 @@ public class FuncFloor extends FunctionDef1Arg
 			   throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'floor' argument is not numeric.", srcLocator);
 			}
 
-			result = new XSDouble(Math.floor(Double.valueOf(arg0Str)));			
+			String arg0Str = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+
+			result = new XSDouble(Math.floor(Double.valueOf(arg0Str)));				
 		}
 
 		return result;

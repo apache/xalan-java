@@ -53,9 +53,11 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
@@ -144,6 +146,34 @@ public class Div extends XPathArithmeticOp
 
 	 if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
 		 return new ResultSequence();  
+	 }
+	 
+	 if (left instanceof XNumber) {
+		 XNumber xNumber = (XNumber)left;		 
+		 
+		 if (xNumber.getXsDecimal() != null) {
+		    left = xNumber.getXsDecimal(); 
+		 }
+		 else if (xNumber.getXsDouble() != null) {
+			left = xNumber.getXsDouble();  
+		 }
+		 else if (xNumber.getXsInteger() != null) {
+		    left = xNumber.getXsInteger();  
+		 }
+	 }
+	 
+	 if (right instanceof XNumber) {
+		 XNumber xNumber = (XNumber)right;		 
+		 
+		 if (xNumber.getXsDecimal() != null) {
+			 right = xNumber.getXsDecimal(); 
+		 }
+		 else if (xNumber.getXsDouble() != null) {
+			 right = xNumber.getXsDouble();  
+		 }
+		 else if (xNumber.getXsInteger() != null) {
+			 right = xNumber.getXsInteger();  
+		 }
 	 }
 	 
 	 XPathSequenceType xpathSeqTypeResultData = getXdmSequenceTypeResultData(left, right);
@@ -303,56 +333,50 @@ public class Div extends XPathArithmeticOp
 			 XMLString xmlStr2 = dtm.getStringValue(nextNode);
 			 rNodeStr = xmlStr2.toString();
 		 }
-	 }
-	 
-	 if (left instanceof XSNumericType) {
-		 if ((right instanceof XSString) || (right instanceof XString)) {
-			java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
-			
-			try {
-			   double dbl2 = Double.valueOf(str2);
-			   right = new XSDouble(dbl2);
-			   
-			   typeName2 = "double";
-			   typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			}
-			catch (NumberFormatException ex) {
-			   // no op	
-			}
-		 }
-	  }
+	 }	 
 	  
-	  if (right instanceof XSNumericType) {
-		  if ((left instanceof XSString) || (left instanceof XString)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
-			  
-			  try {
-				  double dbl1 = Double.valueOf(str1);
-				  left = new XSDouble(dbl1);
+	 if (left instanceof XSAnyAtomicType) {
+		 typeName1 = ((XSAnyAtomicType)left).typeName();
+		 typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	 }
 
-				  typeName1 = "double";
-				  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			  }
-			  catch (NumberFormatException ex) {
-				  // no op	
-			  }
-		  }
-	  }
-	 
-	  // Validating an XPath 3.1 operator 'div' operands compatibility for division	  
-	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
-		 if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
-				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'div' cannot apply values of schema "
-					 																									+ "types " + typeName1 + " and " + typeName2 + ".");
-		 }
-		 else if ("yearMonthDuration".equals(typeName1) && !(isXsBuiltInTypeNumeric(typeName2) || "yearMonthDuration".equals(typeName2))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'div' cannot apply values of schema "
-					 																								    + "types " + typeName1 + " and " + typeName2 + ".");
+	 if (right instanceof XSAnyAtomicType) {
+		 typeName2 = ((XSAnyAtomicType)right).typeName();
+		 typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	 }	 	  
+
+	 java.lang.String typeName1Actual = typeName1;
+	 java.lang.String typeName2Actual = typeName2;
+
+	 if ("untypedAtomic".equals(typeName1)) {
+		 typeName1 = "double";
+		 typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	 }
+
+	 if ("untypedAtomic".equals(typeName2)) {
+		 typeName2 = "double";
+		 typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	 }
+	  
+	  // Validating an XPath 3.1 operator 'div' operands compatibility for division
+	  
+	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {		 
+		 if ("yearMonthDuration".equals(typeName1) && !(isXsBuiltInTypeNumeric(typeName2) || "yearMonthDuration".equals(typeName2))) {
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'div' cannot be applied to values of schema "
+					 																								        + "types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }
 		 else if ("dayTimeDuration".equals(typeName1) && !(isXsBuiltInTypeNumeric(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			 throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'div' cannot apply values of schema "
-					 																								    + "types " + typeName1 + " and " + typeName2 + ".");
+			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'div' cannot be applied to values of schema "
+					 																								        + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+		 }
+		 
+		 boolean type1XsDurationTypes = ("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1));  
+		 
+		 if (!type1XsDurationTypes) {
+			 if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {			 			 
+				throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'div' cannot be applied to values of schema "
+						                                                                                                    + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 }
 		 }
 
 		 List<XMLNSDecl> nsPrefixTable = null;	  
@@ -802,25 +826,117 @@ public class Div extends XPathArithmeticOp
      }
      catch (javax.xml.transform.TransformerException ex) {
          java.lang.String errMesg = ex.getMessage();
+         
          if (errMesg.contains("FOAR0001 : An integer division by zero error")) {
-        	if (right instanceof XSDouble) {
-        		XSDouble xsDouble = (XSDouble)right;
-        		if (xsDouble.negativeZero()) {
-        		   result = new XSDouble(Double.NEGATIVE_INFINITY);	
+        	java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+        	
+        	if (right instanceof XSDouble) {        		        		
+        		XSDouble xsDouble2 = (XSDouble)right;        		        		
+        		
+        		if (left instanceof XSDouble) {
+        			Double dbl1 = ((XSDouble)left).doubleValue();        		           		   
+
+        			if (dbl1 < 0) {
+        				if (xsDouble2.negativeZero()) {
+        					result = new XSDouble(Double.POSITIVE_INFINITY);  
+        				}
+        				else {
+        					result = new XSDouble(Double.NEGATIVE_INFINITY);  
+        				}
+        			}
+        			else if (xsDouble2.negativeZero()) {
+        				result = new XSDouble(Double.NEGATIVE_INFINITY);  
+        			}
+        			else {
+        				result = new XSDouble(Double.POSITIVE_INFINITY); 
+        			}
         		}
-        		else {
-        		   result = new XSDouble(Double.POSITIVE_INFINITY);
+        		else if (left instanceof XSFloat) {
+        			Float flt1 = ((XSFloat)left).floatValue();        		           		   
+
+        			if (flt1 < 0) {
+        				if (xsDouble2.negativeZero()) {
+        					result = new XSDouble(Double.POSITIVE_INFINITY);  
+        				}
+        				else {
+        					result = new XSDouble(Double.NEGATIVE_INFINITY);  
+        				}
+        			}
+        			else if (xsDouble2.negativeZero()) {
+        				result = new XSDouble(Double.NEGATIVE_INFINITY);  
+        			}
+        			else {
+        				result = new XSDouble(Double.POSITIVE_INFINITY); 
+        			}
+        	    }
+        		else if (lStrVal.startsWith("-")) {
+        			if (xsDouble2.negativeZero()) {
+    					result = new XSDouble(Double.POSITIVE_INFINITY);  
+    				}
+    				else {
+    					result = new XSDouble(Double.NEGATIVE_INFINITY);  
+    				}	
         		}
+        		else if (xsDouble2.negativeZero()) {
+    				result = new XSDouble(Double.NEGATIVE_INFINITY);  
+    			}
+    			else {
+    				result = new XSDouble(Double.POSITIVE_INFINITY); 
+    			}
         	}
-        	else if (right instanceof XSDecimal) {
-        		XSDecimal xsDecimal = (XSDecimal)right;
-        		XSDouble xsDouble = new XSDouble(xsDecimal.doubleValue());
-        		if (xsDouble.negativeZero()) {
-         		   result = new XSDouble(Double.NEGATIVE_INFINITY);	
-         		}
-         		else {
-         		   result = new XSDouble(Double.POSITIVE_INFINITY);
-         		}
+        	else if (right instanceof XSFloat) { 
+        		XSFloat xsFloat2 = (XSFloat)right;        		        		
+        		
+        		if (left instanceof XSDouble) {
+        			Double dbl1 = ((XSDouble)left).doubleValue();        		           		   
+
+        			if (dbl1 < 0) {
+        				if (xsFloat2.negativeZero()) {
+        					result = new XSDouble(Double.POSITIVE_INFINITY);  
+        				}
+        				else {
+        					result = new XSDouble(Double.NEGATIVE_INFINITY);  
+        				}
+        			}
+        			else if (xsFloat2.negativeZero()) {
+        				result = new XSDouble(Double.NEGATIVE_INFINITY);  
+        			}
+        			else {
+        				result = new XSDouble(Double.POSITIVE_INFINITY); 
+        			}
+        		}
+        		else if (left instanceof XSFloat) {
+        			Float flt1 = ((XSFloat)left).floatValue();        		           		   
+
+        			if (flt1 < 0) {
+        				if (xsFloat2.negativeZero()) {
+        					result = new XSFloat(Float.POSITIVE_INFINITY);  
+        				}
+        				else {
+        					result = new XSFloat(Float.NEGATIVE_INFINITY);  
+        				}
+        			}
+        			else if (xsFloat2.negativeZero()) {
+        				result = new XSFloat(Float.NEGATIVE_INFINITY);  
+        			}
+        			else {
+        				result = new XSFloat(Float.POSITIVE_INFINITY); 
+        			}
+        	    }
+        		else if (lStrVal.startsWith("-")) {
+        			if (xsFloat2.negativeZero()) {
+    					result = new XSFloat(Float.POSITIVE_INFINITY);  
+    				}
+    				else {
+    					result = new XSFloat(Float.NEGATIVE_INFINITY);  
+    				}	
+        		}
+        		else if (xsFloat2.negativeZero()) {
+    				result = new XSFloat(Float.NEGATIVE_INFINITY);  
+    			}
+    			else {
+    				result = new XSFloat(Float.POSITIVE_INFINITY); 
+    			}
         	}
         	else {
         		throw ex;

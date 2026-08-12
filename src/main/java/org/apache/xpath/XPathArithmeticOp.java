@@ -77,6 +77,8 @@ public class XPathArithmeticOp extends XPath3Operator {
     
     private static final String DIVISION_BY_ZERO = "Division by zero";
     
+    private static final String DIVISION_UNDEFINED = "Division undefined";
+    
     private static final int XPATH_DIV_OP_DEFAULT_SCALE = 18;
 	
     
@@ -106,6 +108,7 @@ public class XPathArithmeticOp extends XPath3Operator {
 			BigInteger lBigInteger = new BigInteger(lXsIntegerStr);
 			String rXsIntegerStr = (rNumber.getXsInteger()).stringValue();
 			BigInteger rBigInteger = new BigInteger(rXsIntegerStr);
+			
 			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
 			   result = new XSInteger(lBigInteger.add(rBigInteger));
 			}
@@ -118,6 +121,7 @@ public class XPathArithmeticOp extends XPath3Operator {
 			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			   BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr); 
 			   BigDecimal rBigDecimal = new BigDecimal(rXsIntegerStr);			   
+			   
 			   try {				  
 			      result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
 			   }
@@ -146,25 +150,33 @@ public class XPathArithmeticOp extends XPath3Operator {
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsDouble()) {
-			Double lDbl = Double.valueOf((lNumber.getXsDouble()).stringValue());
-			Double rDbl = Double.valueOf((rNumber.getXsDouble()).stringValue());
+			XSDouble xsDouble1 = lNumber.getXsDouble();
+			XSDouble xsDouble2 = rNumber.getXsDouble();
+			
+			Double dbl1 = Double.valueOf(xsDouble1.stringValue());
+			Double dbl2 = Double.valueOf(xsDouble2.stringValue());
+			
+			if (dbl1.isNaN() || dbl2.isNaN()) {
+			   return new XSDouble(Double.NaN);
+			}
+			
 			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDouble(lDbl + rDbl);
+			   result = new XSDouble(dbl1 + dbl2);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDouble(lDbl - rDbl);				
+			   result = new XSDouble(dbl1 - dbl2);				
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
-			   result = new XSDouble(lDbl * rDbl);				
+			   result = new XSDouble(dbl1 * dbl2);				
 			}
 			else if (opSymbol.equals(OP_SYMBOL_DIV)) {			   
-			   double lDouble = lDbl.doubleValue();
-			   double rDouble = rDbl.doubleValue();
+			   double lDouble = dbl1.doubleValue();
+			   double rDouble = dbl2.doubleValue();
 			   
 			   result = doubleDiv(lDouble, rDouble);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
-			   result = new XSDecimal(BigDecimal.valueOf(lDbl.doubleValue() % rDbl.doubleValue()));	
+			   result = new XSDecimal(BigDecimal.valueOf(dbl1.doubleValue() % dbl2.doubleValue()));	
 			}			
 		}
 		else if (lNumber.isXsInteger() && rNumber.isXsDecimal()) {
@@ -175,7 +187,15 @@ public class XPathArithmeticOp extends XPath3Operator {
 		}
 		else if (lNumber.isXsInteger() && rNumber.isXsDouble()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
-			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
+			
+			XSDouble xsDouble = rNumber.getXsDouble();
+			Double dbl = xsDouble.doubleValue();
+			
+			if (dbl.isNaN()) {
+			   return new XSDouble(Double.NaN);	
+			}
+			
+			BigDecimal rBigDecimal = new BigDecimal(xsDouble.stringValue());
 			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
@@ -187,40 +207,66 @@ public class XPathArithmeticOp extends XPath3Operator {
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsDouble()) {
 			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
-			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
+			
+			XSDouble xsDouble = rNumber.getXsDouble();
+			Double dbl = xsDouble.doubleValue();
+			
+			if (dbl.isNaN()) {
+			   return new XSDouble(Double.NaN);	
+			}
+			
+			BigDecimal rBigDecimal = new BigDecimal(xsDouble.stringValue());
 			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}
-		else if (lNumber.isXsDouble() && rNumber.isXsInteger()) {
-			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
+		else if (lNumber.isXsDouble() && rNumber.isXsInteger()) {			
+			XSDouble xsDouble = lNumber.getXsDouble();
+			Double dbl = xsDouble.doubleValue();
+			
+			if (dbl.isNaN()) {
+			   return xsDouble;
+			}
+			
+			BigDecimal lBigDecimal = BigDecimal.valueOf(dbl);
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue());
 			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}      
 		else if (lNumber.isXsDouble() && rNumber.isXsDecimal()) {
-			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
+			XSDouble xsDouble = lNumber.getXsDouble();
+			Double dbl = xsDouble.doubleValue();
+			
+			if (dbl.isNaN()) {
+			   return xsDouble;
+			}
+			
+			BigDecimal lBigDecimal = new BigDecimal(xsDouble.stringValue());
 			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
 			
 			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol, elemTemplateElement);
 		}      
 		else {
-			double lDouble = lNumber.num();
-			double rDouble = rNumber.num();
+			Double dbl1 = lNumber.num();
+			Double dbl2 = rNumber.num();
+			
+			if (dbl1.isNaN() || dbl2.isNaN()) {
+			   return new XSDouble(Double.NaN);
+			}
 			
 			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDouble(lDouble + rDouble);
+			   result = new XSDouble(dbl1 + dbl2);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDouble(lDouble - rDouble);				
+			   result = new XSDouble(dbl1 - dbl2);				
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
-			   result = new XSDouble(lDouble * rDouble);				
+			   result = new XSDouble(dbl1 * dbl2);				
 			}
 			else if (opSymbol.equals(OP_SYMBOL_DIV)) {			   
-			   result = doubleDiv(lDouble, rDouble);
+			   result = doubleDiv(dbl1, dbl2);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
-			   result = new XSDouble(lDouble % rDouble);	
+			   result = new XSDouble(dbl1 % dbl2);	
 			}
 		}
 
@@ -309,6 +355,9 @@ public class XPathArithmeticOp extends XPath3Operator {
 		}
 		else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
 			error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}, elemTemplateElement); 
+		}
+		else if (exceptionMesg.startsWith(DIVISION_UNDEFINED)) {
+			result = new XSDouble(Double.NaN);
 		}
 
 		return result;
@@ -407,6 +456,7 @@ public class XPathArithmeticOp extends XPath3Operator {
 																					"unsignedInt", "unsignedShort", "unsignedByte", "positiveInteger",
 																					"nonPositiveInteger", "negativeInteger"};
 		List<java.lang.String> strList = Arrays.asList(built_in_xs1_numeric_type_arr);
+		
 		if (strList.contains(typeName)) {
 			result = true; 
 		}
@@ -429,6 +479,7 @@ public class XPathArithmeticOp extends XPath3Operator {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     	docBuilderFactory.setNamespaceAware(true);
     	DocumentBuilder docBuilder = null; 
+    	
     	try {
     	   docBuilder = docBuilderFactory.newDocumentBuilder();
     	}
@@ -558,7 +609,9 @@ public class XPathArithmeticOp extends XPath3Operator {
 		}
 		else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			try {
-			   result = new XSDecimal(lBigDecimal.divide(rBigDecimal));				
+			   BigDecimal bigDecimal1 = lBigDecimal.divide(rBigDecimal);
+				
+			   result = new XSDecimal(bigDecimal1);				
 			}
 			catch (ArithmeticException ex) {
 			   java.lang.String exceptionMesg = ex.getMessage();

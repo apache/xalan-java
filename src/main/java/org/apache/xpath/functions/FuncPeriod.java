@@ -79,6 +79,7 @@ public class FuncPeriod extends FunctionMultiArgs {
 		final int contextNode = xctxt.getCurrentNode(); 
 		
 		XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
+		
 		if (xpath3CtxtItem != null) {
 			if (xpath3CtxtItem instanceof XPathMap) {
 			   if ((m_arg0 != null) && (m_arg1 == null)) {
@@ -165,10 +166,13 @@ public class FuncPeriod extends FunctionMultiArgs {
 			}
 			else if (xpath3CtxtItem instanceof XPathNamedFunctionReference) {
 				XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)xpath3CtxtItem;    					   
+				
 				String localName = xpathNamedFunctionReference.getFuncName();
 				String fNamespace = xpathNamedFunctionReference.getFuncNamespace();
+				
 				Short arity = xpathNamedFunctionReference.getArity();
 				int argCount = getFunctionArgumentCount();				
+				
 				if ((int)arity == argCount) {					
 					FunctionTable funcTable = xctxt.getFunctionTable();
 					
@@ -190,9 +194,11 @@ public class FuncPeriod extends FunctionMultiArgs {
 					if (funcId != null) {
 						Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
 						List<Short> funcDefinedArity = Arrays.asList(function.getArity());
+						
 						if (funcDefinedArity.contains(arity)) {
 							for (int idx = 0; idx < argCount; idx++) {									 									
 								XObject argValue = getFuncCallArgumentValue(idx, xctxt);
+								
 								try {
 									function.setArg(argValue, idx);
 								} 
@@ -214,8 +220,10 @@ public class FuncPeriod extends FunctionMultiArgs {
 						// This may handle, XSL stylesheet function call, and 
 						// XPath 3.1 schema type constructor function call.						
 						XSL3ConstructorOrExtensionFunction xsl3ConsExtFuncObj = new XSL3ConstructorOrExtensionFunction(fNamespace, localName, null);
+						
 						for (int idx = 0; idx < argCount; idx++) {
 							XObject argValue = getFuncCallArgumentValue(idx, xctxt);
+							
 							try {
 								xsl3ConsExtFuncObj.setArg(argValue, idx);
 							} 

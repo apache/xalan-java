@@ -18,6 +18,7 @@
 package org.apache.xpath.functions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -101,15 +102,6 @@ public class FuncCeiling extends FunctionDef1Arg
 			throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'ceiling' argument is not numeric.", srcLocator);
 		}
 		
-		String arg0Str = null;
-		
-		try {
-		    arg0Str = (getArg0AsString(xctxt)).toString();
-		}
-		catch (NumberFormatException ex) {
-			throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'ceiling' argument is not numeric.", srcLocator);
-		}
-		
 		if (arg0Obj instanceof XSFloat) {
 			XSFloat xsFloatArg = (XSFloat)arg0Obj;
 			
@@ -171,30 +163,27 @@ public class FuncCeiling extends FunctionDef1Arg
 			result = arg0Obj;
 		}
 		else if (arg0Obj instanceof XSDecimal) {
-			if (!arg0Str.contains(".")) {
-				result = arg0Obj; 	
-			}
-			else {
-				BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.ceil(Double.valueOf(arg0Str))));
+			XSDecimal xsDecimal = (XSDecimal)arg0Obj;
+			
+			BigDecimal bigDecimal = xsDecimal.getValue();			
+			bigDecimal = bigDecimal.setScale(0, RoundingMode.CEILING);
 
-				result = new XSDecimal(bigDecimal);
-			}
+			result = new XSDecimal(bigDecimal);
 		}
 		else if (arg0Obj instanceof XNumber) {						
 			XNumber xNumber = (XNumber)arg0Obj;
 			
 			if (xNumber.getXsDecimal() != null) {
-				if (!arg0Str.contains(".")) {
-					result = xNumber.getXsDecimal(); 	
-				}
-				else {
-					BigDecimal bigDecimal = BigDecimal.valueOf((long)(Math.ceil(Double.valueOf(arg0Str))));
+				XSDecimal xsDecimal = xNumber.getXsDecimal();
+				
+				BigDecimal bigDecimal = xsDecimal.getValue();			
+				bigDecimal = bigDecimal.setScale(0, RoundingMode.CEILING);
 
-					result = new XSDecimal(bigDecimal);
-				} 
+				result = new XSDecimal(bigDecimal);
 			}
 			else if (xNumber.getXsDouble() != null) {
 				XSDouble xsDoubleArg = xNumber.getXsDouble();
+				
 				if (xsDoubleArg.zero()) {
 					result = new XSDouble(0); 
 				}
@@ -205,7 +194,7 @@ public class FuncCeiling extends FunctionDef1Arg
 					result = new XSDouble(-0.0d); 
 				}
 				else {				
-					result = new XSDouble(Math.ceil(Double.valueOf(arg0Str)));
+					result = new XSDouble(Math.ceil(xsDoubleArg.doubleValue()));
 				}
 			}
 			else if (xNumber.getXsInteger() != null) {
@@ -224,7 +213,7 @@ public class FuncCeiling extends FunctionDef1Arg
 					result = new XSDouble(-0.0d); 
 				}
 				else {									
-					double dbl = Math.ceil(Double.valueOf(arg0Str));
+					double dbl = Math.ceil(xsDoubleArg.doubleValue());
 					
 					return new XSDecimal(dbl + "");
 				}
@@ -250,6 +239,8 @@ public class FuncCeiling extends FunctionDef1Arg
 			if ((arg0Obj instanceof XSString) || (arg0Obj instanceof XString)) {
 			   throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'ceiling' argument is not numeric.", srcLocator);
 			}
+			
+			String arg0Str = XslTransformEvaluationHelper.getStrVal(arg0Obj);
 
 			result = new XSDouble(Math.ceil(Double.valueOf(arg0Str)));			
 		}

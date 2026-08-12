@@ -129,15 +129,16 @@ class Lexer
   }
 
   /**
-   * Walk through the expression and build a token queue, and a map of the top-level
-   * elements.
+   * Walk through an XPath expression string, and build a 
+   * token queue, and a map of the top-level elements.
    * 
-   * @param pat XSLT Expression
-   * @param targetStrings Vector to hold Strings, may be null
+   * @param pat               An xslt expression, string
+   * @param strVector         Vector to hold strings values. 
+   *                          This may be null.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  void tokenize(String pat, Vector targetStrings)
+  void tokenize(String pat, Vector strVector)
           throws javax.xml.transform.TransformerException
   {
 
@@ -148,12 +149,12 @@ class Lexer
 
 	  /**
 	   * Use a conservative estimate that the OpMapVector needs about
-	   * five time the length of the input path expression, to a maximum
+	   * five time the length of an XPath expression string, to a maximum
 	   * of MAXTOKENQUEUESIZE * 5. If the OpMapVector needs to grow, grow
 	   * it freely (second argument to constructor).
 	   */	  
 	  int initTokQueueSize = ((nChars < XPathOpMap.MAXTOKENQUEUESIZE) ? nChars :  XPathOpMap.MAXTOKENQUEUESIZE) * 5;
-	  m_compiler.m_opMap = new OpMapVector(initTokQueueSize, XPathOpMap.BLOCKTOKENQUEUESIZE * 5, XPathOpMap.MAPINDEX_LENGTH);   
+	  m_compiler.m_opMap = new OpMapVector(initTokQueueSize, XPathOpMap.SIZE1 * 5, XPathOpMap.MAPINDEX_LENGTH);   
 
 	  // Nesting of '[' so we can know if the given element should be
 	  // counted inside the m_patternMap.
@@ -368,9 +369,9 @@ class Lexer
 			  {
 				  if ('|' == c)
 				  {
-					  if (null != targetStrings)
+					  if (strVector != null)
 					  {
-						  recordTokenString(targetStrings);
+						  recordTokenString(strVector);
 					  }
 
 					  isStartOfPat = true;
@@ -459,9 +460,9 @@ class Lexer
 	  {
 		  m_processor.error(XPATHErrorResources.ER_EMPTY_EXPRESSION, null);  //"Empty expression!");
 	  }
-	  else if (null != targetStrings)
+	  else if (strVector != null)
 	  {
-		  recordTokenString(targetStrings);
+		  recordTokenString(strVector);
 	  }
 
 	  m_processor.m_queueMark = 0;
@@ -563,7 +564,7 @@ class Lexer
 	  {
 		  Integer itok = (Integer) Keywords.getKeyWord(key);
 
-		  tok = (null != itok) ? itok.intValue() : 0;
+		  tok = (itok != null) ? itok.intValue() : 0;
 	  }
 	  catch (NullPointerException npe)
 	  {
@@ -670,26 +671,26 @@ class Lexer
 		  prefix = pat.substring(startSubstring, posOfNSSep);
 	  }
 
-	  String uName = null;
+	  String nsName1 = null;
 
-	  if ((null != m_namespaceContext) && !prefix.equals("*") && !prefix.equals("xmlns"))
+	  if ((m_namespaceContext != null) && !prefix.equals("*") && !prefix.equals("xmlns"))
 	  {
 		  try
 		  {
 			  if (prefix.length() > 0) {
-				  uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);           
-				  if (uName == null) {
+				  nsName1 = ((PrefixResolver)m_namespaceContext).getNamespaceForPrefix(prefix);           
+				  if (nsName1 == null) {
 					  ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
 					  if (exprParent instanceof ElemTemplateElement) {
 						  List<XMLNSDecl> prefixTable = ((ElemTemplateElement)exprParent).getPrefixTable();
 						  if (prefixTable != null) {
-							  uName = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
+							  nsName1 = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
 						  }
 					  }
 				  }
 
-				  if ((uName == null) && (SharedLexerState.m_nsMap != null)) {
-					  uName = getNsForPrefixLexer(prefix);
+				  if ((nsName1 == null) && (SharedLexerState.m_nsMap != null)) {
+					  nsName1 = getNsForPrefixLexer(prefix);
 				  }
 			  }
 			  else
@@ -716,46 +717,46 @@ class Lexer
 					  return -1;
 				  }
 				  else {
-					  uName = ((PrefixResolver)m_namespaceContext).getNamespaceForPrefix(prefix);
+					  nsName1 = ((PrefixResolver)m_namespaceContext).getNamespaceForPrefix(prefix);
 					  
-					  if (uName == null) {
+					  if (nsName1 == null) {
 						  ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
 						  if (exprParent instanceof ElemTemplateElement) {
 							  List<XMLNSDecl> prefixTable = ((ElemTemplateElement)exprParent).getPrefixTable();
 							  if (prefixTable != null) {
-								  uName = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
+								  nsName1 = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
 							  }
 						  }
 					  }
 
-					  if ((uName == null) && (SharedLexerState.m_nsMap != null)) {
-						  uName = getNsForPrefixLexer(prefix);
+					  if ((nsName1 == null) && (SharedLexerState.m_nsMap != null)) {
+						  nsName1 = getNsForPrefixLexer(prefix);
 					  }
 				  }
 			  }
 		  }
 		  catch (ClassCastException cce)
 		  {
-			  uName = m_namespaceContext.getNamespaceForPrefix(prefix);
+			  nsName1 = m_namespaceContext.getNamespaceForPrefix(prefix);
 			  
-			  if (uName == null) {
+			  if (nsName1 == null) {
 				  ExpressionNode exprParent = (ExpressionNode)m_sourceLocator;
 				  if (exprParent instanceof ElemTemplateElement) {
 					  List<XMLNSDecl> prefixTable = ((ElemTemplateElement)exprParent).getPrefixTable();
 					  if (prefixTable != null) {
-						  uName = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
+						  nsName1 = XslTransformEvaluationHelper.getNsUriFromPrefix(prefix, prefixTable);
 					  }
 				  }
 			  }
 
-			  if ((uName == null) && (SharedLexerState.m_nsMap != null)) {
-				  uName = getNsForPrefixLexer(prefix);
+			  if ((nsName1 == null) && (SharedLexerState.m_nsMap != null)) {
+				  nsName1 = getNsForPrefixLexer(prefix);
 			  }
 		  }
 	  }
 	  else
 	  {
-		  uName = prefix;
+		  nsName1 = prefix;
 	  }
 
 	  /**
@@ -788,11 +789,11 @@ class Lexer
 		  }
 	  }
 
-	  if ((null != uName) && (uName.length() > 0))
+	  if ((nsName1 != null) && (nsName1.length() > 0))
 	  {
 		  if (!isLetExprNsCheckOk) 
 		  {
-			  addToTokenQueue(uName);
+			  addToTokenQueue(nsName1);
 			  addToTokenQueue(":");
 
 			  String s = pat.substring(posOfNSSep + 1, posOfScan);
@@ -839,7 +840,7 @@ class Lexer
 			  }    
 		  }
 		  else if (m_nsBindingRequired) {
-			  if (uName != null) {
+			  if (nsName1 != null) {
 				  m_nsBound = true;
 			  }
 			  else {
@@ -1085,7 +1086,7 @@ class Lexer
 	 int nChars = pat.length();
 
  	 int initTokQueueSize = ((nChars < XPathOpMap.MAXTOKENQUEUESIZE) ? nChars :  XPathOpMap.MAXTOKENQUEUESIZE) * 5;
- 	 m_compiler.m_opMap = new OpMapVector(initTokQueueSize, XPathOpMap.BLOCKTOKENQUEUESIZE * 5, XPathOpMap.MAPINDEX_LENGTH);
+ 	 m_compiler.m_opMap = new OpMapVector(initTokQueueSize, XPathOpMap.SIZE1 * 5, XPathOpMap.MAPINDEX_LENGTH);
  	 
  	 xpathOpMap.setOp(0, OpCodes.OP_XPATH);
  	 xpathOpMap.setOp(XPathOpMap.MAPINDEX_LENGTH, 2);

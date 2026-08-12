@@ -711,9 +711,9 @@ public class XSL3FunctionService {
 
     					String errMesgStrTrailingSuffix = ((exceptionMesgStr != null) && (exceptionMesgStr.length() > 0)) ? " "+ exceptionMesgStr : ""; 
 
-    					throw new TransformerException("FODC0005 : An XPath dynamic error has occured, evaluating "
-																	    							+ "constructor function call for xs:" + funcName + "." + 
-																	    							errMesgStrTrailingSuffix, srcLocator);
+    					throw new TransformerException("FODT0001 : An XPath dynamic error has occured, evaluating "
+																	    							  + "constructor function call for xs:" + funcName + "." + 
+																	    							    errMesgStrTrailingSuffix, srcLocator);
     				}
     			}
     			else {

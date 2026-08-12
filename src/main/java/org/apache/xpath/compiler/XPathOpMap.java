@@ -64,21 +64,23 @@ public class XPathOpMap
   }
 
   /**
-   * The starting size of the token queue.
+   * The starting size for an XPath parse 
+   * token queue.
    */
   static final int MAXTOKENQUEUESIZE = 500;
 
   /**
-   * Amount to grow token queue when it becomes full
+   * The size by which token queue should grow,
+   * when token queue becomes full.
    */
-  static final int BLOCKTOKENQUEUESIZE = 500;
+  static final int SIZE1 = 500;
   
   /**
    * TokenStack is the queue of used tokens. The current token is the token at the
    * end of the m_tokenQueue. The idea is that the queue can be marked and a sequence
    * of tokens can be reused.
    */
-  ObjectVector m_tokenQueue = new ObjectVector(MAXTOKENQUEUESIZE, BLOCKTOKENQUEUESIZE);
+  ObjectVector m_tokenQueue = new ObjectVector(MAXTOKENQUEUESIZE, SIZE1);
 
   /**
    * Get the XPath as a list of tokens.

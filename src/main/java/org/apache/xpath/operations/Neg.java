@@ -17,10 +17,17 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
@@ -42,18 +49,93 @@ public class Neg extends XPath3UnaryOperator
    */
   public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {
-    XObject result = null;
     
-    if (right instanceof XSNumericType) {
-       java.lang.String strValue = ((XSNumericType)right).stringValue();
-       
-       result = new XNumber(-1 * (Double.valueOf(strValue))); 
-    }
-    else {
-       result = new XNumber(-right.num());  
-    }
-    
-    return result;
+	  XObject result = null;
+
+	  if (right instanceof XSNumericType) {
+		  java.lang.String str1 = ((XSNumericType)right).stringValue();
+		  
+		  if (right instanceof XSInteger) {
+			  BigInteger bigInt = new BigInteger(str1);
+			  bigInt = bigInt.multiply(BigInteger.valueOf(-1));
+
+			  result = new XSInteger(bigInt);
+		  }
+		  else if (right instanceof XSDecimal) {
+			  BigDecimal bigdecimal = new BigDecimal(str1);
+			  bigdecimal = bigdecimal.multiply(BigDecimal.valueOf(-1));
+			  
+			  result = new XSDecimal(bigdecimal); 
+		  }
+		  else if (right instanceof XSDouble) {
+			  Double dbl1 = ((XSDouble)right).doubleValue();
+			  
+			  if (dbl1 == Double.POSITIVE_INFINITY) {
+				  result = new XSDouble(Double.NEGATIVE_INFINITY); 
+			  }
+			  else if (dbl1 == Double.NEGATIVE_INFINITY) {
+				  result = new XSDouble(Double.POSITIVE_INFINITY); 
+			  }
+			  else if (!dbl1.isNaN()) {
+				  result = new XSDouble(dbl1 * -1);
+			  }
+			  else {
+				  result = new XSDouble(Double.NaN);
+			  }
+		  }
+          else if (right instanceof XSFloat) {
+        	  Float flt1 = ((XSFloat)right).floatValue();
+
+        	  if (flt1 == Float.POSITIVE_INFINITY) {
+        		  result = new XSFloat(Float.NEGATIVE_INFINITY); 
+        	  }
+        	  else if (flt1 == Float.NEGATIVE_INFINITY) {
+        		  result = new XSFloat(Float.POSITIVE_INFINITY); 
+        	  }
+        	  else if (!flt1.isNaN()) {
+        		  result = new XSFloat(flt1 * -1);
+        	  }
+        	  else {
+        		  result = new XSFloat(Float.NaN);
+        	  }
+		  }
+	  }
+	  else {
+		  XNumber xNumber = (XNumber)right;
+		  
+		  XNumber xNumNew = new XNumber(xNumber.num() * -1);
+
+		  if (xNumber.getXsDecimal() != null) {
+			  XSDecimal xsDecimal = xNumber.getXsDecimal();
+
+			  BigDecimal bigdecimal = xsDecimal.getValue();    	  
+			  bigdecimal = bigdecimal.multiply(BigDecimal.valueOf(-1));
+
+			  xsDecimal = new XSDecimal(bigdecimal);    	  
+			  xNumNew.setXsDecimal(xsDecimal);
+		  }
+		  else if (xNumber.getXsDouble() != null) {
+			  XSDouble xsDouble = xNumber.getXsDouble();
+
+			  double dbl1 = xsDouble.doubleValue() * -1;
+
+			  xsDouble = new XSDouble(dbl1);
+			  xNumNew.setXsDouble(xsDouble);
+		  }
+		  else if (xNumber.getXsInteger() != null) {
+			  XSInteger xsInteger = xNumber.getXsInteger();
+
+			  BigInteger bigInt = xsInteger.intValue();
+			  bigInt = bigInt.multiply(BigInteger.valueOf(-1));
+
+			  xsInteger = new XSInteger(bigInt);
+			  xNumNew.setXsInteger(xsInteger);
+		  }
+
+		  result = xNumNew;  
+	  }
+
+	  return result;
   }
   
   /**

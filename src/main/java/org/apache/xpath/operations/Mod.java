@@ -53,8 +53,10 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
@@ -142,6 +144,34 @@ public class Mod extends XPathArithmeticOp
 	  
 	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
 		 return new ResultSequence();  
+	  }
+	  
+	  if (left instanceof XNumber) {
+		  XNumber xNumber = (XNumber)left;		 
+
+		  if (xNumber.getXsDecimal() != null) {
+			  left = xNumber.getXsDecimal(); 
+		  }
+		  else if (xNumber.getXsDouble() != null) {
+			  left = xNumber.getXsDouble();  
+		  }
+		  else if (xNumber.getXsInteger() != null) {
+			  left = xNumber.getXsInteger();  
+		  }
+	  }
+
+	  if (right instanceof XNumber) {
+		  XNumber xNumber = (XNumber)right;		 
+
+		  if (xNumber.getXsDecimal() != null) {
+			  right = xNumber.getXsDecimal(); 
+		  }
+		  else if (xNumber.getXsDouble() != null) {
+			  right = xNumber.getXsDouble();  
+		  }
+		  else if (xNumber.getXsInteger() != null) {
+			  right = xNumber.getXsInteger();  
+		  }
 	  }
 	  
 	  XPathSequenceType xpathSeqTypeResultData = getXdmSequenceTypeResultData(left, right);
@@ -303,46 +333,36 @@ public class Mod extends XPathArithmeticOp
 		  }
 	  }
 	  
-	  if (left instanceof XSNumericType) {
-		  if ((right instanceof XSString) || (right instanceof XString)) {
-			  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
-			  
-			  try {
-				  double dbl2 = Double.valueOf(str2);
-				  right = new XSDouble(dbl2);
-
-				  typeName2 = "double";
-				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			  }
-			  catch (NumberFormatException ex) {
-				  // no op	
-			  }
-		  }
+	  if (left instanceof XSAnyAtomicType) {
+		  typeName1 = ((XSAnyAtomicType)left).typeName();
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
 
-	  if (right instanceof XSNumericType) {
-		  if ((left instanceof XSString) || (left instanceof XString)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
-			  
-			  try {
-				  double dbl1 = Double.valueOf(str1);
-				  left = new XSDouble(dbl1);
+	  if (right instanceof XSAnyAtomicType) {
+		  typeName2 = ((XSAnyAtomicType)right).typeName();
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	  }	 	  
 
-				  typeName2 = "double";
-				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			  }
-			  catch (NumberFormatException ex) {
-				  // no op	
-			  }
-		  }
+	  java.lang.String typeName1Actual = typeName1;
+	  java.lang.String typeName2Actual = typeName2;
+
+	  if ("untypedAtomic".equals(typeName1)) {
+		  typeName1 = "double";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
+
+	  if ("untypedAtomic".equals(typeName2)) {
+		  typeName2 = "double";
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  	  	  
+	  // Validating an XPath 3.1 operator 'mod' operands compatibility for evaluating, mod
 	  
-	  // Validating an XPath 3.1 operator 'mod' operands compatibility for computing modulus	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'mod' cannot apply values of schema "
-					                                                                                                        + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'mod' cannot apply values of schema "
+					                                                                                                        + "types " + typeName1Actual + " and " + typeName2Actual + ".");
 		  }			 
 
 		  List<XMLNSDecl> nsPrefixTable = null;	  
@@ -440,6 +460,74 @@ public class Mod extends XPathArithmeticOp
 	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
 		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
 	  }
+	  
+	  if (left instanceof XSDouble) {
+		  if (right instanceof XSNumericType) {
+			 java.lang.String str2 = ((XSNumericType)right).stringValue();
+			 if (!("INF".equals(str2) || "-INF".equals(str2) || "NaN".equals(str2))) {
+				XSDouble xsDouble1 = (XSDouble)left;
+				if (xsDouble1.infinite()) {
+				   return new XSDouble(Double.NaN);
+				}
+			 }
+		  }
+	  }
+	  
+      if (left instanceof XSFloat) {
+    	  if (right instanceof XSNumericType) {
+ 			 java.lang.String str2 = ((XSNumericType)right).stringValue();
+ 			 if (!("INF".equals(str2) || "-INF".equals(str2) || "NaN".equals(str2))) {
+ 				XSFloat xsFloat1 = (XSFloat)left;
+ 				if (xsFloat1.infinite()) {
+ 				   return new XSDouble(Double.NaN);
+ 				}
+ 			 }
+ 		  } 
+	  }
+      
+      if (left instanceof XSNumericType) {
+    	  java.lang.String str1 = ((XSNumericType)left).stringValue(); 
+    	  if (!("INF".equals(str1) || "-INF".equals(str1) || "NaN".equals(str1))) {
+    		 if (right instanceof XSDouble) {
+    			XSDouble xsDouble = (XSDouble)right;
+    			java.lang.String str2 = xsDouble.stringValue();
+    			if ("INF".equals(str2)) {
+    			   return left;
+    			}
+    		 }
+    	  }
+      }
+      
+      if (left instanceof XSNumericType) {
+    	  java.lang.String str1 = ((XSNumericType)left).stringValue(); 
+    	  if (!("INF".equals(str1) || "-INF".equals(str1) || "NaN".equals(str1))) {
+    		 if (right instanceof XSFloat) {
+    			 XSFloat xsFloat = (XSFloat)right;
+    			java.lang.String str2 = xsFloat.stringValue();
+    			if ("INF".equals(str2)) {
+    			   return left;
+    			}
+    		 }
+    	  }
+      }
+      
+      if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
+    	  java.lang.String str1 = ((XSNumericType)left).stringValue(); 
+    	  java.lang.String str2 = ((XSNumericType)right).stringValue();
+    	  
+    	  if ("INF".equals(str1) && "INF".equals(str2)) {
+    		  return new XSDouble(Double.NaN); 
+    	  }
+    	  else if ("INF".equals(str1) && "-INF".equals(str2)) {
+    		  return new XSDouble(Double.NaN);
+    	  }
+    	  else if ("-INF".equals(str1) && "INF".equals(str2)) {
+    		  return new XSDouble(Double.NaN);
+    	  }
+          else if ("-INF".equals(str1) && "-INF".equals(str2)) {
+        	  return new XSDouble(Double.NaN);
+    	  }
+      }
 
 	  if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
           java.lang.String lStrVal = ((XSUntyped)left).stringValue();

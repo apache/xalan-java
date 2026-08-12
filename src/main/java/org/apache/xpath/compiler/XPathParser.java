@@ -7628,57 +7628,66 @@ public class XPathParser
   protected void Number() throws javax.xml.transform.TransformerException
   {
 
-    if (m_token != null)
-    {    	
-      XNumber xNumber = null;
-      String numberStrValue = "";
-      
-      int prevQueueMark = m_queueMark;
-      
-      try
-      {       	  
-    	  if ((m_token.endsWith("e") || m_token.endsWith("E")) && (lookahead('+', 1) || lookahead('-', 1))) {
-    		  numberStrValue = m_token;
-    		  nextToken();
-    		  numberStrValue += m_token;
-    		  nextToken();
-    		  numberStrValue += m_token;
-    	  }
-    	  else {
-    		  numberStrValue = m_token;
-    	  }
-    	  
-    	  BigDecimal bigDecimal = new BigDecimal(numberStrValue);
-    	  xNumber = new XNumber(bigDecimal.doubleValue());
-    	  
-          if (!(numberStrValue.contains(".") || numberStrValue.contains("e") || numberStrValue.contains("E"))) {
-        	  // If a numeric literal doesn't contain ., e and E, then the literal is of type xs:integer        	          	  
-        	  xNumber.setXsInteger(new XSInteger(numberStrValue));
-          }
-          else if (numberStrValue.contains(".") && !(numberStrValue.contains("e") || numberStrValue.contains("E"))) {
-        	  // If a numeric literal contains ., but not e and E, then the literal is of type xs:decimal        	  
-        	  xNumber.setXsDecimal(new XSDecimal(numberStrValue));
-          }
-          else if (numberStrValue.contains("e") || numberStrValue.contains("E")) {
-        	  // If a numeric literal contains e or E, then the literal is of type xs:double        	  
-        	  xNumber.setXsDouble(new XSDouble(numberStrValue));
-          }
-      }
-      catch (Exception ex)
-      {
-    	  error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER, new Object[]{ numberStrValue });
-      }
+	  if (m_token != null)
+	  {    	
+		  XNumber xNumber = null;
 
-      m_ops.m_tokenQueue.setElementAt(xNumber, m_queueMark - 1);
-      m_ops.setOp(m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH), m_queueMark - 1);
-      m_ops.setOp(XPathOpMap.MAPINDEX_LENGTH, m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) + 1);
+		  String str1 = "";
 
-      nextToken();
-      
-      if ((prevQueueMark == 1) && (m_token != null) && lookahead(null, 1)) {
-    	 error(XPATHErrorResources.ER_XPATH_NUMERIC_EXPR_SUFFIX, new Object[]{ m_token }); 
-      }
-    }
+		  int prevQueueMark = m_queueMark;
+
+		  try
+		  {       	  
+			  if ((m_token.endsWith("e") || m_token.endsWith("E")) && (lookahead('+', 1) || lookahead('-', 1))) {
+				  str1 = m_token;
+				  nextToken();
+				  str1 += m_token;
+				  nextToken();
+				  str1 += m_token;
+			  }
+			  else {
+				  str1 = m_token;
+			  }
+
+			  BigDecimal bigDecimal = new BigDecimal(str1);
+			  
+			  xNumber = new XNumber(bigDecimal.doubleValue());
+
+			  if (!(str1.contains(".") || str1.contains("E") || str1.contains("e"))) {
+				  // If a numeric literal doesn't contain, the characters ., E and e, 
+				  // then the numeric literal is of type xs:integer.				  
+				  
+				  xNumber.setXsInteger(new XSInteger(str1));
+			  }
+			  else if (str1.contains(".") && !(str1.contains("E") || str1.contains("e"))) {
+				  // If a numeric literal contains, character ., but not E and e, 
+				  // then the numeric literal is of type xs:decimal.				  
+				  
+				  xNumber.setXsDecimal(new XSDecimal(str1));
+			  }
+			  else if (str1.contains("E") || str1.contains("e")) {
+				  // If a numeric literal contains, character E or e, then 
+				  // then the numeric literal is of type xs:double.				  
+				  
+				  xNumber.setXsDouble(new XSDouble(str1));
+			  }
+		  }
+		  catch (Exception ex)
+		  {
+			  error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER, new Object[]{ str1 });
+		  }
+
+		  m_ops.m_tokenQueue.setElementAt(xNumber, m_queueMark - 1);
+		  
+		  m_ops.setOp(m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+		  m_ops.setOp(XPathOpMap.MAPINDEX_LENGTH, m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) + 1);
+
+		  nextToken();
+
+		  if ((prevQueueMark == 1) && (m_token != null) && lookahead(null, 1)) {
+			  error(XPATHErrorResources.ER_XPATH_NUMERIC_EXPR_SUFFIX, new Object[]{ m_token }); 
+		  }
+	  }
   }
 
   // ============= PATTERN FUNCTIONS =================

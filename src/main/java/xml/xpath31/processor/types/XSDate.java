@@ -4,12 +4,17 @@
  */
 package xml.xpath31.processor.types;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.functions.datetime.FuncAdjustDateToTimezone;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -135,7 +140,8 @@ public class XSDate extends XSCalendarType {
             }
         }
         catch (TransformerException ex) {
-           throw ex;  
+        	throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
+					 																		 + "schema type 'date' value.");  
         }
         catch (Exception ex) {
             throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
@@ -414,17 +420,96 @@ public class XSDate extends XSCalendarType {
         }
         
         if (xObj instanceof XSDate) {                   	        	        	        	
-        	String str1 = stringValue();
+        	XPathContext xctxt = new XPathContext();
         	
-        	String dateTimeStr1 = getXsDateTimeStrFromXsDateStr(str1);
-        	XSDateTime xsDateTime1 = XSDateTime.parseDateTime(dateTimeStr1);
+        	XSDate dtClone1 = null;
+        	XSDate dtClone2 = null;
+        	
+        	try {
+        	   dtClone1 = (XSDate)(clone());
+        	   dtClone2 = (XSDate)(((XSDate)xObj).clone());
+        	}
+        	catch (CloneNotSupportedException ex) {
+        	   // No op	
+        	}
+
+        	if (!_timezoned) {
+        	   _tz = xctxt.getTimezone();        		
+        	}
         	
         	XSDate xsDate = (XSDate)xObj;
-        	String str2 = xsDate.stringValue();
-        	String dateTimeStr2 = getXsDateTimeStrFromXsDateStr(str2);
-        	XSDateTime xsDateTime2 = XSDateTime.parseDateTime(dateTimeStr2);
         	
-        	result = xsDateTime1.subtract(xsDateTime2);
+    		if (xsDate.getTimezone() == null) {
+    		   xsDate.setTimezone(xctxt.getTimezone());
+    		}
+    		
+    		XSDuration utcTz = new XSDuration();
+        	
+        	try {
+        		FuncAdjustDateToTimezone funcAdjustDateToTimezone = new FuncAdjustDateToTimezone();
+        		
+        		XSDate xsDate1 = null;        		
+        		XSDate xsDate2 = null;
+        		
+        		if (!_tz.equals(utcTz)) {        			
+        			funcAdjustDateToTimezone.setArg(this, 0);
+        			funcAdjustDateToTimezone.setArg(utcTz, 1);
+
+        			xsDate1 = (XSDate)(funcAdjustDateToTimezone.execute(xctxt));
+        		}
+        		else {
+        			xsDate1 = this;
+        		}
+        		
+        		XSDuration tz2 = xsDate.getTimezone(); 
+        		
+        		if (!tz2.equals(utcTz)) {        			
+        			funcAdjustDateToTimezone.setArg(xsDate, 0);
+        			funcAdjustDateToTimezone.setArg(utcTz, 1);
+
+        			xsDate2 = (XSDate)(funcAdjustDateToTimezone.execute(xctxt));
+        		}
+        		else {
+        			xsDate2 = xsDate; 
+        		}
+        		
+        		String isoDateStr1 = xsDate1.stringValue();
+        		String isoDateStr2 = xsDate2.stringValue();
+        		
+        		isoDateStr1 = getXsDateTimeStrFromXsDateStr(isoDateStr1);
+        		isoDateStr2 = getXsDateTimeStrFromXsDateStr(isoDateStr2);
+        		
+        		Instant instant1 = Instant.parse(isoDateStr1);
+        		Instant instant2 = Instant.parse(isoDateStr2);
+        		
+        		Duration duration = Duration.between(instant2, instant1);
+        		long days = duration.toDays();
+        		
+        		long milliSecs = duration.toMillis();
+        		long days2 = milliSecs / (1000 * 60 * 60 * 24); 
+        		
+        		if (days2 != days) {
+        		   String xsDayTimeDurationStr = "P" + Math.abs(days) + "D";
+        		   xsDayTimeDurationStr = ((days < 0) ? "-" + xsDayTimeDurationStr : xsDayTimeDurationStr);
+        		   
+        		   result = (XSDayTimeDuration)(XSDayTimeDuration.parseDayTimeDuration(xsDayTimeDurationStr));
+        		}
+        		else {        			
+        			String str1 = dtClone1.stringValue();
+                	
+                	String dateTimeStr1 = getXsDateTimeStrFromXsDateStr(str1);
+                	XSDateTime xsDateTime1 = XSDateTime.parseDateTime(dateTimeStr1);
+
+                	String str2 = dtClone2.stringValue();
+                	String dateTimeStr2 = getXsDateTimeStrFromXsDateStr(str2);
+                	XSDateTime xsDateTime2 = XSDateTime.parseDateTime(dateTimeStr2);
+                	
+                	result = xsDateTime1.subtract(xsDateTime2);	
+        		}        		        		 
+        	}
+        	catch (WrongNumberArgsException ex) {
+        		// No op 
+        	} 
         }
         else if (xObj instanceof XSYearMonthDuration) {
            XSYearMonthDuration xsYearMonthDuration = (XSYearMonthDuration)xObj;           
@@ -432,7 +517,14 @@ public class XSDate extends XSCalendarType {
            Calendar cal1 = (Calendar)((getCalendar()).clone());
            cal1.add(Calendar.MONTH, xsYearMonthDuration.monthValue() * -1);
            
-           result = new XSDate(cal1, getTimezone());
+           XSDuration tz = getTimezone();
+           
+           if (_timezoned) {
+              result = new XSDate(cal1, getTimezone());
+           }
+           else {
+        	   result = new XSDate(cal1, null); 
+           }
         }
         else if (xObj instanceof XSDayTimeDuration) {
            XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObj;
@@ -441,7 +533,12 @@ public class XSDate extends XSCalendarType {
            Calendar cal1 = (Calendar)((getCalendar()).clone());
            cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)secsValue * 1000)) * -1));
            
-           result = new XSDate(cal1, getTimezone());
+           if (_timezoned) {
+        	   result = new XSDate(cal1, getTimezone());
+           }
+           else {
+        	   result = new XSDate(cal1, null); 
+           }
         }
         
         return result;
@@ -482,6 +579,10 @@ public class XSDate extends XSCalendarType {
 
     public void setPopulatedFromFnCurrentDate(boolean isPopulatedFromFnCurrentDate) {
         this.isPopulatedFromFnCurrentDate = isPopulatedFromFnCurrentDate;
+    }
+    
+    public void setTimezone(XSDuration tz) {
+    	_tz = tz; 
     }
     
     /**

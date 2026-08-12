@@ -110,16 +110,18 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 		}
 		
 		if (arg1Timezone != null) {
-		   int tzHrs = arg1Timezone.hours();
-		   int tzMins = arg1Timezone.minutes();
-		   int totalTzHrs = (tzHrs + (tzMins / 60));
-		   totalTzHrs = (arg1Timezone.negative() ? (-1 * totalTzHrs) : totalTzHrs);
-		   if ((totalTzHrs < -14) || (totalTzHrs > 14)) {
-			   throw new javax.xml.transform.TransformerException("FODT0003 : An XPath function adjust-dateTime-to-timezone's "
-							  		                                                                         + "second argument doesn't represent a timezone "
-							  		                                                                         + "value within valid duration range. Timezone value "
-							  		                                                                         + "can be within the range -PT14H and PT14H.", srcLocator);
-		   } 
+			int tzHrs = arg1Timezone.hours();
+			int tzMins = arg1Timezone.minutes();
+			double totalTzHrs = (tzHrs + ((double)tzMins / 60)); 
+
+			totalTzHrs = (arg1Timezone.negative() ? (-1 * totalTzHrs) : totalTzHrs);
+
+			if ((totalTzHrs < -14) || (totalTzHrs > 14)) {
+				throw new javax.xml.transform.TransformerException("FODT0003 : An XPath function adjust-dateTime-to-timezone's "
+																											+ "second argument doesn't represent a timezone "
+																											+ "value within valid duration range. Timezone value "
+																											+ "can be within the range -PT14H and PT14H.", srcLocator);
+			} 
 		}
 				
 		XSDuration arg0XsTimezone = arg0XsDateTime.getTimezone();

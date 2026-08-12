@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-10T11:03:57Z" fail="6" name="fn-adjust-date-to-timezone" pass="35" run="41" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-12T15:17:08Z" fail="2" name="fn-adjust-date-to-timezone" pass="39" run="41" statusUnknown="0">
    <testResult status="pass" testName="fn-adjust-date-to-timezone1args-1"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone1args-2"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone1args-3"/>
@@ -27,8 +27,8 @@
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-3"/>
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-4"/>
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-5"/>
-   <testResult status="fail" testName="K-AdjDateToTimezoneFunc-6"/>
-   <testResult status="fail" testName="K-AdjDateToTimezoneFunc-7"/>
+   <testResult status="pass" testName="K-AdjDateToTimezoneFunc-6"/>
+   <testResult status="pass" testName="K-AdjDateToTimezoneFunc-7"/>
    <testResult status="fail" testName="K-AdjDateToTimezoneFunc-8"/>
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-9"/>
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-10"/>
@@ -37,7 +37,7 @@
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-13"/>
    <testResult status="pass" testName="K-AdjDateToTimezoneFunc-14"/>
    <testResult status="pass" testName="cbcl-adjust-date-to-timezone-001"/>
-   <testResult status="fail" testName="cbcl-adjust-date-to-timezone-002"/>
-   <testResult status="fail" testName="cbcl-adjust-date-to-timezone-003"/>
+   <testResult status="pass" testName="cbcl-adjust-date-to-timezone-002"/>
+   <testResult status="pass" testName="cbcl-adjust-date-to-timezone-003"/>
    <testResult status="pass" testName="cbcl-adjust-date-to-timezone-004"/>
 </testrun>

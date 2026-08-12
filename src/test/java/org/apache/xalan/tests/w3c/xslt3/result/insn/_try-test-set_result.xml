@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:00Z" fail="8" name="try" pass="26" run="34" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-12T15:20:33Z" fail="7" name="try" pass="27" run="34" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="try-001"/>
    <testResult status="pass" testName="try-002"/>
    <testResult status="pass" testName="try-003"/>
@@ -38,9 +38,7 @@
       </outResult>
    </testResult>
    <testResult status="pass" testName="try-029"/>
-   <testResult status="fail" testName="try-030">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;output xmlns:err="http://www.w3.org/2005/xqt-errors"&gt;&lt;out&gt;INF&lt;/out&gt;&lt;out&gt;22&lt;/out&gt;&lt;out&gt;11&lt;/out&gt;&lt;out&gt;7.333333333333333333&lt;/out&gt;&lt;out&gt;5.5&lt;/out&gt;&lt;out&gt;4.4&lt;/out&gt;&lt;out&gt;3.666666666666666667&lt;/out&gt;&lt;out&gt;3.142857142857142857&lt;/out&gt;&lt;out&gt;2.75&lt;/out&gt;&lt;out&gt;2.444444444444444444&lt;/out&gt;&lt;/output&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="try-030"/>
    <testResult status="fail" testName="try-031">
       <outResult>
          <errTrace>java.lang.RuntimeException: XPTY0004 : One or both of the operands of XPath operator -, are not numeric values.</errTrace>

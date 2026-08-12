@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-08T16:47:21Z" fail="4" name="fn-adjust-time-to-timezone" pass="38" run="42" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-12T15:17:10Z" fail="2" name="fn-adjust-time-to-timezone" pass="40" run="42" statusUnknown="0">
    <testResult status="pass" testName="fn-adjust-time-to-timezone1args-1"/>
    <testResult status="pass" testName="fn-adjust-time-to-timezone1args-2"/>
    <testResult status="pass" testName="fn-adjust-time-to-timezone1args-3"/>
@@ -28,8 +28,8 @@
    <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-3"/>
    <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-4"/>
    <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-5"/>
-   <testResult status="fail" testName="K-AdjTimeToTimezoneFunc-6"/>
-   <testResult status="fail" testName="K-AdjTimeToTimezoneFunc-7"/>
+   <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-6"/>
+   <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-7"/>
    <testResult status="fail" testName="K-AdjTimeToTimezoneFunc-8"/>
    <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-9"/>
    <testResult status="pass" testName="K-AdjTimeToTimezoneFunc-10"/>
