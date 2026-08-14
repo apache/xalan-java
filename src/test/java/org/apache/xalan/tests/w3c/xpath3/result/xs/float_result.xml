@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:05:16Z" fail="1" name="xs-float" pass="4" run="5" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:20:44Z" fail="1" name="xs-float" pass="4" run="5" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="xs-float-001"/>
    <testResult status="pass" testName="xs-float-002"/>
    <testResult status="pass" testName="xs-float-003"/>
