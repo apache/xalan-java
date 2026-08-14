@@ -139,6 +139,11 @@ public interface DTMFilter
    * possibly, to create a DTM-specific field for these additional bits.
    */
   public static final int SHOW_BYFUNCTION = 0x00010000;
+  
+  /**
+   * Show <code>attribute</code> nodes.
+   */
+  public static final int SHOW_ATTRIBUTE_NODE = 0x00100000;
 
   /**
    * Test whether a specified node is visible in the logical view of a

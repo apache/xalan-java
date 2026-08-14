@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-21T16:19:51Z" fail="70" name="match" pass="112" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:04Z" fail="70" name="match" pass="112" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -159,7 +159,11 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    <testResult status="pass" testName="match-096"/>
    <testResult status="pass" testName="match-097"/>
    <testResult status="fail" testName="match-098">
-      <outResult/>
+      <outResult>
+         <errTrace>Unknown nodetype: element</errTrace>
+         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>Extra illegal tokens: '1', 'to', '1', ']'</errTrace>
+      </outResult>
    </testResult>
    <testResult status="pass" testName="match-099"/>
    <testResult status="pass" testName="match-100"/>
@@ -429,13 +433,7 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    <testResult status="fail" testName="match-275">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="match-276">
-      <outResult>
-         <errTrace>Extra illegal tokens: 'except', '@', 'q', 'except', '@', 'http://www.w3.org/XML/1998/namespace', ':', 'id'</errTrace>
-         <errTrace>Extra illegal tokens: 'except', '(', '@', 'xxx', '|', '@', 'yyy', ')'</errTrace>
-         <errTrace>XPTY0004 : One or both of the operands of operator + are not numeric.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="fail" testName="match-276"/>
    <testResult status="fail" testName="match-277"/>
    <testResult status="pass" testName="match-278"/>
    <testResult status="pass" testName="match-279"/>

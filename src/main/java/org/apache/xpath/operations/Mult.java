@@ -40,7 +40,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticOp;
+import org.apache.xpath.XPathArithmeticUtil;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -76,7 +76,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Mult extends XPathArithmeticOp
+public class Mult extends XPathArithmeticUtil
 {
    static final long serialVersionUID = -4956770147013414675L;
 

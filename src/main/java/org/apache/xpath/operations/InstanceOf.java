@@ -128,7 +128,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * 
  * @xsl.usage advanced
  */
-public class InstanceOf extends XPath3Operator
+public class InstanceOf extends XPathOperator
 {
 
    private static final long serialVersionUID = -5941900193967481806L;

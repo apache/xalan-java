@@ -53,7 +53,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Div;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.DOMException;
@@ -732,7 +732,7 @@ public class ElemValueOf extends ElemTemplateElement {
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
-                  else if (expr instanceof XPath3Operator) {
+                  else if (expr instanceof XPathOperator) {
                 	 XObject evalResult = expr.execute(xctxt);
                 	 if (evalResult instanceof XString) {
                 		XString xString = (XString)evalResult;

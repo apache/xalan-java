@@ -42,7 +42,7 @@ import xml.xpath31.processor.types.XSNumericType;
  * 
  * @xsl.usage advanced
  */
-public class Range extends XPath3Operator
+public class Range extends XPathOperator
 {
     
    private static final long serialVersionUID = 7722428363208837859L;

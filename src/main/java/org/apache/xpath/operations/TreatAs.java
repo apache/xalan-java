@@ -31,7 +31,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class TreatAs extends XPath3Operator
+public class TreatAs extends XPathOperator
 {
 
   private static final long serialVersionUID = 8897640092248117520L;

@@ -44,7 +44,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class XPathArrowOp extends XPath3Operator
+public class XPathArrowOp extends XPathOperator
 {
 
 	private static final long serialVersionUID = 4577709194385888770L;

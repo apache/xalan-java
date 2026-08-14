@@ -61,7 +61,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.InstanceOf;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.types.DateTimeUtil;
 import org.xml.sax.SAXException;
@@ -580,7 +580,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	
         return;
     }
-    else if (m_selectExpression instanceof XPath3Operator) {
+    else if (m_selectExpression instanceof XPathOperator) {
         XObject  evalResult = m_selectExpression.execute(xctxt);
         
         if (evalResult instanceof ResultSequence) {            

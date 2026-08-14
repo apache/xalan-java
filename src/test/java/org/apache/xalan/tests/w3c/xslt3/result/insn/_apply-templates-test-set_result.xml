@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:53Z" fail="15" name="apply-templates" pass="22" run="37" skipped="13" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:10Z" fail="15" name="apply-templates" pass="22" run="37" skipped="13" statusUnknown="0">
    <testResult status="pass" testName="apply-templates-001"/>
    <testResult status="pass" testName="apply-templates-002"/>
    <testResult status="pass" testName="conflict-resolution-0101"/>
@@ -34,16 +34,14 @@
    </testResult>
    <testResult status="pass" testName="conflict-resolution-0801"/>
    <testResult status="fail" testName="conflict-resolution-0802">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="conflict-resolution-0901"/>
    <testResult status="pass" testName="conflict-resolution-1001"/>
    <testResult status="fail" testName="conflict-resolution-1101"/>
    <testResult status="fail" testName="conflict-resolution-1102">
       <outResult>
-         <errTrace>XTSE0010 : xsl:with-param is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0010 : An XML element xsl:with-param is not allowed in this position in the stylesheet.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="conflict-resolution-1201"/>

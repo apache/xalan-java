@@ -46,9 +46,9 @@ import org.apache.xpath.patterns.NodeTest;
 
 /**
  * A class definition, providing common implementation 
- * features for XPath 3.1 binary operators. 
+ * features for XPath expression language binary operators. 
  */
-public class XPath3Operator extends Expression implements ExpressionOwner
+public class XPathOperator extends Expression implements ExpressionOwner
 {
   static final long serialVersionUID = -3037139537171050430L;
 
@@ -357,7 +357,7 @@ public class XPath3Operator extends Expression implements ExpressionOwner
      */
     public void setExpression(Expression exp)
     {
-    	exp.exprSetParent(XPath3Operator.this);
+    	exp.exprSetParent(XPathOperator.this);
     	m_left = exp;
     }
   }
@@ -399,10 +399,10 @@ public class XPath3Operator extends Expression implements ExpressionOwner
   	if (!isSameClass(expr))
   		return false;
   		
-  	if (!m_left.deepEquals(((XPath3Operator)expr).m_left))
+  	if (!m_left.deepEquals(((XPathOperator)expr).m_left))
   		return false;
   		
-  	if (!m_right.deepEquals(((XPath3Operator)expr).m_right))
+  	if (!m_right.deepEquals(((XPathOperator)expr).m_right))
   		return false;
   		
   	return true;

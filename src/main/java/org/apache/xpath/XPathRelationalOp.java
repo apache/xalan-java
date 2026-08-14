@@ -25,11 +25,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.xml.utils.Constants;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class XPathRelationalOp extends XPath3Operator {
+public class XPathRelationalOp extends XPathOperator {
 
 	private static final long serialVersionUID = 8090025880595978756L;
 	

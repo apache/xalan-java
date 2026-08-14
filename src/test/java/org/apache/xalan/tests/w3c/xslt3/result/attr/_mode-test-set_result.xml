@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:20Z" fail="68" name="mode" pass="73" run="141" skipped="28" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:08:18Z" fail="68" name="mode" pass="73" run="141" skipped="28" statusUnknown="0">
    <testResult status="pass" testName="mode-0001"/>
    <testResult feature="streaming" status="skipped" testName="mode-0002"/>
    <testResult status="pass" testName="mode-0003"/>
@@ -45,9 +45,7 @@
    <testResult status="pass" testName="mode-1104"/>
    <testResult status="fail" testName="mode-1105"/>
    <testResult status="fail" testName="mode-1106a">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1106b">
       <outResult>
@@ -55,14 +53,10 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1106c">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1106d">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1106e">
       <outResult>
@@ -70,9 +64,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1107a">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1107b">
       <outResult>
@@ -80,9 +72,7 @@
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1107c">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="mode-1108"/>
    <testResult status="pass" testName="mode-1201"/>
@@ -127,10 +117,7 @@
    </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1428"/>
    <testResult status="fail" testName="mode-1429">
-      <outResult>
-         <errTrace>XTSE0740 : An XSL mode's name attribute doesn't have a URI reference</errTrace>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult feature="streaming" status="skipped" testName="mode-1430"/>
    <testResult status="pass" testName="mode-1431"/>
@@ -325,14 +312,11 @@
       <outResult>
          <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
          <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
+         <errTrace>XPST0017 : An XPath function token not found.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="mode-1516">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression para[foo] | para[text()] has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1517"/>
    <testResult status="fail" testName="mode-1601"/>
@@ -353,14 +337,10 @@
    <testResult status="fail" testName="mode-1612"/>
    <testResult status="pass" testName="mode-1613"/>
    <testResult status="fail" testName="mode-1614">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1615">
-      <outResult>
-         <errTrace>java.lang.IllegalArgumentException: Localname in QNAME should be a valid NCName</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="mode-1616"/>
    <testResult status="fail" testName="mode-1617"/>

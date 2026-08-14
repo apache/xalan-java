@@ -39,7 +39,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticOp;
+import org.apache.xpath.XPathArithmeticUtil;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -71,7 +71,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XSLT 3 specific changes, to this class)
  */
-public class Mod extends XPathArithmeticOp
+public class Mod extends XPathArithmeticUtil
 {
    static final long serialVersionUID = 5009471154238918201L;
 
@@ -146,6 +146,18 @@ public class Mod extends XPathArithmeticOp
 		 return new ResultSequence();  
 	  }
 	  
+	  if (stylesheetRoot == null) {
+		  // Stricter type checking, when invoked via an XPath api call
+		  
+		  if ((left instanceof XSString) || (left instanceof XString)) {
+			  throw new TransformerException("XPTY0004 : An XPath operator 'mod' cannot have a string valued operand.");  
+		  }
+
+		  if ((right instanceof XSString) || (right instanceof XString)) {		  
+			  throw new TransformerException("XPTY0004 : An XPath operator 'mod' cannot have a string valued operand.");  
+		  }
+	  }
+	  
 	  if (left instanceof XNumber) {
 		  XNumber xNumber = (XNumber)left;		 
 
@@ -183,6 +195,36 @@ public class Mod extends XPathArithmeticOp
 	  java.lang.String typeNs1 = null;
 
 	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+	  
+	  if ((left instanceof XNumber) || (left instanceof XSNumericType)) {
+		  if (right instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)right).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  right = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  right = right.getFresh(); 
+			  }
+		  }
+	  }
+
+	  if ((right instanceof XNumber) || (right instanceof XSNumericType)) {
+		  if (left instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)left).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  left = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  left = left.getFresh(); 
+			  }
+		  }
+	  }
 	  
 	  if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
@@ -337,11 +379,19 @@ public class Mod extends XPathArithmeticOp
 		  typeName1 = ((XSAnyAtomicType)left).typeName();
 		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
+	  else if (left instanceof XNumber) {
+		  typeName1 = "double";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	  }
 
 	  if (right instanceof XSAnyAtomicType) {
 		  typeName2 = ((XSAnyAtomicType)right).typeName();
 		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
-	  }	 	  
+	  }
+	  else if (right instanceof XNumber) {
+		  typeName2 = "double";
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	  } 	  
 
 	  java.lang.String typeName1Actual = typeName1;
 	  java.lang.String typeName2Actual = typeName2;

@@ -579,7 +579,7 @@ class Lexer
   }
 
   /**
-   * Record the current token in the passed vector.
+   * Record the current token within the supplied vector.
    *
    * @param targetStrings Vector of string
    */
@@ -612,6 +612,9 @@ class Lexer
 			  targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
 			  break;
 		  case OpCodes.NODETYPE_PI :
+			  targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
+			  break;
+		  case OpCodes.NODETYPE_ATTRIBUTE :
 			  targetStrings.addElement(PsuedoNames.PSEUDONAME_ANY);
 			  break;
 		  default :

@@ -41,7 +41,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticOp;
+import org.apache.xpath.XPathArithmeticUtil;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.OpCodes;
@@ -66,7 +66,7 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class IDiv extends XPathArithmeticOp
+public class IDiv extends XPathArithmeticUtil
 {
 
   private static final long serialVersionUID = 5138215729063791579L;
@@ -142,6 +142,18 @@ public class IDiv extends XPathArithmeticOp
 		  return new ResultSequence();  
 	  }
 	  
+	  if (stylesheetRoot == null) {
+		  // Stricter type checking, when invoked via an XPath api call
+		  
+		  if ((left instanceof XSString) || (left instanceof XString)) {
+			  throw new TransformerException("XPTY0004 : An XPath operator 'idiv' cannot have a string valued operand.");  
+		  }
+
+		  if ((right instanceof XSString) || (right instanceof XString)) {		  
+			  throw new TransformerException("XPTY0004 : An XPath operator 'idiv' cannot have a string valued operand.");  
+		  }
+	  }
+	  
 	  java.lang.String lNodeStr = null;
 	  java.lang.String rNodeStr = null;
 	  
@@ -149,6 +161,36 @@ public class IDiv extends XPathArithmeticOp
 	  java.lang.String typeNs1 = null;
 	  
 	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+	  
+	  if ((left instanceof XNumber) || (left instanceof XSNumericType)) {
+		  if (right instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)right).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  right = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  right = right.getFresh(); 
+			  }
+		  }
+	  }
+
+	  if ((right instanceof XNumber) || (right instanceof XSNumericType)) {
+		  if (left instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)left).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  left = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  left = left.getFresh(); 
+			  }
+		  }
+	  }
 	  
 	  if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;

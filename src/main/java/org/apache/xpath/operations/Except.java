@@ -39,7 +39,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class Except extends XPath3Operator
+public class Except extends XPathOperator
 {
     
   private static final long serialVersionUID = 4245891832019437588L;

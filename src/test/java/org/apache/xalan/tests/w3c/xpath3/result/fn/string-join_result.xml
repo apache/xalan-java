@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-23T12:46:06Z" fail="2" name="fn-string-join" pass="37" run="39" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:05:16Z" fail="2" name="fn-string-join" pass="37" run="39" statusUnknown="0">
    <testResult status="pass" testName="fn-string-join2args-1"/>
    <testResult status="pass" testName="fn-string-join2args-2"/>
    <testResult status="pass" testName="fn-string-join2args-3"/>

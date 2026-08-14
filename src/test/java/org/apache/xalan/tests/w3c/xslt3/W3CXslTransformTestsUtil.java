@@ -189,9 +189,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	   
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS(W3C_XSLT3_TEST_CATALOG_NS, ELEM_NODE_NAME_TEST_CASE);
     	   int length1 = nodeList.getLength();
+    	   
     	   for (int idx = 0; idx < length1; idx++) {
     		   Node xslTestCaseNode = nodeList.item(idx);
     		   String testCaseName = ((Element)xslTestCaseNode).getAttribute(NAME_ATTR);     		   
+    		   
     		   if (isXslt1And2OnlyTestCase(xslTestCaseNode)) {
     			  // We skip running XSLT 2.0/1.0 only test cases
     			  Element elemTestResult = testResultDoc.createElement("testResult");
@@ -259,20 +261,26 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   if (!(xslTestCaseEnvObj instanceof Element)) {
     				   nodeList2 = xslTestSetDocumentElem.getChildNodes();
     				   int length2 = nodeList2.getLength();
+    				   
     				   for (int idx2 = 0; idx2 < length2; idx2++) {
     					   Node node2 = nodeList2.item(idx2);
+    					   
     					   if (node2.getNodeType() == Node.ELEMENT_NODE) {
     						   Element elemNode = (Element)node2;
+    						   
     						   if ("environment".equals(elemNode.getLocalName())) {
     							   String envName = elemNode.getAttribute(NAME_ATTR);
+    							   
     							   if (envName.equals(xslTestCaseEnvObj)) {
     								   xmlDocInpStr = getXMLInputDocStr(elemNode);    							   
     								   NodeList nodeList1 = elemNode.getElementsByTagName("stylesheet");
+    								   
     								   if (nodeList1.getLength() == 0) {
     									   nodeList1 = elemNode.getElementsByTagName("package"); 
     								   }
     								   
     								   Element elemNode1 = (Element)(nodeList1.item(0));
+    								   
     								   if (elemNode1 != null) {
     									   String fileName = elemNode1.getAttribute(FILE_ATTR);
     									   URI uri = new URI(m_xslTransformTestSetFilePath);
@@ -284,6 +292,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     									   NodeList nodeList3 = elem1.getElementsByTagName("test");
     									   Element elem2 = (Element)(nodeList3.item(0));
     									   NodeList nodeList4 = elem2.getElementsByTagName("stylesheet");
+    									   
     									   if (nodeList4.getLength() == 0) {
     										   nodeList4 = elem2.getElementsByTagName("package"); 
     									   }
@@ -296,6 +305,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     								   }
     								   
     								   NodeList nodeList3 = elemNode.getElementsByTagName("collation");
+    								   
     								   if (nodeList3.getLength() == 1) {
     									  Element elemNode3 = (Element)(nodeList3.item(0));
     									  String collation = elemNode3.getAttribute("uri");
@@ -313,6 +323,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   Element envElem = (Element)xslTestCaseEnvObj;
     				   Element envSrcElem = (Element)((envElem.getFirstChild()).getNextSibling());
     				   String envFileName = envSrcElem.getAttribute(FILE_ATTR);
+    				   
     				   if (!"".equals(envFileName)) {
     					   URI uri = new URI(m_xslTransformTestSetFilePath);
     					   uri = uri.resolve(envFileName);
@@ -327,6 +338,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   NodeList nodeList1 = elem1.getElementsByTagName("test");
     				   Element elem2 = (Element)(nodeList1.item(0));
     				   NodeList nodeList3 = elem2.getElementsByTagName("stylesheet");
+    				   
     				   if (nodeList3.getLength() == 0) {
     					  nodeList3 = elem2.getElementsByTagName("package"); 
     				   }
@@ -343,13 +355,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   
     		   Element expectedResultElem = null;
     		   int length2 = nodeList2.getLength();
+    		   
     		   for (int idx2 = 0; idx2 < length2; idx2++) {
     			   Node node2 = nodeList2.item(idx2);
+    			   
     			   if (node2.getNodeType() == Node.ELEMENT_NODE) {
     				   Element elemNode = (Element)node2;
+    				   
     				   if (ELEM_NODE_NAME_TEST.equals(elemNode.getLocalName())) {
     					   if (xslStylesheetUriStr == null) {
     						   NodeList nodeList3 = elemNode.getElementsByTagName("stylesheet");
+    						   
     						   if (nodeList3.getLength() == 0) {
     							   nodeList3 = elemNode.getElementsByTagName("package");  
     						   }
@@ -362,15 +378,19 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					   }
    						   
    						   NodeList nodeList4 = elemNode.getElementsByTagName(ELEM_NODE_NAME_INITIAL_TEMPLATE);
+   						   
    						   if (nodeList4.getLength() == 1) {
    							   Element elemNode3 = (Element)(nodeList4.item(0));
    							   m_initTemplateName = elemNode3.getAttribute(NAME_ATTR);
+   							   
    							   if (m_initTemplateName.contains(":")) {
    								  int idx3 = m_initTemplateName.indexOf(':');
+   								  
    								  if (idx3 != -1) {
    									 String nsPrefix = m_initTemplateName.substring(0, idx3);
    									 String localName = m_initTemplateName.substring(idx3 + 1);
    									 String nsUri = elemNode3.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, nsPrefix);
+   									 
    									 if ((nsUri != null) && !"".equals(nsUri)) {
    									    m_initTemplateName = "{" + nsUri + "}" + localName;
    									 }
@@ -390,10 +410,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   
     		   for (int idx2 = 0; idx2 < length2; idx2++) {
     			   Node node2 = nodeList2.item(idx2);
+    			   
     			   if (node2.getNodeType() == Node.ELEMENT_NODE) {
     				   Element elemNode = (Element)node2;
+    				   
     				   if (ELEM_NODE_NAME_TEST.equals(elemNode.getLocalName())) {    					      						   
    						   NodeList nodeList4 = elemNode.getElementsByTagName("initial-mode");
+   						   
    						   if (nodeList4.getLength() == 1) {
    							   Element elemNode3 = (Element)(nodeList4.item(0));
    							   m_initModeName = elemNode3.getAttribute(NAME_ATTR);
@@ -401,6 +424,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    						   
    						   NodeList xslParamNodeList = elemNode.getElementsByTagName("param");
    						   int xslParamCount = xslParamNodeList.getLength();
+   						   
    						   for (int idx3 = 0; idx3 < xslParamCount; idx3++) {
    							   Element elemParamNode = (Element)(xslParamNodeList.item(idx3));
    							   String paramNameStr = elemParamNode.getAttribute("name");
@@ -450,10 +474,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   try {
     					   Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     					   String expectedNodeKindName = nodeExpected.getNodeName();
+    					   
     					   if (ASSERT_XML.equals(expectedNodeKindName)) {
     						   Element elemNode = (Element)nodeExpected;
     						   String fileName = elemNode.getAttribute(FILE_ATTR);
     						   String expectedResultStr = null;
+    						   
     						   if (!"".equals(fileName)) {
     							   URI uri = new URI(m_xslTransformTestSetFilePath);
     							   uri = uri.resolve(fileName);
@@ -486,9 +512,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         	   int testStatusUnknownCount = 0;
         	   
         	   int length1 = nodeList.getLength();
+        	   
         	   for (int idx = 0; idx < length1; idx++) {
         		  Element element = (Element)(nodeList.item(idx));
         		  String statusValue = element.getAttribute(STATUS);
+        		  
         		  if (PASS.equals(statusValue)) {
         			  testsPassCount++; 
         		  }
@@ -554,9 +582,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	   
     	   NodeList nodeList = xslTestSetDoc.getElementsByTagNameNS(W3C_XSLT3_TEST_CATALOG_NS, ELEM_NODE_NAME_TEST_CASE);
     	   int length1 = nodeList.getLength();
+    	   
     	   for (int idx = 0; idx < length1; idx++) {
     		   Node node = nodeList.item(idx);
     		   String testCaseName = ((Element)node).getAttribute(NAME_ATTR);     		   
+    		   
     		   if (isXslt1And2OnlyTestCase(node)) {
      			  // We skip running XSLT 2.0/1.0 only test cases
      			  Element elemTestResult = testResultDoc.createElement("testResult");
@@ -608,14 +638,19 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   if (envRef != null) {
     			   NodeList nodeList2 = docElem.getChildNodes();
     			   int length2 = nodeList2.getLength();
+    			   
     			   for (int idx2 = 0; idx2 < length2; idx2++) {
     				   Node node2 = nodeList2.item(idx2);
+    				   
     				   if (node2.getNodeType() == Node.ELEMENT_NODE) {
     					   Element elemNode = (Element)node2;
+    					   
     					   if ("environment".equals(elemNode.getLocalName())) {
     						   String envName = elemNode.getAttribute(NAME_ATTR);
+    						   
     						   if (envName.equals(envRef)) {
     							   Node envChildNode = elemNode.getFirstChild();
+    							   
     							   while (envChildNode != null) {
     								   if (envChildNode.getNodeType() == Node.ELEMENT_NODE) {
     									   String xslStylesheetFileName = ((Element)envChildNode).getAttribute("file");    									      									  
@@ -642,15 +677,19 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   Element expectedResultElem = null;
     		   
     		   Node childNode = node.getFirstChild();
+    		   
     		   while (childNode != null) {
     			   if (childNode.getNodeType() == Node.ELEMENT_NODE) {
     				   Element elemNode = (Element)childNode;
+    				   
     				   if ("test".equals(elemNode.getLocalName())) {
     					   Node childNode2 = elemNode.getFirstChild();
+    					   
     					   while (childNode2 != null) {
     						   if (childNode2.getNodeType() == Node.ELEMENT_NODE) {
     							   Element elemNode2 = (Element)childNode2;
     							   String elemLocalName = elemNode2.getLocalName();
+    							   
     							   if ("stylesheet".equals(elemLocalName)) {
     								   String xslStylesheetFileName = ((Element)elemNode2).getAttribute("file");    									      									  
 									   URI uri = new URI(m_xslTransformTestSetFilePath);
@@ -693,6 +732,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   TransformerImpl transformerImpl = (TransformerImpl)transformer;
     				   StylesheetRoot stylesheetRoot = transformerImpl.getStylesheet();
     				   ElemTemplate xslInitialTemplate = stylesheetRoot.getTemplateComposed(new QName(Constants.S_XSLNAMESPACEURL, "initial-template"));
+    				   
     				   if (xslInitialTemplate != null) {
     					  m_initTemplateName = "xsl:initial-template";
     				   }
@@ -726,9 +766,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         	   int testStatusUnknownCount = 0;
         	   
         	   int length1 = nodeList.getLength();
+        	   
         	   for (int idx = 0; idx < length1; idx++) {
         		  Element element = (Element)(nodeList.item(idx));
         		  String statusValue = element.getAttribute(STATUS);
+        		  
         		  if (PASS.equals(statusValue)) {
         			  testsPassCount++; 
         		  }
@@ -794,6 +836,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    		   
+    		   
     		   if (source != null) {
     			  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
     		   }
@@ -808,12 +851,15 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   Document xslDocument = docBuilder.parse(xslStreamSrc.getSystemId());
     		   NodeList nodeList = xslDocument.getElementsByTagNameNS(Constants.S_XSLNAMESPACEURL, "template");
     		   int nodeListLength = nodeList.getLength();
+    		   
     		   for (int idx = 0; idx < nodeListLength; idx++) {
     			  Element elem = (Element)(nodeList.item(idx));
     			  String attrValue = elem.getAttribute("name");
+    			  
     			  if (attrValue.endsWith("initial-template")) {    				 
     				 m_initTemplateName = attrValue; 
     				 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    				 
+    				 
     				 if (source != null) {
     					 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
     				 }
@@ -848,6 +894,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         		if (xslParamMap.size() > 0) {
         			Set<String> keySet = xslParamMap.keySet();
         			Iterator<String> keyIter = keySet.iterator();
+        			
         			while (keyIter.hasNext()) {
         			   String key = keyIter.next();
         			   XObject value = xslParamMap.get(key);
@@ -889,6 +936,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		}
     		
     		Source xmlInpSrc = null;
+    		
     		if ((m_initTemplateName != null) && (source == null)) {    			
     			StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
          	    xmlInpSrc = new StreamSource(strReader);
@@ -911,6 +959,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   String xslTransformResultStr = resultStrWriter.toString();
     		   int idx = xslTransformResultStr.indexOf("<?xml");
     		   String xslMessageResultSuffixStr = null;
+    		   
     		   if (idx > -1) {
     			  xslMessageResultPrefixStr = xslTransformResultStr.substring(0, idx);
     			  xslMessageResultSuffixStr = xslTransformResultStr.substring(idx);
@@ -924,6 +973,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) { 
     			String alsoCorrectResultStr = null;
     			// This needs to have an improved test case implementation
+    			
     			if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && 
     					                                                            ("doe-0405".equals(testCaseName) || "doe-0406".equals(testCaseName) 
     							                                                                                     || "doe-0407".equals(testCaseName))) {
@@ -949,6 +999,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			Element nodeExpectedElem = (Element)nodeExpected;
     			String fileName = nodeExpectedElem.getAttribute("file");
     			String encoding = nodeExpectedElem.getAttribute("encoding");
+    			
     			if (!"".equals(fileName)) {
     				int idx2 = m_xslTransformTestSetFilePath.lastIndexOf('/');
     				String fileUriStr = m_xslTransformTestSetFilePath.substring(0, idx2) + '/' + fileName;    				
@@ -957,17 +1008,21 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				int bytesRead = 0;
     				StringBuffer strBuff = new StringBuffer();
     				Charset charSet = null;
+    				
     				if (!"".equals(encoding)) {
     					charSet = Charset.forName(encoding);
     				}
+    				
     				while ((bytesRead = fileInpStr.read(byteArr)) != -1) {
     					String str1 = null;
+    					
     					if (charSet != null) {
     						str1 = new String(byteArr, 0, bytesRead, charSet);
     					}
     					else {
     						str1 = new String(byteArr, 0, bytesRead);  
     					}
+    					
     					strBuff.append(str1);
     				}
 
@@ -989,10 +1044,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		else if (ASSERT_ALL_OF.equals(expectedNodeKindName)) {
     			NodeList nList1 = ((Element)nodeExpected).getElementsByTagName(ASSERT);
     			int length1 = nList1.getLength();    			    		
+    			
     			if (length1 > 0) {    				
     				if (m_xslTransformTestSetFilePath.contains("fn/key") && "key-089".equals(testCaseName)) {
     					String xslTransformResultStr = resultStrWriter.toString();
     					int idx = xslTransformResultStr.indexOf("<?xml");
+    					
     					if (idx > -1) {
     						String xslMessageResultSuffixStr = xslTransformResultStr.substring(idx);
     						resultStrWriter = new StringWriter();
@@ -1002,6 +1059,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				
     				Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
     				boolean testCasePass = true;    				
+    				
     				for (int idx = 0; idx < length1; idx++) {
     					Node node = nList1.item(idx);
     					String xpathExprStr = node.getTextContent();
@@ -1023,6 +1081,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     					StringWriter strWriter2 = new StringWriter();
     					transformer2.transform(new DOMSource(xmlInpDoc1), new StreamResult(strWriter2));                	                	
+    					
     					if (FALSE.equals(strWriter2.toString())) {
     						testCasePass = false;
 
@@ -1043,11 +1102,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			NodeList nodeList2 = ((Element)nodeExpected).getElementsByTagName(ASSERT_XML);
     			boolean isTestCasePass2 = true;
     			int length2 = nodeList2.getLength();
+    			
     			if (length2 > 0) {
     				for (int idx = 0; idx < length2; idx++) {
     					Element elemNode = (Element)nodeList2.item(idx);
     					String fileName = elemNode.getAttribute(FILE_ATTR);
     					String expectedResultStr = null;
+    					
     					if (!"".equals(fileName)) {
     						URI uri = new URI(m_xslTransformTestSetFilePath);
     						uri = uri.resolve(fileName);
@@ -1061,6 +1122,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     					String resultStr1 = resultStrWriter.toString();
     					boolean isHtmlStr = false;
+    					
     					if (resultStr1.contains("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">")) {
     						resultStr1 = resultStr1.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
     						resultStr1 = resultStr1.replaceAll("\r?\n", "");
@@ -1069,12 +1131,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					}
 
     					Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(resultStr1.getBytes()));
+    					
     					if (!isHtmlStr) {
     						normalizeXmlDocumentText(xmlInpDoc1);
     					}
 
     					TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
     					String xmlHtmlStr1 = null;
+    					
     					if ("true".equals(ignorePrefixesStr)) {
     						Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
     						StringWriter strWriter = new StringWriter();
@@ -1090,11 +1154,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					}
 
     					Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));            	
+    					
     					if (!isHtmlStr) {
     						normalizeXmlDocumentText(xmlInpDoc2);
     					}
 
     					String xmlHtmlStr2 = null;
+    					
     					if ("true".equals(ignorePrefixesStr)) {
     						Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
     						StringWriter strWriter = new StringWriter();
@@ -1126,6 +1192,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				int nodeListLength2 = 0;
     				Node nodeA = ((Element)nodeExpected).getFirstChild();
     				Element assertXmlElem = null;
+    				
     				while (nodeA != null) {
     					if (ASSERT_XML.equals(nodeA.getNodeName())) {
     						nodeListLength2++;    				  
@@ -1140,7 +1207,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     				if (nodeListLength1 > 0) {
     					String alsoCorrectResultStr = null;
-    					// This needs to have an improved test case implementation
+    					
+    					// This needs to have an improved test case implementation    					
     					if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && "doe-0201".equals(testCaseName)) {
     						alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><expandtext><count>3</count><test1/></expandtext>\r\n"
 																		    								+ "    \r\n"
@@ -1153,6 +1221,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					if (alsoCorrectResultStr != null) {
     						alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\r?\n", "");    					
     						String actualResultStr = resultStrWriter.toString();
+    						
     						if (alsoCorrectResultStr.equals(actualResultStr.replaceAll("\r?\n", ""))) {
     							elemTestResult.setAttribute(STATUS, PASS);
     						}
@@ -1170,6 +1239,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					Element elemNode = assertXmlElem;
     					String fileName = elemNode.getAttribute(FILE_ATTR);
     					String expectedResultStr = null;
+    					
     					if (!"".equals(fileName)) {
     						URI uri = new URI(m_xslTransformTestSetFilePath);
     						uri = uri.resolve(fileName);
@@ -1201,13 +1271,17 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     						else if (xslMessageResultPrefixStr != null) {
     							String[] actualPrefixStrArr1 = xslMessageResultPrefixStr.split("\r?\n");
     							boolean passStatus1 = false;
+    							
     							for (int idx2 = 0; idx2 < actualPrefixStrArr1.length; idx2++) {
     								String str1 = actualPrefixStrArr1[idx2]; 
+    								
     								for (int idx3 = 0; idx3 < nodeListLength3; idx3++) {
     									Node node = nodeList3.item(idx3);
     									NodeList nodeList4 = ((Element)node).getElementsByTagName(ASSERT_STRING_VALUE);
+    									
     									if (nodeList4.getLength() == 0) {
     										nodeList4 = ((Element)node).getElementsByTagName(ASSERT_XML);                			    	                 			    	 
+    										
     										if (nodeList4.getLength() > 0) {
     											String str2 = ((Element)(nodeList4.item(0))).getTextContent();
 
@@ -1228,11 +1302,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     										}
     										else {                			    		 
     											nodeList4 = ((Element)node).getElementsByTagName("assert-eq");
+    											
     											if (nodeList4.getLength() > 0) {
     												String str2 = ((Element)(nodeList4.item(0))).getTextContent();
     												int strLength1 = str2.length();
     												str2 = str2.substring(1, strLength1 - 1);   // Converting string from, form "..." to ...
     												str1 = str1.trim();
+    												
     												if (str2.equals(str1)) {
     													passStatus1 = true;
 
@@ -1245,6 +1321,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     										String str2 = ((Element)(nodeList4.item(0))).getTextContent();
     										str2 = str2.trim();
     										str1 = str1.trim();
+    										
     										if (str2.equals(str1)) {
     											passStatus1 = true;
 
@@ -1291,7 +1368,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		}
     		else if (ASSERT_ANY_OF.equals(expectedNodeKindName)) {
     			String alsoCorrectResultStr = null;
-				// This needs to have an improved test case implementation
+				
+    			// This needs to have an improved test case implementation
 				if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && ("doe-0402".equals(testCaseName) || "doe-0402a".equals(testCaseName))) {
 					alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out xmlns=\"http://www.w3.org/1999/xhtml\"><p>&nbsp;</p></out>";
 				}				
@@ -1308,12 +1386,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 					Node childNode = nodeExpected.getFirstChild();
 					boolean isTestCasePass = false;
 					boolean isAssertXml = false;
+					
 					while (childNode != null) {
 						if ((childNode instanceof Element) && ASSERT_XML.equals(((Element)childNode).getNodeName())) {
 							isAssertXml = true;
 							String xmlStr1 = ((Element)childNode).getTextContent();
 							String xmlStr2 = resultStrWriter.toString();
 							int idx = xmlStr2.indexOf("?>");
+							
 							if (idx != -1) {
 								xmlStr2 = xmlStr2.substring(idx + 2);
 							}							   
@@ -1353,6 +1433,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 	    					StringWriter strWriter2 = new StringWriter();
 	    					transformer2.transform(new DOMSource(xmlInpDoc1), new StreamResult(strWriter2));                	                	
+	    					
 	    					if (TRUE.equals(strWriter2.toString())) {
 	    						elemTestResult.setAttribute(STATUS, PASS);								
 								isTestCasePass = true;								
@@ -1365,6 +1446,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 							handleExpectedXslTransformationError(testResultDoc, elemTestResult, trfErrorList, 
 																 trfFatalErrorList, expErrCodeName, resultStrWriter);							
 							String testResultStatus = elemTestResult.getAttribute(STATUS);
+							
 							if (PASS.equals(testResultStatus)) {
 							   break;	
 							}							
@@ -1382,6 +1464,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	Element elemNode = (Element)nodeExpected;
             	String fileName = elemNode.getAttribute(FILE_ATTR);
             	String expectedResultStr = null;
+            	
             	if (!"".equals(fileName)) {
             		URI uri = new URI(m_xslTransformTestSetFilePath);
             		uri = uri.resolve(fileName);
@@ -1395,6 +1478,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	
             	String resultStr1 = resultStrWriter.toString();
             	boolean isHtmlStr = false;
+            	
             	if (resultStr1.contains("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">")) {
             	   resultStr1 = resultStr1.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
             	   resultStr1 = resultStr1.replaceAll("\r?\n", "");
@@ -1403,12 +1487,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	}
 
             	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(resultStr1.getBytes()));
+            	
             	if (!isHtmlStr) {
             	   normalizeXmlDocumentText(xmlInpDoc1);
             	}
             	
             	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
             	String xmlHtmlStr1 = null;
+            	
             	if ("true".equals(ignorePrefixesStr)) {
             		Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
             		StringWriter strWriter = new StringWriter();
@@ -1424,11 +1510,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	}
 
             	Document xmlInpDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((expectedResultStr).getBytes()));            	
+            	
             	if (!isHtmlStr) {
              	   normalizeXmlDocumentText(xmlInpDoc2);
              	}
             	
             	String xmlHtmlStr2 = null;
+            	
             	if ("true".equals(ignorePrefixesStr)) {
             		Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
             		StringWriter strWriter = new StringWriter();
@@ -1441,6 +1529,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	
             	// This needs to have, an improved test case verification logic.
             	String alsoCorrectResultStr = null;
+            	
             	if (m_xslTransformTestSetFilePath.contains("attr/mode/") && "mode-0016".equals(testCaseName)) {
             	   alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out>\r\n"
 														            				+ "   <c>\r\n"
@@ -1476,6 +1565,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	if (alsoCorrectResultStr != null) {
             		alsoCorrectResultStr = alsoCorrectResultStr.replaceAll("\r?\n", "");
             		xmlHtmlStr1 = xmlHtmlStr1.replaceAll("\r?\n", "");
+            		
             		if (alsoCorrectResultStr.equals(xmlHtmlStr1)) {
             			elemTestResult.setAttribute(STATUS, PASS);
             		}
@@ -1494,6 +1584,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	Element elemNode = (Element)nodeExpected;
             	String fileName = elemNode.getAttribute(FILE_ATTR);
             	String xslTrfExpectedResultXPathStr = null;
+            	
             	if (!"".equals(fileName)) {
             		URI uri = new URI(m_xslTransformTestSetFilePath);
             		uri = uri.resolve(fileName);
@@ -1551,6 +1642,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             else if (ASSERT_STRING_VALUE.equals(expectedNodeKindName)) {
             	String strExpectedValue = (nodeExpected.getTextContent()).trim();
             	String actualResultStr = null;
+            	
             	try {
             	   Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
             	   actualResultStr = serializeXmlDomElementNode(xmlInpDoc1);            	   
@@ -1563,6 +1655,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	   actualResultStr = resultStrWriter.toString();
             	   actualResultStr = actualResultStr.substring(actualResultStr.indexOf('>') + 1, actualResultStr.length());
             	   actualResultStr = actualResultStr.trim();
+            	   
             	   if (strExpectedValue.equals(actualResultStr)) {
             		  elemTestResult.setAttribute(STATUS, PASS);  
             	   }
@@ -1582,6 +1675,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	}
     	catch (Exception ex) {
     		String errMesg = ex.getMessage();
+    		
     		if ((errMesg != null) && (expErrCodeName != null)) {
     			if (errMesg.contains(expErrCodeName)) {
     			   elemTestResult.setAttribute(STATUS, PASS);
@@ -1638,18 +1732,23 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		expectedResultStrBuff.append("<result>");
 		boolean isExpectedResultSpecifiedwithFile = false;
 		int length1 = nodeList.getLength();
+		
 		for (int idx = 0; idx < length1; idx++) {
 			Node node = nodeList.item(idx);			
+			
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				String nodeLocalName = node.getLocalName();
 				Element elemNode = (Element)node;
 				String fileName = elemNode.getAttribute("file");
+				
 				if (!"assert-warning".equals(nodeLocalName)) {
 					if ((fileName == null) || "".equals(fileName)) {
 						String assertStr = ((Element)node).getTextContent();    					
+						
 						if (assertStr.contains("'")) {
 							assertStr = assertStr.replace("'", "\"");
 						}
+						
 						String strValue = "<xpath><xsl:value-of select='" + assertStr + "'/></xpath>\n";
 
 						replacementStrBuff.append(strValue);
@@ -1690,6 +1789,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		NamedNodeMap attrNamedNodeMap = nodeExpected.getAttributes();
 		int attrCount = attrNamedNodeMap.getLength();
 		StringBuffer attrDeclstrBuff = new StringBuffer();
+		
 		for (int idx = 0; idx < attrCount; idx++) {
 			Node attrNode = attrNamedNodeMap.item(idx);
 			String attrName = attrNode.getNodeName();
@@ -1719,6 +1819,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		Document document = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
 		
 		XslTransformData.m_is_xsl_test_invocation = true;
+		
 		try {
 		   transformer.transform(new DOMSource(document), new StreamResult(strWriter));
 		}
@@ -1731,6 +1832,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(str2.getBytes()));
 		
 		String xmlStr1 = null;
+		
 		if (isExpectedResultSpecifiedwithFile) {
 		   xmlStr1 = expectedResultStrBuff.toString(); 
 		}
@@ -1761,11 +1863,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		List<XslSerializationMatchesMetaData> serMatchesMetaDataList = new ArrayList<XslSerializationMatchesMetaData>();
 		
 		int length1 = nodeList.getLength();		
+		
 		for (int idx = 0; idx < length1; idx++) {
 			Element elemNode = (Element)(nodeList.item(idx));
 			String txtContextStr = elemNode.getTextContent();
 			String[] strArr = txtContextStr.split("=");    		
 			XslSerializationMatchesMetaData serMatchesMetaData = null;
+			
 			if (strArr.length > 1) {
 				serMatchesMetaData = new XslSerializationMatchesMetaData(strArr, null);  
 			}
@@ -1777,6 +1881,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		}
 		
 		String xslTransformResultStr = resultStrWriter.toString();		
+		
 		if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
 			xslTransformResultStr = resultStrWriter.toString();			
 			xslTransformResultStr = xslTransformResultStr.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
@@ -1793,9 +1898,11 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		boolean isTestCasePass = false;
 
 		int size1 = elemNodeList.size();
+		
 		for (int idx = 0; idx < size1; idx++) {
 			Element elemNode = elemNodeList.get(idx);
 			String elemNodeStrValue = null; 
+			
 			if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
 				// Handling only HTML tag <a> for now in this test suite driver
 				if ("a".equals(elemNode.getNodeName())) {
@@ -1811,6 +1918,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				elemNodeStrValue = serializeXmlDomElementNode(node);
 
 				int i = elemNodeStrValue.indexOf("?>");
+				
 				if (i > -1) {
 					elemNodeStrValue = (elemNodeStrValue.substring(i + 2)).trim();
 				}
@@ -1821,10 +1929,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
 			List<Boolean> boolList = new ArrayList<Boolean>();
 			int size2 = serMatchesMetaDataList.size();
+			
 			for (int idx2 = 0; idx2 < size2; idx2++) {
 				XslSerializationMatchesMetaData xslSerializationMatchesMetaData = serMatchesMetaDataList.get(idx2);
 				String[] strArray = xslSerializationMatchesMetaData.getStrArr();
 				String strValue = xslSerializationMatchesMetaData.getStrValue();
+				
 				if (strValue != null) {
 					if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
 					   if (strValue.startsWith(">")) {
@@ -1834,6 +1944,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 					
 					Pattern pattern = Pattern.compile(strValue);   							 
 					Matcher matcher = pattern.matcher(elemNodeStrValue);   							 
+					
 					if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
 						boolList.add(Boolean.valueOf(true));
 					}
@@ -1845,6 +1956,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 					Pattern pattern2 = Pattern.compile(attrValue);
 
 					NamedNodeMap namedNodeMap = null;
+					
 					if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
 						elemNode = (Element)(elemNode.getFirstChild());
 						namedNodeMap = elemNode.getAttributes();
@@ -1854,6 +1966,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 					}
 
 					int length2 = namedNodeMap.getLength();
+					
 					for (int idx3 = 0; idx3 < length2; idx3++) {
 						Node attrNode = namedNodeMap.item(idx3);
 						String atrName2 = attrNode.getNodeName();
@@ -1861,6 +1974,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 						attrValue2 = "'" + attrValue2 + "'";  
 						Matcher matcher1 = pattern1.matcher(atrName2);
 						Matcher matcher2 = pattern2.matcher(attrValue2);
+						
 						if (matcher1.matches() && matcher2.matches()) {
 							boolList.add(Boolean.valueOf(true));
 						}
@@ -1905,6 +2019,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		String txtContextStr = elemNode.getTextContent();
 		String[] strArr = txtContextStr.split("=");    		
 		XslSerializationMatchesMetaData serMatchesMetaData = null;
+		
 		if (strArr.length > 1) {
 			serMatchesMetaData = new XslSerializationMatchesMetaData(strArr, null);  
 		}
@@ -1915,16 +2030,19 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		boolean isTestCasePass = false;
 		
 		String xslTransformResultStr = resultStrWriter.toString();		
+		
 		if ((org.apache.xml.serializer.Method.HTML).equals(xslTransformMethod)) {
 			xslTransformResultStr = resultStrWriter.toString();			
 			xslTransformResultStr = xslTransformResultStr.replace("<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">", "");
 		}
 		
 		int idx = xslTransformResultStr.indexOf("?>");
+		
 		if (idx > -1) {
 			String prefixStr = xslTransformResultStr.substring(0, idx + 2);
 			String suffixStr = xslTransformResultStr.substring(idx + 2);
 			xslTransformResultStr = prefixStr + "<!DOCTYPE document SYSTEM \"entities.dtd\" [ ]>" + suffixStr;		
+			
 			if (xslTransformResultStr.contains("xmlns=\"http://www.w3.org/1999/xhtml\"")) {
 				xslTransformResultStr.replace("xmlns=\"http://www.w3.org/1999/xhtml\"", "");				
 				int i1 = xslTransformResultStr.indexOf(" xmlns=\"http://www.w3.org/1999/xhtml\"");
@@ -1945,15 +2063,18 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    	getXmlDomElemNodes(xmlResultDoc.getDocumentElement(), elemNodeList);		
 
 	    	int elemNodeListSize = elemNodeList.size();	    	
+	    	
 	    	for (int idx2 = 0; idx2 < elemNodeListSize; idx2++) {
 	    		elemNode = elemNodeList.get(idx2);
 	    		String elemNodeStrValue = null;
 	    		String elemNodeStrValue2 = null; 
+	    		
 	    		if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
 	    			Node node = elemNode.getFirstChild();
 	    			node = node.getFirstChild();
 	    			elemNodeStrValue = serializeXmlDomElementNode(node);
 	    			int i1 = elemNodeStrValue.indexOf("?>");
+	    			
 	    			if (i1 > -1) {
 	    				elemNodeStrValue = (elemNodeStrValue.substring(i1 + 2)).trim();
 	    			}
@@ -1962,6 +2083,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    			elemNodeStrValue = elemNode.getTextContent();
 	    			elemNodeStrValue2 = serializeXmlDomElementNode(elemNode);
 	    			int i1 = elemNodeStrValue2.indexOf("?>");
+	    			
 	    			if (i1 > -1) {
 	    				elemNodeStrValue2 = (elemNodeStrValue2.substring(i1 + 2)).trim();
 	    			}
@@ -1972,6 +2094,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    			    			    			    			    		
 	    		if (strValue != null) {
 	    			Document xmlResultDoc2 = null;	    			
+	    			
 	    			try {
 	    				String str2 = "<!DOCTYPE document SYSTEM \"entities.dtd\" [ ]>" + strValue;
 	    				xmlResultDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(str2.getBytes()));
@@ -1981,6 +2104,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    				Pattern pattern = Pattern.compile(strValue);   							 
 	    				Matcher matcher = pattern.matcher(elemNodeStrValue);
 	    				Matcher matcher2 = pattern.matcher(elemNodeStrValue2);  
+	    				
 	    				if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
 	    					isTestCasePass = true;
 	    				}
@@ -1999,6 +2123,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    			Pattern pattern2 = Pattern.compile(attrValue);
 
 	    			NamedNodeMap namedNodeMap = null;
+	    			
 	    			if ((elemNode.getFirstChild() != null) && ((Node)(elemNode.getFirstChild()).getFirstChild() != null)) {
 	    				elemNode = (Element)(elemNode.getFirstChild());
 	    				namedNodeMap = elemNode.getAttributes();
@@ -2008,6 +2133,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    			}
 
 	    			int length1 = namedNodeMap.getLength();
+	    			
 	    			for (int idx3 = 0; idx3 < length1; idx3++) {
 	    				Node attrNode = namedNodeMap.item(idx3);
 	    				String atrName2 = attrNode.getNodeName();
@@ -2015,6 +2141,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    				attrValue2 = "'" + attrValue2 + "'";  
 	    				Matcher matcher1 = pattern1.matcher(atrName2);
 	    				Matcher matcher2 = pattern2.matcher(attrValue2);
+	    				
 	    				if (matcher1.matches() && matcher2.matches()) {
 	    					isTestCasePass = true;
 	    				}
@@ -2039,6 +2166,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    	String expectedResultRegexStr = serMatchesMetaData.getStrValue();
 	    	
 	    	Pattern pattern = null;
+	    	
 	    	if (expectedResultRegexStr != null) {
 	    	    pattern = Pattern.compile(expectedResultRegexStr);
 	    	}
@@ -2050,6 +2178,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    	}
 	    	
 			Matcher matcher = pattern.matcher(xslTransformResultStr);
+			
 			if (matcher.matches()) {
 			   isTestCasePass = true;
 			}
@@ -2077,8 +2206,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	
     	NodeList nodeList = elemNode.getChildNodes();
     	int length1 = nodeList.getLength();
+    	
     	for (int idx = 0; idx < length1; idx++) {
     	    Node node = nodeList.item(idx);
+    	    
     	    if (node.getNodeType() == Node.ELEMENT_NODE) {
     	    	result.add((Element)node);
     	    	getXmlDomElemNodes((Element)node, result);
@@ -2102,19 +2233,26 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		NodeList nodeList = envElemNode.getChildNodes();
 		int length1 = nodeList.getLength();
-    	for (int idx = 0; idx < length1; idx++) {
+    	
+		for (int idx = 0; idx < length1; idx++) {
     		Node node = nodeList.item(idx);
+    		
     		if (node.getNodeType() == Node.ELEMENT_NODE) {
     			Element elemNode = (Element)node;
+    			
     			if ("source".equals(elemNode.getLocalName())) {
     			    String fileName = elemNode.getAttribute(FILE_ATTR);    			       			    
-    				if ("".equals(fileName)) {
+    				
+    			    if ("".equals(fileName)) {
     					NodeList nodeList2 = elemNode.getChildNodes();
     					int length2 = nodeList2.getLength();
+    					
     					for (int idx2 = 0; idx2 < length2; idx2++) {
     						Node node2 = nodeList2.item(idx2);
+    						
     						if (node2.getNodeType() == Node.ELEMENT_NODE) {
     							Element elemNode2 = (Element)node2;
+    							
     							if ("content".equals(elemNode2.getLocalName())) {
     								result = elemNode2.getTextContent();
     							}
@@ -2157,12 +2295,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     	
     	NodeList nodeList = xslTestCaseNode.getChildNodes();
     	int length1 = nodeList.getLength();
+    	
     	for (int idx = 0; idx < length1; idx++) {
     		Node node = nodeList.item(idx);
+    		
     		if (node.getNodeType() == Node.ELEMENT_NODE) {
     			Element elemNode = (Element)node;
+    			
     			if ("environment".equals(elemNode.getLocalName())) {
     				Attr attrNode = elemNode.getAttributeNode("ref");
+    				
     				if (attrNode != null) {
     					String envRefName = attrNode.getValue();
     				    result = envRefName;
@@ -2213,8 +2355,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		if ((trfErrorList.size() > 0) || (trfFatalErrorList.size() > 0)) {
 			boolean isXslTransformErrorOk = false;
 			int size1 = trfErrorList.size();
+			
 			for (int idx = 0; idx < size1; idx++) {
 				String errInfo = trfErrorList.get(idx);
+				
 				if (errInfo.contains(expErrCodeName)) {
 					isXslTransformErrorOk = true;    						
 					break;
@@ -2222,8 +2366,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			}
 			if (!isXslTransformErrorOk) {
 				int size2 = trfFatalErrorList.size();
+				
 				for (int idx = 0; idx < size2; idx++) {
 					String errInfo = trfFatalErrorList.get(idx);
+					
 					if (errInfo.contains(expErrCodeName)) {
 						isXslTransformErrorOk = true;
 						break;
@@ -2263,8 +2409,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		NodeList nodeList = docElem.getChildNodes();
 		boolean isAllTextNode = true;
 		int length1 = nodeList.getLength();
+		
 		for (int i = 0; i < length1; i++) {
 		    Node node = nodeList.item(i);
+		    
 		    if (node.getNodeType() == Node.TEXT_NODE) {
 		    	strBuff.append(node.getTextContent());
 		    }
@@ -2277,6 +2425,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		if (isAllTextNode) {
 		    String normalizedTextNodeValue = (strBuff.toString()).trim();
 		    int length2 = nodeList.getLength();
+		    
 		    for (int i = 0; i < length2; i++) {
 		    	Node node = nodeList.item(i);
 		    	docElem.removeChild(node);            	    	
@@ -2382,10 +2531,12 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		NodeList nodeList3 = testResultDoc.getElementsByTagName("testResult");		
 		int length1 = nodeList3.getLength();
+		
 		for (int idx2 = 0; idx2 < length1; idx2++) {
 			Element elem1 = (Element)(nodeList3.item(idx2));
 			String testName = elem1.getAttribute("testName");
 			String statusValue = elem1.getAttribute(STATUS);
+			
 			if (testCaseName.equals(testName) && FAIL.equals(statusValue)) {    						       						       						      							   
 				InputSource xmlInpSrc = new InputSource(new StringReader(xmlDocInpStr));
 				Node node2 = m_xmlDocumentBuilder.parse(xmlInpSrc);
@@ -2404,6 +2555,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				Transformer transformer = m_xslTransformerFactory.newTransformer(xslStreamSrc);
 				transformer.transform(xmlDomSrc, new DOMResult(outNode));
 				String xslTrfResultStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(outNode);
+				
 				if (xslTrfResultStr.equals(expectedResultStr)) {
 					elem1.setAttribute(STATUS, PASS);
 					elem1.setAttribute("status_qualifier", "revisit_xsl test_verification_code");

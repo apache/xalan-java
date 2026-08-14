@@ -69,7 +69,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Variable;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -2624,7 +2624,7 @@ public class ElemTemplateElement extends UnImplNode
 		                                                                                    + "requiring static variable/param.");
 		   }
 	   }
-	   else if (expr1 instanceof XPath3Operator) {
+	   else if (expr1 instanceof XPathOperator) {
 		   result = isXPathBinaryOpStatic(expr1);
 	   }
 	   else if (expr1 instanceof Function) {
@@ -2677,7 +2677,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 			  }
 		  }
-		  else if (arg0 instanceof XPath3Operator) {
+		  else if (arg0 instanceof XPathOperator) {
 			  result = isXPathBinaryOpStatic(arg0);
 		  }
 		  else if (arg0 instanceof Function) {
@@ -2703,7 +2703,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 				  }
 			  }
-			  else if (arg1 instanceof XPath3Operator) {
+			  else if (arg1 instanceof XPathOperator) {
 				  result = isXPathBinaryOpStatic(arg1);
 			  }
 			  else if (arg1 instanceof Function) {
@@ -2730,7 +2730,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 				  }
 			  }
-			  else if (arg2 instanceof XPath3Operator) {
+			  else if (arg2 instanceof XPathOperator) {
 				  result = isXPathBinaryOpStatic(arg2);
 			  }
 			  else if (arg2 instanceof Function) {
@@ -2760,7 +2760,7 @@ public class ElemTemplateElement extends UnImplNode
 																											  + "requiring static variable/param.");
 					  }
 				  }
-				  else if (expr instanceof XPath3Operator) {
+				  else if (expr instanceof XPathOperator) {
 					  result = isXPathBinaryOpStatic(expr);
 				  }
 				  else if (expr instanceof Function) {
@@ -2794,7 +2794,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 			  }
 		  }
-		  else if (arg0 instanceof XPath3Operator) {
+		  else if (arg0 instanceof XPathOperator) {
 			  result = isXPathBinaryOpStatic(arg0);
 		  }
 		  else if (arg0 instanceof Function) {
@@ -2820,7 +2820,7 @@ public class ElemTemplateElement extends UnImplNode
 																									   + "requiring static variable/param.");
 				  }
 			  }
-			  else if (arg1 instanceof XPath3Operator) {
+			  else if (arg1 instanceof XPathOperator) {
 				  result = isXPathBinaryOpStatic(arg1);
 			  }
 			  else if (arg1 instanceof Function) {
@@ -2847,7 +2847,7 @@ public class ElemTemplateElement extends UnImplNode
 																								    + "requiring static variable/param.");
 				  }
 			  }
-			  else if (arg2 instanceof XPath3Operator) {
+			  else if (arg2 instanceof XPathOperator) {
 				  result = isXPathBinaryOpStatic(arg2);
 			  }
 			  else if (arg2 instanceof Function) {
@@ -2879,7 +2879,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 			  }
 		  }
-		  else if (arg0 instanceof XPath3Operator) {
+		  else if (arg0 instanceof XPathOperator) {
 			  result = isXPathBinaryOpStatic(arg0);
 		  }
 		  else if (arg0 instanceof Function) {
@@ -2905,7 +2905,7 @@ public class ElemTemplateElement extends UnImplNode
 																									    + "requiring static variable/param.");
 				  }
 			  }
-			  else if (arg1 instanceof XPath3Operator) {
+			  else if (arg1 instanceof XPathOperator) {
 				  result = isXPathBinaryOpStatic(arg1);
 			  }
 			  else if (arg1 instanceof Function) {
@@ -2934,7 +2934,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 			  }
 		  }
-		  else if (arg0 instanceof XPath3Operator) {
+		  else if (arg0 instanceof XPathOperator) {
 			  result = isXPathBinaryOpStatic(arg0);
 		  }
 		  else if (arg0 instanceof Function) {
@@ -2989,8 +2989,8 @@ public class ElemTemplateElement extends UnImplNode
 	
 	  boolean result = true;
 
-	  Expression lOpn = ((XPath3Operator)expr1).getLeftOperand(); 
-	  Expression rOpn = ((XPath3Operator)expr1).getRightOperand();
+	  Expression lOpn = ((XPathOperator)expr1).getLeftOperand(); 
+	  Expression rOpn = ((XPathOperator)expr1).getRightOperand();
 
 	  if (lOpn instanceof Variable) {
 		  Variable var = (Variable)lOpn;
@@ -3007,7 +3007,7 @@ public class ElemTemplateElement extends UnImplNode
 																										  + "requiring static variable/param.");
 		  }
 	  }
-	  else if (lOpn instanceof XPath3Operator) {
+	  else if (lOpn instanceof XPathOperator) {
 		  result = isXPathBinaryOpStatic(lOpn); 
 	  }
 	  else if (lOpn instanceof Function) {
@@ -3038,7 +3038,7 @@ public class ElemTemplateElement extends UnImplNode
 																											  + "requiring static variable/param.");
 			  }
 		  }
-		  else if (rOpn instanceof XPath3Operator) {
+		  else if (rOpn instanceof XPathOperator) {
 			  result = isXPathBinaryOpStatic(rOpn); 
 		  }
 		  else if (rOpn instanceof Function) {

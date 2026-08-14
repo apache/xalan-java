@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:32Z" fail="21" name="maps" pass="16" run="37" skipped="13" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:08:31Z" fail="21" name="maps" pass="16" run="37" skipped="13" statusUnknown="0">
    <testResult status="fail" testName="maps-001">
       <outResult>
          <errTrace>java.lang.ClassCastException: org.apache.xpath.objects.XPathMap cannot be cast to org.apache.xpath.objects.XMLNodeCursorImpl</errTrace>

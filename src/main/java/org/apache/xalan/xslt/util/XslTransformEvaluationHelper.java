@@ -76,7 +76,7 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.Attr;
@@ -342,9 +342,11 @@ public class XslTransformEvaluationHelper {
         
         List<Integer> dtmNodeHandleList = new ArrayList<Integer>();
         
-        int rSeqLength = resultSeq.size();        
+        int rSeqLength = resultSeq.size();
+        
         for (int idx = 0; idx < rSeqLength; idx++) {
            XObject xObj = resultSeq.item(idx);
+           
            if (xObj instanceof XMLNodeCursorImpl) {
               int nodeDtmHandle = (((XMLNodeCursorImpl)xObj).iter()).nextNode();
               dtmNodeHandleList.add(nodeDtmHandle);
@@ -534,8 +536,8 @@ public class XslTransformEvaluationHelper {
                 ResultSequence resultSeq = (ResultSequence)(((XPathForExpr)expr).execute(xctxt));
                 xdmSequenceSize = resultSeq.size();   
             }
-            else if (expr instanceof XPath3Operator) {
-            	XPath3Operator opn1 = (XPath3Operator)expr;
+            else if (expr instanceof XPathOperator) {
+            	XPathOperator opn1 = (XPathOperator)expr;
             	Expression lOpn = opn1.getLeftOperand();
             	Expression rOpn = opn1.getRightOperand();            	
             	XObject lObj1 = lOpn.execute(xctxt);

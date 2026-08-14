@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:43:55Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:11Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -57,6 +57,7 @@
    </testResult>
    <testResult status="fail" testName="for-each-group-060">
       <outResult>
+         <errTrace>Unknown error in XPath.</errTrace>
          <errTrace>FORG0006 : XPath 3.1 effective boolean value is defined only for xdm items with types boolean, string, number, uri and node.</errTrace>
       </outResult>
    </testResult>
@@ -91,12 +92,7 @@
    <testResult status="pass" testName="for-each-group-087"/>
    <testResult status="pass" testName="for-each-group-088"/>
    <testResult status="fail" testName="for-each-group-089">
-      <outResult>
-         <errTrace>XTSE0090 : An attribute 'copy-accumulators' is not allowed to appear on XSL element "copy-of".</errTrace>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}accumulator-after()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="for-each-group-090"/>
    <testResult status="pass" testName="for-each-group-091"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:49Z" fail="69" name="namespace" pass="152" run="221" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:58Z" fail="69" name="namespace" pass="152" run="221" skipped="3" statusUnknown="0">
    <testResult status="fail" testName="namespace-0101">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;a/&gt;&lt;/out&gt;</outResult>
    </testResult>
@@ -63,9 +63,7 @@
    <testResult status="pass" testName="namespace-2503"/>
    <testResult status="pass" testName="namespace-2601"/>
    <testResult status="fail" testName="namespace-2602">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 17,46 : An XSL transformation processing could not add 'attribute' to 'namespace'.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="namespace-2603">
       <outResult/>
@@ -107,7 +105,7 @@
    </testResult>
    <testResult status="fail" testName="namespace-2623">
       <outResult>
-         <errTrace>XTSE0010 : yyy is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0010 : An XML element yyy is not allowed in this position in the stylesheet.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="namespace-2624"/>

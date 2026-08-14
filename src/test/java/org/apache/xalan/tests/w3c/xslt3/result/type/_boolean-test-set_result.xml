@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:03Z" fail="1" name="boolean" pass="104" run="105" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:18Z" fail="1" name="boolean" pass="104" run="105" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -70,7 +70,7 @@
    <testResult feature="backwards_compatibility" status="skipped" testName="boolean-069"/>
    <testResult status="pass" testName="boolean-070"/>
    <testResult status="pass" testName="boolean-071"/>
-   <testResult status="pass" testName="boolean-072"/>
+   <testResult status="fail" testName="boolean-072"/>
    <testResult status="pass" testName="boolean-073"/>
    <testResult status="pass" testName="boolean-074"/>
    <testResult status="pass" testName="boolean-075"/>
@@ -80,12 +80,7 @@
    <testResult status="pass" testName="boolean-079"/>
    <testResult status="pass" testName="boolean-080"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="boolean-081"/>
-   <testResult status="fail" testName="boolean-082">
-      <outResult>
-         <errTrace>XPST0003 : An XPath expression compare($non_blank_jcodes/dd:hcfa-jcode[position() &lt; $this_pos]/text(), ./text()) = 0 has syntax error. Unknown op code : 0.</errTrace>
-         <errTrace>java.lang.ArrayIndexOutOfBoundsException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="boolean-082"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="boolean-083"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="boolean-084"/>
    <testResult status="pass" testName="boolean-085"/>

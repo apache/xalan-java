@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-08-12T15:18:04Z" desc="W3C XPath 3.1 test suite results" fail="1171" pass="7973" run="9148" skipped="19" success="87.16%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-08-14T15:05:25Z" desc="W3C XPath 3.1 test suite results" fail="1133" pass="8011" run="9148" skipped="19" success="87.57%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="7" run="7" success="100.0%"/>
     <array-filter fail="0" pass="11" run="11" success="100.0%"/>
@@ -126,20 +126,20 @@
     <op-gMonthDay-equal fail="7" pass="38" run="45" success="84.44%"/>
     <op-gYear-equal fail="3" pass="37" run="40" success="92.5%"/>
     <op-gYearMonth-equal fail="3" pass="37" run="40" success="92.5%"/>
-    <op-intersect fail="11" pass="21" run="32" success="65.62%"/>
+    <op-intersect fail="9" pass="23" run="32" success="71.88%"/>
     <op-is-same-node fail="5" pass="17" run="22" success="77.27%"/>
     <op-multiply-dayTimeDuration fail="5" pass="28" run="33" success="84.85%"/>
     <op-multiply-yearMonthDuration fail="10" pass="30" run="40" success="75.0%"/>
     <op-node-after fail="12" pass="14" run="26" success="53.85%"/>
     <op-node-before fail="12" pass="14" run="26" success="53.85%"/>
-    <op-numeric-add fail="33" pass="98" run="131" skipped="11" success="74.81%"/>
+    <op-numeric-add fail="12" pass="119" run="131" skipped="11" success="90.84%"/>
     <op-numeric-divide fail="5" pass="114" run="119" success="95.8%"/>
     <op-numeric-equal fail="5" pass="173" run="178" success="97.19%"/>
     <op-numeric-greater-than fail="7" pass="85" run="92" success="92.39%"/>
     <op-numeric-less-than fail="6" pass="148" run="154" success="96.1%"/>
     <op-numeric-mod fail="13" pass="100" run="113" success="88.5%"/>
     <op-numeric-multiply fail="21" pass="52" run="73" success="71.23%"/>
-    <op-numeric-subtract fail="26" pass="80" run="106" success="75.47%"/>
+    <op-numeric-subtract fail="17" pass="89" run="106" success="83.96%"/>
     <op-numeric-unary-minus fail="8" pass="54" run="62" success="87.1%"/>
     <op-numeric-unary-plus fail="7" pass="45" run="52" success="86.54%"/>
     <op-QName-equal fail="0" pass="36" run="36" success="100.0%"/>
@@ -176,7 +176,7 @@
     <prod-AxisStep fail="55" pass="181" run="236" success="76.69%"/>
     <prod-CastableExpr fail="148" pass="700" run="848" success="82.55%"/>
     <prod-ForClause fail="16" pass="58" run="74" success="78.38%"/>
-    <prod-GeneralComp.eq fail="36" pass="83" run="119" success="69.75%"/>
+    <prod-GeneralComp.eq fail="34" pass="85" run="119" success="71.43%"/>
     <prod-GeneralComp.ge fail="17" pass="41" run="58" success="70.69%"/>
     <prod-GeneralComp.gt fail="17" pass="50" run="67" success="74.63%"/>
     <prod-GeneralComp.le fail="16" pass="41" run="57" success="71.93%"/>
@@ -184,8 +184,8 @@
     <prod-GeneralComp.ne fail="33" pass="56" run="89" success="62.92%"/>
     <prod-IfExpr fail="5" pass="22" run="27" success="81.48%"/>
     <prod-InlineFunctionExpr fail="9" pass="17" run="26" success="65.38%"/>
-    <prod-InstanceofExpr fail="57" pass="216" run="273" success="79.12%"/>
-    <prod-LetClause fail="6" pass="17" run="23" success="73.91%"/>
+    <prod-InstanceofExpr fail="54" pass="219" run="273" success="80.22%"/>
+    <prod-LetClause fail="5" pass="18" run="23" success="78.26%"/>
     <prod-Literal fail="19" pass="95" run="114" success="83.33%"/>
     <prod-OrExpr fail="16" pass="313" run="329" success="95.14%"/>
     <prod-QuantifiedExpr fail="39" pass="122" run="161" success="75.78%"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:30Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:08:28Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
    <testResult status="pass" testName="package-001"/>
    <testResult status="pass" testName="package-001a"/>
    <testResult status="pass" testName="package-001b"/>
@@ -69,7 +69,7 @@
    <testResult status="fail" testName="package-101">
       <outResult>
          <errTrace>Illegal value: * used for NMTOKEN attribute: package-version </errTrace>
-         <errTrace>XTSE0010 : xsl:override is not allowed in this position in the stylesheet</errTrace>
+         <errTrace>XTSE0010 : An XML element xsl:override is not allowed in this position in the stylesheet.</errTrace>
          <errTrace>java.lang.NoSuchMethodException: For extension function, could not find method java.lang.String.parse([ExpressionContext,] ).</errTrace>
       </outResult>
    </testResult>

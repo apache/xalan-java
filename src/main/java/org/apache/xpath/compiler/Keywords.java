@@ -106,6 +106,9 @@ public class Keywords
   
   /** Document node test string. Added for XSLT 3.0. */
   private static final String NODETYPE_DOCUMENT_STRING = "document-node";
+  
+  /** Attribute node test string. Added for XSLT 3.0. */
+  private static final String NODETYPE_ATTRIBUTE_STRING = "attribute";
 
   /** Wildcard element string. */
   private static final String NODETYPE_ANYELEMENT_STRING = "*";
@@ -857,6 +860,7 @@ public class Keywords
 	  // Added for XSLT 3.0
 	  m_nodetypes.put(NODETYPE_CONTEXT_ITEM_STRING, new Integer(OpCodes.NODETYPE_CONTEXT_ITEM));
 	  m_nodetypes.put(NODETYPE_DOCUMENT_STRING, new Integer(OpCodes.NODETYPE_DOCUMENT));
+	  m_nodetypes.put(NODETYPE_ATTRIBUTE_STRING, new Integer(OpCodes.NODETYPE_ATTRIBUTE));
 
 	  m_keywords.put(FROM_SELF_ABBREVIATED_STRING, new Integer(OpCodes.FROM_SELF));
 	  m_keywords.put(FUNC_ID_STRING, new Integer(FunctionTable.FUNC_ID));
@@ -864,6 +868,7 @@ public class Keywords
 	  m_nodetests.put(NODETYPE_COMMENT_STRING, new Integer(OpCodes.NODETYPE_COMMENT));
 	  m_nodetests.put(NODETYPE_TEXT_STRING, new Integer(OpCodes.NODETYPE_TEXT));
 	  m_nodetests.put(NODETYPE_PI_STRING, new Integer(OpCodes.NODETYPE_PI));
+	  m_nodetests.put(NODETYPE_ATTRIBUTE_STRING, new Integer(OpCodes.NODETYPE_ATTRIBUTE));
 	  m_nodetests.put(NODETYPE_NODE_STRING, new Integer(OpCodes.NODETYPE_NODE));
   }
   

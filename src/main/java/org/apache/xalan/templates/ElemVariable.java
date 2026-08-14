@@ -84,7 +84,7 @@ import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.objects.XdmProcessingInstructionItem;
 import org.apache.xpath.operations.XPathArrowOp;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
@@ -679,8 +679,8 @@ public class ElemVariable extends ElemTemplateElement
              
             return evalResult; 
         }
-        else if (selectExpression instanceof XPath3Operator) {
-        	XPath3Operator xpathOp = (XPath3Operator)selectExpression;            
+        else if (selectExpression instanceof XPathOperator) {
+        	XPathOperator xpathOp = (XPathOperator)selectExpression;            
             XObject leftOperand = (xpathOp.getLeftOperand()).execute(xctxt);
             XObject rightOperand = (xpathOp.getRightOperand()).execute(xctxt);
             
@@ -2633,7 +2633,7 @@ public class ElemVariable extends ElemTemplateElement
     					                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof Range)) {
     				// no op
     			}
-    			else if (expr1 instanceof XPath3Operator) {
+    			else if (expr1 instanceof XPathOperator) {
     				// no op
     			}
     			else if (expr1 instanceof XPathForExpr) {

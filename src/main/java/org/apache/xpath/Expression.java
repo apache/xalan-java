@@ -47,7 +47,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.NotEquals;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.VcGt;
 import org.apache.xpath.operations.XPath3UnaryOperator;
 import org.apache.xpath.res.XPATHErrorResources;

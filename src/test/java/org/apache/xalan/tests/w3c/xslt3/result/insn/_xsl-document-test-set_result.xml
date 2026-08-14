@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:10Z" fail="8" name="xsl-document" pass="17" run="25" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:08:14Z" fail="8" name="xsl-document" pass="17" run="25" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="xsl-document-0101"/>
    <testResult status="pass" testName="xsl-document-0102"/>
-   <testResult status="pass" testName="xsl-document-0103"/>
+   <testResult status="fail" testName="xsl-document-0103">
+      <outResult/>
+   </testResult>
    <testResult status="pass" testName="xsl-document-0104"/>
    <testResult status="pass" testName="xsl-document-0105"/>
    <testResult status="pass" testName="xsl-document-0106"/>
@@ -23,9 +25,7 @@
       <outResult/>
    </testResult>
    <testResult status="fail" testName="xsl-document-0601">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 14,28 : An XSL transformation processing could not add 'document' to 'comment'.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="xsl-document-0602"/>
    <testResult status="pass" testName="xsl-document-0603"/>
@@ -33,5 +33,5 @@
    <testResult status="pass" testName="xsl-document-0605"/>
    <testResult status="fail" testName="xsl-document-0606"/>
    <testResult status="pass" testName="xsl-document-0701"/>
-   <testResult status="fail" testName="xsl-document-0801"/>
+   <testResult status="pass" testName="xsl-document-0801"/>
 </testrun>

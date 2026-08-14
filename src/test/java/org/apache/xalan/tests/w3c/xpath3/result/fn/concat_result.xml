@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-03T17:09:33Z" fail="2" name="fn-concat" pass="89" run="91" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:04:57Z" fail="2" name="fn-concat" pass="89" run="91" statusUnknown="0">
    <testResult status="pass" testName="fn-concatint2args-1"/>
    <testResult status="pass" testName="fn-concatint2args-2"/>
    <testResult status="pass" testName="fn-concatint2args-3"/>

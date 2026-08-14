@@ -45,7 +45,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 /**
  * An XPath 'or' expression evaluator.
  */
-public class Or extends XPath3Operator
+public class Or extends XPathOperator
 {
   static final long serialVersionUID = -644107191353853079L;
   

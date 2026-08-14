@@ -25,7 +25,7 @@ import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPath3UnaryOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
@@ -108,7 +108,7 @@ public class XPathVisitor
 	 * @param op The operation object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	public boolean visitBinaryOperation(ExpressionOwner owner, XPath3Operator op)
+	public boolean visitBinaryOperation(ExpressionOwner owner, XPathOperator op)
 	{
 		return true;
 	}

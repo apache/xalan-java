@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-27T11:50:26Z" fail="24" name="fn-sum" pass="187" run="211" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:04:39Z" fail="24" name="fn-sum" pass="187" run="211" statusUnknown="0">
    <testResult status="pass" testName="fn-sumint1args-1"/>
    <testResult status="pass" testName="fn-sumint1args-2"/>
    <testResult status="pass" testName="fn-sumint1args-3"/>

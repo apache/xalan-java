@@ -56,7 +56,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.patterns.NodeTest;
@@ -755,8 +755,8 @@ public class ElemSequence extends ElemTemplateElement
 					 return;
 				  }
 			  }			  
-			  else if (selectExpression instanceof XPath3Operator) {
-				  XPath3Operator xpathOperation = (XPath3Operator)selectExpression;            
+			  else if (selectExpression instanceof XPathOperator) {
+				  XPathOperator xpathOperation = (XPathOperator)selectExpression;            
 				  XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
 				  XObject rightOperand = (xpathOperation.getRightOperand()).execute(xctxt);
 				  result = xpathOperation.operate(leftOperand, rightOperand);

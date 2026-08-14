@@ -18,11 +18,14 @@
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.XPathOperator;
 
 import xml.xpath31.processor.types.XSQName;
 
@@ -62,6 +65,12 @@ public class FuncError extends FunctionMultiArgs
     	XObject errDesc = null;
 
     	SourceLocator srcLocator = xctxt.getSAXLocator();
+    	
+    	ExpressionNode exprNode = exprGetParent();
+    	
+    	if (exprNode instanceof XPathOperator) {
+    	   throw new TransformerException("FOER0000 : An XPath binary operator's operand cannot be of type none.");
+    	}
 
     	if (m_arg0 != null) {
     		errCode = getFunctionArgEffectiveValue(m_arg0, xctxt); 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-07-06T10:52:20Z" fail="22" name="select" pass="110" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:09Z" fail="18" name="select" pass="114" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -18,15 +18,11 @@
    <testResult status="pass" testName="select-1201"/>
    <testResult status="pass" testName="select-1202"/>
    <testResult status="pass" testName="select-1301"/>
-   <testResult status="fail" testName="select-1302">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="select-1302"/>
    <testResult status="pass" testName="select-1401"/>
    <testResult status="pass" testName="select-1402"/>
    <testResult status="pass" testName="select-1501"/>
-   <testResult status="fail" testName="select-1502">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="select-1502"/>
    <testResult status="pass" testName="select-1503"/>
    <testResult status="pass" testName="select-1504"/>
    <testResult status="pass" testName="select-1601"/>
@@ -48,10 +44,8 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult status="pass" testName="select-1901"/>
    <testResult status="pass" testName="select-2001"/>
    <testResult status="pass" testName="select-2002"/>
-   <testResult status="fail" testName="select-2003"/>
-   <testResult status="fail" testName="select-2004">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="select-2003"/>
+   <testResult status="pass" testName="select-2004"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2005"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2006"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2007"/>
@@ -62,9 +56,7 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult status="pass" testName="select-2012"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2013"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2014"/>
-   <testResult status="fail" testName="select-2015">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="select-2015"/>
    <testResult status="fail" testName="select-2016"/>
    <testResult status="pass" testName="select-2017"/>
    <testResult status="pass" testName="select-2018"/>
@@ -85,9 +77,7 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult reason="Xalan configured" status="skipped" testName="select-2033"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2034"/>
    <testResult reason="Xalan configured" status="skipped" testName="select-2035"/>
-   <testResult status="fail" testName="select-2036">
-      <outResult/>
-   </testResult>
+   <testResult status="fail" testName="select-2036"/>
    <testResult status="pass" testName="select-2037"/>
    <testResult status="fail" testName="select-2038"/>
    <testResult status="pass" testName="select-2039"/>

@@ -100,7 +100,7 @@ import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.operations.XPath3Except;
 import org.apache.xpath.operations.XPath3Intersect;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPath3UnaryOperator;
 import org.apache.xpath.operations.XPath3Union;
 import org.apache.xpath.operations.XPathArrowOp;
@@ -380,15 +380,15 @@ public class Compiler extends XPathOpMap
    * @param xpathOp1 non-null reference to XPath parent operator
    * @param opPos The op map position for an XPath parent operator
    *
-   * @return reference to {@link org.apache.xpath.operations.XPath3Operator} instance.
+   * @return reference to {@link org.apache.xpath.operations.XPathOperator} instance.
    *
    * @throws TransformerException if there is a syntax or other error.
    */
-  private Expression compileXPath3Operator(XPath3Operator xpathOp1, int opPos)
+  private Expression compileXPath3Operator(XPathOperator xpathOp1, int opPos)
           															        throws TransformerException
   {
 
-	  XPath3Operator result = null;
+	  XPathOperator result = null;
 
 	  if (xpathOp1 instanceof Or) {
 		  int leftPos = getFirstChildPos(opPos);
@@ -1597,18 +1597,17 @@ public class Compiler extends XPathOpMap
     int axesType = getOp(opPos);
     int testType = getOp(opPos + 3);
 
-    // System.out.println("testType: "+testType);
     switch (testType)
     {
     case OpCodes.NODETYPE_COMMENT :
       return DTMFilter.SHOW_COMMENT;
     case OpCodes.NODETYPE_TEXT :
-//      return DTMFilter.SHOW_TEXT | DTMFilter.SHOW_COMMENT;
       return DTMFilter.SHOW_TEXT | DTMFilter.SHOW_CDATA_SECTION ;
     case OpCodes.NODETYPE_PI :
       return DTMFilter.SHOW_PROCESSING_INSTRUCTION;
+    case OpCodes.NODETYPE_ATTRIBUTE :
+      return DTMFilter.SHOW_ATTRIBUTE_NODE;
     case OpCodes.NODETYPE_NODE :
-//      return DTMFilter.SHOW_ALL;
       switch (axesType)
       {
       case OpCodes.FROM_NAMESPACE:

@@ -30,7 +30,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPath3UnaryOperator;
 import org.xml.sax.SAXException;
 
@@ -263,8 +263,8 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     		   if (expr instanceof SelfIteratorNoPredicate) {
     			   result = true; 
     		   }
-    		   else if (expr instanceof XPath3Operator) {
-    			   XPath3Operator opn1 = (XPath3Operator)expr;
+    		   else if (expr instanceof XPathOperator) {
+    			   XPathOperator opn1 = (XPathOperator)expr;
     			   Expression lOp = opn1.getLeftOperand();
     			   Expression rOp = opn1.getRightOperand();
     			   result = isXslIterOnCompletionExprAccXPathCtxt(lOp);

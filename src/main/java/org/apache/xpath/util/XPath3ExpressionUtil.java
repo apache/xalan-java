@@ -27,7 +27,7 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.FunctionDef1Arg;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.FunctionOneArg;
-import org.apache.xpath.operations.XPath3Operator;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPath3UnaryOperator;
 
 /**
@@ -60,8 +60,8 @@ public class XPath3ExpressionUtil {
 																									  + "inline function expression, erroneous function body is '" 
 																									  + funcBodyStr + "'.", srcLocator);			  			  
 		  }
-		  else if (xpathInlineFuncBodyExr instanceof XPath3Operator) {
-			  XPath3Operator opn1 = (XPath3Operator)xpathInlineFuncBodyExr;
+		  else if (xpathInlineFuncBodyExr instanceof XPathOperator) {
+			  XPathOperator opn1 = (XPathOperator)xpathInlineFuncBodyExr;
 			  Expression exprL = opn1.getLeftOperand();
 			  Expression exprR = opn1.getRightOperand();
 

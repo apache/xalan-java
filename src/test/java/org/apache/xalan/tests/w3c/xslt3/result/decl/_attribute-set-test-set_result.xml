@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:44:20Z" fail="7" name="attribute-set" pass="42" run="49" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:07:32Z" fail="7" name="attribute-set" pass="42" run="49" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="attribute-set-0101"/>
    <testResult status="fail" testName="attribute-set-0102">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: Prefix must resolve to a namespace: Q{http</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="attribute-set-0104"/>
    <testResult status="pass" testName="attribute-set-0105"/>
@@ -15,9 +13,7 @@
    </testResult>
    <testResult status="pass" testName="attribute-set-0107"/>
    <testResult status="fail" testName="attribute-set-0108">
-      <outResult>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: 10,24 : An XSL transformation processing could not add 'next-match' to 'attribute'.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="attribute-set-0201"/>
    <testResult status="pass" testName="attribute-set-0202"/>
@@ -62,11 +58,7 @@
    <testResult status="pass" testName="attribute-set-1812"/>
    <testResult status="pass" testName="attribute-set-1813"/>
    <testResult status="fail" testName="attribute-set-1814">
-      <outResult>
-         <errTrace>XPST0017 : Could not find function: {http://www.w3.org/2005/xpath-functions}static-base-uri()</errTrace>
-         <errTrace>function token not found.</errTrace>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="pass" testName="attribute-set-1815"/>
 </testrun>

@@ -355,6 +355,16 @@ public class XPathSequenceTypeSupport {
        	   public static int MIN_INCLUSIVE = 0;
            public static int MAX_INCLUSIVE = 255;
         }
+    	
+    	public static class Float {
+        	public static float MIN_INCLUSIVE = (float)-3.4028235E38;
+            public static float MAX_INCLUSIVE = (float)3.4028235E38;
+        }
+    	
+    	public static class Double {
+        	public static double MIN_INCLUSIVE = -1.7976931348623157E308;
+            public static double MAX_INCLUSIVE = 1.7976931348623157E308;
+        }
     }
     
     /**

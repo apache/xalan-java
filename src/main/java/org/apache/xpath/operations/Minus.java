@@ -40,13 +40,12 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticOp;
+import org.apache.xpath.XPathArithmeticUtil;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -55,7 +54,6 @@ import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
-import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
@@ -78,7 +76,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Minus extends XPathArithmeticOp
+public class Minus extends XPathArithmeticUtil
 {
    static final long serialVersionUID = -5297672838170871043L;
 
@@ -152,6 +150,78 @@ public class Minus extends XPathArithmeticOp
 	  
 	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
 	  
+	  if ((left instanceof XNumber) || (left instanceof XSNumericType)) {
+		  if (right instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)right).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  right = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  right = right.getFresh(); 
+			  }
+		  }
+	  }
+
+	  if ((right instanceof XNumber) || (right instanceof XSNumericType)) {
+		  if (left instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)left).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  left = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  left = left.getFresh(); 
+			  }
+		  }
+	  }
+	  
+	  if (stylesheetRoot == null) {
+		  // Stricter type checking, when invoked via an XPath api call
+		  
+		  if ((left instanceof XSString) || (left instanceof XString)) {
+			  throw new TransformerException("XPTY0004 : An XPath operator '-' cannot have a string valued operand.");  
+		  }
+
+		  if ((right instanceof XSString) || (right instanceof XString)) {		  
+			  throw new TransformerException("XPTY0004 : An XPath operator '-' cannot have a string valued operand.");  
+		  }
+	  }
+	  
+	  if ((left instanceof XNumber) || (left instanceof XSNumericType)) {
+		  if (right instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)right).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  right = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  right = right.getFresh(); 
+			  }
+		  }
+	  }
+
+	  if ((right instanceof XNumber) || (right instanceof XSNumericType)) {
+		  if (left instanceof XMLNodeCursorImpl) {
+			  java.lang.String str1 = ((XMLNodeCursorImpl)left).str();			
+
+			  try {
+				  double dbl = Double.valueOf(str1);
+
+				  left = new XSDouble(dbl);
+			  }
+			  catch (NumberFormatException ex) {
+				  left = left.getFresh(); 
+			  }
+		  }
+	  }
+	  
 	  if ((left instanceof XNumber) && (right instanceof XNumber)) {		  
 		  double dbl1 = ((XNumber)left).num();
 		  double dbl2 = ((XNumber)right).num();
@@ -177,6 +247,52 @@ public class Minus extends XPathArithmeticOp
 			  result = new XSInteger(bigIntResult);
 
 			  return result;
+		  }
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSFloat)) {
+		  XSFloat xsFloat1 = (XSFloat)left;
+		  XSFloat xsFloat2 = (XSFloat)right;
+		  
+		  Float flt1 = xsFloat1.floatValue();
+		  Float flt2 = xsFloat2.floatValue();
+		  
+		  if (!Float.isInfinite(flt1) && !Float.isNaN(flt1) && !Float.isInfinite(flt2) && !Float.isNaN(flt2)) {
+			 if ((flt1 == 0) && (flt2 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE)) {
+				return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE);  
+			 }
+			 else if ((flt1 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE) && (flt2 == 0)) {
+				return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE);  
+			 }
+			 else if ((flt1 == 0) && (flt2 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE)) {
+				return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE);  
+			 }
+			 else if ((flt1 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE) && (flt2 == 0)) {
+				return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE); 
+			 }			 
+		  }
+	  }
+	  
+	  if ((left instanceof XSDouble) && (right instanceof XSDouble)) {
+		  XSDouble xsDouble1 = (XSDouble)left;
+		  XSDouble xsDouble2 = (XSDouble)right;
+		  
+		  Double dbl1 = xsDouble1.doubleValue();
+		  Double dbl2 = xsDouble2.doubleValue();
+		  
+		  if (!Double.isInfinite(dbl1) && !Double.isNaN(dbl1) && !Double.isInfinite(dbl2) && !Double.isNaN(dbl2)) {
+			 if ((dbl1 == 0) && (dbl2 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MIN_INCLUSIVE)) {
+				return new XSDouble(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MAX_INCLUSIVE);  
+			 }
+			 else if ((dbl1 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MIN_INCLUSIVE) && (dbl2 == 0)) {
+				return new XSDouble(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MIN_INCLUSIVE);  
+			 }
+			 else if ((dbl1 == 0) && (dbl2 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MAX_INCLUSIVE)) {
+				return new XSDouble(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MIN_INCLUSIVE);  
+			 }
+			 else if ((dbl1 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MAX_INCLUSIVE) && (dbl2 == 0)) {
+				return new XSDouble(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Double.MAX_INCLUSIVE); 
+			 }			 
 		  }
 	  }
 
@@ -249,28 +365,7 @@ public class Minus extends XPathArithmeticOp
 			  XMLString xmlStr1 = dtm.getStringValue(nodeHandle);
 			  lNodeStr = xmlStr1.toString();
 		  }
-	  }
-	  else if (left instanceof XSAnyAtomicType) {
-		  XSAnyAtomicType xsAnyAtomicType = (XSAnyAtomicType)left;
-		  typeName1 = xsAnyAtomicType.stringType();
-
-		  int colonIdx = typeName1.indexOf(':');
-		  typeName1 = typeName1.substring(colonIdx + 1);
-		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-	  }
-	  else if (left instanceof XNumber) {
-		  double dbl = ((XNumber)left).num();
-		  left = new XSDouble(dbl);
-
-		  typeName1 = "double";
-		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-	  }	  
-	  else if ((left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
-		  left = new XSBoolean(left.bool());
-
-		  typeName1 = "boolean";
-		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-	  }
+	  }  
 
 	  java.lang.String typeName2 = null;
 	  java.lang.String typeNs2 = null;
@@ -345,93 +440,36 @@ public class Minus extends XPathArithmeticOp
 			  rNodeStr = xmlStr2.toString();
 		  }
 	  }
-	  else if (right instanceof XSAnyAtomicType) {
-		  XSAnyAtomicType xsAnyAtomicType = (XSAnyAtomicType)right;
-		  typeName2 = xsAnyAtomicType.stringType();
+	  
+	  if (left instanceof XSAnyAtomicType) {
+		  typeName1 = ((XSAnyAtomicType)left).typeName();
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	  }
+	  else if (left instanceof XNumber) {
+		  typeName1 = "double";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	  }
 
-		  int colonIdx = typeName2.indexOf(':');
-		  typeName2 = typeName2.substring(colonIdx + 1);
-		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  if (right instanceof XSAnyAtomicType) {
+		  typeName2 = ((XSAnyAtomicType)right).typeName();
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
 	  else if (right instanceof XNumber) {
-		  double dbl = ((XNumber)right).num();
-		  right = new XSDouble(dbl);
-
 		  typeName2 = "double";
-		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-	  }
-	  else if ((right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
-		  right = new XSBoolean(right.bool());
-
-		  typeName2 = "boolean";
-		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
 
-	  if (left instanceof XSFloat) {
-		  float fl1 = ((XSFloat)left).floatValue();
-		  left = new XSDouble(fl1);
+	  java.lang.String typeName1Actual = typeName1;
+	  java.lang.String typeName2Actual = typeName2;
 
+	  if ("untypedAtomic".equals(typeName1)) {
 		  typeName1 = "double";
-		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
 
-	  if (right instanceof XSFloat) {
-		  float fl2 = ((XSFloat)right).floatValue();
-		  right = new XSDouble(fl2);
-
+	  if ("untypedAtomic".equals(typeName2)) {
 		  typeName2 = "double";
 		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-	  }
-	  
-	  if (left instanceof XSNumericType) {
-		  if ((right instanceof XSString) || (right instanceof XString)) {
-			  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
-			  
-			  try {
-				  double dbl2 = Double.valueOf(str2);
-				  right = new XSDouble(dbl2);
-
-				  typeName2 = "double";
-				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			  }
-			  catch (NumberFormatException ex) {
-				  // no op	
-			  }
-		  }
-	  }
-
-	  if (right instanceof XSNumericType) {
-		  if ((left instanceof XSString) || (left instanceof XString)) {
-			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
-			  
-			  try {
-				  double dbl1 = Double.valueOf(str1);
-				  left = new XSDouble(dbl1);
-
-				  typeName1 = "double";
-				  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			  }
-			  catch (NumberFormatException ex) {
-				  // no op	
-			  }
-		  }
-	  }
-	  
-	  if ((right instanceof XSUntypedAtomic) || (right instanceof XSUntyped)) {
-		  if ((left instanceof XSNumericType) || (left instanceof XNumber)) {
-			  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
-
-			  try {
-				  double dbl2 = Double.valueOf(str2);
-				  right = new XSDouble(dbl2);
-
-				  typeName2 = "double";
-				  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
-			  }
-			  catch (NumberFormatException ex) {
-				  // no op	
-			  }
-		  }
 	  }
 	  
 	  // Validating an XPath 3.1 operator '-' operands compatibility for subtraction	  
@@ -439,27 +477,27 @@ public class Minus extends XPathArithmeticOp
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                    (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
-					                                                                                               + "type " + typeName2 + " value from " + typeName1 + ".");
+					                                                                                               + "type " + typeName2Actual + " value from " + typeName1Actual + ".");
 		  }
 		  else if ("date".equals(typeName1) && !("date".equals(typeName2) || "yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
-                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
+                                                                                                                   + "type " + typeName2Actual + " value from " + typeName1Actual + ".");
 		  }
 		  else if ("time".equals(typeName1) && !("time".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
-                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
+                                                                                                                   + "type " + typeName2Actual + " value from " + typeName1Actual + ".");
 		  }
 		  else if ("dateTime".equals(typeName1) && !("dateTime".equals(typeName2) || "yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
-                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
+                                                                                                                   + "type " + typeName2Actual + " value from " + typeName1Actual + ".");
 		  }
 		  else if ("yearMonthDuration".equals(typeName1) && !"yearMonthDuration".equals(typeName2)) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
-                                                                                                                   + "type " + typeName2 + " value from " + typeName1 + ".");
+                                                                                                                   + "type " + typeName2Actual + " value from " + typeName1Actual + ".");
 		  }
 		  else if ("dayTimeDuration".equals(typeName1) && !"dayTimeDuration".equals(typeName2)) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '-' cannot subtract schema "
-                      																							   + "type " + typeName2 + " value from " + typeName1 + ".");
+                      																							   + "type " + typeName2Actual + " value from " + typeName1Actual + ".");
 		  }
 
 		  List<XMLNSDecl> nsPrefixTable = null;	  

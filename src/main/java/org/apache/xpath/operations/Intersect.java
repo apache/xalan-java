@@ -42,7 +42,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class Intersect extends XPath3Operator
+public class Intersect extends XPathOperator
 {
     
   private static final long serialVersionUID = 5559048164177617210L;

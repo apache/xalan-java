@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-06-23T12:45:02Z" fail="26" name="format-number" pass="38" run="64" skipped="10" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:08:06Z" fail="26" name="format-number" pass="38" run="64" skipped="10" statusUnknown="0">
    <testResult status="pass" testName="format-number-001"/>
    <testResult status="pass" testName="format-number-002"/>
    <testResult status="pass" testName="format-number-003"/>
@@ -45,9 +45,7 @@
    <testResult status="fail" testName="format-number-044"/>
    <testResult status="fail" testName="format-number-045"/>
    <testResult status="fail" testName="format-number-046">
-      <outResult>
-         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key xsl:decimal-format names must be unique. Name "q" has been duplicated.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="format-number-047"/>
    <testResult status="fail" testName="format-number-048"/>
@@ -65,19 +63,13 @@
    </testResult>
    <testResult status="pass" testName="format-number-052"/>
    <testResult status="fail" testName="format-number-053">
-      <outResult>
-         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key xsl:decimal-format names must be unique. Name "q" has been duplicated.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="format-number-054">
-      <outResult>
-         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key Only one default xsl:decimal-format declaration is allowed.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="format-number-055">
-      <outResult>
-         <errTrace>java.util.MissingResourceException: Can't find resource for bundle org.apache.xalan.res.XSLTErrorResources, key xsl:decimal-format names must be unique. Name "q" has been duplicated.</errTrace>
-      </outResult>
+      <outResult/>
    </testResult>
    <testResult status="fail" testName="format-number-056">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;931&lt;/out&gt;</outResult>
