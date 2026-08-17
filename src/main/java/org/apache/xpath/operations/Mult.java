@@ -44,6 +44,7 @@ import org.apache.xpath.XPathArithmeticUtil;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -110,6 +111,7 @@ public class Mult extends XPathArithmeticUtil
       }
       else {
     	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+    	  
     	  if (stylesheetRoot != null) {
     		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
      	     xctxt = transformerImpl.getXPathContext();
@@ -165,6 +167,7 @@ public class Mult extends XPathArithmeticUtil
 	  
 	  if ((left instanceof XSInteger) && (right instanceof XNumber)) {
 		  XNumber xNumber = (XNumber)right;
+		  
 		  if (((int)xNumber.num()) == xNumber.num()) {
 			  java.lang.String str1 = ((XSInteger)left).stringValue(); 			 			
 			  BigInteger bigInt1 = new BigInteger(str1);
@@ -181,6 +184,7 @@ public class Mult extends XPathArithmeticUtil
 	  
 	  if ((right instanceof XSInteger) && (left instanceof XNumber)) {
 		  XNumber xNumber = (XNumber)left;
+		  
 		  if (((int)xNumber.num()) == xNumber.num()) {
 			  java.lang.String str1 = ((XSInteger)right).stringValue(); 			 			
 			  BigInteger bigInt1 = new BigInteger(str1);
@@ -195,15 +199,120 @@ public class Mult extends XPathArithmeticUtil
 		  }
 	  }
 	  
+	  if ((left instanceof XSFloat) && (right instanceof XSFloat)) {
+		  XSFloat xsFloat1 = (XSFloat)left;
+		  XSFloat xsFloat2 = (XSFloat)right;
+		  
+		  Float flt1 = xsFloat1.floatValue();
+		  Float flt2 = xsFloat2.floatValue();
+		  
+		  if (!Float.isInfinite(flt1) && !Float.isNaN(flt1) && !Float.isInfinite(flt2) && !Float.isNaN(flt2)) {
+			  if ((flt1 == -1) && (flt2 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE)) {
+				 return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE);  
+			  }			  
+			  else if ((flt1 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE) && (flt2 == -1)) {
+				 return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE);  
+			  }
+			  else if ((flt1 == -1) && (flt2 == XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MAX_INCLUSIVE)) {
+				 return new XSFloat(XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Float.MIN_INCLUSIVE);  
+			  }
+		  }
+	  }
+	  
+	  if (stylesheetRoot == null) {
+		  // Stricter type checking, when invoked via an XPath api call
+		  
+		  if ((left instanceof XSString) || (left instanceof XString)) {
+			  throw new TransformerException("XPTY0004 : An XPath operator '*' cannot have a string valued operand.");  
+		  }
+
+		  if ((right instanceof XSString) || (right instanceof XString)) {		  
+			  throw new TransformerException("XPTY0004 : An XPath operator '*' cannot have a string valued operand.");  
+		  }
+	  }
+	  
+	  if ((left instanceof XSDecimal) && (right instanceof XSFloat)) {
+		  XSDecimal xsDecimal = (XSDecimal)left;
+		  XSFloat xsFloat = (XSFloat)right;
+
+		  float flt1 = (float)(xsDecimal.doubleValue());
+		  float flt2 = xsFloat.floatValue();
+
+		  return new XSFloat(flt1 * flt2);
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSDecimal)) {
+		  XSFloat xsFloat = (XSFloat)left;
+		  XSDecimal xsDecimal = (XSDecimal)right;
+
+		  float flt1 = xsFloat.floatValue();
+		  float flt2 = (float)(xsDecimal.doubleValue());
+
+		  return new XSFloat(flt1 * flt2);
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSInteger)) {
+		  XSFloat xsFloat = (XSFloat)left;
+		  XSInteger xsInteger = (XSInteger)right;
+
+		  float flt1 = xsFloat.floatValue();
+		  float flt2 = (float)(xsInteger.doubleValue());
+
+		  return new XSFloat(flt1 * flt2);
+	  }
+	  
+	  if ((left instanceof XSInteger) && (right instanceof XSFloat)) {		  
+		  XSInteger xsInteger = (XSInteger)left;
+		  XSFloat xsFloat = (XSFloat)right;
+		  
+		  float flt1 = (float)(xsInteger.doubleValue());
+		  float flt2 = xsFloat.floatValue();
+
+		  return new XSFloat(flt1 * flt2);
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSFloat)) {		  
+		  XSFloat xsFloat1 = (XSFloat)left;
+		  XSFloat xsFloat2 = (XSFloat)right;
+		  
+		  float flt1 = xsFloat1.floatValue();
+		  float flt2 = xsFloat2.floatValue();
+
+		  return new XSFloat(flt1 * flt2);
+	  }
+	  
+	  if ((left instanceof XSDecimal) && (right instanceof XSDouble)) {		  
+		  XSDecimal xsDecimal = (XSDecimal)left;
+		  XSDouble xsDouble = (XSDouble)right;
+		  
+		  double dbl1 = xsDecimal.doubleValue();
+		  double dbl2 = xsDouble.doubleValue();
+
+		  return new XSDouble(dbl1 * dbl2);
+	  }
+	  
+	  if ((left instanceof XSDouble) && (right instanceof XSDecimal)) {		  
+		  XSDouble xsDouble = (XSDouble)left;
+		  XSDecimal xsDecimal = (XSDecimal)right;
+		  
+		  double dbl1 = xsDouble.doubleValue();
+		  double dbl2 = xsDecimal.doubleValue();
+
+		  return new XSDouble(dbl1 * dbl2);
+	  }
+	  
 	  if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
 		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  
 		  if (nodeHandle != DTM.NULL) {
 			  DTM dtm = xctxt.getDTM(nodeHandle);
 			  Node node = dtm.getNode(nodeHandle);
+			  
 			  if (node instanceof ElementPSVI) {
 				  ElementPSVI elementPsvi = (ElementPSVI)node;
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
 					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' operand, cannot be a "
 							  																							+ "node validated with schema complex type.");				  
@@ -214,6 +323,7 @@ public class Mult extends XPathArithmeticUtil
 					  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
 					  
 					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  
 					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 						 if (typeNs1 == null) {
 							XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -225,6 +335,7 @@ public class Mult extends XPathArithmeticUtil
 						 XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
 						 typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
 						 typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						 
 						 if (typeNs1 == null) {
 							 XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 							 typeName1 = xsTypeDefn.getName();
@@ -242,6 +353,7 @@ public class Mult extends XPathArithmeticUtil
 				  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
 				  
 				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  
 				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 					 if (typeNs1 == null) {
 						XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -253,6 +365,7 @@ public class Mult extends XPathArithmeticUtil
 					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
 					  typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
 					  typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  
 					  if (typeNs1 == null) {
 						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 						  typeName1 = xsTypeDefn.getName();
@@ -311,12 +424,15 @@ public class Mult extends XPathArithmeticUtil
 	  if (right instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
 		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  
 		  if (nodeHandle != DTM.NULL) {
 			  DTM dtm = xctxt.getDTM(nodeHandle);
 			  Node node = dtm.getNode(nodeHandle);
+			  
 			  if (node instanceof ElementPSVI) {
 				  ElementPSVI elementPsvi = (ElementPSVI)node;
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
 					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' operand, cannot be a "
 							  																							+ "node validated with schema complex type.");
@@ -327,6 +443,7 @@ public class Mult extends XPathArithmeticUtil
 					  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
 					  
 					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  
 					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 						 if (typeNs2 == null) {
 							XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -338,6 +455,7 @@ public class Mult extends XPathArithmeticUtil
 						  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
 						  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
 						  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						  
 						  if (typeNs2 == null) {
 							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 							  typeName2 = xsTypeDefn.getName();
@@ -355,6 +473,7 @@ public class Mult extends XPathArithmeticUtil
 				  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
 				  
 				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  
 				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 					 if (typeNs2 == null) {
 						XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -366,6 +485,7 @@ public class Mult extends XPathArithmeticUtil
 					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
 					  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
 					  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  
 					  if (typeNs2 == null) {
 						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 						  typeName2 = xsTypeDefn.getName();
@@ -440,6 +560,7 @@ public class Mult extends XPathArithmeticUtil
 
 		  Double dbl1 = xsDouble1.doubleValue();
 		  Double dbl2 = xsDouble2.doubleValue();
+		  
 		  if ((dbl1 == Double.POSITIVE_INFINITY) || (dbl2 == Double.POSITIVE_INFINITY)) {
 			  result = new XSDouble(Double.POSITIVE_INFINITY);
 
@@ -524,6 +645,7 @@ public class Mult extends XPathArithmeticUtil
 		  }
 
 		  List<XMLNSDecl> nsPrefixTable = null;	  
+		  
 		  if (stylesheetRoot != null) {
 			  nsPrefixTable = stylesheetRoot.getPrefixTable();
 		  }
@@ -536,11 +658,13 @@ public class Mult extends XPathArithmeticUtil
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
+			  
 			  try {
 			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  }
 			  catch (TransformerException ex) {
 				 java.lang.String errMesg = ex.getMessage();
+				 
 				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
 					xpathObj = new XPath("'" + lNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 				 }
@@ -553,11 +677,13 @@ public class Mult extends XPathArithmeticUtil
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
+			  
 			  try {
 			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  }
 			  catch (TransformerException ex) {
 				 java.lang.String errMesg = ex.getMessage();
+				 
 				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
 					xpathObj = new XPath("'" + rNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 				 }
@@ -592,12 +718,14 @@ public class Mult extends XPathArithmeticUtil
 	  }
 	  
 	  Expression leftOperandExpr = getLeftOperand();	  
+	  
 	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
 		 left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
 	  }
 	  
       Expression rightOperandExpr = getRightOperand();	  
-	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+	  
+      if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
 		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
 	  }
 	   
@@ -659,6 +787,7 @@ public class Mult extends XPathArithmeticUtil
           double lDouble = ((XNumber)left).num();
           
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
+          
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
 			                                                                                   + "than one item is not allowed as the second "
@@ -674,6 +803,7 @@ public class Mult extends XPathArithmeticUtil
           double rDouble = ((XNumber)right).num();
           
           XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
+          
           if (lNodeSet.getLength() > 1) {
         	  throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
 																		                      + "than one item is not allowed as the firsr "
@@ -687,7 +817,8 @@ public class Mult extends XPathArithmeticUtil
       }
       else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
     	  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
-          if (rNodeSet.getLength() > 1) {
+          
+    	  if (rNodeSet.getLength() > 1) {
         	  throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
 																		                      + "than one item is not allowed as the second "
 																		                      + "operand of an XPath operator '*'.");  
@@ -695,6 +826,7 @@ public class Mult extends XPathArithmeticUtil
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(rNodeStr);
         	  }
@@ -704,6 +836,7 @@ public class Mult extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -714,12 +847,14 @@ public class Mult extends XPathArithmeticUtil
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
+          
+    	  if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the first "
                                                                                              + "operand of XPath operator '*'.");  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(lNodeStr);
         	  }
@@ -730,6 +865,7 @@ public class Mult extends XPathArithmeticUtil
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -740,19 +876,22 @@ public class Mult extends XPathArithmeticUtil
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
+          
+    	  if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the first "
                                                                                             + "operand of XPath operator '*'.");  
           }
           
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
+          
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the second "
                                                                                             + "operand of XPath operator '*'.");  
           }
           
           BigDecimal lBigDecimal = null;
-    	  try {
+    	  
+          try {
     		 lBigDecimal = new BigDecimal(lNodeStr);
     	  }
     	  catch (NumberFormatException ex) {
@@ -761,6 +900,7 @@ public class Mult extends XPathArithmeticUtil
     	  }
     	  
     	  BigDecimal rBigDecimal = null;
+    	  
     	  try {
     	     rBigDecimal = new BigDecimal(rNodeStr);
     	  }
@@ -770,6 +910,7 @@ public class Mult extends XPathArithmeticUtil
     	  }
     	  
     	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+    	  
     	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
       		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
       	  }
@@ -779,12 +920,14 @@ public class Mult extends XPathArithmeticUtil
       }      
       else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
     	  ResultSequence lSeq = (ResultSequence)left;
-          if (lSeq.size() > 1) {
+          
+    	  if (lSeq.size() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the first "
                                                                                             + "operand of XPath operator '*'.");  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
@@ -792,9 +935,11 @@ public class Mult extends XPathArithmeticUtil
         		 throw new javax.xml.transform.TransformerException("XPTY0004 : The first operand of XPath operator '*' is not a numeric value or "
         		 		                                                                    + "cannot be converted to a numeric value."); 
         	  }
+        	  
         	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -805,13 +950,15 @@ public class Mult extends XPathArithmeticUtil
       }
       else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
-          if (rSeq.size() > 1) {
+          
+    	  if (rSeq.size() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the second "
                                                                                             + "operand of XPath operator '*'.");  
           }
           else {
         	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
@@ -821,6 +968,7 @@ public class Mult extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -831,12 +979,14 @@ public class Mult extends XPathArithmeticUtil
       }
       else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
     	  ResultSequence lSeq = (ResultSequence)left;
-          if (lSeq.size() > 1) {
+          
+    	  if (lSeq.size() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the first "
                                                                                             + "operand of XPath operator '*'.");  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
@@ -847,6 +997,7 @@ public class Mult extends XPathArithmeticUtil
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -857,13 +1008,15 @@ public class Mult extends XPathArithmeticUtil
       }
       else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
-          if (rSeq.size() > 1) {
+          
+    	  if (rSeq.size() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the second "
                                                                                            + "operand of XPath operator '*'.");  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
@@ -873,6 +1026,7 @@ public class Mult extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -883,12 +1037,14 @@ public class Mult extends XPathArithmeticUtil
       }      
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
     	  ResultSequence lSeq = (ResultSequence)left;          
-          if (lSeq.size() > 1) {
+          
+    	  if (lSeq.size() > 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the first "
                                                                                             + "operand of XPath operator '*'.");  
           }
           
           ResultSequence rSeq = (ResultSequence)right;
+          
           if (rSeq.size() > 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the second "
                                                                                             + "operand of XPath operator '*'.");  
@@ -899,6 +1055,7 @@ public class Mult extends XPathArithmeticUtil
                     
           BigDecimal lBigDecimal = null;
           BigDecimal rBigDecimal = null;        	  
+          
           try {
         	  java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lXObj);
         	  lBigDecimal = new BigDecimal(lStr);	              
@@ -912,6 +1069,7 @@ public class Mult extends XPathArithmeticUtil
           }
 
           BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+          
           if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
         	  result = new XSInteger(resultBigDecimal.toBigInteger()); 
           }
@@ -921,7 +1079,8 @@ public class Mult extends XPathArithmeticUtil
       }
       else if (left instanceof ResultSequence) {
     	  ResultSequence lSeq = (ResultSequence)left;          
-          if (lSeq.size() > 1) {
+          
+    	  if (lSeq.size() > 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more than one item is not allowed as the first "
                                                                                             + "operand of XPath operator '*'.");  
           }
@@ -930,6 +1089,7 @@ public class Mult extends XPathArithmeticUtil
 
           BigDecimal lBigDecimal = null;
           BigDecimal rBigDecimal = null;        	  
+          
           try {
         	  java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lXObj);
         	  lBigDecimal = new BigDecimal(lStr);	              
@@ -943,6 +1103,7 @@ public class Mult extends XPathArithmeticUtil
           }
 
           BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+          
           if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
         	  result = new XSInteger(resultBigDecimal.toBigInteger()); 
           }
@@ -953,6 +1114,7 @@ public class Mult extends XPathArithmeticUtil
       else if (left instanceof XSYearMonthDuration) {
     	  try {
     		  java.lang.String rStrVal = null;
+    		  
     		  if (right instanceof XMLNodeCursorImpl) {
     			 rStrVal = rNodeStr; 
     		  }
@@ -969,6 +1131,7 @@ public class Mult extends XPathArithmeticUtil
       else if (right instanceof XSYearMonthDuration) {
     	  try {
     		  java.lang.String lStrVal = null;
+    		  
     		  if (left instanceof XMLNodeCursorImpl) {
     			 lStrVal = lNodeStr; 
     		  }
@@ -985,6 +1148,7 @@ public class Mult extends XPathArithmeticUtil
       else if (left instanceof XSDayTimeDuration) {
     	  try {
     		  java.lang.String rStrVal = null;
+    		  
     		  if (right instanceof XMLNodeCursorImpl) {
     			 rStrVal = rNodeStr;  
     		  }
@@ -1001,6 +1165,7 @@ public class Mult extends XPathArithmeticUtil
       else if (right instanceof XSDayTimeDuration) {
     	  try {
     		  java.lang.String lStrVal = null;
+    		  
     		  if (left instanceof XMLNodeCursorImpl) {
     			 lStrVal = lNodeStr; 
     		  }
@@ -1016,7 +1181,8 @@ public class Mult extends XPathArithmeticUtil
       }
       else if (left instanceof XMLNodeCursorImpl) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
+          
+    	  if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the first "
                                                                                    + "operand of XPath operator '*'.");  
@@ -1024,7 +1190,8 @@ public class Mult extends XPathArithmeticUtil
           
           BigDecimal lBigDecimal = null;
           BigDecimal rBigDecimal = null;
-    	  try {
+    	  
+          try {
     		 lBigDecimal = new BigDecimal(lNodeStr);
              rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(right));
     	  }
@@ -1035,6 +1202,7 @@ public class Mult extends XPathArithmeticUtil
     	  }
         	  
           BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
+          
           if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           	 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           }

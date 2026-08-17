@@ -31,6 +31,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -38,6 +39,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
@@ -233,6 +235,23 @@ public class Gt extends XPathOperator
 		  }
 		  else {
 			  return XBoolean.S_FALSE;
+		  }
+	  }
+	  
+	  if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
+		  if ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
+			  boolean bool1 = left.bool(); 
+			  boolean bool2 = right.bool();
+
+			  int a = bool1 ? 1 : 0;
+			  int b = bool2 ? 1 : 0;
+
+			  if (a > b) {
+				  return XBoolean.S_TRUE;
+			  }
+			  else {
+				  return XBoolean.S_FALSE;
+			  }
 		  }
 	  }
 	  

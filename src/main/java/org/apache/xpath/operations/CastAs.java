@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * An implementation of XPath 3.1 "cast as" expression 
@@ -65,6 +66,7 @@ public class CastAs extends XPathOperator
       
       ExpressionNode exprNode = getExpressionOwner();
       XPathContext xpathContext = null;
+      
       if (exprNode instanceof ElemTemplateElement) {
     	 xpathContext = ((ElemTemplateElement)exprNode).getXPathContext();
       }
@@ -74,6 +76,7 @@ public class CastAs extends XPathOperator
     		  if (left instanceof XSDecimal) {
     			  XSDecimal xsDecimal = (XSDecimal)left;
     			  double dblValue = (xsDecimal.getValue()).doubleValue();
+    			  
     			  if (dblValue >= 0) {
     				  int intValue = (int)(Math.floor(dblValue));
     				  java.lang.String intStrValue = java.lang.String.valueOf(intValue);
@@ -91,6 +94,7 @@ public class CastAs extends XPathOperator
     		  }
     		  else if (left instanceof XSDouble) {
     			  double dblValue = ((XSDouble)left).doubleValue();    			  
+    			  
     			  if (dblValue >= 0) {
     				  int intValue = (int)(Math.floor(dblValue));
     				  java.lang.String intStrValue = java.lang.String.valueOf(intValue);
@@ -111,6 +115,14 @@ public class CastAs extends XPathOperator
       finally {
     	  // Reset the value of variable XslTransformData.m_xpathCallingOpCode 
     	  XslTransformData.m_xpathCallingOpCode = Integer.MIN_VALUE;
+      }
+      
+      if (left instanceof XSDecimal) {
+    	  if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) {
+              java.lang.String str1 = ((XSDecimal)left).stringValue();
+              
+              return new XSString(str1);
+    	  }
       }
       
       // Evaluate an XPath 3.1 "cast as" expression, when XPath "idiv" expression 

@@ -56,6 +56,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
@@ -114,6 +115,7 @@ public class VcGt extends XPathRelationalOp
       
       if (left instanceof XNumber) {
     	  XNumber lXNumber = (XNumber)left;
+    	  
     	  if (lXNumber.getXsDecimal() != null) {
     		  left = lXNumber.getXsDecimal();  
     	  }
@@ -127,6 +129,7 @@ public class VcGt extends XPathRelationalOp
 
       if (right instanceof XNumber) {
     	  XNumber rXNumber = (XNumber)right;
+    	  
     	  if (rXNumber.getXsDecimal() != null) {
     		  right = rXNumber.getXsDecimal();  
     	  }
@@ -143,6 +146,7 @@ public class VcGt extends XPathRelationalOp
       if (XslTransformData.m_stylesheetRoot != null) {
     	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
     	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    	  
     	  if (!XslTransformData.m_use_when) {
     	     xctxt = transformerImpl.getXPathContext();
     	  }
@@ -152,6 +156,7 @@ public class VcGt extends XPathRelationalOp
       }
       else {
     	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+    	  
     	  if ((stylesheetRoot != null) && !XslTransformData.m_use_when) {
     		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
      	     xctxt = transformerImpl.getXPathContext();
@@ -183,9 +188,10 @@ public class VcGt extends XPathRelationalOp
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'gt', but "
 																												  + "the supplied type is a function "
 																												  + "type which cannot be atomized.", this); 
-	  }
+	  }	  	  
 	  
 	  boolean isLEmpty = false;
+	  
 	  if (left instanceof ResultSequence) {
 		  if (((ResultSequence)left).size() == 0) {
 			  isLEmpty = true;
@@ -197,6 +203,7 @@ public class VcGt extends XPathRelationalOp
 	  }
 	  else if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)left;
+		  
 		  if (nodeRef1.getLength() == 0) {
 			  isLEmpty = true;
 		  }
@@ -207,6 +214,7 @@ public class VcGt extends XPathRelationalOp
 	  }
 
 	  boolean isREmpty = false;
+	  
 	  if (right instanceof ResultSequence) {
 		  if (((ResultSequence)right).size() == 0) {
 			  isREmpty = true;
@@ -218,12 +226,70 @@ public class VcGt extends XPathRelationalOp
 	  }
 	  else if (right instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)right;
+		  
 		  if (nodeRef1.getLength() == 0) {
 			  isREmpty = true;
 		  }
 		  else if (nodeRef1.getLength() > 1) {
 			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator gt's second operand cannot be a "
 			  																									         + "sequence of size greater than one.", this);
+		  }
+	  }
+	  
+	  if (left instanceof XSFloat) {
+		  XSFloat xsFloat = (XSFloat)left;
+
+		  if (xsFloat.nan()) {
+			  return new ResultSequence(); 
+		  }
+	  }
+	  
+	  if (right instanceof XSFloat) {
+		  XSFloat xsFloat = (XSFloat)right;
+
+		  if (xsFloat.nan()) {
+			  return new ResultSequence(); 
+		  }
+	  }
+
+	  if (right instanceof XSDouble) {
+		  XSDouble xsDouble = (XSDouble)right;
+
+		  if (xsDouble.nan()) {
+			  return new ResultSequence(); 
+		  } 
+	  }
+	  
+	  if (left instanceof XSDouble) {
+		 XSDouble xsDouble = (XSDouble)left;
+		 
+		 if (xsDouble.nan()) {
+			return new ResultSequence(); 
+		 }
+	  }
+	  
+      if (right instanceof XSDouble) {
+    	 XSDouble xsDouble = (XSDouble)right;
+ 		 
+ 		 if (xsDouble.nan()) {
+ 			return new ResultSequence(); 
+ 		 } 
+	  }
+      
+      if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
+		  if ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
+			  boolean bool1 = left.bool(); 
+			  boolean bool2 = right.bool();
+
+			  int a = bool1 ? 1 : 0;
+			  int b = bool2 ? 1 : 0;
+
+			  if (a > b) {
+				  return XBoolean.S_TRUE;
+			  }
+			  else {
+				  return XBoolean.S_FALSE;
+			  }
 		  }
 	  }
 	  
@@ -238,12 +304,15 @@ public class VcGt extends XPathRelationalOp
 		  
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
 		  int nodeHandle = (xmlNodeCursorImpl.iterRaw()).nextNode();
+		  
 		  if (nodeHandle != DTM.NULL) {
 			  DTM dtm = xctxt.getDTM(nodeHandle);
 			  Node node = dtm.getNode(nodeHandle);
+			  
 			  if (node instanceof ElementPSVI) {
 				  ElementPSVI elementPsvi = (ElementPSVI)node;
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
 					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' operand, cannot be a "
 							  																							+ "node validated with schema complex type.");				  
@@ -254,6 +323,7 @@ public class VcGt extends XPathRelationalOp
 					  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
 					  
 					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  
 					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 						 if (typeNs1 == null) {
 							XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -265,6 +335,7 @@ public class VcGt extends XPathRelationalOp
 						 XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
 						 typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
 						 typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						 
 						 if (typeNs1 == null) {
 							 XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 							 typeName1 = xsTypeDefn.getName();
@@ -282,6 +353,7 @@ public class VcGt extends XPathRelationalOp
 				  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
 				  
 				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  
 				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 					 if (typeNs1 == null) {
 						XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -293,6 +365,7 @@ public class VcGt extends XPathRelationalOp
 					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
 					  typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
 					  typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  
 					  if (typeNs1 == null) {
 						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 						  typeName1 = xsTypeDefn.getName();
@@ -339,10 +412,12 @@ public class VcGt extends XPathRelationalOp
 	  
 	  if (left instanceof XSString) {
 		  java.lang.String str1 = ((XSString)left).stringValue();		  
+		  
 		  if ((Constants.XS_VALID_TRUE).equals(str1) && (left.getXsTypeDefinition() != null)) {
 			  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(left.getXsTypeDefinition());
 			  java.lang.String typeName = xsSimpleTypeDecl.getTypeName();
 			  java.lang.String typeNs = xsSimpleTypeDecl.getTypeNamespace();
+			  
 			  if ((typeName != null) && !((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs))) {
 				  xsSimpleTypeDecl = (XSSimpleTypeDecl)(xsSimpleTypeDecl.getBaseType());
 				  typeName1 = xsSimpleTypeDecl.getTypeName();
@@ -370,12 +445,15 @@ public class VcGt extends XPathRelationalOp
 		  
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
 		  int nodeHandle = (xmlNodeCursorImpl.iterRaw()).nextNode();
+		  
 		  if (nodeHandle != DTM.NULL) {
 			  DTM dtm = xctxt.getDTM(nodeHandle);
 			  Node node = dtm.getNode(nodeHandle);
+			  
 			  if (node instanceof ElementPSVI) {
 				  ElementPSVI elementPsvi = (ElementPSVI)node;
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
 					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'gt' operand, cannot be a "
 							  																							+ "node validated with schema complex type.");
@@ -386,6 +464,7 @@ public class VcGt extends XPathRelationalOp
 					  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
 					  
 					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  
 					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 						 if (typeNs2 == null) {
 							XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -397,6 +476,7 @@ public class VcGt extends XPathRelationalOp
 						  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
 						  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
 						  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						  
 						  if (typeNs2 == null) {
 							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 							  typeName2 = xsTypeDefn.getName();
@@ -414,6 +494,7 @@ public class VcGt extends XPathRelationalOp
 				  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
 				  
 				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  
 				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 					 if (typeNs2 == null) {
 						XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -425,6 +506,7 @@ public class VcGt extends XPathRelationalOp
 					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
 					  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
 					  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  
 					  if (typeNs2 == null) {
 						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 						  typeName2 = xsTypeDefn.getName();
@@ -471,10 +553,12 @@ public class VcGt extends XPathRelationalOp
 	  
 	  if (right instanceof XSString) {
 		 java.lang.String str1 = ((XSString)right).stringValue(); 
+		 
 		 if ((Constants.XS_VALID_TRUE).equals(str1) && (right.getXsTypeDefinition() != null)) {
 			XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(right.getXsTypeDefinition());
 			java.lang.String typeName = xsSimpleTypeDecl.getTypeName();
 			java.lang.String typeNs = xsSimpleTypeDecl.getTypeNamespace();
+			
 			if ((typeName != null) && !((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs))) {
 			   xsSimpleTypeDecl = (XSSimpleTypeDecl)(xsSimpleTypeDecl.getBaseType());
 			   typeName2 = xsSimpleTypeDecl.getTypeName();
@@ -509,6 +593,7 @@ public class VcGt extends XPathRelationalOp
 	  }
 	  
 	  // Validating an XPath 3.1 operator 'gt' operands compatibility for value comparison	  
+	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                          (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
@@ -558,6 +643,7 @@ public class VcGt extends XPathRelationalOp
 	  }
 	  
 	  List<XMLNSDecl> nsPrefixTable = null;	  
+	  
 	  if (stylesheetRoot != null) {
 		  nsPrefixTable = stylesheetRoot.getPrefixTable();
 	  }
@@ -569,12 +655,15 @@ public class VcGt extends XPathRelationalOp
 	  if (lNodeStr != null) {
 		  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
 		  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+		  
 		  XPath xpathObj = null;
+		  
 		  try {
 		     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		  }
 		  catch (TransformerException ex) {
 			 java.lang.String errMesg = ex.getMessage();
+			 
 			 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
 				xpathObj = new XPath("'" + lNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 			 }
@@ -586,12 +675,15 @@ public class VcGt extends XPathRelationalOp
 	  if (rNodeStr != null) {
 		  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
 		  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+		  
 		  XPath xpathObj = null;
+		  
 		  try {
 		     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		  }
 		  catch (TransformerException ex) {
 			 java.lang.String errMesg = ex.getMessage();
+			 
 			 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
 				xpathObj = new XPath("'" + rNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 			 }

@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:20:42Z" fail="15" name="fn-tokenize" pass="50" run="65" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:18Z" fail="11" name="fn-tokenize" pass="54" run="65" statusUnknown="0">
    <testResult status="pass" testName="fn-tokenize-1"/>
    <testResult status="pass" testName="fn-tokenize-2"/>
    <testResult status="pass" testName="fn-tokenize-3"/>
    <testResult status="pass" testName="fn-tokenize-4"/>
    <testResult status="pass" testName="fn-tokenize-5"/>
    <testResult status="pass" testName="fn-tokenize-6"/>
-   <testResult status="fail" testName="fn-tokenize-7"/>
-   <testResult status="fail" testName="fn-tokenize-8"/>
+   <testResult status="pass" testName="fn-tokenize-7"/>
+   <testResult status="pass" testName="fn-tokenize-8"/>
    <testResult status="pass" testName="fn-tokenize-9"/>
    <testResult status="pass" testName="fn-tokenize-10"/>
    <testResult status="pass" testName="fn-tokenize-11"/>
@@ -37,8 +37,8 @@
    <testResult status="pass" testName="fn-tokenize-36"/>
    <testResult status="pass" testName="fn-tokenize-37"/>
    <testResult status="fail" testName="fn-tokenize-38"/>
-   <testResult status="fail" testName="fn-tokenize-39"/>
-   <testResult status="fail" testName="fn-tokenize-40"/>
+   <testResult status="pass" testName="fn-tokenize-39"/>
+   <testResult status="pass" testName="fn-tokenize-40"/>
    <testResult status="fail" testName="fn-tokenize-41"/>
    <testResult status="fail" testName="fn-tokenize-42"/>
    <testResult status="pass" testName="fn-tokenize-43"/>

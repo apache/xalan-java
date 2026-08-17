@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:17:51Z" fail="18" name="regex" pass="46" run="64" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:38:42Z" fail="16" name="regex" pass="48" run="64" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="regex-001"/>
    <testResult status="fail" testName="regex-002"/>
    <testResult status="pass" testName="regex-003"/>
@@ -23,8 +23,8 @@
    <testResult status="pass" testName="regex-026"/>
    <testResult status="pass" testName="regex-027"/>
    <testResult status="pass" testName="regex-028"/>
-   <testResult status="fail" testName="regex-029"/>
-   <testResult status="fail" testName="regex-030"/>
+   <testResult status="pass" testName="regex-029"/>
+   <testResult status="pass" testName="regex-030"/>
    <testResult status="pass" testName="regex-031"/>
    <testResult status="pass" testName="regex-032"/>
    <testResult status="pass" testName="regex-038"/>

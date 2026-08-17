@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:19:57Z" fail="2" name="fn-adjust-date-to-timezone" pass="39" run="41" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:41Z" fail="2" name="fn-adjust-date-to-timezone" pass="39" run="41" statusUnknown="0">
    <testResult status="pass" testName="fn-adjust-date-to-timezone1args-1"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone1args-2"/>
    <testResult status="pass" testName="fn-adjust-date-to-timezone1args-3"/>

@@ -5054,19 +5054,77 @@ public class XPathParser
     
     if (m_tokenChar == '-')
     {
-      nextToken();
-      
-      appendOp(2, OpCodes.OP_NEG);
+    	nextToken();
+    	
+    	/**
+    	 * An XPath unary operator '-' followed by, sequence of
+    	 * consecutive XPath unary operators '-', '+' may change 
+    	 * the effective sign of XPath unary operator as '-', or '+'.
+    	 */
+    	
+    	boolean isXPathUnaryMinus = true;
+    	
+    	while (m_token != null) {
+    		if (!(tokenIs('-') || tokenIs('+'))) {
+    			break; 
+    		}
+    		else if (tokenIs('-')) {
+    			if (isXPathUnaryMinus) {
+    				isXPathUnaryMinus = false;
+    			}
+    			else {
+    				isXPathUnaryMinus = true;
+    			}
+    		}
 
-      isUnary = true;
+    		nextToken();
+    	}
+
+    	if (isXPathUnaryMinus) {
+    		appendOp(2, OpCodes.OP_NEG);
+    	}
+    	else {
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
+    	}
+
+    	isUnary = true;
     }
     else if (m_tokenChar == '+')
     {
-      nextToken();
-      
-      appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
+    	nextToken();
+    	
+    	/**
+    	 * An XPath unary operator '+' followed by, sequence of
+    	 * consecutive XPath unary operators '+', '-' may change 
+    	 * the effective sign of XPath unary operator as '+', or '-'.
+    	 */
 
-      isUnary = true;
+    	boolean isXPathUnaryPlus = true;
+
+    	while (m_token != null) {
+    		if (!(tokenIs('-') || tokenIs('+'))) {
+    			break; 
+    		}
+    		else if (tokenIs('-')) {
+    			if (isXPathUnaryPlus) {
+    				isXPathUnaryPlus = false;
+    			}
+    			else {
+    				isXPathUnaryPlus = true;
+    			}
+    		}
+
+    		nextToken();
+    	}
+
+    	if (isXPathUnaryPlus) {
+    	   appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
+    	}
+    	else {
+    	   appendOp(2, OpCodes.OP_NEG);
+    	}
+
+    	isUnary = true;
     }
 
     NodeCombiningExpr();

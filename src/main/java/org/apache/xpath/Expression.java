@@ -49,7 +49,7 @@ import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.VcGt;
-import org.apache.xpath.operations.XPath3UnaryOperator;
+import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.ContentHandler;
 

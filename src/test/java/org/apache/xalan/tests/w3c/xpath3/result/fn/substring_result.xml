@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:20:44Z" fail="6" name="fn-substring" pass="42" run="48" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:19Z" fail="6" name="fn-substring" pass="42" run="48" statusUnknown="0">
    <testResult status="fail" testName="fn-substring-1"/>
    <testResult status="pass" testName="fn-substring-2"/>
    <testResult status="pass" testName="fn-substring-3"/>

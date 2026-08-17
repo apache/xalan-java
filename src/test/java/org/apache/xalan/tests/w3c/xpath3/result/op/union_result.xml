@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:19:56Z" fail="2" name="op-union" pass="25" run="27" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:41Z" fail="2" name="op-union" pass="25" run="27" statusUnknown="0">
    <testResult status="pass" testName="fn-union-node-args-001"/>
    <testResult status="pass" testName="fn-union-node-args-002"/>
    <testResult status="pass" testName="fn-union-node-args-004"/>

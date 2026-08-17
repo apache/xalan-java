@@ -26,7 +26,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.XPathOperator;
-import org.apache.xpath.operations.XPath3UnaryOperator;
+import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -120,7 +120,7 @@ public class XPathVisitor
 	 * @param op The operation object.
 	 * @return true if the sub expressions should be traversed.
 	 */
-	public boolean visitUnaryOperation(ExpressionOwner owner, XPath3UnaryOperator op)
+	public boolean visitUnaryOperation(ExpressionOwner owner, XPathUnaryOperator op)
 	{
 		return true;
 	}

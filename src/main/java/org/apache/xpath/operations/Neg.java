@@ -20,6 +20,8 @@ package org.apache.xpath.operations;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -31,9 +33,9 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * An XPath 3.1 unary minus operator expression evaluator.
+ * An XPath unary minus operator expression evaluator.
  */
-public class Neg extends XPath3UnaryOperator
+public class Neg extends XPathUnaryOperator
 {
   
   private static final long serialVersionUID = -6280607702375702291L;
@@ -53,6 +55,7 @@ public class Neg extends XPath3UnaryOperator
 	  XObject result = null;
 
 	  if (right instanceof XSNumericType) {
+		  
 		  java.lang.String str1 = ((XSNumericType)right).stringValue();
 		  
 		  if (right instanceof XSInteger) {
@@ -100,7 +103,8 @@ public class Neg extends XPath3UnaryOperator
         	  }
 		  }
 	  }
-	  else {
+	  else if (right instanceof XNumber) {
+		  
 		  XNumber xNumber = (XNumber)right;
 		  
 		  XNumber xNumNew = new XNumber(xNumber.num() * -1);
@@ -133,6 +137,10 @@ public class Neg extends XPath3UnaryOperator
 		  }
 
 		  result = xNumNew;  
+	  }
+	  else {
+		  throw new TransformerException("XPTY0004 : An XPath unary operator '-' requires a numeric operand. "
+		  		                                                                                   + "The supplied XPath operand is not numeric."); 
 	  }
 
 	  return result;

@@ -289,9 +289,7 @@ public class XPathSequenceTypeSupport {
     
     public static String PLUS = "+";
     
-    public static String INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR = "INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR";
-    
-    private static List<XMLNSDecl> m_PrefixTable;
+    public static String INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR = "INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR";            
     
     /**
      * This class specifies min and max value ranges for XML Schema 
@@ -366,6 +364,14 @@ public class XPathSequenceTypeSupport {
             public static double MAX_INCLUSIVE = 1.7976931348623157E308;
         }
     }
+    
+    public static final String DOUBLE = "double";
+    
+    public static final String FLOAT = "float";
+    
+    public static final String DECIMAL = "decimal";
+    
+    private static List<XMLNSDecl> m_PrefixTable;
     
     /**
      * This method casts an XPath 3.1 xdm source value represented by an

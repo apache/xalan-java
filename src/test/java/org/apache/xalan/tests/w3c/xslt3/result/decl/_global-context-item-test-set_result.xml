@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:18:19Z" fail="4" name="global-context-item" pass="10" run="14" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:39:10Z" fail="4" name="global-context-item" pass="10" run="14" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="glob-cxt-item-001"/>
    <testResult status="pass" testName="glob-cxt-item-002"/>
    <testResult status="pass" testName="glob-cxt-item-003"/>

@@ -28,7 +28,7 @@ import org.apache.xpath.functions.FunctionDef1Arg;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.operations.XPathOperator;
-import org.apache.xpath.operations.XPath3UnaryOperator;
+import org.apache.xpath.operations.XPathUnaryOperator;
 
 /**
  * A class definition, specifying few method definitions for
@@ -72,8 +72,8 @@ public class XPath3ExpressionUtil {
 																									  + funcBodyStr + "'.", srcLocator); 
 			  }
 		  }
-		  else if (xpathInlineFuncBodyExr instanceof XPath3UnaryOperator) {
-			  XPath3UnaryOperator opn1 = (XPath3UnaryOperator)xpathInlineFuncBodyExr;
+		  else if (xpathInlineFuncBodyExr instanceof XPathUnaryOperator) {
+			  XPathUnaryOperator opn1 = (XPathUnaryOperator)xpathInlineFuncBodyExr;
 			  Expression exprR = opn1.getOperand();
 
 			  if (exprR instanceof SelfIteratorNoPredicate) {

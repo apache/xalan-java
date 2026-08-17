@@ -172,9 +172,11 @@ public class StringUtil {
         InputStream inpStream = url.openStream();        
         try {                    
             BufferedReader buffReader = new BufferedReader(new InputStreamReader(inpStream));
-            int c;
-            while ((c = buffReader.read()) != -1) {
-               strBuilder.append((char)c);
+            
+            int chr;
+            
+            while ((chr = buffReader.read()) != -1) {
+               strBuilder.append((char)chr);
             }
         } 
         finally {

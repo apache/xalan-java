@@ -88,7 +88,7 @@ import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.operations.XPath3UnaryOperator;
+import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.util.XPath3ExpressionUtil;
 import org.w3c.dom.NodeList;
@@ -2619,7 +2619,7 @@ public class ElemVariable extends ElemTemplateElement
     			else if (expr1 instanceof XPathNamedFunctionReference) {
     				return (XObject)expr1;
     			}
-    			else if ((expr1 instanceof Function) || (expr1 instanceof XPath3UnaryOperator)) {
+    			else if ((expr1 instanceof Function) || (expr1 instanceof XPathUnaryOperator)) {
     				// no op
     			}
     			else if ((expr1 instanceof XString) || (expr1 instanceof XBoolean) || (expr1 instanceof XBooleanStatic) 

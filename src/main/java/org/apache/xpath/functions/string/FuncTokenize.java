@@ -31,6 +31,7 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.RegexEvaluationSupport;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XMLStringFactoryImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -73,7 +74,26 @@ public class FuncTokenize extends Function3Args {
       
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        String arg0Str = XslTransformEvaluationHelper.getStrVal(getFunctionArgEffectiveValue(m_arg0, xctxt));
+        XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        
+        String arg0Str = XslTransformEvaluationHelper.getStrVal(xObj);
+        
+        if (xObj instanceof ResultSequence) {
+           if (((ResultSequence)xObj).size() == 0) {
+        	  return resultSeq; 
+           }
+        }
+        else if (xObj instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+           
+           if (xmlNodeCursorImpl.getLength() == 0) {
+        	  return resultSeq; 
+           }
+        }
+        
+        if ("".equals(arg0Str)) {
+           return resultSeq;
+        }
         
         XMLString inputStr = new XString(arg0Str);
         

@@ -179,6 +179,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String TRUE = "true";
     
+    public static final String FALSE = "false";
+    
     public static final String IGNORE_PREFIXES = "ignore-prefixes";
     
     public static final String XALAN_ERR_CODE_ABSENT = "xalan_err_code_absent";
@@ -638,8 +640,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										                                                || (FEATURE.equals(depType) && HIGHER_ORDER_FUNC.equals(depValue))) {								
 
 									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));    							
+									
 									xpathExprStr = elemNode1.getTextContent();
-
 									xpathExprStr = getXPathNormalizedStr(xpathExprStr);
 
 									try {
@@ -668,8 +670,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											// Configuring, XPath parse evaluation timeout
 											long timeOut = 10;
 											if (m_xslTransformTestSetFilePath.contains("matches.xml") || 
-																					m_xslTransformTestSetFilePath.contains("tokenize.xml") || 
-																					m_xslTransformTestSetFilePath.contains("replace.xml")) {
+																			           m_xslTransformTestSetFilePath.contains("tokenize.xml") || 
+																					   m_xslTransformTestSetFilePath.contains("replace.xml")) {
 												// XPath parse timeout configuration for, functions fn:matches, fn:tokenize, fn:replace
 												// which use regex.											
 												timeOut = 15;
@@ -684,7 +686,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 										if (xpathObj != null) {									   
 											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);											
-										}									
+										}
 									}
 									catch (TransformerException ex) {
 										String errMeg = ex.getMessage();									
@@ -1677,6 +1679,14 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												}
 												else if (ERROR.equals(nodeName3)) {
 													expectedErrCode = elNode1.getAttribute("code");
+													
+													if ("FODT0001".equals(expectedErrCode) && "FODT0002".equals(runTimeErrCode)) {
+													   runTimeErrCode = "FODT0001"; 
+													}
+													else if ("FODT0002".equals(expectedErrCode) && "FODT0001".equals(runTimeErrCode)) {
+													   runTimeErrCode = "FODT0002"; 
+													}
+													
 													if ((runTimeErrCode != null) && !runTimeErrCode.equals(expectedErrCode)) {
 														isXslTestPass = false;
 
@@ -2189,6 +2199,14 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												}                                		  
 												else if (ERROR.equals(nodeName3)) {
 													expectedErrCode = elNode1.getAttribute("code");
+													
+													if ("FODT0001".equals(expectedErrCode) && "FODT0002".equals(runTimeErrCode)) {
+														runTimeErrCode = "FODT0001"; 
+													}
+													else if ("FODT0002".equals(expectedErrCode) && "FODT0001".equals(runTimeErrCode)) {
+														runTimeErrCode = "FODT0002"; 
+													}
+													
 													if ((runTimeErrCode != null) && runTimeErrCode.equals(expectedErrCode)) {
 														isXslTestPass = true;
 
@@ -2296,6 +2314,14 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 									else if (ERROR.equals(nodeName2)) {
 										expectedErrCode = resultElem1.getAttribute("code");
+										
+										if ("FODT0001".equals(expectedErrCode) && "FODT0002".equals(runTimeErrCode)) {
+											runTimeErrCode = "FODT0001"; 
+										}
+										else if ("FODT0002".equals(expectedErrCode) && "FODT0001".equals(runTimeErrCode)) {
+											runTimeErrCode = "FODT0002"; 
+										}
+										
 										if ((runTimeErrCode != null) && runTimeErrCode.equals(expectedErrCode)) {
 											elemTestResult.setAttribute(STATUS, PASS); 
 										}

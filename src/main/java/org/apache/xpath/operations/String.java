@@ -26,7 +26,7 @@ import org.apache.xpath.objects.XString;
 /**
  * The 'string()' operation expression executer.
  */
-public class String extends XPath3UnaryOperator
+public class String extends XPathUnaryOperator
 {
     static final long serialVersionUID = 2973374377453022888L;
 

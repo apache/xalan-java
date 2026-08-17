@@ -109,6 +109,7 @@ public class Minus extends XPathArithmeticUtil
       }
       else {
     	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+    	  
     	  if (stylesheetRoot != null) {
     		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
      	     xctxt = transformerImpl.getXPathContext();
@@ -192,6 +193,76 @@ public class Minus extends XPathArithmeticUtil
 		  }
 	  }
 	  
+	  if ((left instanceof XSDecimal) && (right instanceof XSFloat)) {
+		  XSDecimal xsDecimal = (XSDecimal)left;
+		  XSFloat xsFloat = (XSFloat)right;
+
+		  float flt1 = (float)(xsDecimal.doubleValue());
+		  float flt2 = xsFloat.floatValue();
+
+		  return new XSFloat(flt1 - flt2);
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSDecimal)) {
+		  XSFloat xsFloat = (XSFloat)left;
+		  XSDecimal xsDecimal = (XSDecimal)right;
+
+		  float flt1 = xsFloat.floatValue();
+		  float flt2 = (float)(xsDecimal.doubleValue());
+
+		  return new XSFloat(flt1 - flt2);
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSInteger)) {
+		  XSFloat xsFloat = (XSFloat)left;
+		  XSInteger xsInteger = (XSInteger)right;
+
+		  float flt1 = xsFloat.floatValue();
+		  float flt2 = (float)(xsInteger.doubleValue());
+
+		  return new XSFloat(flt1 - flt2);
+	  }
+	  
+	  if ((left instanceof XSInteger) && (right instanceof XSFloat)) {		  
+		  XSInteger xsInteger = (XSInteger)left;
+		  XSFloat xsFloat = (XSFloat)right;
+		  
+		  float flt1 = (float)(xsInteger.doubleValue());
+		  float flt2 = xsFloat.floatValue();
+
+		  return new XSFloat(flt1 - flt2);
+	  }
+	  
+	  if ((left instanceof XSFloat) && (right instanceof XSFloat)) {		  
+		  XSFloat xsFloat1 = (XSFloat)left;
+		  XSFloat xsFloat2 = (XSFloat)right;
+		  
+		  float flt1 = xsFloat1.floatValue();
+		  float flt2 = xsFloat2.floatValue();
+
+		  return new XSFloat(flt1 - flt2);
+	  }
+	  
+	  if ((left instanceof XSDecimal) && (right instanceof XSDouble)) {		  
+		  XSDecimal xsDecimal = (XSDecimal)left;
+		  XSDouble xsDouble = (XSDouble)right;
+		  
+		  double dbl1 = xsDecimal.doubleValue();
+		  double dbl2 = xsDouble.doubleValue();
+
+		  return new XSDouble(dbl1 - dbl2);
+	  }
+	  
+	  if ((left instanceof XSDouble) && (right instanceof XSDecimal)) {		  
+		  XSDouble xsDouble = (XSDouble)left;
+		  XSDecimal xsDecimal = (XSDecimal)right;
+		  
+		  double dbl1 = xsDouble.doubleValue();
+		  double dbl2 = xsDecimal.doubleValue();
+
+		  return new XSDouble(dbl1 - dbl2);
+	  }
+	  
 	  if ((left instanceof XNumber) || (left instanceof XSNumericType)) {
 		  if (right instanceof XMLNodeCursorImpl) {
 			  java.lang.String str1 = ((XMLNodeCursorImpl)right).str();			
@@ -236,6 +307,7 @@ public class Minus extends XPathArithmeticUtil
 
 	  if ((left instanceof XSInteger) && (right instanceof XNumber)) {
 		  XNumber xNumber = (XNumber)right;
+		  
 		  if (((int)xNumber.num()) == xNumber.num()) {
 			  java.lang.String str1 = ((XSInteger)left).stringValue(); 			 			
 			  BigInteger bigInt1 = new BigInteger(str1);
@@ -299,12 +371,15 @@ public class Minus extends XPathArithmeticUtil
 	  if (left instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
 		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  
 		  if (nodeHandle != DTM.NULL) {
 			  DTM dtm = xctxt.getDTM(nodeHandle);
 			  Node node = dtm.getNode(nodeHandle);
+			  
 			  if (node instanceof ElementPSVI) {
 				  ElementPSVI elementPsvi = (ElementPSVI)node;
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
+				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
 					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '-' operand, cannot be a "
 							  																							+ "node validated with schema complex type.");				  
@@ -315,6 +390,7 @@ public class Minus extends XPathArithmeticUtil
 					  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
 					  
 					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  
 					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 						 if (typeNs1 == null) {
 							XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -326,6 +402,7 @@ public class Minus extends XPathArithmeticUtil
 						 XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
 						 typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
 						 typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						 
 						 if (typeNs1 == null) {
 							 XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 							 typeName1 = xsTypeDefn.getName();
@@ -343,6 +420,7 @@ public class Minus extends XPathArithmeticUtil
 				  typeNs1 = xsSimpleTypeDecl.getTypeNamespace();
 				  
 				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  
 				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 					 if (typeNs1 == null) {
 						XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -354,6 +432,7 @@ public class Minus extends XPathArithmeticUtil
 					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
 					  typeName1 = xsSimpleTypeDeclMemberType.getTypeName();
 					  typeNs1 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  
 					  if (typeNs1 == null) {
 						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 						  typeName1 = xsTypeDefn.getName();
@@ -373,9 +452,11 @@ public class Minus extends XPathArithmeticUtil
 	  if (right instanceof XMLNodeCursorImpl) {
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
 		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+		  
 		  if (nodeHandle != DTM.NULL) {
 			  DTM dtm = xctxt.getDTM(nodeHandle);
 			  Node node = dtm.getNode(nodeHandle);
+			  
 			  if (node instanceof ElementPSVI) {
 				  ElementPSVI elementPsvi = (ElementPSVI)node;
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
@@ -389,6 +470,7 @@ public class Minus extends XPathArithmeticUtil
 					  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
 					  
 					  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+					  
 					  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 						 if (typeNs2 == null) {
 							XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -400,6 +482,7 @@ public class Minus extends XPathArithmeticUtil
 						  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(elementPsvi.getMemberTypeDefinition());
 						  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
 						  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+						  
 						  if (typeNs2 == null) {
 							  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 							  typeName2 = xsTypeDefn.getName();
@@ -417,6 +500,7 @@ public class Minus extends XPathArithmeticUtil
 				  typeNs2 = xsSimpleTypeDecl.getTypeNamespace();
 				  
 				  short xsSimpleTypeVariety = xsSimpleTypeDecl.getVariety();
+				  
 				  if (xsSimpleTypeVariety == XSSimpleTypeDecl.VARIETY_ATOMIC) {
 					 if (typeNs2 == null) {
 						XSTypeDefinition xsTypeDefn = xsSimpleTypeDecl.getBaseType();
@@ -428,6 +512,7 @@ public class Minus extends XPathArithmeticUtil
 					  XSSimpleTypeDecl xsSimpleTypeDeclMemberType = (XSSimpleTypeDecl)(attrPsvi.getMemberTypeDefinition());
 					  typeName2 = xsSimpleTypeDeclMemberType.getTypeName();
 					  typeNs2 = xsSimpleTypeDeclMemberType.getTypeNamespace();
+					  
 					  if (typeNs2 == null) {
 						  XSTypeDefinition xsTypeDefn = xsSimpleTypeDeclMemberType.getBaseType();
 						  typeName2 = xsTypeDefn.getName();
@@ -501,6 +586,7 @@ public class Minus extends XPathArithmeticUtil
 		  }
 
 		  List<XMLNSDecl> nsPrefixTable = null;	  
+		  
 		  if (stylesheetRoot != null) {
 			  nsPrefixTable = stylesheetRoot.getPrefixTable();
 		  }
@@ -513,11 +599,13 @@ public class Minus extends XPathArithmeticUtil
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
+			  
 			  try {
 			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  }
 			  catch (TransformerException ex) {
 				 java.lang.String errMesg = ex.getMessage();
+				 
 				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
 					xpathObj = new XPath("'" + lNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 				 }
@@ -530,11 +618,13 @@ public class Minus extends XPathArithmeticUtil
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
 			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
+			  
 			  try {
 			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  }
 			  catch (TransformerException ex) {
 				 java.lang.String errMesg = ex.getMessage();
+				 
 				 if (errMesg.contains("XPST0081 : An XML namespace binding for prefix")) {
 					xpathObj = new XPath("'" + rNodeStr + "'", this, xctxt.getNamespaceContext(), XPath.SELECT, null);   
 				 }
@@ -569,12 +659,14 @@ public class Minus extends XPathArithmeticUtil
 	  }
 	  
 	  Expression leftOperandExpr = getLeftOperand();	  
+	  
 	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
 		 left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
 	  }
 	  
       Expression rightOperandExpr = getRightOperand();	  
-	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+	  
+      if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
 		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
 	  }
       
@@ -634,12 +726,14 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {          
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
+          
           if (rNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {
         	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(rNodeStr);
         	  }
@@ -648,6 +742,7 @@ public class Minus extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -658,11 +753,13 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XNumber)) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
+          
+    	  if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(lNodeStr);
         	  }
@@ -672,6 +769,7 @@ public class Minus extends XPathArithmeticUtil
         	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -682,12 +780,14 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
     	  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
-          if (rNodeSet.getLength() > 1) {
+          
+    	  if (rNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(rNodeStr);
         	  }
@@ -696,6 +796,7 @@ public class Minus extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -706,11 +807,13 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
+          
+    	  if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(lNodeStr);
         	  }
@@ -720,6 +823,7 @@ public class Minus extends XPathArithmeticUtil
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -730,17 +834,20 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {          
           XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
+          
           if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
+          
           if (rNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           
           BigDecimal lBigDecimal = null;
-    	  try {
+    	  
+          try {
     		 lBigDecimal = new BigDecimal(lNodeStr);
     	  }
     	  catch (NumberFormatException ex) {
@@ -748,6 +855,7 @@ public class Minus extends XPathArithmeticUtil
     	  }
     	  
     	  BigDecimal rBigDecimal = null;
+    	  
     	  try {
     	     rBigDecimal = new BigDecimal(rNodeStr);
     	  }
@@ -756,6 +864,7 @@ public class Minus extends XPathArithmeticUtil
     	  }
     	  
     	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+    	  
     	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
       		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
       	  }
@@ -765,11 +874,13 @@ public class Minus extends XPathArithmeticUtil
       }      
       else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
     	  ResultSequence lSeq = (ResultSequence)left;
-          if (lSeq.size() > 1) {
+          
+    	  if (lSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
@@ -779,6 +890,7 @@ public class Minus extends XPathArithmeticUtil
         	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -789,12 +901,14 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
-          if (rSeq.size() > 1) {
+          
+    	  if (rSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {
         	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
@@ -803,6 +917,7 @@ public class Minus extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -813,20 +928,24 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
     	  ResultSequence lSeq = (ResultSequence)left;
-          if (lSeq.size() > 1) {
+          
+    	  if (lSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
+        	  
         	  try {
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
         		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement); 
         	  }
+        	  
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -837,12 +956,14 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
-          if (rSeq.size() > 1) {
+          
+    	  if (rSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
         	  BigDecimal rBigDecimal = null;
+        	  
         	  try {
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
@@ -851,6 +972,7 @@ public class Minus extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -880,11 +1002,13 @@ public class Minus extends XPathArithmeticUtil
       }
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
           ResultSequence lSeq = (ResultSequence)left;          
+          
           if (lSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           
           ResultSequence rSeq = (ResultSequence)right;          
+          
           if (rSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement); 
           }
@@ -904,6 +1028,7 @@ public class Minus extends XPathArithmeticUtil
           else {
         	  BigDecimal lBigDecimal = null;
         	  BigDecimal rBigDecimal = null;        	  
+        	  
         	  try {
 	              java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lXObj);
 	              lBigDecimal = new BigDecimal(lStr);	              
@@ -915,6 +1040,7 @@ public class Minus extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -925,11 +1051,13 @@ public class Minus extends XPathArithmeticUtil
       }
       else if (left instanceof ResultSequence) {
           ResultSequence lSeq = (ResultSequence)left;          
+          
           if (lSeq.size() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           
           XObject lXObj = ((ResultSequence)left).item(0);
+          
           if (lXObj instanceof XSDate) {
               result = ((XSDate)lXObj).subtract(right); 
           }
@@ -942,6 +1070,7 @@ public class Minus extends XPathArithmeticUtil
           else {
         	  BigDecimal lBigDecimal = null;
         	  BigDecimal rBigDecimal = null;        	  
+        	  
         	  try {
 	              java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lXObj);
 	              lBigDecimal = new BigDecimal(lStr);	              
@@ -953,6 +1082,7 @@ public class Minus extends XPathArithmeticUtil
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+        	  
         	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           	  }
@@ -963,13 +1093,15 @@ public class Minus extends XPathArithmeticUtil
       }
       else if (left instanceof XMLNodeCursorImpl) {
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
-          if (lNodeSet.getLength() > 1) {
+          
+    	  if (lNodeSet.getLength() > 1) {
         	  error(CARDINALITY_ERR_MESG, new java.lang.String[] {"XPTY0004", OP_SYMBOL_MINUS}, elemTemplateElement);  
           }
           
           BigDecimal lBigDecimal = null;
           BigDecimal rBigDecimal = null;
-    	  try {
+    	  
+          try {
     		 lBigDecimal = new BigDecimal(lNodeStr);
              rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(right));
     	  }
@@ -978,6 +1110,7 @@ public class Minus extends XPathArithmeticUtil
     	  }
         	  
           BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
+          
           if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
           	 result = new XSInteger(resultBigDecimal.toBigInteger()); 
           }

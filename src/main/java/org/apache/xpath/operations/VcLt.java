@@ -56,6 +56,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
@@ -224,6 +225,63 @@ public class VcLt extends XPathRelationalOp
 		  else if (nodeRef1.getLength() > 1) {
 			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator lt's second operand cannot be a "
 			  																									         + "sequence of size greater than one.", this);
+		  }
+	  }
+	  
+	  if (left instanceof XSFloat) {
+		  XSFloat xsFloat = (XSFloat)left;
+
+		  if (xsFloat.nan()) {
+			  return new ResultSequence(); 
+		  }
+	  }
+	  
+	  if (right instanceof XSFloat) {
+		  XSFloat xsFloat = (XSFloat)right;
+
+		  if (xsFloat.nan()) {
+			  return new ResultSequence(); 
+		  }
+	  }
+
+	  if (right instanceof XSDouble) {
+		  XSDouble xsDouble = (XSDouble)right;
+
+		  if (xsDouble.nan()) {
+			  return new ResultSequence(); 
+		  } 
+	  }
+	  
+	  if (left instanceof XSDouble) {
+		 XSDouble xsDouble = (XSDouble)left;
+		 
+		 if (xsDouble.nan()) {
+			return new ResultSequence(); 
+		 }
+	  }
+	  
+      if (right instanceof XSDouble) {
+    	 XSDouble xsDouble = (XSDouble)right;
+ 		 
+ 		 if (xsDouble.nan()) {
+ 			return new ResultSequence(); 
+ 		 } 
+	  }
+      
+      if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
+		  if ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
+			  boolean bool1 = left.bool(); 
+			  boolean bool2 = right.bool();
+
+			  int a = bool1 ? 1 : 0;
+			  int b = bool2 ? 1 : 0;
+
+			  if (a < b) {
+				  return XBoolean.S_TRUE;
+			  }
+			  else {
+				  return XBoolean.S_FALSE;
+			  }
 		  }
 	  }
 	  

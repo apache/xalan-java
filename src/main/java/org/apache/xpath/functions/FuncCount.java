@@ -47,9 +47,7 @@ public class FuncCount extends FunctionOneArg
      */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
-    	XObject result = null;
-
-    	result = XslTransformEvaluationHelper.getSequenceItemCount(m_arg0, xctxt);
+    	XObject result = XslTransformEvaluationHelper.getXPathExprResultSize(m_arg0, xctxt);
 
     	return result;    
     }

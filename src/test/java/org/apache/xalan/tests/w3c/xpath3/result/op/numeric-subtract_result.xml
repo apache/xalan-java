@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:20:23Z" fail="17" name="op-numeric-subtract" pass="89" run="106" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:01Z" fail="7" name="op-numeric-subtract" pass="99" run="106" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-subtractint2args-1"/>
    <testResult status="pass" testName="op-numeric-subtractint2args-2"/>
    <testResult status="pass" testName="op-numeric-subtractint2args-3"/>
@@ -70,17 +70,17 @@
    <testResult status="pass" testName="K-NumericSubtract-6"/>
    <testResult status="pass" testName="K-NumericSubtract-7"/>
    <testResult status="pass" testName="K-NumericSubtract-8"/>
-   <testResult status="fail" testName="K-NumericSubtract-9"/>
-   <testResult status="fail" testName="K-NumericSubtract-10"/>
-   <testResult status="fail" testName="K-NumericSubtract-11"/>
-   <testResult status="fail" testName="K-NumericSubtract-12"/>
-   <testResult status="fail" testName="K-NumericSubtract-13"/>
-   <testResult status="fail" testName="K-NumericSubtract-14"/>
-   <testResult status="fail" testName="K-NumericSubtract-15"/>
+   <testResult status="pass" testName="K-NumericSubtract-9"/>
+   <testResult status="pass" testName="K-NumericSubtract-10"/>
+   <testResult status="pass" testName="K-NumericSubtract-11"/>
+   <testResult status="pass" testName="K-NumericSubtract-12"/>
+   <testResult status="pass" testName="K-NumericSubtract-13"/>
+   <testResult status="pass" testName="K-NumericSubtract-14"/>
+   <testResult status="pass" testName="K-NumericSubtract-15"/>
    <testResult status="pass" testName="K-NumericSubtract-16"/>
    <testResult status="pass" testName="K-NumericSubtract-17"/>
-   <testResult status="fail" testName="K-NumericSubtract-18"/>
-   <testResult status="fail" testName="K-NumericSubtract-19"/>
+   <testResult status="pass" testName="K-NumericSubtract-18"/>
+   <testResult status="pass" testName="K-NumericSubtract-19"/>
    <testResult status="pass" testName="K-NumericSubtract-20"/>
    <testResult status="pass" testName="K-NumericSubtract-21"/>
    <testResult status="pass" testName="K-NumericSubtract-22"/>
@@ -104,5 +104,5 @@
    <testResult status="pass" testName="K2-NumericSubtract-2"/>
    <testResult status="pass" testName="cbcl-numeric-subtract-001"/>
    <testResult status="pass" testName="cbcl-numeric-subtract-002"/>
-   <testResult status="fail" testName="op-numeric-subtract-big-01"/>
+   <testResult status="pass" testName="op-numeric-subtract-big-01"/>
 </testrun>

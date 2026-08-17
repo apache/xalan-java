@@ -222,6 +222,23 @@ public class VcNotEquals extends XPathRelationalOp
 		  }
 	  }
 	  
+	  if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
+		  if ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
+			  boolean bool1 = left.bool(); 
+			  boolean bool2 = right.bool();
+
+			  int a = bool1 ? 1 : 0;
+			  int b = bool2 ? 1 : 0;
+
+			  if (a != b) {
+				  return XBoolean.S_TRUE;
+			  }
+			  else {
+				  return XBoolean.S_FALSE;
+			  }
+		  }
+	  }
+	  
 	  java.lang.String lNodeStr = null;
 	  java.lang.String rNodeStr = null;
 	  

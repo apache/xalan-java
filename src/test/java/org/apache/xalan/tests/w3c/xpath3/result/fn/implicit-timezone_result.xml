@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-14T15:20:26Z" fail="4" name="fn-implicit-timezone" pass="23" run="27" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:03Z" fail="2" name="fn-implicit-timezone" pass="25" run="27" statusUnknown="0">
    <testResult status="pass" testName="fn-implicit-timezone-1"/>
    <testResult status="pass" testName="fn-implicit-timezone-2"/>
    <testResult status="pass" testName="fn-implicit-timezone-3"/>
@@ -9,8 +9,8 @@
    <testResult status="pass" testName="fn-implicit-timezone-8"/>
    <testResult status="pass" testName="fn-implicit-timezone-9"/>
    <testResult status="pass" testName="fn-implicit-timezone-10"/>
-   <testResult status="fail" testName="fn-implicit-timezone-11"/>
-   <testResult status="fail" testName="fn-implicit-timezone-12"/>
+   <testResult status="pass" testName="fn-implicit-timezone-11"/>
+   <testResult status="pass" testName="fn-implicit-timezone-12"/>
    <testResult status="pass" testName="fn-implicit-timezone-13"/>
    <testResult status="pass" testName="fn-implicit-timezone-14"/>
    <testResult status="pass" testName="fn-implicit-timezone-15"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-08-14T15:18:34Z" desc="W3C XSLT 3.0 test suite results" fail="1239" pass="3576" run="4819" skipped="624" success="74.21%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-08-17T10:39:51Z" desc="W3C XSLT 3.0 test suite results" fail="977" pass="3838" run="4819" skipped="624" success="79.64%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
@@ -63,8 +63,8 @@
   </insn>
   <misc>
     <built-in-templates fail="2" pass="2" run="4" skipped="2" success="50.0%"/>
-    <regex-syntax fail="368" pass="618" run="986" skipped="4" success="62.68%"/>
-    <regex fail="18" pass="46" run="64" skipped="1" success="71.88%"/>
+    <regex-syntax fail="108" pass="878" run="986" skipped="4" success="89.05%"/>
+    <regex fail="16" pass="48" run="64" skipped="1" success="75.0%"/>
     <whitespace fail="11" pass="17" run="28" skipped="0" success="60.71%"/>
   </misc>
   <type>

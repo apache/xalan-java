@@ -101,7 +101,7 @@ import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.operations.XPath3Except;
 import org.apache.xpath.operations.XPath3Intersect;
 import org.apache.xpath.operations.XPathOperator;
-import org.apache.xpath.operations.XPath3UnaryOperator;
+import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.operations.XPath3Union;
 import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.patterns.FunctionPattern;
@@ -562,7 +562,7 @@ public class Compiler extends XPathOpMap
    *
    * @throws TransformerException if syntax or other error occurs.
    */
-  private Expression compileUnary(XPath3UnaryOperator unary, int opPos)
+  private Expression compileUnary(XPathUnaryOperator unary, int opPos)
           																throws TransformerException
   {
 

@@ -71,9 +71,9 @@ public class FuncDoc extends FunctionOneArg {
         
         XObject result = null;
 
-        XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
             
-        String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
+        String hrefStrVal = XslTransformEvaluationHelper.getStrVal(xObj);
             
         result = getDocumentNode(xctxt, hrefStrVal);
         

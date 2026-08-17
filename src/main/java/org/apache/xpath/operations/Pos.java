@@ -17,8 +17,13 @@
  */
 package org.apache.xpath.operations;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * An XPath 3.1 unary plus operator expression evaluator.
@@ -27,7 +32,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class Pos extends XPath3UnaryOperator
+public class Pos extends XPathUnaryOperator
 {
 
   private static final long serialVersionUID = 7884742480397069969L;
@@ -43,7 +48,15 @@ public class Pos extends XPath3UnaryOperator
    */
   public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {	  
-	  XObject result = right;
+	  XObject result = null;
+	  
+	  if ((right instanceof XSNumericType) || (right instanceof XNumber)) {
+		 result = right;  
+	  }
+	  else {
+		 throw new TransformerException("XPTY0004 : An XPath unary operator '+' requires a numeric operand. "
+                                                                                                  + "The supplied XPath operand is not numeric.");
+	  }
 
 	  return result;
   }

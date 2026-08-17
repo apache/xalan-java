@@ -56,7 +56,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.XPathExprFunctionCallSuffix;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
@@ -76,7 +76,6 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
-import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.DateTimeUtil;
 import org.w3c.dom.Attr;
@@ -488,119 +487,40 @@ public class XslTransformEvaluationHelper {
      * and an XPath context object, find the count of xdm items represented by the 
      * provided compiled XPath expression object.  
      */
-    public static XSInteger getSequenceItemCount(Expression expr, XPathContext xctxt) throws 
-                                                                                  javax.xml.transform.TransformerException {
-        int xdmSequenceSize = 0;
+    public static XSInteger getXPathExprResultSize(Expression xpathExpr, XPathContext xctxt) throws 
+                                                                                            javax.xml.transform.TransformerException {
         
-        if (expr instanceof Function) {
-            XObject evalResult = ((Function)expr).execute(xctxt);
-            if (evalResult instanceof XMLNodeCursorImpl) {
-                xdmSequenceSize = ((XMLNodeCursorImpl)evalResult).getLength();   
-            }
-            else if (evalResult instanceof ResultSequence) {
-               xdmSequenceSize = ((ResultSequence)evalResult).size();
-            }
-            else {
-               // Here, evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
-          	   xdmSequenceSize = 1; 
-            }
-        }
-        else if (expr instanceof Variable) {
-           XObject evalResult = ((Variable)expr).execute(xctxt);
-           if (evalResult instanceof XMLNodeCursorImpl) {
-        	   xdmSequenceSize = ((XMLNodeCursorImpl)evalResult).getLength();   
-           }
-           else if (evalResult instanceof ResultSequence) {
-        	   xdmSequenceSize = ((ResultSequence)evalResult).size();
-           }
-           else {
-        	   // Here, evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
-        	   xdmSequenceSize = 1; 
-           }
-        }
-        else if (expr instanceof XPathSequenceConstructor) {
-           XPathSequenceConstructor simpleSeqConstructor = (XPathSequenceConstructor)expr;
-           ResultSequence seqCtrEvalResult = (ResultSequence)(simpleSeqConstructor.
-                                                                                execute(xctxt));
-           xdmSequenceSize = seqCtrEvalResult.size();
-        }
-        else if (expr instanceof Expression) {
-        	if (expr instanceof ResultSequence) {
-        	   xdmSequenceSize = ((ResultSequence)expr).size();
-        	}
-        	else if (expr instanceof Range) {
-                ResultSequence resultSeq = (ResultSequence)(((Range)expr).execute(xctxt));
-                xdmSequenceSize = resultSeq.size();
-            }
-            else if (expr instanceof XPathForExpr) {
-                ResultSequence resultSeq = (ResultSequence)(((XPathForExpr)expr).execute(xctxt));
-                xdmSequenceSize = resultSeq.size();   
-            }
-            else if (expr instanceof XPathOperator) {
-            	XPathOperator opn1 = (XPathOperator)expr;
-            	Expression lOpn = opn1.getLeftOperand();
-            	Expression rOpn = opn1.getRightOperand();            	
-            	XObject lObj1 = lOpn.execute(xctxt);
-            	boolean isLEmpty = false;
-            	if (lObj1 instanceof ResultSequence) {
-            		if (((ResultSequence)lObj1).size() == 0) {
-            			isLEmpty = true;
-            		}
-            	}
-            	else if (lObj1 instanceof XMLNodeCursorImpl) {
-            		XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)lObj1;
-            		if (nodeRef1.getLength() == 0) {
-            			isLEmpty = true;
-            		}
-            	}
-
-            	XObject rObj1 = rOpn.execute(xctxt);
-            	boolean isREmpty = false;
-            	if (rObj1 instanceof ResultSequence) {
-            		if (((ResultSequence)rObj1).size() == 0) {
-            			isREmpty = true;
-            		}
-            	}
-            	else if (rObj1 instanceof XMLNodeCursorImpl) {
-            		XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)rObj1;
-            		if (nodeRef1.getLength() == 0) {
-            			isREmpty = true;
-            		}
-            	}
-
-            	if (isLEmpty || isREmpty) {
-            		// If one or both of the lhs and rhs of an XPath binary 
-            		// operation is empty, then count of result sequence is zero.            		
-            		xdmSequenceSize = 0;
-            	}
-            	else {
-            		XObject xObj1 = opn1.execute(xctxt);
-            		if (xObj1 instanceof ResultSequence) {
-            		   xdmSequenceSize = ((ResultSequence)xObj1).size(); 
-            		}
-            		else if (xObj1 instanceof XMLNodeCursorImpl) {
-            		   xdmSequenceSize = ((XMLNodeCursorImpl)xObj1).getLength(); 
-            		}
-            		else {
-            		   xdmSequenceSize = 1;	
-            		}
-            	}
-            }
-            else if (expr instanceof XPathExprFunctionCallSuffix) {
-            	XPathExprFunctionCallSuffix xpathExprFunctionCallSuffix = (XPathExprFunctionCallSuffix)expr;
-            	XObject xObject = xpathExprFunctionCallSuffix.execute(xctxt);            	
-            	if (xObject instanceof ResultSequence) {
-            	   xdmSequenceSize = ((ResultSequence)xObject).size(); 	
-            	}
-            }
-            else {
-                DTMCursorIterator nl = expr.asIterator(xctxt, xctxt.getCurrentNode());
-                xdmSequenceSize = nl.getLength(); 
-                nl.detach();
-            }
-        }
-    
-        return new XSInteger(xdmSequenceSize + "");
+    	XSInteger result = null;    	    
+    	
+    	XObject xObj = null;
+    	
+    	if (xpathExpr instanceof SelfIteratorNoPredicate) {
+    		XObject contextItem = xctxt.getXPath3ContextItem();
+    		
+    		if (contextItem != null) {
+    			xObj = contextItem;  
+    		}
+    		else {
+    			xObj = xpathExpr.execute(xctxt); 
+    		}
+    	}
+    	else {  
+    		xObj = xpathExpr.execute(xctxt);
+    	}
+    	
+    	if (xObj instanceof ResultSequence) {
+     	   int size1 = XslTransformEvaluationHelper.getSequenceLength((ResultSequence)xObj);
+     	   
+     	   result = new XSInteger(size1 + "");
+     	}
+     	else if (xObj instanceof XMLNodeCursorImpl) {
+     	   result = new XSInteger((((XMLNodeCursorImpl)xObj).getLength()) + ""); 
+     	}
+     	else {
+     	   result = new XSInteger("1");
+     	}
+    	
+    	return result;
     }
     
     /**
@@ -1290,6 +1210,42 @@ public class XslTransformEvaluationHelper {
  			   }
  		   }
  	   }
+    }
+    
+    /**
+     * Method definition, to get the size of the supplied
+     * ResultSequence object instance.
+     * 
+     * @param rSeq					 The supplied ResultSequence object 
+     *                               instance.
+     * @return                       Size of the supplied ResultSequence
+     *                               object instance. 
+     */
+    public static int getSequenceLength(ResultSequence rSeq) {    	
+    	
+    	int result = 0;
+    	
+    	int size1 = rSeq.size();
+    	
+    	for (int idx = 0; idx < size1; idx++) {
+    	   XObject xObj = rSeq.item(idx);
+    	   
+    	   if (xObj instanceof XMLNodeCursorImpl) {
+    		  int length1 = ((XMLNodeCursorImpl)xObj).getLength();
+    		  
+    		  result += length1;
+    	   }
+    	   else if (xObj instanceof ResultSequence) {
+    		  int length1 = getSequenceLength((ResultSequence)xObj);
+    		  
+    		  result += length1;
+    	   }
+    	   else {
+    		   result += 1; 
+    	   }
+    	}
+    	
+    	return result;
     }
 
 }

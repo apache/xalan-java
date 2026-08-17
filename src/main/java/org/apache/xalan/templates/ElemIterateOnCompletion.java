@@ -31,7 +31,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.XPathOperator;
-import org.apache.xpath.operations.XPath3UnaryOperator;
+import org.apache.xpath.operations.XPathUnaryOperator;
 import org.xml.sax.SAXException;
 
 /**
@@ -272,8 +272,8 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
     				  result = isXslIterOnCompletionExprAccXPathCtxt(rOp); 
     			   }
     		   }
-    		   else if (expr instanceof XPath3UnaryOperator) {
-    			   XPath3UnaryOperator opn1 = (XPath3UnaryOperator)expr;
+    		   else if (expr instanceof XPathUnaryOperator) {
+    			   XPathUnaryOperator opn1 = (XPathUnaryOperator)expr;
     			   Expression rOp = opn1.getExpression();
     			   result = isXslIterOnCompletionExprAccXPathCtxt(rOp);
     		   }
