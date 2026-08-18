@@ -46,7 +46,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class XPath3Intersect extends Expression
+public class XPathIntersect extends Expression
 {
   
   private static final long serialVersionUID = 8981837059372769069L;
@@ -74,14 +74,14 @@ public class XPath3Intersect extends Expression
   /**
    * Default constructor.
    */
-  public XPath3Intersect() {
+  public XPathIntersect() {
 	 // no op  
   }
   
   /**
    * Class constructor.
    */
-  public XPath3Intersect(java.lang.String lStr, java.lang.String rStr) {
+  public XPathIntersect(java.lang.String lStr, java.lang.String rStr) {
 	  m_lstr = lStr;
 	  m_rstr = rStr;
   }

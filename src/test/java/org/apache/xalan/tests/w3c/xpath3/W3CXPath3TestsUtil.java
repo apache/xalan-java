@@ -209,7 +209,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     public static final String UNICODE_VERSION = "unicode-version";
     
-    public static final String HIGHER_ORDER_FUNC = "higherOrderFunctions";
+    public static final String XPATH_HIGHER_ORDER_FUNC = "higherOrderFunctions";
+    
+    public static final String NON_UNICODE_CODEPOINT_COLLATION = "non_unicode_codepoint_collation";
     
     public static final String RESULT = "result";
     
@@ -336,7 +338,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
 							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
 
-							xctxt = new XPathContext(true);
+							xctxt = new XPathContext(true);							
 							
 							xctxt.setIncremental(false);
 							(xctxt.getDTMManager()).setIncremental(false);
@@ -637,7 +639,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										                                                || (SPEC.equals(depType) && (depValue.contains(XPATH31) 
 										                                                || depValue.contains(XPATH30) 
 										                                                || depValue.contains(XPATH20)))
-										                                                || (FEATURE.equals(depType) && HIGHER_ORDER_FUNC.equals(depValue))) {								
+										                                                || (FEATURE.equals(depType) && 
+										                                                		                   (XPATH_HIGHER_ORDER_FUNC.equals(depValue) || 
+										                                                		                    NON_UNICODE_CODEPOINT_COLLATION.equals(depValue)))) {								
 
 									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));    							
 									

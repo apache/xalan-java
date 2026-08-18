@@ -885,7 +885,12 @@ public class XPathParser
 		  Object token = m_ops.m_tokenQueue.elementAt(m_queueMark++);
 		  
 		  if (!(token instanceof XNumber)) {
-			 str1 = (String)token;
+			 if (token instanceof XString) {
+				str1 = ((XString)token).toString();  
+			 }
+			 else {
+			    str1 = (String)token;
+			 }
 		  }
 		  else {
 			 XNumber xNumber = (XNumber)token;

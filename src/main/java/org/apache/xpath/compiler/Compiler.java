@@ -98,12 +98,12 @@ import org.apache.xpath.operations.VcGt;
 import org.apache.xpath.operations.VcLe;
 import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
-import org.apache.xpath.operations.XPath3Except;
-import org.apache.xpath.operations.XPath3Intersect;
+import org.apache.xpath.operations.XPathArrowOp;
+import org.apache.xpath.operations.XPathExcept;
+import org.apache.xpath.operations.XPathIntersect;
 import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPathUnaryOperator;
-import org.apache.xpath.operations.XPath3Union;
-import org.apache.xpath.operations.XPathArrowOp;
+import org.apache.xpath.operations.XPathUnion;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -374,8 +374,8 @@ public class Compiler extends XPathOpMap
   }
 
   /**
-   * XPath expression compilation for an XPath 3.1 operator, with 
-   * XPath first and second operands.
+   * XPath expression compilation for an XPath language operator, 
+   * with XPath first and second operands.
    *
    * @param xpathOp1 non-null reference to XPath parent operator
    * @param opPos The op map position for an XPath parent operator
@@ -384,7 +384,7 @@ public class Compiler extends XPathOpMap
    *
    * @throws TransformerException if there is a syntax or other error.
    */
-  private Expression compileXPath3Operator(XPathOperator xpathOp1, int opPos)
+  private Expression compileXPathOperator(XPathOperator xpathOp1, int opPos)
           															        throws TransformerException
   {
 
@@ -588,14 +588,14 @@ public class Compiler extends XPathOpMap
 	  Expression result = null;
 	  
 	  try {
-	     result = compileXPath3Operator(new Or(), opPos);
+	     result = compileXPathOperator(new Or(), opPos);
 	  }
 	  catch (Exception ex) {		 
 		 if ((XPathParser.m_xpath_or_expr_lstr != null) && (XPathParser.m_xpath_or_expr_rstr != null)) {
 			String str1 = XPathParser.m_xpath_or_expr_lstr;
 			String str2 = XPathParser.m_xpath_or_expr_rstr;
 			
-			result = compileXPath3Operator(new Or(str1, str2), opPos);
+			result = compileXPathOperator(new Or(str1, str2), opPos);
 			
 			XPathParser.m_xpath_or_expr_lstr = null;
 			XPathParser.m_xpath_or_expr_rstr = null;
@@ -619,7 +619,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression and(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new And(), opPos);
+    return compileXPathOperator(new And(), opPos);
   }
 
   /**
@@ -633,7 +633,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression notequals(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new NotEquals(), opPos);
+    return compileXPathOperator(new NotEquals(), opPos);
   }
 
   /**
@@ -647,7 +647,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression equals(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Equals(XPathParser.m_xpath_op_to_lstr, 
+    return compileXPathOperator(new Equals(XPathParser.m_xpath_op_to_lstr, 
     		                                XPathParser.m_xpath_op_to_rstr), opPos);
   }
   
@@ -662,7 +662,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression vcEquals(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new VcEquals(), opPos);
+    return compileXPathOperator(new VcEquals(), opPos);
   }
   
   /**
@@ -676,7 +676,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression vcNotEquals(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new VcNotEquals(), opPos);
+    return compileXPathOperator(new VcNotEquals(), opPos);
   }
 
   /**
@@ -690,7 +690,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression lte(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Lte(), opPos);
+    return compileXPathOperator(new Lte(), opPos);
   }
 
   /**
@@ -704,7 +704,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression lt(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Lt(), opPos);
+    return compileXPathOperator(new Lt(), opPos);
   }
   
   /**
@@ -718,7 +718,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression vcLt(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new VcLt(), opPos);
+    return compileXPathOperator(new VcLt(), opPos);
   }
   
   /**
@@ -732,7 +732,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression vcGt(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new VcGt(), opPos);
+    return compileXPathOperator(new VcGt(), opPos);
   }
   
   /**
@@ -746,7 +746,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression vcLe(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new VcLe(), opPos);
+    return compileXPathOperator(new VcLe(), opPos);
   }
   
   /**
@@ -760,7 +760,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression vcGe(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new VcGe(), opPos);
+    return compileXPathOperator(new VcGe(), opPos);
   }
   
   /**
@@ -774,7 +774,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression nodeComparisonIs(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new NodeComparisonIs(), opPos);
+    return compileXPathOperator(new NodeComparisonIs(), opPos);
   }
   
   /**
@@ -788,7 +788,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression nodeComparisonPrecede(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new NodeComparisonPrecede(), opPos);
+    return compileXPathOperator(new NodeComparisonPrecede(), opPos);
   }
   
   /**
@@ -802,7 +802,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression nodeComparisonFollows(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new NodeComparisonFollows(), opPos);
+    return compileXPathOperator(new NodeComparisonFollows(), opPos);
   }
   
   /**
@@ -816,7 +816,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression simpleMapOperator(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new SimpleMapOperator(), opPos);
+    return compileXPathOperator(new SimpleMapOperator(), opPos);
   }
   
   /**
@@ -845,7 +845,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression instanceOfExpr(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new InstanceOf(), opPos);
+    return compileXPathOperator(new InstanceOf(), opPos);
   }
   
   /**
@@ -857,7 +857,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression castAsExpr(int opPos) throws TransformerException
   {
-	return compileXPath3Operator(new CastAs(), opPos); 
+	return compileXPathOperator(new CastAs(), opPos); 
   }
   
   /**
@@ -869,7 +869,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression castableAsExpr(int opPos) throws TransformerException
   {
-	return compileXPath3Operator(new CastableAs(), opPos); 
+	return compileXPathOperator(new CastableAs(), opPos); 
   }
   
   /**
@@ -881,7 +881,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression treatAsExpr(int opPos) throws TransformerException
   {
-	return compileXPath3Operator(new TreatAs(), opPos); 
+	return compileXPathOperator(new TreatAs(), opPos); 
   }
 
   /**
@@ -895,7 +895,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression gte(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Gte(), opPos);
+    return compileXPathOperator(new Gte(), opPos);
   }
 
   /**
@@ -909,7 +909,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression gt(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Gt(), opPos);
+    return compileXPathOperator(new Gt(), opPos);
   }
 
   /**
@@ -923,7 +923,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression plus(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Plus(), opPos);
+    return compileXPathOperator(new Plus(), opPos);
   }
   
   /**
@@ -937,7 +937,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression range(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Range(), opPos);   
+    return compileXPathOperator(new Range(), opPos);   
   }
   
   /**
@@ -951,7 +951,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression strConcat(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new StrConcat(), opPos);   
+    return compileXPathOperator(new StrConcat(), opPos);   
   }
   
   /**
@@ -963,7 +963,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression arrowOp(int opPos) throws TransformerException
   {
-	return compileXPath3Operator(new XPathArrowOp(), opPos);
+	return compileXPathOperator(new XPathArrowOp(), opPos);
   }
 
   /**
@@ -977,7 +977,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression minus(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Minus(), opPos);
+    return compileXPathOperator(new Minus(), opPos);
   }
 
   /**
@@ -991,7 +991,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression mult(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Mult(), opPos);
+    return compileXPathOperator(new Mult(), opPos);
   }
 
   /**
@@ -1005,7 +1005,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression div(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Div(), opPos);
+    return compileXPathOperator(new Div(), opPos);
   }
   
   /**
@@ -1019,7 +1019,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression idiv(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new IDiv(), opPos);
+    return compileXPathOperator(new IDiv(), opPos);
   }
 
   /**
@@ -1033,7 +1033,7 @@ public class Compiler extends XPathOpMap
    */
   protected Expression mod(int opPos) throws TransformerException
   {
-    return compileXPath3Operator(new Mod(), opPos);
+    return compileXPathOperator(new Mod(), opPos);
   }
 
   /*
@@ -1278,7 +1278,7 @@ public class Compiler extends XPathOpMap
 				  XPathParser.m_xpath_union_lstr = null;
 				  XPathParser.m_xpath_union_rstr = null;
 
-				  return new XPath3Union(lStr, rStr);
+				  return new XPathUnion(lStr, rStr);
 			  }
 			  else {
 				  String errMesg = ex.getMessage();
@@ -1338,7 +1338,7 @@ public class Compiler extends XPathOpMap
 	  }
 	  
 	  try {
-	     result = compileXPath3Operator(new Intersect(), opPos);
+	     result = compileXPathOperator(new Intersect(), opPos);
 	  }
 	  catch (Exception ex) {
 		  /**
@@ -1355,7 +1355,7 @@ public class Compiler extends XPathOpMap
 				  XPathParser.m_xpath_intersect_lstr = null;
 				  XPathParser.m_xpath_intersect_rstr = null;
 
-				  return new XPath3Intersect(lStr, rStr);
+				  return new XPathIntersect(lStr, rStr);
 			  }
 			  else {
 				  String errMesg = ex.getMessage();
@@ -1416,7 +1416,7 @@ public class Compiler extends XPathOpMap
 	  }
 	  
 	  try {
-	     result = compileXPath3Operator(new Except(), opPos);
+	     result = compileXPathOperator(new Except(), opPos);
 	  }
 	  catch (Exception ex) {
 		  /**
@@ -1433,7 +1433,7 @@ public class Compiler extends XPathOpMap
 				  XPathParser.m_xpath_except_lstr = null;
 				  XPathParser.m_xpath_except_rstr = null;
 
-				  return new XPath3Except(lStr, rStr);
+				  return new XPathExcept(lStr, rStr);
 			  }
 			  else {
 				  String errMesg = ex.getMessage();

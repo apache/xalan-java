@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:19Z" fail="2" name="fn-substring-before" pass="35" run="37" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-18T10:59:42Z" fail="1" name="fn-substring-before" pass="36" run="37" statusUnknown="0">
    <testResult status="pass" testName="fn-substring-before-1"/>
    <testResult status="pass" testName="fn-substring-before-2"/>
    <testResult status="pass" testName="fn-substring-before-3"/>
@@ -22,7 +22,7 @@
    <testResult status="pass" testName="fn-substring-before-21"/>
    <testResult status="pass" testName="fn-substring-before-22"/>
    <testResult status="fail" testName="fn-substring-before-23"/>
-   <testResult status="fail" testName="fn-substring-before-24"/>
+   <testResult status="pass" testName="fn-substring-before-24"/>
    <testResult status="pass" testName="fn-substring-before-25"/>
    <testResult status="pass" testName="fn-substring-before-26"/>
    <testResult status="pass" testName="K-SubstringBeforeFunc-1"/>

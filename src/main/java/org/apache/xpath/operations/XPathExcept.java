@@ -46,7 +46,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class XPath3Except extends Expression
+public class XPathExcept extends Expression
 {
 
   private static final long serialVersionUID = 878464622772924593L;
@@ -74,14 +74,14 @@ public class XPath3Except extends Expression
   /**
    * Default constructor.
    */
-  public XPath3Except() {
+  public XPathExcept() {
 	 // no op  
   }
   
   /**
    * Class constructor.
    */
-  public XPath3Except(java.lang.String lStr, java.lang.String rStr) {
+  public XPathExcept(java.lang.String lStr, java.lang.String rStr) {
 	  m_lstr = lStr;
 	  m_rstr = rStr;
   }

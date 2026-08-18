@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-08-17T10:34:28Z" desc="W3C XPath 3.1 test suite results" fail="1152" pass="8213" run="9369" skipped="19" success="87.66%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-08-18T10:59:54Z" desc="W3C XPath 3.1 test suite results" fail="1132" pass="8227" run="9363" skipped="19" success="87.87%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="7" run="7" success="100.0%"/>
     <array-filter fail="0" pass="11" run="11" success="100.0%"/>
@@ -16,11 +16,11 @@
     <fn-adjust-dateTime-to-timezone fail="2" pass="46" run="48" success="95.83%"/>
     <fn-adjust-time-to-timezone fail="2" pass="40" run="42" success="95.24%"/>
     <fn-analyze-string fail="8" pass="14" run="26" skipped="4" success="53.85%"/>
-    <fn-avg fail="79" pass="142" run="221" success="64.25%"/>
+    <fn-avg fail="72" pass="143" run="215" success="66.51%"/>
     <fn-boolean fail="6" pass="132" run="138" success="95.65%"/>
     <fn-ceiling fail="1" pass="86" run="87" success="98.85%"/>
     <fn-codepoint-equal fail="0" pass="30" run="30" success="100.0%"/>
-    <fn-compare fail="13" pass="54" run="67" success="80.6%"/>
+    <fn-compare fail="1" pass="66" run="67" success="98.51%"/>
     <fn-concat fail="2" pass="89" run="91" success="97.8%"/>
     <fn-contains-token fail="4" pass="34" run="38" success="89.47%"/>
     <fn-contains fail="9" pass="58" run="67" success="86.57%"/>
@@ -59,7 +59,7 @@
     <fn-string-to-codepoints fail="1" pass="43" run="44" success="97.73%"/>
     <fn-string fail="2" pass="68" run="70" success="97.14%"/>
     <fn-substring-after fail="3" pass="35" run="38" success="92.11%"/>
-    <fn-substring-before fail="2" pass="35" run="37" success="94.59%"/>
+    <fn-substring-before fail="1" pass="36" run="37" success="97.3%"/>
     <fn-substring fail="6" pass="42" run="48" success="87.5%"/>
     <fn-sum fail="24" pass="187" run="211" success="88.63%"/>
     <fn-tail fail="0" pass="5" run="5" success="100.0%"/>

@@ -48,7 +48,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class XPath3Union extends Expression
+public class XPathUnion extends Expression
 {
     
   private static final long serialVersionUID = 5559048164177617210L;
@@ -76,14 +76,14 @@ public class XPath3Union extends Expression
   /**
    * Default constructor.
    */
-  public XPath3Union() {
+  public XPathUnion() {
 	 // no op  
   }
   
   /**
    * Class constructor.
    */
-  public XPath3Union(java.lang.String lStr, java.lang.String rStr) {
+  public XPathUnion(java.lang.String lStr, java.lang.String rStr) {
 	  m_lstr = lStr;
 	  m_rstr = rStr;
   }

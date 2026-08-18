@@ -19,6 +19,7 @@ package org.apache.xpath.functions.string;
 import java.math.BigInteger;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -28,11 +29,14 @@ import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Implementation of XPath 3.1 function fn:compare.
@@ -75,125 +79,159 @@ public class FuncCompare extends XSL3StringCollationAwareFunction {
 	    
 	    /**
 	     * An XPath expression FuncArgPlaceholder if not null, for one or more of
-	     * the function arguments, signifies that the corresponding function argument
+	     * the function arguments, implies that the corresponding function argument
 	     * has been specified as ? i.e the function call is a partial function
-	     * application. In this case, fn:compare function returns its result as an
-	     * instance of XPathInlineFunction object.
+	     * application as defined by XPath 3.1 spec.
+	     * 
+	     * For this, fn:compare function returns its result as XPathInlineFunction 
+	     * object instance.
 	     */
 	    
-	    String arg0StrValue = null;	        
+	    String arg0Str = null;	        
+	    
 	    if ((m_arg0 != null) && !(m_arg0 instanceof FuncArgPlaceholder)) {
-	    	if (m_arg0 instanceof Variable) {
-	    		XObject obj1 = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		
-	    		arg0StrValue = XslTransformEvaluationHelper.getStrVal(obj1);
+	    	XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+
+	    	if (xObj0 instanceof ResultSequence) {
+	    	   if (((ResultSequence)xObj0).size() == 0) {
+	    	      result = new ResultSequence();
+	    	      
+	    	      return result;
+	    	   }
 	    	}
-	    	else {
-	    		arg0StrValue = getArgStringValue(xctxt, m_arg0);
+	    	else if (xObj0 instanceof XMLNodeCursorImpl) {
+	    	   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj0;
+	    	   
+	    	   if (xmlNodeCursorImpl.getLength() == 0) {
+	    		  result = new ResultSequence();
+	    		  
+	    		  return result;
+	    	   }
 	    	}
+	    	
+	    	if ((xObj0 instanceof XSNumericType) || (xObj0 instanceof XNumber)) {
+	    	   throw new TransformerException("XPTY0004 : An XPath 3.1 function 'compare', cannot have a numeric "
+	    	   		                                                                                    + "comparand argument.", srcLocator);
+	    	}
+	    	
+	    	arg0Str = XslTransformEvaluationHelper.getStrVal(xObj0);
 	    }
 	    
-	    String arg1StrValue = null;	        
-	    if ((m_arg1 != null) && !(m_arg1 instanceof FuncArgPlaceholder)) {
-	    	if (m_arg1 instanceof Variable) {
-	    		XObject obj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    String arg1Str = null;	        
+	    
+	    if ((m_arg1 != null) && !(m_arg1 instanceof FuncArgPlaceholder)) {	    	
+	    	XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);	    	
+	    	Object obj1 = xObj1.object();
+	    	
+	    	if (!(obj1 instanceof FuncArgPlaceholder)) {
+	    		if (xObj1 instanceof ResultSequence) {
+	    			if (((ResultSequence)xObj1).size() == 0) {
+	    				result = new ResultSequence();
+
+	    				return result;
+	    			}
+	    		}
+	    		else if (xObj1 instanceof XMLNodeCursorImpl) {
+	    			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj1;
+
+	    			if (xmlNodeCursorImpl.getLength() == 0) {
+	    				result = new ResultSequence();
+
+	    				return result;
+	    			}
+	    		}
 	    		
-	    		Object object1 = obj1.object();
-	    		if (!(object1 instanceof FuncArgPlaceholder)) {
-	    			arg1StrValue = XslTransformEvaluationHelper.getStrVal(obj1);
-	    		}	    		
-	    	}
-	    	else {
-	    		arg1StrValue = getArgStringValue(xctxt, m_arg1);
+	    		if ((xObj1 instanceof XSNumericType) || (xObj1 instanceof XNumber)) {
+	 	    	   throw new TransformerException("XPTY0004 : An XPath 3.1 function 'compare', cannot have a numeric "
+	 	    	   		                                                                                    + "comparand argument.", srcLocator);
+	 	    	}
+	    		
+	    		arg1Str = XslTransformEvaluationHelper.getStrVal(xObj1);
 	    	}
 	    }
 	    
 	    String collationUri = null;	        
+	    
 	    if ((m_arg2 != null) && !(m_arg2 instanceof FuncArgPlaceholder)) {
-	    	if (m_arg2 instanceof Variable) {
-	    		XObject obj1 = getFunctionArgEffectiveValue(m_arg2, xctxt);
-	    		
-	    		Object object1 = obj1.object();
-	    		if (!(object1 instanceof FuncArgPlaceholder)) {
-	    			collationUri = XslTransformEvaluationHelper.getStrVal(obj1);
-	    		}	    		
-	    	}
-	    	else {
-	    		collationUri = getArgStringValue(xctxt, m_arg2);
+	    	XObject xObj2 = getFunctionArgEffectiveValue(m_arg2, xctxt);	    	
+	    	Object obj2 = xObj2.object();
+	    	
+	    	if (!(obj2 instanceof FuncArgPlaceholder)) {	    			    		
+	    		collationUri = XslTransformEvaluationHelper.getStrVal(xObj2);
 	    	}
 	    }
 	    
 	    XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
 	    
-	    if ((arg0StrValue != null) && (arg1StrValue != null)) {	    	
+	    if ((arg0Str != null) && (arg1Str != null)) {	    	
 	    	if (numOfArgs == 2) {
-	    		// Set the collation to default collation
+	    		// Using default collation for string comparison
 	    		collationUri = xctxt.getDefaultCollation();
 	    		
-	    		int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(arg0StrValue, arg1StrValue, collationUri);
+	    		int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(arg0Str, arg1Str, collationUri);
 
 	    		result = new XSInteger(BigInteger.valueOf((long)comparisonResult));
 	    	}
 	    	else if (collationUri != null) {
-	    		int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(arg0StrValue, arg1StrValue, collationUri);
+	    		int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(arg0Str, arg1Str, collationUri);
 
 	    		result = new XSInteger(BigInteger.valueOf((long)comparisonResult)); 	
 	    	}
 	    	else {
-	    	    String xpathInlineFuncExprStr = "function($collation) { compare('" + arg0StrValue + "', '" + arg1StrValue + "', $collation) }";
+	    	    String xpathInlineFuncExprStr = "function($collation) { compare('" + arg0Str + "', '" + arg1Str + "', $collation) }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
         }
-	    else if ((arg0StrValue == null) && (arg1StrValue != null)) {
+	    else if ((arg0Str == null) && (arg1Str != null)) {
 	    	if (numOfArgs == 2) {
-                String xpathInlineFuncExprStr = "function($arg0) { compare($arg0, '" + arg1StrValue + "') }";
+                String xpathInlineFuncExprStr = "function($arg0) { compare($arg0, '" + arg1Str + "') }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
 	    	else if (collationUri != null) {
-                String xpathInlineFuncExprStr = "function($arg0) { compare($arg0, '" + arg1StrValue + "', '" + collationUri + "') }";
+                String xpathInlineFuncExprStr = "function($arg0) { compare($arg0, '" + arg1Str + "', '" + collationUri + "') }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
 	    	else {
-                String xpathInlineFuncExprStr = "function($arg0, $collation) { compare($arg0, '" + arg1StrValue + "', $collation) }";
+                String xpathInlineFuncExprStr = "function($arg0, $collation) { compare($arg0, '" + arg1Str + "', $collation) }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
 	    }
-        else if ((arg0StrValue != null) && (arg1StrValue == null)) {
+        else if ((arg0Str != null) && (arg1Str == null)) {
         	if (numOfArgs == 2) {
-                String xpathInlineFuncExprStr = "function($arg1) { compare('" + arg0StrValue + "', $arg1) }";
+                String xpathInlineFuncExprStr = "function($arg1) { compare('" + arg0Str + "', $arg1) }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
 	    	else if (collationUri != null) {
-                String xpathInlineFuncExprStr = "function($arg1) { compare('" + arg0StrValue + "', $arg1, '" + collationUri + "') }";
+                String xpathInlineFuncExprStr = "function($arg1) { compare('" + arg0Str + "', $arg1, '" + collationUri + "') }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
 	    	else {
-                String xpathInlineFuncExprStr = "function($arg1, $collation) { compare('" + arg0StrValue + "', $arg1, $collation) }";
+                String xpathInlineFuncExprStr = "function($arg1, $collation) { compare('" + arg0Str + "', $arg1, $collation) }";
 	    	    
 	    	    XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		    	
 		    	result = xpathObj.execute(xctxt, DTM.NULL, null);
 	    	}
 	    }
-        else if ((arg0StrValue == null) && (arg1StrValue == null)) {
+        else if ((arg0Str == null) && (arg1Str == null)) {
         	if (numOfArgs == 2) {
                 String xpathInlineFuncExprStr = "function($arg0, $arg1) { compare($arg0, $arg1) }";
 	    	    
@@ -228,14 +266,7 @@ public class FuncCompare extends XSL3StringCollationAwareFunction {
      * @throws WrongNumberArgsException
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-    {
-       /*if (!(argNum > 1 && argNum <= 3)) {
-          reportWrongNumberArgs();
-       }
-       else {
-          numOfArgs = argNum;   
-       }*/
-       
+    {      
        numOfArgs = argNum;
     }
     

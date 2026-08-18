@@ -18,6 +18,7 @@
 package org.apache.xpath.functions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -53,6 +54,8 @@ public class FuncAvg extends FunctionOneArg
 {
 
   private static final long serialVersionUID = 6282866669363344636L;
+  
+  private static final int DECIMAL_RESULT_SCALE = 10;
   
   /**
    * Class constructor.
@@ -205,7 +208,7 @@ public class FuncAvg extends FunctionOneArg
     				}
     			}
     			else if (xObj instanceof XSUntypedAtomic) {
-    				String str1 = ((XSUntypedAtomic)arg0Obj).stringValue();
+    				String str1 = ((XSUntypedAtomic)xObj).stringValue();
 
     				try {
     				    double dbl = Double.valueOf(str1);
@@ -280,7 +283,8 @@ public class FuncAvg extends FunctionOneArg
     			result = new XSFloat(floatSum1 / size1); 
     		 }
     		 else {
-    			BigDecimal bigDecimalResult = decimalSum1.divide(BigDecimal.valueOf(size1));
+    			BigDecimal bigDecimalResult = decimalSum1.divide(BigDecimal.valueOf(size1), DECIMAL_RESULT_SCALE, RoundingMode.HALF_UP);
+    			
     			result = new XSDecimal(bigDecimalResult);
     		 }
     	 }

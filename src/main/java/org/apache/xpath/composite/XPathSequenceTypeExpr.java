@@ -55,17 +55,18 @@ public class XPathSequenceTypeExpr extends Expression {
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-       XPathSequenceType sequenceTypeData = new XPathSequenceType();
        
-       sequenceTypeData.setBuiltInSequenceType(builtInSequenceType);
-       sequenceTypeData.setXsTypeDefinition(xsTypeDefinition);
-       sequenceTypeData.setSequenceTypeKindTest(sequenceTypeKindTest);       
-       sequenceTypeData.setItemTypeOccurrenceIndicator(itemTypeOccurrenceIndicator);
-       sequenceTypeData.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
-       sequenceTypeData.setSequenceTypeMapTest(sequenceTypeMapTest);
-       sequenceTypeData.setSequenceTypeArrayTest(sequenceTypeArrayTest);
+       XPathSequenceType result = new XPathSequenceType();
        
-       return sequenceTypeData;
+       result.setBuiltInSequenceType(builtInSequenceType);
+       result.setXsTypeDefinition(xsTypeDefinition);
+       result.setSequenceTypeKindTest(sequenceTypeKindTest);       
+       result.setItemTypeOccurrenceIndicator(itemTypeOccurrenceIndicator);
+       result.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
+       result.setSequenceTypeMapTest(sequenceTypeMapTest);
+       result.setSequenceTypeArrayTest(sequenceTypeArrayTest);
+       
+       return result;
     }
 
     @Override

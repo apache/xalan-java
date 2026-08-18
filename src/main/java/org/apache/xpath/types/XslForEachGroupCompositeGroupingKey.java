@@ -125,9 +125,11 @@ public class XslForEachGroupCompositeGroupingKey {
 	}
 	
 	public int hashCode() {
-		int result = -100;   // initializing to a likely good value that cannot be a real hashCode value.
 		
-		if ((XPathCollationSupport.CASE_BLIND_COLLATION_URI).equals(m_collationUri)) {
+		int result = 0;
+		
+		if ((XPathCollationSupport.CASE_BLIND_COLLATION_URI1).equals(m_collationUri) || 
+			                                              (XPathCollationSupport.CASE_BLIND_COLLATION_URI2).equals(m_collationUri)) {
 		   int size1 = m_value.size();
 		   ResultSequence rSeq = new ResultSequence();
 		   for (int i = 0; i < size1; i++) {

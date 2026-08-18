@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:43Z" fail="79" name="fn-avg" pass="142" run="221" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-18T10:59:06Z" fail="72" name="fn-avg" pass="143" run="215" statusUnknown="0">
    <testResult status="pass" testName="fn-avgint1args-1"/>
    <testResult status="pass" testName="fn-avgint1args-2"/>
    <testResult status="pass" testName="fn-avgint1args-3"/>
@@ -171,10 +171,6 @@
    <testResult status="pass" testName="K-SeqAVGFunc-3"/>
    <testResult status="pass" testName="K-SeqAVGFunc-4"/>
    <testResult status="pass" testName="K-SeqAVGFunc-5"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-9"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-11"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-12"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-13"/>
    <testResult status="fail" testName="K-SeqAVGFunc-14"/>
    <testResult status="fail" testName="K-SeqAVGFunc-15"/>
    <testResult status="pass" testName="K-SeqAVGFunc-17"/>
@@ -187,13 +183,11 @@
    <testResult status="pass" testName="K-SeqAVGFunc-26"/>
    <testResult status="pass" testName="K-SeqAVGFunc-27"/>
    <testResult status="fail" testName="K-SeqAVGFunc-28"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-29"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-30"/>
    <testResult status="fail" testName="K-SeqAVGFunc-31"/>
    <testResult status="fail" testName="K-SeqAVGFunc-32"/>
    <testResult status="fail" testName="K-SeqAVGFunc-33"/>
    <testResult status="fail" testName="K-SeqAVGFunc-34"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-35"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-35"/>
    <testResult status="pass" testName="K-SeqAVGFunc-36"/>
    <testResult status="pass" testName="K-SeqAVGFunc-37"/>
    <testResult status="pass" testName="K-SeqAVGFunc-38"/>

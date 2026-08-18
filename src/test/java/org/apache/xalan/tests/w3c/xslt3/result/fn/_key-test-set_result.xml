@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:39:12Z" fail="15" name="key" pass="84" run="99" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-18T11:06:22Z" fail="14" name="key" pass="85" run="99" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="key-001"/>
    <testResult status="fail" testName="key-002"/>
    <testResult status="pass" testName="key-003"/>
@@ -100,12 +100,7 @@ java.lang.Exception: Line# : 21, Column# : 54 XPST0003: Expected ,, but found: k
    <testResult status="pass" testName="key-085b"/>
    <testResult status="pass" testName="key-086"/>
    <testResult status="fail" testName="key-087"/>
-   <testResult status="fail" testName="key-088">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 19, Column# : 72 XPST0003 : A location path was expected, but the following token was encountered ,.
-java.lang.Exception: Line# : 19, Column# : 72 XPST0003 : A location path was expected, but the following token was encountered ,.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="key-088"/>
    <testResult status="pass" testName="key-089"/>
    <testResult status="fail" testName="key-090"/>
    <testResult status="pass" testName="key-091"/>
