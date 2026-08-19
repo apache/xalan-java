@@ -1332,7 +1332,7 @@ public class XSLTSchema extends XSLTElementDef
 								null /*alias */,
 								null /* elements */,
 								new XSLTAttributeDef[] {
-										elementsAttr },
+										elementsAttr, xpathDefaultNamespaceAttrOpt },
 								new ProcessorStripSpace(),
 								null /* class object */, 20, true),
 						new XSLTElementDef(
@@ -1342,7 +1342,7 @@ public class XSLTSchema extends XSLTElementDef
 								null /*alias */,
 								null /* elements */,
 								new XSLTAttributeDef[] {
-										elementsAttr },
+										elementsAttr, xpathDefaultNamespaceAttrOpt },
 								new ProcessorPreserveSpace(),
 								null /* class object */, 20, true),
 						new XSLTElementDef(

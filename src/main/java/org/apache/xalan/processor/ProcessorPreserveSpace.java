@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.processor;
 
 import java.util.Vector;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.WhiteSpaceInfo;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
+import org.apache.xpath.patterns.StepPattern;
 import org.xml.sax.Attributes;
 
 /**
@@ -59,19 +59,47 @@ class ProcessorPreserveSpace extends XSLTElementProcessor
           Attributes attributes)
             throws org.xml.sax.SAXException
   {
-    Stylesheet thisSheet = handler.getStylesheet();
-	WhitespaceInfoPaths paths = new WhitespaceInfoPaths(thisSheet);
-    setPropertiesFromAttributes(handler, rawName, attributes, paths);
+	  Stylesheet thisSheet = handler.getStylesheet();
+	  WhitespaceInfoPaths paths = new WhitespaceInfoPaths(thisSheet);
+	  setPropertiesFromAttributes(handler, rawName, attributes, paths);
 
-    Vector xpaths = paths.getElements();
+	  Vector xpaths = paths.getElements();
 
-    for (int i = 0; i < xpaths.size(); i++)
-    {
-      WhiteSpaceInfo wsi = new WhiteSpaceInfo((XPath) xpaths.elementAt(i), false, thisSheet);
-      wsi.setUid(handler.nextUid());
+	  int attrLength = attributes.getLength();
+	  String xPathDefaultNs = null;
 
-      thisSheet.setPreserveSpaces(wsi);
-    }
-    paths.clearElements();
+	  for (int idx = 0; idx < attrLength; idx++) {
+		  String attrLocalName = attributes.getLocalName(idx);              
+
+		  if ((Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE).equals(attrLocalName)) {
+			  xPathDefaultNs = attributes.getValue(idx); 
+
+			  break;
+		  }
+	  }
+
+	  if (xPathDefaultNs == null) {
+		  xPathDefaultNs = thisSheet.getXpathDefaultNamespace(); 
+	  }
+
+	  int size1 = xpaths.size();
+
+	  for (int idx = 0; idx < size1; idx++)
+	  {
+		  XPath xpath1 = (XPath)(xpaths.elementAt(idx));
+
+		  if (xPathDefaultNs != null) {
+			  Expression expr1 = xpath1.getExpression();    	 
+			  StepPattern stepPattern = (StepPattern)expr1;
+			  stepPattern.setNamespace(xPathDefaultNs);
+		  }
+
+		  WhiteSpaceInfo wsi = new WhiteSpaceInfo(xpath1, false, thisSheet);
+		  wsi.setUid(handler.nextUid());
+
+		  thisSheet.setPreserveSpaces(wsi);
+	  }
+
+	  paths.clearElements();
   }
 }
