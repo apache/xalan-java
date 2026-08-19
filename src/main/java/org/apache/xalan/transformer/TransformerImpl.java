@@ -5260,6 +5260,14 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 						  xpathDefaultNamespace = ((ElemMapEntry)xslElem).getXpathDefaultNamespace();  
 					  }
 				  }
+				  else if (xslElem instanceof ElemWithParam) {
+					  if (((ElemWithParam)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemWithParam)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemWithParam)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
@@ -5553,6 +5561,14 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 					  }
 					  else {
 						  expandText = ((ElemMapEntry)xslElem).getExpandText();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemParam) {
+					  if (!(((ElemParam)xslElem).getExpandTextDeclared())) {
+						  ((ElemParam)xslElem).setExpandText(expandText);
+					  }
+					  else {
+						  expandText = ((ElemParam)xslElem).getExpandText();  
 					  }
 				  }
 

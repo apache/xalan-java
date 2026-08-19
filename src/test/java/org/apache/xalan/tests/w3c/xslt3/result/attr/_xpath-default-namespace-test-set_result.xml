@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:38:49Z" fail="10" name="xpath-default-namespace" pass="12" run="22" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-19T11:22:10Z" fail="8" name="xpath-default-namespace" pass="14" run="22" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="xpath-default-namespace-0101"/>
    <testResult status="pass" testName="xpath-default-namespace-0102"/>
    <testResult status="pass" testName="xpath-default-namespace-0103"/>
    <testResult status="pass" testName="xpath-default-namespace-0104"/>
-   <testResult status="fail" testName="xpath-default-namespace-0105"/>
+   <testResult status="pass" testName="xpath-default-namespace-0105"/>
    <testResult status="pass" testName="xpath-default-namespace-0106"/>
-   <testResult status="fail" testName="xpath-default-namespace-0107"/>
+   <testResult status="pass" testName="xpath-default-namespace-0107"/>
    <testResult status="pass" testName="xpath-default-namespace-0108"/>
    <testResult status="fail" testName="xpath-default-namespace-0201">
       <outResult/>

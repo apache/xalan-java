@@ -69,8 +69,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.XPathOperator;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -1131,7 +1131,7 @@ public class ElemTemplateElement extends UnImplNode
     return m_prefixTable;
   }
   
-  void setPrefixTable(List list) {
+  public void setPrefixTable(List list) {
       m_prefixTable = list;
   }
   
@@ -2386,6 +2386,9 @@ public class ElemTemplateElement extends UnImplNode
   	}
   	else if (elemTemplateElem instanceof ElemMapEntry) {
   		result = ((ElemMapEntry)elemTemplateElem).getExpandText();  		
+  	}
+  	else if (elemTemplateElem instanceof ElemWithParam) {
+  		result = ((ElemWithParam)elemTemplateElem).getExpandText();  		
   	}
 
   	return result;

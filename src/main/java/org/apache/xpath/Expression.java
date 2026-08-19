@@ -25,19 +25,14 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
-import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.Function2Args;
-import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.functions.FunctionDef1Arg;
-import org.apache.xpath.functions.FunctionMultiArgs;
-import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -47,9 +42,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.NotEquals;
-import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.VcGt;
-import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.ContentHandler;
 
@@ -812,6 +805,36 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 		  }
 
 		  result = (isGt ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+	  }
+
+	  return result;
+  }
+  
+  /**
+   * Method definition, to check whether the supplied XML prefixTable 
+   * list, contains a specific XML namespace prefix, uri pair. 
+   * 
+   * @param prefixTable                      The supplied XML prefix table list
+   * @param prefix                           An XML namespace prefix to check
+   * @param uri                              An XML namespace uri to check  
+   * @return                                 Boolean value true or false
+   */
+  protected boolean prefixTableContains(List<XMLNSDecl> prefixTable, String prefix, String uri) {
+		
+	  boolean result = false;
+
+	  int size1 = prefixTable.size();
+
+	  for (int idx = 0; idx < size1; idx++) {
+		  XMLNSDecl xmlNSDecl = prefixTable.get(idx);
+		  String prefix1 = xmlNSDecl.getPrefix();
+		  String uri1 = xmlNSDecl.getURI();
+
+		  if (prefix1.equals(prefix) && uri1.equals(uri)) {
+			  result = true;
+
+			  break;
+		  }
 	  }
 
 	  return result;

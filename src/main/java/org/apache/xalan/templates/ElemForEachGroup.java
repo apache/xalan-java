@@ -797,18 +797,18 @@ public class ElemForEachGroup extends ElemTemplateElement
         List<List<Integer>> xslForEachGroupStartingWithEndingWith = new ArrayList<List<Integer>>();
         
         if (m_groupByExpression != null) {
-        	constructXslGroupsGroupBy(sourceNodes, xslForEachGroupMap, xctxt);
+        	constructXslGroupGroupBy(sourceNodes, xslForEachGroupMap, xctxt);
         }        
         else if (m_groupStartingWithExpression != null) {
         	boolean isReverse = (selectExpr instanceof FuncReverse);
-        	constructXslGroupsStartingWith(sourceNodes, xslForEachGroupStartingWithEndingWith, xctxt, m_isInpSeqAllAtomicValues, isReverse);
+        	constructXslGroupGroupStartingWith(sourceNodes, xslForEachGroupStartingWithEndingWith, xctxt, m_isInpSeqAllAtomicValues, isReverse);
         }
         else if (m_groupEndingWithExpression != null) {
         	boolean isReverse = (selectExpr instanceof FuncReverse);
-        	constructXslGroupsEndingWith(sourceNodes, xslForEachGroupStartingWithEndingWith, xctxt, m_isInpSeqAllAtomicValues, isReverse);
+        	constructXslGroupGroupEndingWith(sourceNodes, xslForEachGroupStartingWithEndingWith, xctxt, m_isInpSeqAllAtomicValues, isReverse);
         }
         else if (m_groupAdjacentExpression != null) {
-        	constructXslGroupsGroupAdjacent(sourceNodes, xslForEachGroupAdjacentList, xctxt, m_isInpSeqAllAtomicValues);
+        	constructXslGroupGroupAdjacent(sourceNodes, xslForEachGroupAdjacentList, xctxt, m_isInpSeqAllAtomicValues);
         }
         
         try {
@@ -1077,7 +1077,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    * @param xctxt                     An XPath context object
    * @throws TransformerException
    */
-  private void constructXslGroupsGroupBy(DTMCursorIterator sourceNodes, Map<Object, List<Integer>> xslForEachGroupByMap, 
+  private void constructXslGroupGroupBy(DTMCursorIterator sourceNodes, Map<Object, List<Integer>> xslForEachGroupByMap, 
 		                                                                XPathContext xctxt) throws TransformerException {
 	  	  	  
 	  
@@ -1177,7 +1177,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    *                                                    of XPath function fn:reverse.
    * @throws TransformerException
    */
-  private void constructXslGroupsStartingWith(DTMCursorIterator sourceNodes, List<List<Integer>> xslForEachGroupStartingWith,
+  private void constructXslGroupGroupStartingWith(DTMCursorIterator sourceNodes, List<List<Integer>> xslForEachGroupStartingWith,
 		                                                                          XPathContext xctxt, boolean isInpSeqAllAtomicValues, 
 		                                                                          boolean isReverse) throws TransformerException {	  
 	  
@@ -1210,7 +1210,7 @@ public class ElemForEachGroup extends ElemTemplateElement
 				  
 				  XObject groupStartingWithEvalResult = null;
 				  
-				  try {
+				  try {					  
 					  groupStartingWithEvalResult = m_groupStartingWithExpression.execute(xctxt, xpathCtxtNode, xctxt.getNamespaceContext());
 				  }
 				  finally {
@@ -1385,7 +1385,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    *                                                    of XPath function fn:reverse.
    * @throws TransformerException
    */
-  private void constructXslGroupsEndingWith(DTMCursorIterator sourceNodes, List<List<Integer>> xslForEachGroupEndingWith, 
+  private void constructXslGroupGroupEndingWith(DTMCursorIterator sourceNodes, List<List<Integer>> xslForEachGroupEndingWith, 
 		  									                                    XPathContext xctxt, boolean isInpSeqAllAtomicValues, 
 		  									                                    boolean isReverse) throws TransformerException {
 	  
@@ -1558,7 +1558,7 @@ public class ElemForEachGroup extends ElemTemplateElement
    *                                            has all items as xdm atomic value.
    * @throws TransformerException
    */
-  private void constructXslGroupsGroupAdjacent(DTMCursorIterator sourceNodes, List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList, 
+  private void constructXslGroupGroupAdjacent(DTMCursorIterator sourceNodes, List<GroupingKeyAndGroupPair> xslForEachGroupAdjacentList, 
 		                                                                      XPathContext xctxt, boolean isInpSeqAllAtomicValues) 
 		                                                                    		                                             throws TransformerException {
 	 

@@ -778,7 +778,8 @@ public class XSLTSchema extends XSLTElementDef
 				"with-param", null /*alias */,
 				templateElements /* elements */,  // %template;>
 				new XSLTAttributeDef[] { nameAttrRequired,
-						                 selectAttrOpt, asAttrOpt, tunnelAttrOpt, 
+						                 selectAttrOpt, xpathDefaultNamespaceAttrOpt, 
+						                 expandTextAttrOpt, asAttrOpt, tunnelAttrOpt, 
 						                 useWhenAttrOpt }, new ProcessorTemplateElem(),
 				ElemWithParam.class /* class object */, 19, true);
 		XSLTElementDef xslApplyTemplates = new XSLTElementDef(this,

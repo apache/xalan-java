@@ -47,7 +47,7 @@ public class XslXPathDefaultNamespaceAttrTests extends W3CXslTransformTestsUtil 
     }
 
     @Test
-    public void runXslAsAttrTests() {    	
+    public void runXslXPathDefaultNamespaceAttrTests() {    	
        runXslTestSet();
     }
 

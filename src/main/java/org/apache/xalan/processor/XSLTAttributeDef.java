@@ -20,6 +20,7 @@ package org.apache.xalan.processor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.stream.IntStream;
@@ -38,6 +39,7 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.xslt.util.StringUtil;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringToIntTable;
@@ -841,7 +843,12 @@ public class XSLTAttributeDef
 
 		  value = processUriQualifiedName(handler, value);
 
-		  expr = handler.createXPath(value, owner);  
+		  expr = handler.createXPath(value, owner);
+		  
+		  NamespaceSupport2 nsSupport = (NamespaceSupport2)(handler.getNamespaceSupport());
+		  
+		  // Save the modified NamespaceSupport2 object instance for later use 
+		  XslTransformData.m_ns_hashtable = nsSupport.getUriTable(); 
 
 		  return expr;
 	  }
@@ -1951,6 +1958,7 @@ public class XSLTAttributeDef
 	  String result = strValue;
 	  
 	  NamespaceSupport2 nsSupport = (NamespaceSupport2)(handler.getNamespaceSupport());
+	  
 	  /**
 	   * The following code, replaces each occurrence of substring like Q{uri}abc 
 	   * within the supplied string with replacement text prefix:abc (the prefix value 
@@ -1958,6 +1966,7 @@ public class XSLTAttributeDef
 	   * NamespaceSupport2 object if the relevant namespace binding is not already 
 	   * available within NamespaceSupport2 object.  
 	   */
+	  
 	  int i = result.indexOf("Q{");      
 	  while (i > -1) {
 		  int j = result.indexOf('}');

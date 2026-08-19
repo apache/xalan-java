@@ -73,6 +73,7 @@ import org.apache.xalan.templates.ElemTry;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemWhen;
+import org.apache.xalan.templates.ElemWithParam;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.xslt.util.RegexMatchInfo;
 import org.apache.xalan.xslt.util.RegexUtil;
@@ -10284,7 +10285,7 @@ public class XPathParser
 	}
 	
 	/**
-     * Method definition to get, XML attribute xpath-default-namespace's effective
+     * Method definition, to get XSL attribute xpath-default-namespace's effective
      * value for the current XPath expression evaluation, by searching information
      * on an XSL current node and if not found their then information within the
      * ancestor nodes upto StylesheetRoot object.
@@ -10548,6 +10549,13 @@ public class XPathParser
     		
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemMapEntry)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
+    	else if (xpathExprXslParentNode instanceof ElemWithParam) {
+    		result = ((ElemWithParam)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemWithParam)xpathExprXslParentNode).getParentElem()); 
     		}
     	}
 

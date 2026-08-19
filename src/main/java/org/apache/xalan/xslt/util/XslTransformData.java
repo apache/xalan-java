@@ -17,6 +17,7 @@
 package org.apache.xalan.xslt.util;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.xalan.templates.StylesheetRoot;
@@ -138,6 +139,12 @@ public class XslTransformData {
      * attribute "use-when".
      */
     public static boolean m_use_when = false;
+    
+    /**
+     * An XML namespace mapping hashtable, used for XPath expression
+     * evaluation.
+     */
+    public static Hashtable m_ns_hashtable = null;
     
     /**
 	 * Method definition, to reset the class field values specified 

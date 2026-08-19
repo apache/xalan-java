@@ -196,6 +196,71 @@ public class ElemWithParam extends ElemTemplateElement
   {
 	  return m_useWhen;
   }
+  
+  /**
+   * Class field, that represents the value of "xpath-default-namespace" 
+   * attribute.
+   */
+  private String m_xpath_default_namespace = null;
+  
+  /**
+   * Set the value of "xpath-default-namespace" attribute.
+   *
+   * @param v   Value of the "xpath-default-namespace" attribute
+   */
+  public void setXpathDefaultNamespace(String v)
+  {
+	 m_xpath_default_namespace = v; 
+  }
+
+  /**
+   * Get the value of "xpath-default-namespace" attribute.
+   *  
+   * @return		  The value of "xpath-default-namespace" attribute 
+   */
+  public String getXpathDefaultNamespace() {
+	 return m_xpath_default_namespace;
+  }
+  
+  /**
+   * Class field, that represents the value of "expand-text" 
+   * attribute.
+   */
+  private boolean m_expand_text;
+
+  /**
+   * Variable to indicate whether, an attribute 'expand-text'
+   * is declared on xsl:apply-templates instruction.
+   */
+  private boolean m_expand_text_declared;
+
+  /**
+   * Set the value of "expand-text" attribute.
+   *
+   * @param v   Value of the "expand-text" attribute
+   */
+  public void setExpandText(boolean v)
+  {
+	 m_expand_text = v;
+	 m_expand_text_declared = true;
+  }
+
+  /**
+   * Get the value of "expand-text" attribute.
+   *  
+   * @return		  The value of "expand-text" attribute 
+   */
+  public boolean getExpandText() {
+	 return m_expand_text;
+  }
+
+  /**
+   * Get a boolean value indicating whether, an "expand-text" 
+   * attribute has been declared. 
+   */
+  public boolean getExpandTextDeclared() {
+	 return m_expand_text_declared;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -274,6 +339,13 @@ public class ElemWithParam extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
+    
+    if (m_xpath_default_namespace != null) {
+       // Recompile xsl:with-param instruction attribute 'select', to consider 
+       // XSL attribute xpath-default-namespace.
+    	
+       m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    }
 
     if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {
        throw new TransformerException("XTTE0590 : Allowed values for XSL with-param's tunnel "
