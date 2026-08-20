@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:38:02Z" fail="12" name="character-map" pass="15" run="28" skipped="1" statusUnknown="1">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-20T10:58:19Z" fail="11" name="character-map" pass="16" run="28" skipped="1" statusUnknown="1">
    <testResult status="pass" testName="character-map-001"/>
    <testResult status="pass" testName="character-map-002"/>
    <testResult status="pass" testName="character-map-003"/>
    <testResult status="pass" testName="character-map-004"/>
    <testResult status="pass" testName="character-map-005"/>
    <testResult status="pass" testName="character-map-006"/>
-   <testResult status="fail" testName="character-map-007"/>
+   <testResult status="pass" testName="character-map-007"/>
    <testResult status="pass" testName="character-map-008"/>
    <testResult status="pass" testName="character-map-009"/>
    <testResult reason="Xalan configured" status="skipped" testName="character-map-010"/>

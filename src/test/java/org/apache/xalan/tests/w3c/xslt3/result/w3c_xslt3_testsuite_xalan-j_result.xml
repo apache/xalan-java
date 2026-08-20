@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-08-19T18:05:20Z" desc="W3C XSLT 3.0 test suite results" fail="972" pass="3843" run="4819" skipped="624" success="79.75%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-08-20T10:58:53Z" desc="W3C XSLT 3.0 test suite results" fail="969" pass="3846" run="4819" skipped="624" success="79.81%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
@@ -9,11 +9,11 @@
     <mode fail="68" pass="73" run="141" skipped="28" success="51.77%"/>
     <select fail="18" pass="114" run="132" skipped="26" success="86.36%"/>
     <tunnel fail="36" pass="22" run="58" skipped="0" success="37.93%"/>
-    <xpath-default-namespace fail="6" pass="16" run="22" skipped="4" success="72.73%"/>
+    <xpath-default-namespace fail="4" pass="18" run="22" skipped="4" success="81.82%"/>
   </attr>
   <decl>
     <attribute-set fail="7" pass="42" run="49" skipped="1" success="85.71%"/>
-    <character-map fail="12" pass="15" run="28" skipped="1" success="53.57%"/>
+    <character-map fail="11" pass="16" run="28" skipped="1" success="57.14%"/>
     <context-item fail="13" pass="18" run="31" skipped="0" success="58.06%"/>
     <function fail="20" pass="67" run="87" skipped="23" success="77.01%"/>
     <global-context-item fail="4" pass="10" run="14" skipped="0" success="71.43%"/>

@@ -165,6 +165,7 @@ public class XslTransformData {
 		m_is_xsl_test_invocation = false;
 		m_xsl_perform_sort_resultSeq = null;
 		m_xsl_variable_qname_list.clear();
+		m_ns_hashtable = null;
 	}		
 
 }

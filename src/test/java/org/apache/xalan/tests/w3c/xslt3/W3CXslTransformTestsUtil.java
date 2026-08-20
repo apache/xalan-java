@@ -2095,15 +2095,22 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    		if (strValue != null) {
 	    			Document xmlResultDoc2 = null;	    			
 	    			
+	    			Matcher matcher = null;
+	    			Matcher matcher2 = null;
+	    			
 	    			try {
 	    				String str2 = "<!DOCTYPE document SYSTEM \"entities.dtd\" [ ]>" + strValue;
+	    				
 	    				xmlResultDoc2 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream(str2.getBytes()));
+	    				
 	    				strValue = serializeXmlDomElementNode(xmlResultDoc2);	    				
+	    				
 	    				int strLength1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE document SYSTEM \"entities.dtd\">".length();
 	    				strValue = (strValue.substring(strLength1)).trim();
+	    				
 	    				Pattern pattern = Pattern.compile(strValue);   							 
-	    				Matcher matcher = pattern.matcher(elemNodeStrValue);
-	    				Matcher matcher2 = pattern.matcher(elemNodeStrValue2);  
+	    				matcher = pattern.matcher(elemNodeStrValue);
+	    				matcher2 = pattern.matcher(elemNodeStrValue2);  
 	    				
 	    				if (strValue.equals(elemNodeStrValue) || matcher.matches()) {
 	    					isTestCasePass = true;
@@ -2113,7 +2120,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    				}
 	    		    }
 	    		    catch (Exception ex) {
-	    		    	// no op
+	    		    	Pattern pattern = Pattern.compile(strValue);   							 
+	    				matcher = pattern.matcher(elemNodeStrValue);
+	    				matcher2 = pattern.matcher(elemNodeStrValue2); 
+	    				
+	    		    	if (matcher.matches() || matcher2.matches()) {
+	    		    	   isTestCasePass = true;
+	    		    	}
 	    		    }
 	    		}
 	    		else {

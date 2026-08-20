@@ -75,7 +75,8 @@ public class TemplateList implements java.io.Serializable
   public void setTemplate(ElemTemplate template) throws TransformerException
   {    
 	  
-	  XPath xpathUseWhen = template.getUseWhen();	  
+	  XPath xpathUseWhen = template.getUseWhen();
+	  
 	  if (xpathUseWhen != null) {
 		  XPathContext xctxt = new XPathContext();
 		  Map<QName, XObject> varMap = xctxt.getXPathVarMap();
@@ -85,9 +86,11 @@ public class TemplateList implements java.io.Serializable
 			  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 			  Vector vars = new Vector();
 			  ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+			 
 			  while (elemTemplateElement != null) {
 				 if (elemTemplateElement instanceof ElemVariable) {
 					ElemVariable elemVar = (ElemVariable)elemTemplateElement;						
+					
 					if (elemVar.getStatic()) {
 					   // Only static variables may be referred, within 
 					   // XSL attribute use-when's XPath expression.
@@ -99,6 +102,7 @@ public class TemplateList implements java.io.Serializable
 			  }
 			  
 			  int idx = vars.size();			  			  
+			  
 			  while (--idx >= 0) {
 				  ElemVariable elemVariable = (ElemVariable)(vars.elementAt(idx));					  
 				  QName varName = elemVariable.getName();					  
@@ -109,16 +113,31 @@ public class TemplateList implements java.io.Serializable
 				  varMap.put(varName, xObj);
 			  }
 			  
-			  XObject xObj = xpathUseWhen.execute(xctxt, DTM.NULL, template);
+			  String xpathExprStr = xpathUseWhen.getPatternString();
+			  
+			  String xpathDefaultNs = template.getXpathDefaultNamespace();
+			  
+			  if ((xpathDefaultNs == null) && (template.getStylesheet() != null)) {
+				  Stylesheet stylesheet = template.getStylesheet();
+				  xpathDefaultNs = stylesheet.getXpathDefaultNamespace(); 
+			  }
+			  
+			  if (xpathDefaultNs != null) {
+				 xpathUseWhen = new XPath(xpathExprStr, null, template, XPath.SELECT, null, xpathDefaultNs); 
+			  }
+			  
+              XObject xObj = xpathUseWhen.execute(xctxt, DTM.NULL, template);
+			  
 			  if (!xObj.bool()) {
 				  return; 
 			  }
 		  }
 		  catch (Exception ex) {
 			  String xpathExprStr = xpathUseWhen.getPatternString();
-			  throw new TransformerException("XPST0003 : An XPath evaluation error occured, while evaluating XSL attribute 'use-when' " + 
-																					                      xpathExprStr + ". Any variable references within "
-																					                      + "XPath 'use-when' expression must be static.");
+			  
+			  throw new TransformerException("XPST0003 : An XPath evaluation error occured, while evaluating XSL stylesheet attribute 'use-when' " + 
+																					                                       xpathExprStr + ". Any variable references within "
+																					                                       + "XPath 'use-when' expression must be static.");
 		  }
 		  finally {
 			  XslTransformData.m_use_when = false;

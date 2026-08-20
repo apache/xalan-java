@@ -65,6 +65,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
   {
 	  
 	  super.startElement(handler, uri, localName, rawName, attributes);
+	  
 	  try
 	  {
 		  XSLTElementDef def = getElemDef();
@@ -94,12 +95,14 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 		   
 		  if ((Constants.S_XSLNAMESPACEURL).equals(uri) && (attributes != null)) {
 			  String useWhenAttrXPathStr = attributes.getValue("", Constants.ATTRNAME_USE_WHEN);
+			  
 			  if (useWhenAttrXPathStr != null) {				  
 				  XslTransformData.m_use_when = true;
 				  XPathContext xctxt = new XPathContext();
 				  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 				  Vector vars = new Vector();
 				  ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+				  
 				  while (elemTemplateElement != null) {
 					 if (elemTemplateElement instanceof ElemVariable) {
 						ElemVariable elemVar = (ElemVariable)elemTemplateElement;						
@@ -115,6 +118,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 				  
 				  int idx = vars.size();				  
 				  Map<QName, XObject> varMap = xctxt.getXPathVarMap();				  
+				  
 				  while (--idx >= 0) {
 					  ElemVariable elemVariable = (ElemVariable)(vars.elementAt(idx));					  
 					  QName varName = elemVariable.getName();					  
@@ -126,18 +130,50 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 				  }				  				  
 				  
 				  XPath useWhenXPath = null;
-				  try {					  
-					  useWhenXPath = new XPath(useWhenAttrXPathStr, null, handler, XPath.SELECT, null);					  
+				  
+				  String xpathDefaultNs = null;
+				  				  				  
+				  if ((Constants.ELEMNAME_TEMPLATE_STRING).equals(localName) && (Constants.S_XSLNAMESPACEURL).equals(uri)) {					 					  
+
+					  int attrLength = attributes.getLength();
+
+					  for (int idx2 = 0; idx2 < attrLength; idx2++) {
+						  String attrLocalName = attributes.getLocalName(idx2);              
+
+						  if ((Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE).equals(attrLocalName)) {
+							  xpathDefaultNs = attributes.getValue(idx); 
+
+							  break;
+						  }
+					  }
+
+					  if (xpathDefaultNs == null) {
+						  StylesheetRoot stylesheet = (StylesheetRoot)(handler.getElemTemplateElement());
+
+						  xpathDefaultNs = stylesheet.getXpathDefaultNamespace();
+					  }
+				  }
+				  
+				  try {	
+					  if (xpathDefaultNs != null) {
+					     useWhenXPath = new XPath(useWhenAttrXPathStr, null, handler, XPath.SELECT, null, xpathDefaultNs);
+					  }
+					  else {
+						 useWhenXPath = new XPath(useWhenAttrXPathStr, null, handler, XPath.SELECT, null);
+					  }
+					  
 					  XObject xObj = useWhenXPath.execute(xctxt, DTM.NULL, handler);
+					  
 					  if (!xObj.bool()) {
 						  m_isUseWhenExclude = true; 
 					  }
 				  }
 				  catch (TransformerException ex) {
 					  String xpathExprStr = useWhenXPath.getPatternString();
-					  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL attribute 'use-when' " + 
-																								                              xpathExprStr + ". Any variable references within "
-																								                              + "XPath 'use-when' expression must be static.");
+					  
+					  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL stylesheet attribute 'use-when' " + 
+																								                                       xpathExprStr + ". Any variable references within "
+																								                                       + "XPath 'use-when' expression must be static.");
 				  }
 				  finally {
 					  XslTransformData.m_use_when = false;

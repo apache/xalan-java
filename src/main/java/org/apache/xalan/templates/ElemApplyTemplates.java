@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -45,9 +46,9 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -364,7 +365,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
   {
 
 	  final XPathContext xctxt = transformer.getXPathContext();
-	  final int contextNode = xctxt.getCurrentNode();	  	  
+	  final int contextNode = xctxt.getCurrentNode();
 
 	  DTMCursorIterator sourceNodes = null;
 
@@ -374,7 +375,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  ResultSequence resultSeq = null;
 	  QName xslTemplateInvokeMode = getMode();
 	    
-	  if ((m_selectExpression2 != null) && (m_xpath_default_namespace != null)) {    		
+	  if ((m_selectExpression2 != null) && (m_xpath_default_namespace != null) 
+			                            && !XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(m_xpath_default_namespace)) {    		
 		  m_xpath2 = new XPath(m_xpath2.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		  m_selectExpression2 = m_xpath2.getExpression(); 
 	  }
@@ -656,6 +658,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
 		  QName qnameCurrent = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_CURRENT, true);
 		  QName qnameUnnamed = new QName(Constants.S_EXTENSIONS_JAVA_URL, Constants.ATTRVAL_UNNAMED, true);
+		  
 		  if (qnameCurrent.equals(mode)) {
 			  mode = transformer.getCurrentMode();  
 		  }

@@ -4888,7 +4888,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 	 *                                              of the supplied node. 
 	 */
 	private void updateXPathDefaultNamespace(ElemTemplateElement elemTemplateElem, String xpathDefaultNamespace) 
-			                                                                    throws javax.xml.transform.TransformerException {
+			                                                                                                   throws javax.xml.transform.TransformerException {
 		
 		  if ("".equals(xpathDefaultNamespace)) {
 			 xpathDefaultNamespace = null;  
@@ -4897,7 +4897,15 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 		  if (elemTemplateElem != null) {		  
 			  ElemTemplateElement xslElem = elemTemplateElem; 
 			  while (xslElem != null) {
-				  if (xslElem instanceof ElemVariable) {
+				  if (xslElem instanceof ElemLiteralResult) {
+					  if (((ElemLiteralResult)xslElem).getXpathDefaultNamespace() == null) {
+						  ((ElemLiteralResult)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
+					  }
+					  else {
+						  xpathDefaultNamespace = ((ElemLiteralResult)xslElem).getXpathDefaultNamespace();  
+					  }
+				  }
+				  else if (xslElem instanceof ElemVariable) {
 					  if (((ElemVariable)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemVariable)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
 					  }
@@ -5060,15 +5068,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 					  else {
 						  xpathDefaultNamespace = ((ElemCopy)xslElem).getXpathDefaultNamespace();  
 					  }
-				  }	
-				  else if (xslElem instanceof ElemLiteralResult) {
-					  if (((ElemLiteralResult)xslElem).getXpathDefaultNamespace() == null) {
-						  ((ElemLiteralResult)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
-					  }
-					  else {
-						  xpathDefaultNamespace = ((ElemLiteralResult)xslElem).getXpathDefaultNamespace();  
-					  }
-				  }
+				  }					  
 				  else if (xslElem instanceof ElemChoose) {
 					  if (((ElemChoose)xslElem).getXpathDefaultNamespace() == null) {
 						  ((ElemChoose)xslElem).setXpathDefaultNamespace(xpathDefaultNamespace);
@@ -5271,7 +5271,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 				  
 				  ElemTemplateElement elemTemplateChild = xslElem.getFirstChildElem();
 				  updateXPathDefaultNamespace(elemTemplateChild, xpathDefaultNamespace);
-
+				  
 				  xslElem = xslElem.getNextSiblingElem();
 			  }		 
 		  }

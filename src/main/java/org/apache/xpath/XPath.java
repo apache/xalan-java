@@ -305,7 +305,7 @@ public class XPath implements Serializable, ExpressionOwner
 	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
 
 	  if (SELECT == type) {
-		  parser.initXPath(compiler, exprString, prefixResolver, false);
+		  parser.initXPath(compiler, exprString, prefixResolver, false, xpathDefaultNamespace);
 		  m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
 	  }
 	  else if (MATCH == type)

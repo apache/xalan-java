@@ -256,9 +256,9 @@ public class ProcessorLRE extends ProcessorTemplateElem
 						  }
 						  catch (TransformerException ex) {
 							  String xpathExprStr = useWhenXPath.getPatternString();
-							  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL attribute 'use-when' " + 
-							                                                                                 xpathExprStr + ". Any variable references within "
-							                                                                                 + "XPath 'use-when' expression must be static."); 
+							  throw new org.xml.sax.SAXException("XPST0003 : An XPath evaluation error occured, while evaluating XSL stylesheet attribute 'use-when' " + 
+							                                                                                                        xpathExprStr + ". Any variable references within "
+							                                                                                                        + "XPath 'use-when' expression must be static."); 
 						  }
 						  finally {
 							  XslTransformData.m_use_when = false;

@@ -383,13 +383,13 @@ public class XPathParser
 
   /**
    * Given an string, init an XPath object for selections,
-   * in order that a parse doesn't
-   * have to be done each time the expression is evaluated.
+   * in order that a parse doesn't have to be done each time 
+   * the expression is evaluated.
    * 
    * @param compiler The compiler object.
    * @param expression A string conforming to the XPath grammar.
    * @param namespaceContext An object that is able to resolve prefixes in
-   * the XPath to namespaces.
+   *                         the XPath to namespaces.
    * @param isSequenceTypeXPathExpr When this method is called, with this parameter
    *                                set to boolean value 'true', then an XPath parser object 
    *                                instance, instantiated from this class shall parse the XPath
@@ -406,6 +406,184 @@ public class XPathParser
 
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
+    m_functionTable = compiler.getFunctionTable();
+    
+    m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;    
+    
+    m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
+    
+    m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs();
+    
+    m_expression = expression;
+
+    Lexer lexer = new Lexer(compiler, namespaceContext, this);    
+    lexer.setSourceLocator(m_sourceLocator);
+    
+    expression = normalizeXPathExprStr(expression);
+    
+    lexer.tokenize(expression);
+    
+    if (lexer.isNsBindingRequired() && !lexer.isNsBound()) {
+       String nsUnboundPrefix = lexer.getNsUnboundPrefix();
+       
+       if ((nsUnboundPrefix != null) && !"".equals(nsUnboundPrefix)) {
+          error(XPATHErrorResources.ER_NS_BINDING, new Object[]{ nsUnboundPrefix });
+       }
+    }
+
+    m_ops.setOp(0, OpCodes.OP_XPATH);
+    m_ops.setOp(XPathOpMap.MAPINDEX_LENGTH, 2);
+        	
+	try {
+
+      nextToken();
+      
+      m_isXPathExprBeginParse = true;
+      
+      Expr();                
+
+      if (m_token != null)
+      {    	
+    	// Retry XPath expression parse once again by parenthesizing the 
+    	// original XPath expression.
+    	
+        boolean isTrySecondTime = true;
+        
+        String newExpression = null;
+        
+        if (!(expression.startsWith("(") && expression.endsWith(")"))) {
+        	String[] strArr = expression.split(",");
+        	
+        	if (strArr.length > 1) {
+        	   boolean isXPathExprStrHasBalancedParens = true;
+        	   
+        	   for (int idx = 0; idx < strArr.length; idx++) {
+        		  String str1 = strArr[idx];
+        		  
+        		  if (!StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+        			  isXPathExprStrHasBalancedParens = false; 
+        		  }
+        	   }
+        	           	   
+        	   if (isXPathExprStrHasBalancedParens || tokenIs(',')) {
+        		   /**
+        		    * We check for the token string "," as well, since
+        		    * an XPath parse might have finished without completing
+        		    * parse of all sequence items if that was an XPath literal
+        		    * sequence constructor parse.
+        		    */
+        		   newExpression = "(" + expression + ")"; 
+        	   }
+        	}
+        }
+  	
+        if (newExpression != null) {
+        	(m_ops.m_tokenQueue).removeAllElements();    	
+        	
+        	lexer = new Lexer(compiler, namespaceContext, this);
+        	lexer.setSourceLocator(m_sourceLocator);
+        	
+        	lexer.tokenize(newExpression);
+
+        	m_ops.setOp(0,OpCodes.OP_XPATH);
+        	m_ops.setOp(XPathOpMap.MAPINDEX_LENGTH, 2);                
+
+        	try {
+        		nextToken();
+
+        		m_isXPathExprBeginParse = true;
+
+        		Expr();
+
+        		if (m_token != null)
+        		{            	
+        			String extraTokens = "";
+
+        			while (m_token != null)
+        			{
+        				extraTokens += "'" + m_token + "'";
+
+        				nextToken();
+
+        				if (m_token != null)
+        					extraTokens += ", ";
+        			}
+
+        			error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+        														   new Object[]{ extraTokens });
+        		}
+        	}
+        	catch (org.apache.xpath.XPathProcessorException e)
+        	{
+        		if (CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
+        		{
+        			initXPath(compiler, "/..",  namespaceContext, false);
+        		}
+        		else
+        			throw e;
+        	}
+        }
+        
+        String extraTokens = "";
+
+        while (m_token != null)
+        {
+          extraTokens += "'" + m_token + "'";
+
+          nextToken();
+
+          if (m_token != null)
+            extraTokens += ", ";
+        }
+
+        if (!isTrySecondTime) {
+	        error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+	                                                       new Object[]{ extraTokens });
+        }
+      }
+
+    } 
+    catch (org.apache.xpath.XPathProcessorException e)
+    {
+	  if (CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
+	  {
+		 initXPath(compiler, "/..",  namespaceContext, false);
+	  }
+	  else
+		 throw e;
+    }
+
+    compiler.shrink();
+  }
+  
+  /**
+   * Given an string, init an XPath object for selections,
+   * in order that a parse doesn't have to be done each time 
+   * the expression is evaluated.
+   * 
+   * @param compiler The compiler object.
+   * @param expression A string conforming to the XPath grammar.
+   * @param namespaceContext An object that is able to resolve prefixes in
+   *                         the XPath to namespaces.
+   * @param isSequenceTypeXPathExpr When this method is called, with this parameter
+   *                                set to boolean value 'true', then an XPath parser object 
+   *                                instance, instantiated from this class shall parse the XPath
+   *                                expression string assuming that it represents an XPath
+   *                                sequence type expression (for e.g, as a value of "as" 
+   *                                attribute of xsl:variable instruction).
+   * @param xpathDefaultNamespace   An XML default namespace if available within an XSL stylesheet                                 
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public void initXPath(
+          Compiler compiler, String expression, PrefixResolver namespaceContext, boolean isSequenceTypeXPathExpr, String xpathDefaultNamespace)
+            throws javax.xml.transform.TransformerException
+  {
+
+    m_ops = compiler;
+    m_namespaceContext = namespaceContext;
+    m_xpathDefaultNamespace = xpathDefaultNamespace;
+    
     m_functionTable = compiler.getFunctionTable();
     
     m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;    
@@ -7489,7 +7667,8 @@ public class XPathParser
         	isXPathDefaultNsProcessingSkip = true;
         }
         
-        if (!isXPathDefaultNsProcessingSkip && (m_xpathDefaultNamespace != null) && !tokenIs(m_xpathDefaultNamespace)) {        	
+        if (!isXPathDefaultNsProcessingSkip && (m_xpathDefaultNamespace != null) 
+        		                                                               && !tokenIs(m_xpathDefaultNamespace) && !lookahead(':', 1)) {        	
         	mutateTokenQueue(new String[] { m_xpathDefaultNamespace, ":" }, 0, m_queueMark - 1, 2);
         	
 			m_token = m_xpathDefaultNamespace;
@@ -8579,6 +8758,8 @@ public class XPathParser
        
        XPathSequenceTypeKindTest sequenceTypeKindTest = null;
        
+       TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
+       
        if (tokenIs("empty-sequence") && lookahead('(', 1) && lookahead(')', 2)) {
            xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.EMPTY_SEQUENCE);
            consumeExpected("empty-sequence");
@@ -8696,6 +8877,9 @@ public class XPathParser
            }
        }
        else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+    	   consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    	   consumeExpected(':');
+    	 	  
            parseXdmBuiltInXmlSchemaSequenceType(xpathSequenceTypeExpr, isXPathInlineFunctionParse);         
        }
        else if (tokenIs("schema-element")) {
@@ -8769,9 +8953,18 @@ public class XPathParser
               setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);  
            }
        }
-       else {
-    	   // Check possibility of user-defined schema type specified within the sequence type expression
-    	   parseSequenceTypeExprWithUserDefinedType(xpathSequenceTypeExpr, null);                                                                                    
+       else {    	     
+    	   // XPath parse of possible user-defined schema type specified,
+    	   // within the sequence type expression.
+    	   
+    	   parseSequenceTypeExprWithUserDefinedType(xpathSequenceTypeExpr, null);
+
+    	   if ((xpathSequenceTypeExpr.getXsSequenceTypeDefinition() == null) && 
+    			                                                            ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(m_xpathDefaultNamespace))) {
+    		  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
+    		  
+    		  parseXdmBuiltInXmlSchemaSequenceType(xpathSequenceTypeExpr, isXPathInlineFunctionParse);
+    	   }
        }
        
        if (!isXPathInlineFunctionParse) {
@@ -8993,10 +9186,7 @@ public class XPathParser
     */
    private void parseXdmBuiltInXmlSchemaSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
 		                                             boolean isXPathInlineFunctionParse) throws TransformerException {	  
- 	  
- 	  consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
- 	  consumeExpected(':');
- 	  
+ 	   	   	  
  	  switch (m_token) {
  	     case Keywords.FUNC_BOOLEAN_STRING :
  	         xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.BOOLEAN);
@@ -10306,6 +10496,13 @@ public class XPathParser
     	if (xpathExprXslParentNode instanceof StylesheetRoot) {
     		result = ((StylesheetRoot)xpathExprXslParentNode).getXpathDefaultNamespace(); 
     	}
+    	else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
+    		result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
+    		
+    		if (result == null) {
+    			result = getXPathDefaultNamespace(((ElemLiteralResult)xpathExprXslParentNode).getParentElem()); 
+    		}
+    	}
     	else if (xpathExprXslParentNode instanceof ElemVariable) {
     		result = ((ElemVariable)xpathExprXslParentNode).getXpathDefaultNamespace();
     		
@@ -10389,14 +10586,7 @@ public class XPathParser
     		if (result == null) {
     			result = getXPathDefaultNamespace(((ElemCopy)xpathExprXslParentNode).getParentElem()); 
     		}
-    	}
-    	else if (xpathExprXslParentNode instanceof ElemLiteralResult) {
-    		result = ((ElemLiteralResult)xpathExprXslParentNode).getXpathDefaultNamespace();
-    		
-    		if (result == null) {
-    			result = getXPathDefaultNamespace(((ElemLiteralResult)xpathExprXslParentNode).getParentElem()); 
-    		}
-    	}
+    	}    	
     	else if (xpathExprXslParentNode instanceof ElemChoose) {
     		result = ((ElemChoose)xpathExprXslParentNode).getXpathDefaultNamespace();
     		

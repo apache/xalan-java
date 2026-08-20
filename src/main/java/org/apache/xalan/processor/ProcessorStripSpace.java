@@ -86,10 +86,10 @@ class ProcessorStripSpace extends ProcessorPreserveSpace
 	  for (int idx = 0; idx < size1; idx++)
 	  {
 		  XPath xpath1 = (XPath)(xpaths.elementAt(idx));
+		  Expression expr1 = xpath1.getExpression();    	 
+		  StepPattern stepPattern = (StepPattern)expr1;
 
-		  if (xPathDefaultNs != null) {
-			  Expression expr1 = xpath1.getExpression();    	 
-			  StepPattern stepPattern = (StepPattern)expr1;
+		  if ((stepPattern.getNamespace() == null) && (xPathDefaultNs != null)) {			  
 			  stepPattern.setNamespace(xPathDefaultNs);
 		  }
 
