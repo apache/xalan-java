@@ -314,6 +314,8 @@ public class ElemMessage extends ElemTemplateElement
 	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
 	  
 	  int contextNode = xctxt.getCurrentNode();
+	  
+	  ElemTemplateElement elemTemplateElement = getParentElem();
 	  	  	  
 	  StringBuffer strBuff = new StringBuffer();
 	  
@@ -325,7 +327,7 @@ public class ElemMessage extends ElemTemplateElement
 	  List<XMLNSDecl> prefixTable = getPrefixTable();
 	  
 	  if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
-   	      m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+   	      m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
    	  } 
 	  
 	  try {
@@ -563,7 +565,7 @@ public class ElemMessage extends ElemTemplateElement
 	  if (transformer.getDebug())
 		  transformer.getTraceManager().emitTraceEndEvent(this); 
   }
-  
+
   public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 	  super.appendChild(newChild);

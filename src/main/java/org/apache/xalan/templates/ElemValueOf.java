@@ -404,7 +404,7 @@ public class ElemValueOf extends ElemTemplateElement {
     try
     {     
     	if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
-    	   m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	   m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
     	}
     	
         xctxt.pushNamespaceContext(this);
@@ -536,7 +536,7 @@ public class ElemValueOf extends ElemTemplateElement {
                     		  String strValue = strBuff.toString(); 
                     		  
                     		  (new XString(strValue)).dispatchCharactersEvents(rth);
-                    	  }
+                    	  }                    	  
                     	  else {
                     		  String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
                     		  strValue = preProcessStrBeforeXslSerialization(strValue);                    		  

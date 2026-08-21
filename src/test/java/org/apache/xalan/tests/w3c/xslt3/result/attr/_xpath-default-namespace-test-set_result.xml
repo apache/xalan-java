@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-20T10:58:36Z" fail="4" name="xpath-default-namespace" pass="18" run="22" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-21T13:48:24Z" fail="2" name="xpath-default-namespace" pass="20" run="22" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="xpath-default-namespace-0101"/>
    <testResult status="pass" testName="xpath-default-namespace-0102"/>
    <testResult status="pass" testName="xpath-default-namespace-0103"/>
@@ -12,17 +12,13 @@
    <testResult status="pass" testName="xpath-default-namespace-0301"/>
    <testResult status="pass" testName="xpath-default-namespace-0401"/>
    <testResult status="pass" testName="xpath-default-namespace-0501"/>
-   <testResult status="fail" testName="xpath-default-namespace-0502"/>
+   <testResult status="pass" testName="xpath-default-namespace-0502"/>
    <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0503"/>
    <testResult status="pass" testName="xpath-default-namespace-0601"/>
    <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0701"/>
    <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0702"/>
    <testResult feature="schema_aware" status="skipped" testName="xpath-default-namespace-0703"/>
-   <testResult status="fail" testName="xpath-default-namespace-0801">
-      <outResult>
-         <errTrace>java.lang.NullPointerException</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="xpath-default-namespace-0801"/>
    <testResult status="pass" testName="xpath-default-namespace-0901"/>
    <testResult status="pass" testName="xpath-default-namespace-1001"/>
    <testResult status="pass" testName="xpath-default-namespace-1101"/>

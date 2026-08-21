@@ -340,11 +340,8 @@ public class ElemWithParam extends ElemTemplateElement
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
-    if (m_xpath_default_namespace != null) {
-       // Recompile xsl:with-param instruction attribute 'select', to consider 
-       // XSL attribute xpath-default-namespace.
-    	
-       m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    if (m_xpath_default_namespace != null) {    	
+       m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
     }
 
     if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {

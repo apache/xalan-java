@@ -462,12 +462,11 @@ public class XPathSequenceTypeSupport {
         
         try {        	
             if ((srcValue instanceof XMLNodeCursorImpl) && (expectedSeqTypeData != null)) {
-                if (expectedSeqTypeData.getBuiltInSequenceType() > 0) {
-                	// When XPath "cast as" operator's lhs is a node and rhs is a built-in 
-                	// simple type, we check "cast as" on string value of node.
-                	srcValue = srcValue.getFresh();
-                	String strValue = XslTransformEvaluationHelper.getStrVal(srcValue);
-                	srcValue = new XSString(strValue);
+                if (expectedSeqTypeData.getBuiltInSequenceType() > 0) {                	                	
+                	srcValue = srcValue.getFresh();                	                	
+                	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)srcValue;                	                	
+        
+                	srcValue = new XSString(xmlNodeCursorImpl.str());
                 }
             }
             else if ((srcValue instanceof ResultSequence) && (expectedSeqTypeData != null)) {

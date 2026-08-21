@@ -381,27 +381,27 @@ public class XPathParser
    */
   PrefixResolver m_namespaceContext;
 
+  
   /**
-   * Given an string, init an XPath object for selections,
-   * in order that a parse doesn't have to be done each time 
-   * the expression is evaluated.
+   * Given an string, init an XPath object for selections, in order 
+   * that a parse doesn't have to be done each time the expression 
+   * is evaluated.
    * 
-   * @param compiler The compiler object.
-   * @param expression A string conforming to the XPath grammar.
-   * @param namespaceContext An object that is able to resolve prefixes in
-   *                         the XPath to namespaces.
-   * @param isSequenceTypeXPathExpr When this method is called, with this parameter
-   *                                set to boolean value 'true', then an XPath parser object 
-   *                                instance, instantiated from this class shall parse the XPath
-   *                                expression string assuming that it represents an XPath
-   *                                sequence type expression (for e.g, as a value of "as" 
-   *                                attribute of xsl:variable instruction). 
+   * @param compiler 					  An XPath compiler object instance
+   * @param expression                    A string value conforming to the XPath grammar
+   * @param namespaceContext              An object instance that is able to resolve prefixes 
+   *                                      within the XPath, to XML namespaces.
+   * @param isSequenceTypeXPathExpr       When this method is called, with this parameter
+   *                                      set to boolean value 'true', then an XPath parser object 
+   *                                      instance, instantiated from this class shall parse the XPath
+   *                                      expression string assuming that it represents an XPath
+   *                                      sequence type expression (for e.g, as a value of "as" 
+   *                                      attribute of xsl:variable instruction).                                
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void initXPath(
-          Compiler compiler, String expression, PrefixResolver namespaceContext, boolean isSequenceTypeXPathExpr)
-            throws javax.xml.transform.TransformerException
+  public void initXPath(Compiler compiler, String expression, PrefixResolver namespaceContext, 
+		                                                                  boolean isSequenceTypeXPathExpr) throws javax.xml.transform.TransformerException
   {
 
     m_ops = compiler;
@@ -556,182 +556,33 @@ public class XPathParser
     compiler.shrink();
   }
   
+  
   /**
-   * Given an string, init an XPath object for selections,
-   * in order that a parse doesn't have to be done each time 
-   * the expression is evaluated.
+   * Given an string, init an XPath object for selections, in order 
+   * that a parse doesn't have to be done each time the expression 
+   * is evaluated.
    * 
-   * @param compiler The compiler object.
-   * @param expression A string conforming to the XPath grammar.
-   * @param namespaceContext An object that is able to resolve prefixes in
-   *                         the XPath to namespaces.
-   * @param isSequenceTypeXPathExpr When this method is called, with this parameter
-   *                                set to boolean value 'true', then an XPath parser object 
-   *                                instance, instantiated from this class shall parse the XPath
-   *                                expression string assuming that it represents an XPath
-   *                                sequence type expression (for e.g, as a value of "as" 
-   *                                attribute of xsl:variable instruction).
-   * @param xpathDefaultNamespace   An XML default namespace if available within an XSL stylesheet                                 
+   * @param compiler 					  An XPath compiler object instance
+   * @param expression                    A string value conforming to the XPath grammar
+   * @param namespaceContext              An object instance that is able to resolve prefixes 
+   *                                      within the XPath, to XML namespaces.
+   * @param isSequenceTypeXPathExpr       When this method is called, with this parameter
+   *                                      set to boolean value 'true', then an XPath parser object 
+   *                                      instance, instantiated from this class shall parse the XPath
+   *                                      expression string assuming that it represents an XPath
+   *                                      sequence type expression (for e.g, as a value of "as" 
+   *                                      attribute of xsl:variable instruction).
+   * @param xpathDefaultNs                An XML default namespace if, available from within 
+   *                                      an XSL stylesheet.                                 
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void initXPath(
-          Compiler compiler, String expression, PrefixResolver namespaceContext, boolean isSequenceTypeXPathExpr, String xpathDefaultNamespace)
-            throws javax.xml.transform.TransformerException
+  public void initXPath(Compiler compiler, String expression, PrefixResolver namespaceContext, 
+		                                   boolean isSequenceTypeXPathExpr, String xpathDefaultNs) throws javax.xml.transform.TransformerException
   {
-
-    m_ops = compiler;
-    m_namespaceContext = namespaceContext;
-    m_xpathDefaultNamespace = xpathDefaultNamespace;
-    
-    m_functionTable = compiler.getFunctionTable();
-    
-    m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;    
-    
-    m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
-    
-    m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs();
-    
-    m_expression = expression;
-
-    Lexer lexer = new Lexer(compiler, namespaceContext, this);    
-    lexer.setSourceLocator(m_sourceLocator);
-    
-    expression = normalizeXPathExprStr(expression);
-    
-    lexer.tokenize(expression);
-    
-    if (lexer.isNsBindingRequired() && !lexer.isNsBound()) {
-       String nsUnboundPrefix = lexer.getNsUnboundPrefix();
-       
-       if ((nsUnboundPrefix != null) && !"".equals(nsUnboundPrefix)) {
-          error(XPATHErrorResources.ER_NS_BINDING, new Object[]{ nsUnboundPrefix });
-       }
-    }
-
-    m_ops.setOp(0, OpCodes.OP_XPATH);
-    m_ops.setOp(XPathOpMap.MAPINDEX_LENGTH, 2);
-        	
-	try {
-
-      nextToken();
-      
-      m_isXPathExprBeginParse = true;
-      
-      Expr();                
-
-      if (m_token != null)
-      {    	
-    	// Retry XPath expression parse once again by parenthesizing the 
-    	// original XPath expression.
-    	
-        boolean isTrySecondTime = true;
-        
-        String newExpression = null;
-        
-        if (!(expression.startsWith("(") && expression.endsWith(")"))) {
-        	String[] strArr = expression.split(",");
-        	
-        	if (strArr.length > 1) {
-        	   boolean isXPathExprStrHasBalancedParens = true;
-        	   
-        	   for (int idx = 0; idx < strArr.length; idx++) {
-        		  String str1 = strArr[idx];
-        		  
-        		  if (!StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
-        			  isXPathExprStrHasBalancedParens = false; 
-        		  }
-        	   }
-        	           	   
-        	   if (isXPathExprStrHasBalancedParens || tokenIs(',')) {
-        		   /**
-        		    * We check for the token string "," as well, since
-        		    * an XPath parse might have finished without completing
-        		    * parse of all sequence items if that was an XPath literal
-        		    * sequence constructor parse.
-        		    */
-        		   newExpression = "(" + expression + ")"; 
-        	   }
-        	}
-        }
-  	
-        if (newExpression != null) {
-        	(m_ops.m_tokenQueue).removeAllElements();    	
-        	
-        	lexer = new Lexer(compiler, namespaceContext, this);
-        	lexer.setSourceLocator(m_sourceLocator);
-        	
-        	lexer.tokenize(newExpression);
-
-        	m_ops.setOp(0,OpCodes.OP_XPATH);
-        	m_ops.setOp(XPathOpMap.MAPINDEX_LENGTH, 2);                
-
-        	try {
-        		nextToken();
-
-        		m_isXPathExprBeginParse = true;
-
-        		Expr();
-
-        		if (m_token != null)
-        		{            	
-        			String extraTokens = "";
-
-        			while (m_token != null)
-        			{
-        				extraTokens += "'" + m_token + "'";
-
-        				nextToken();
-
-        				if (m_token != null)
-        					extraTokens += ", ";
-        			}
-
-        			error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-        														   new Object[]{ extraTokens });
-        		}
-        	}
-        	catch (org.apache.xpath.XPathProcessorException e)
-        	{
-        		if (CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
-        		{
-        			initXPath(compiler, "/..",  namespaceContext, false);
-        		}
-        		else
-        			throw e;
-        	}
-        }
-        
-        String extraTokens = "";
-
-        while (m_token != null)
-        {
-          extraTokens += "'" + m_token + "'";
-
-          nextToken();
-
-          if (m_token != null)
-            extraTokens += ", ";
-        }
-
-        if (!isTrySecondTime) {
-	        error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-	                                                       new Object[]{ extraTokens });
-        }
-      }
-
-    } 
-    catch (org.apache.xpath.XPathProcessorException e)
-    {
-	  if (CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
-	  {
-		 initXPath(compiler, "/..",  namespaceContext, false);
-	  }
-	  else
-		 throw e;
-    }
-
-    compiler.shrink();
+	  m_xpathDefaultNamespace = xpathDefaultNs;
+	  
+	  initXPath(compiler, expression, namespaceContext, isSequenceTypeXPathExpr);	  	  
   }
 
   /**
@@ -859,16 +710,16 @@ public class XPathParser
    * @param expression                          An XPath expression string
    * @param namespaceContext                    An object that is able to resolve prefixes in
    *                                            the XPath to namespaces.
-   * @param xpathDefaultNamespace               Non-null value of XSL transformation 
+   * @param xpathDefaultNs                      Non-null value of XSL transformation 
    *                                            xpath-default-namespace.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public void initMatchPattern(Compiler compiler, String expression, PrefixResolver namespaceContext,
-			                                                                     String xpathDefaultNamespace) throws javax.xml.transform.TransformerException {
+			                                                                     String xpathDefaultNs) throws javax.xml.transform.TransformerException {
 	  m_ops = compiler;
 	  m_namespaceContext = namespaceContext;
-	  m_xpathDefaultNamespace = xpathDefaultNamespace;
+	  m_xpathDefaultNamespace = xpathDefaultNs;
 	  
 	  expression = expression.trim();
 	  

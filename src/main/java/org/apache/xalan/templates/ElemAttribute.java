@@ -326,7 +326,8 @@ public class ElemAttribute extends ElemElement
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         if (m_xpath_default_namespace != null) {    		
-     	    m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);        	   
+     	    m_xpath = new XPath(m_xpath.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
+     	    
      	    m_selectExpression = m_xpath.getExpression();
         }
         

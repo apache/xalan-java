@@ -277,10 +277,10 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    final int sourceNode = xctxt.getCurrentNode();	    	    
 	    
 	    if (m_xpath_default_namespace != null) {    		
-	    	m_keyExpression = new XPath(m_keyExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    	m_keyExpression = new XPath(m_keyExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 	    	
 	    	if (m_selectExpression != null) {    		
-		    	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		    	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 		    }
 	    }
 	    

@@ -292,7 +292,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    }
 	    
 	    if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
-	    	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 	    }
 	    
 	    if ((m_selectExpression != null) && (this.m_firstChild != null)) {

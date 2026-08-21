@@ -66,6 +66,22 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 	  
 	  super.startElement(handler, uri, localName, rawName, attributes);
 	  
+	  
+	  if ((Constants.S_XSLNAMESPACEURL).equals(uri) && (attributes != null)) {
+		 int attrLength = attributes.getLength();
+		 
+		 for (int idx = 0; idx < attrLength; idx++) {
+			String attrLocalName = attributes.getLocalName(idx);
+			String attrNs = attributes.getURI(idx);			
+			
+			if ((Constants.ATTRNAME_XPATH_DEFAULT_NAMESPACE.equals(attrLocalName)) && (Constants.S_XSLNAMESPACEURL).equals(attrNs)) {				
+				throw new org.xml.sax.SAXException("XTSE0090 : An attribute {http://www.w3.org/1999/XSL/Transform}xpath-default-namespace cannot "
+						                                                                                                                 + "appear on an XSL stylesheet element within namespace "
+						                                                                                                                 + "http://www.w3.org/1999/XSL/Transform.");
+			}
+		 }
+	  }
+	  
 	  try
 	  {
 		  XSLTElementDef def = getElemDef();

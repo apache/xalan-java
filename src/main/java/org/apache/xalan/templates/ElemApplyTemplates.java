@@ -377,7 +377,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	    
 	  if ((m_selectExpression2 != null) && (m_xpath_default_namespace != null) 
 			                            && !XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(m_xpath_default_namespace)) {    		
-		  m_xpath2 = new XPath(m_xpath2.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		  m_xpath2 = new XPath(m_xpath2.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
+		  
 		  m_selectExpression2 = m_xpath2.getExpression(); 
 	  }
 

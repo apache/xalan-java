@@ -618,7 +618,7 @@ public class ElemSequence extends ElemTemplateElement
 	  Expression selectExpression = null;
 	  
 	  if (m_xpath_default_namespace != null) {
-		  m_selectPattern = new XPath(m_selectPattern.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
+		  m_selectPattern = new XPath(m_selectPattern.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 	  }
 
 	  try {        

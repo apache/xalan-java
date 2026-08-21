@@ -247,7 +247,7 @@ public class ElemComment extends ElemTemplateElement
 		  SourceLocator srcLocator = xctxt.getSAXLocator();
 		  
 		  if ((m_selectExpression != null) && (m_xpath_default_namespace != null)) {    		
-	    	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	    	  m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 	      }	
 		  
 		  if ((m_selectExpression != null) && (getFirstChildElem() != null)) {

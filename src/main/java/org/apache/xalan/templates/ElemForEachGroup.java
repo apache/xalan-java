@@ -702,25 +702,25 @@ public class ElemForEachGroup extends ElemTemplateElement
         	// Recompile xsl:for-each-group instruction's attributes, to consider 
         	// XSL stylesheet namespace xpath-default-namespace. 
         	
-        	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 
         	if (m_groupByExpression != null) {
-        		m_groupByExpression = new XPath(m_groupByExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        		m_groupByExpression = new XPath(m_groupByExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace); 
         	}
 
         	if (m_groupStartingWithExpression != null) {
         		m_groupStartingWithExpression = new XPath(m_groupStartingWithExpression.getPatternString(), srcLocator, 
-        																								xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        																								xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace); 
         	}
 
         	if (m_groupEndingWithExpression != null) {
         		m_groupEndingWithExpression = new XPath(m_groupEndingWithExpression.getPatternString(), srcLocator, 
-        																								xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        																								xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace); 
         	}
 
         	if (m_groupAdjacentExpression != null) {
         		m_groupAdjacentExpression = new XPath(m_groupAdjacentExpression.getPatternString(), srcLocator, 
-        																							xctxt.getNamespaceContext(), XPath.SELECT, null); 
+        																							xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace); 
         	}
         }
         

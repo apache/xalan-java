@@ -49,6 +49,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathBuiltInNodeKindExpr;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathMapConstructor;
@@ -59,7 +60,6 @@ import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
-import org.apache.xpath.composite.XPathBuiltInNodeKindExpr;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
@@ -83,11 +83,11 @@ import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.objects.XdmProcessingInstructionItem;
-import org.apache.xpath.operations.XPathArrowOp;
-import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.XPathArrowOp;
+import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.util.XPath3ExpressionUtil;
@@ -568,7 +568,7 @@ public class ElemVariable extends ElemTemplateElement
     }
     
     if ((m_selectPattern != null) && (m_xpath_default_namespace != null)) {    		
-       m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+       m_selectPattern = new XPath(m_selectPattern.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
  	}
  
     try {        
@@ -1380,7 +1380,7 @@ public class ElemVariable extends ElemTemplateElement
     }
     
     if (m_asAttr != null) {    	
-    	var = getXslVariableResultWithAsAttribute(var, xctxt, srcLocator, selectExpression, m_asAttr);
+    	var = getXslVariableResultWithAsAttribute(var, xctxt, srcLocator, selectExpression, m_asAttr, m_xpath_default_namespace);
     }
         
     return var;
@@ -1651,17 +1651,19 @@ public class ElemVariable extends ElemTemplateElement
    * @param selectExpression                        xsl:variable "select" attribute's compiled
    *                                                XPath expression. This value may be null.
    * @param asAttrString                            xsl:variable "as" attribute's non-null string
-   *                                                value.                                                 
+   *                                                value.
+   * @param xpathDefaultNamespace                   An XPath default namespace if available                                                                                                  
    * @return
    * @throws TransformerException
    */
   private XObject getXslVariableResultWithAsAttribute(XObject var, XPathContext xctxt, SourceLocator srcLocator,
 			                                                                                     Expression selectExpression,
-			                                                                                     String asAttrString) throws TransformerException {
+			                                                                                     String asAttrString,
+			                                                                                     String xpathDefaultNamespace) throws TransformerException {
 		
 		XObject result = null;
 		
-		XPath seqTypeXPath = new XPath(asAttrString, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	
+		XPath seqTypeXPath = new XPath(asAttrString, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true, xpathDefaultNamespace);
 		
 		XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    	
 		
@@ -2273,7 +2275,8 @@ public class ElemVariable extends ElemTemplateElement
 				result = variableConvertedVal;    
 			}
 			else {    			    			
-				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt); 				
+				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt); 
+				
 				if (result == null) {
 					throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "
 																		                             + "result doesn't match the specified "
@@ -2346,7 +2349,12 @@ public class ElemVariable extends ElemTemplateElement
 		}    	    	    	    	    	    	
 		else {
 			try {
-				result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt);
+				if (asAttrString.contains(":") || asAttrString.contains("(") || asAttrString.contains("{")) {
+				   result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, asAttrString, null, xctxt);
+				}
+				else {
+				   result = XPathSequenceTypeSupport.castXdmValueToAnotherType(var, null, seqExpectedTypeData, xctxt);
+				}
 				
 				if (result == null) {
 					throw new TransformerException("XTTE0570 : An XSL variable " + m_qname.toString() + "'s evaluation "

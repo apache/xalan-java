@@ -942,6 +942,10 @@ public class ElemTemplate extends ElemTemplateElement
 	  return m_elemParamArr;
   }
   
+  public void setElemParamArray(ElemParam[] elemParamArr) {
+	  m_elemParamArr = elemParamArr;
+  }
+  
   /**
    * Method definition, to get xsl:param object at a specified 
    * index. 

@@ -280,13 +280,13 @@ public class XPath implements Serializable, ExpressionOwner
    * @param type                                    One of {@link #SELECT} or {@link #MATCH}.
    * @param errorListener                           The error listener, or null if default 
    *                                                should be used.
-   * @param xpathDefaultNamespace                   Non-null value of XSL transformation 
+   * @param xpathDefaultNs                          Non-null value of XSL transformation 
    *                                                xpath-default-namespace.
    *
    * @throws javax.xml.transform.TransformerException if syntax or other error.
    */
   public XPath(String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type,
-                                                             ErrorListener errorListener, String xpathDefaultNamespace)
+                                                             ErrorListener errorListener, String xpathDefaultNs)
                                                                                   throws javax.xml.transform.TransformerException
   { 
     
@@ -305,11 +305,11 @@ public class XPath implements Serializable, ExpressionOwner
 	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
 
 	  if (SELECT == type) {
-		  parser.initXPath(compiler, exprString, prefixResolver, false, xpathDefaultNamespace);
+		  parser.initXPath(compiler, exprString, prefixResolver, false, xpathDefaultNs);
 		  m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
 	  }
 	  else if (MATCH == type)
-		  parser.initMatchPattern(compiler, exprString, prefixResolver, xpathDefaultNamespace);
+		  parser.initMatchPattern(compiler, exprString, prefixResolver, xpathDefaultNs);
 	  else
 		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
 
@@ -495,6 +495,60 @@ public class XPath implements Serializable, ExpressionOwner
 	  } 
   }
 
+  /**
+   * Construct an XPath object. This method has an additional parameter
+   * 'xpathDefaultNs'. 
+   *
+   * @throws javax.xml.transform.TransformerException if syntax or other error.
+   */
+  public XPath(
+          String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type,
+          ErrorListener errorListener, boolean isSequenceTypeXPathExpr, String xpathDefaultNs)
+            throws javax.xml.transform.TransformerException {
+	  
+	  initFunctionTable();
+
+	  if (errorListener == null)
+		  errorListener = new org.apache.xml.utils.DefaultErrorHandler();
+
+	  if (exprString.contains("||") || exprString.contains("//element(")) {
+		  exprString = getXPathTransformedExprStr(exprString);
+	  }
+
+	  m_patternString = exprString;
+
+	  XPathParser parser = new XPathParser(errorListener, locator);
+	  Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+
+	  if (SELECT == type) {
+		  if (xpathDefaultNs != null) {
+			  parser.initXPath(compiler, exprString, prefixResolver, isSequenceTypeXPathExpr, xpathDefaultNs);
+		  }
+		  else {
+			  parser.initXPath(compiler, exprString, prefixResolver, isSequenceTypeXPathExpr);  
+		  }
+	  }
+	  else if (MATCH == type) {
+		  if (xpathDefaultNs != null) {
+			  parser.initMatchPattern(compiler, exprString, prefixResolver, xpathDefaultNs);
+		  }
+		  else {
+			  parser.initMatchPattern(compiler, exprString, prefixResolver);
+		  }
+	  }
+	  else
+		  throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)}));
+
+	  Expression expr = compiler.compile(0);
+
+	  this.setExpression(expr);
+
+	  if ((locator != null) && locator instanceof ExpressionNode)
+	  {
+		  expr.exprSetParent((ExpressionNode)locator);
+	  } 
+  }
+  
   /**
    * Construct an XPath object.
    *

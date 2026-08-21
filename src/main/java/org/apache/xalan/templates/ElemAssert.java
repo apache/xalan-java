@@ -308,10 +308,10 @@ public class ElemAssert extends ElemTemplateElement
 	  try {
 		  
 		  if (m_xpath_default_namespace != null) {    		
-			  m_testExpression = new XPath(m_testExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			  m_testExpression = new XPath(m_testExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 			  
 			  if (m_selectExpression != null) {    		
-		   	      m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		   	      m_selectExpression = new XPath(m_selectExpression.getPatternString(), srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
 		   	  }
 	   	  }
 		  

@@ -132,9 +132,9 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		    
     private static final String ASSERT = "assert";
     
-    private static final String ASSERT_ALL_OF = "all-of";
+    private static final String ALL_OF = "all-of";
     
-    private static final String ASSERT_ANY_OF = "any-of";
+    private static final String ANY_OF = "any-of";
     
     private static final String ASSERT_XML = "assert-xml";
     
@@ -1041,7 +1041,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				elemTestResult.setAttribute(STATUS, FAIL);
     			}    				
     		}
-    		else if (ASSERT_ALL_OF.equals(expectedNodeKindName)) {
+    		else if (ALL_OF.equals(expectedNodeKindName)) {
     			NodeList nList1 = ((Element)nodeExpected).getElementsByTagName(ASSERT);
     			int length1 = nList1.getLength();    			    		
     			
@@ -1366,7 +1366,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			    return;
     			}    			    			
     		}
-    		else if (ASSERT_ANY_OF.equals(expectedNodeKindName)) {
+    		else if (ANY_OF.equals(expectedNodeKindName)) {
     			String alsoCorrectResultStr = null;
 				
     			// This needs to have an improved test case implementation
@@ -2120,12 +2120,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	    				}
 	    		    }
 	    		    catch (Exception ex) {
-	    		    	Pattern pattern = Pattern.compile(strValue);   							 
-	    				matcher = pattern.matcher(elemNodeStrValue);
-	    				matcher2 = pattern.matcher(elemNodeStrValue2); 
-	    				
-	    		    	if (matcher.matches() || matcher2.matches()) {
-	    		    	   isTestCasePass = true;
+	    		    	if (!m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/")) {
+	    		    		Pattern pattern = Pattern.compile(strValue);   							 
+	    		    		matcher = pattern.matcher(elemNodeStrValue);
+	    		    		matcher2 = pattern.matcher(elemNodeStrValue2); 
+
+	    		    		if (matcher.matches() || matcher2.matches()) {
+	    		    			isTestCasePass = true;
+	    		    		}
 	    		    	}
 	    		    }
 	    		}

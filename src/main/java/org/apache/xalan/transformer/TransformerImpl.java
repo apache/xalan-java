@@ -141,6 +141,7 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.SharedLexerState;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
+import org.apache.xpath.functions.FuncNumber;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -3386,12 +3387,17 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
       }
       
       NodeSortKey nodeSortKey = null;
+      
+      if (!treatAsNumbers && (xpathSelect.getExpression() instanceof FuncNumber)) {
+ 		 treatAsNumbers = true; 
+ 	  }
+      
       if (foreachOrPerformSort instanceof ElemForEach) {
     	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
     			                        descending, langString, caseOrderUpper, 
     			                        (ElemForEach)foreachOrPerformSort);
       }
-      else {
+      else {    	      	  
     	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
     			                        descending, langString, caseOrderUpper, 
     			                        (ElemPerformSort)foreachOrPerformSort);

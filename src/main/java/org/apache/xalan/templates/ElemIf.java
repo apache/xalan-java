@@ -236,7 +236,7 @@ public class ElemIf extends ElemTemplateElement
     }
     
     if (m_xpath_default_namespace != null) {
-       m_test = new XPath(m_test.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
+       m_test = new XPath(m_test.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace);
     }
 
     if (transformer.getDebug())
