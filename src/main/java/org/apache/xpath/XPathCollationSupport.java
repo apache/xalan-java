@@ -28,7 +28,7 @@ import javax.xml.transform.TransformerException;
 
 /**
  * This class provides, collation support for Xalan-J 
- * XPath 3.1 implementation.
+ * XSL 3 implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *
@@ -78,13 +78,21 @@ public class XPathCollationSupport {
     
     private String m_queryFallbackStr = null;
     
-    private String m_defaultCollationUri = null;
+    private String m_defaultCollation = null;
+    
+    /**
+     * Default constructor.
+     */
+    public XPathCollationSupport() {
+    	// No op
+    }
     
     /**
      * Class constructor.
      */
-    public XPathCollationSupport(String defaultCollationUri) {
-       m_defaultCollationUri = defaultCollationUri; 
+    public XPathCollationSupport(String defaultCollation) {
+       m_defaultCollation = defaultCollation;
+       
        buildSupportedUCAParamList();  
     }
     
@@ -118,7 +126,7 @@ public class XPathCollationSupport {
                 result = strCmpCollator.compare(str1, str2);                
              }
              else if (UCA_FALLBACK_YES.equals(m_queryFallbackStr)) {                    
-                result = compareStringsUsingCollation(str1, str2, m_defaultCollationUri);
+                result = compareStringsUsingCollation(str1, str2, m_defaultCollation);
              }
              else {
                 throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + 
@@ -292,6 +300,27 @@ public class XPathCollationSupport {
        }
        
        return result;
+    }
+    
+    /**
+     * Method definition, to check whether the supplied collation
+     * uri is supported by Xalan-J XSL 3 implementation.
+     * 
+     * @param collationUri                    The supplied collation uri
+     * @return                                Boolean value true or false
+     */
+    public static boolean isCollationSupported(String collationUri) {
+    	
+    	boolean result = false;
+
+    	if (UNICODE_CODEPOINT_COLLATION_URI.equals(collationUri) || collationUri.startsWith(UNICODE_COLLATION_ALGORITHM_URI)
+    															 || HTML_ASCII_CASE_INSENSITIVE_COLLATION_URI.equals(collationUri)
+    			                                                 || CASE_BLIND_COLLATION_URI1.equals(collationUri)
+    			                                                 || CASE_BLIND_COLLATION_URI2.equals(collationUri)) {
+    		result = true;
+    	}
+
+    	return result;
     }
     
     /**

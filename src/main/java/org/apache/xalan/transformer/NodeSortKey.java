@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.transformer;
 
 import java.text.Collator;
@@ -57,7 +54,9 @@ public class NodeSortKey
   org.apache.xml.utils.PrefixResolver m_namespaceContext;
 
   /** Transformer instance          */
-  TransformerImpl m_processor;  // needed for error reporting.
+  TransformerImpl m_processor;  // needed for error reporting
+  
+  String m_collation_uri = null;
 
   /**
    * Constructor NodeSortKey
@@ -75,7 +74,7 @@ public class NodeSortKey
   NodeSortKey(
           TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, 
           boolean descending, String langValue, boolean caseOrderUpper, 
-          org.apache.xml.utils.PrefixResolver namespaceContext)
+          org.apache.xml.utils.PrefixResolver namespaceContext, String collationUri)
             throws javax.xml.transform.TransformerException
   {
 
@@ -85,6 +84,7 @@ public class NodeSortKey
     m_treatAsNumbers = treatAsNumbers;
     m_descending = descending;
     m_caseOrderUpper = caseOrderUpper;
+    m_collation_uri = collationUri; 
 
     if (null != langValue && m_treatAsNumbers == false)
     {
@@ -135,5 +135,13 @@ public class NodeSortKey
    */
   public XPath getSelectPattern() {
 	 return m_selectPat; 
+  }
+  
+  public String getCollationUri() {
+	 return m_collation_uri; 
+  }
+  
+  public void setCollationUri(String collationUri) {
+	 m_collation_uri = collationUri;  
   }
 }

@@ -65,6 +65,7 @@ import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.types.DateTimeUtil;
+import org.apache.xpath.types.XSLanguage;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
@@ -503,7 +504,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    
     	    if (idx > 0) {
     	       if (elemSort.isStableDeclared()) {
-    	    	  throw new javax.xml.transform.TransformerException("XTSE1017 : Only the first XSL 'sort' element within a sequence of "
+    	    	  throw new TransformerException("XTSE1017 : Only the first XSL 'sort' element within a sequence of "
 					    	    	  		                                                                            + "'sort' elements can have an attribute named "
 					    	    	  		                                                                            + "'stable'.", elemSort);	
     	       }
@@ -520,7 +521,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    		String namespace = xsl3ConstructorOrExtFunc.getNamespace();
     	    		
     	    		if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespace) && (Keywords.XS_DURATION).equals(funcName)) {
-    	    			throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL instruction for-each's sort key cannot be of XML Schema type 'duration'.", elemSort);
+    	    			throw new TransformerException("XTDE1030 : An XSL instruction for-each's sort key cannot be with XML Schema type 'duration'.", elemSort);
     	    		}
     	    	}
     	    }
@@ -528,6 +529,22 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    	xslSortSelect = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
     	    	
     	    	elemSort.setSelect(xslSortSelect);    	    	    	    	    	    	
+    	    }
+    	    
+    	    AVT langAvt = elemSort.getLang();
+    	    
+    	    if (langAvt != null) {
+    	       String langStr = langAvt.evaluate(xctxt, contextNode, elemSort);
+    	       
+    	       if (!"".equals(langStr)) {
+    	    	   // Construction XSLanguage object instance, does 
+    	    	   // xs:language value space type check.
+    	    	   
+    	    	   XSLanguage xsLanguage = new XSLanguage(langStr); 
+    	       }
+    	       else {
+    	    	  elemSort.setLang(null); 
+    	       }
     	    }
 	    	
     	    if (elemSort.getLang() != null) {
@@ -538,6 +555,16 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     	    	   // xsl:sort lang has no effect on numeric data
     	    		
     	    	   elemSort.setLang(null);
+    	    	}
+    	    }
+    	    
+    	    AVT collationAvt = elemSort.getCollation();
+    	    
+    	    if (collationAvt != null) {
+    	    	String collationUri = collationAvt.evaluate(xctxt, contextNode, elemSort);
+
+    	    	if (!XPathCollationSupport.isCollationSupported(collationUri)) {
+    	    		throw new TransformerException("XTDE1035 : An XSL sort, collation '" + collationUri + "' is not supported.", elemSort);
     	    	}
     	    }
     	}
@@ -1101,9 +1128,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     * Method definition, to process an xdm sequence or an array, to be 
     * used by xsl:for-each's contained sequence constructor.
     */
-   private void processSequenceOrArray(TransformerImpl transformer,
-                                                              XPathContext xctxt, XObject evalResult) 
-                                                              throws TransformerException {       
+   private void processSequenceOrArray(TransformerImpl transformer, XPathContext xctxt, 
+		                                                            XObject evalResult) throws TransformerException {       
 	   
 	   List<XObject> xdmItemList = null;
 	   
@@ -1227,7 +1253,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 						   XObject xObj = instanceOf.operate(resultSeqItem, seqExpectedTypeData);
 						   
 						   if (!xObj.bool()) {
-							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by XSL for-each's "
+							   throw new TransformerException("XPTY0004 : An xdm input sequence processed by XSL for-each's "
 																													   + "'sort' instruction has an item that is not of "
 																													   + "the type '" + dataTypeStr + "', specified by XSL sort's "
 																													   + "data-type attribute.", srcLocator);  
@@ -1289,7 +1315,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
 							   if (!clazz1NameStr.equals(clazz0NameStr)) {
 								   // The sequence items are not of compatible types								 
-								   throw new javax.xml.transform.TransformerException("XTDE1030 : An xdm input sequence processed by XSL for-each's "
+								   throw new TransformerException("XTDE1030 : An xdm input sequence processed by XSL for-each's "
 																															   + "'sort' instruction, dosn't have items with "
 																															   + "compatible types.", srcLocator); 
 							   }
@@ -1357,7 +1383,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 							   sorkKeyObj = new XNumber(dbl);
 						   }
 						   catch (NumberFormatException ex) {
-							   throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm input sequence processed by XSL for-each's "
+							   throw new TransformerException("XPTY0004 : An xdm input sequence processed by XSL for-each's "
 																														   + "'sort' instruction has an item that is not of "
 																														   + "the type '" + dataTypeStr + "', specified by XSL sort's "
 																														   + "data-type attribute.", srcLocator); 
@@ -1458,7 +1484,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					     handler.characters(strVal.toCharArray(), 0, strVal.length());
 					  }
 					  catch (SAXException ex) {
-						  throw new javax.xml.transform.TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
+						  throw new TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
 						  		                                                                           + "processing XSL for-each's "
 						  		                                                                           + "contained sequence constructor.", srcLocator); 
 					  }

@@ -1576,7 +1576,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	else if (isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {            		
             		elemTestResult.setAttribute(STATUS, PASS);
             	}
-            	else {
+            	else {            		            		
             		elemTestResult.setAttribute(STATUS, FAIL);
             	}
     		}

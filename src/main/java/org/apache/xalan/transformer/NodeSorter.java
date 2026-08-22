@@ -26,6 +26,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
@@ -45,6 +46,7 @@ import xml.xpath31.processor.types.XSTime;
  * @author Joseph Kesselman <keshlam@alum.mit.edu>
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3.0 specific changes, to this class)
  * 
  * @xsl.usage internal
  */
@@ -172,7 +174,7 @@ public class NodeSorter
 	  int result = 0;
 	  
 	  NodeSortKey k = (NodeSortKey) m_keys.elementAt(kIndex);
-
+	  	  
 	  if (k.m_treatAsNumbers)
 	  {
 		  double n1Num, n2Num;
@@ -227,7 +229,7 @@ public class NodeSorter
 		  }
 	  }  // end treat as numbers 
 	  else
-	  {
+	  {		  		  
 		  CollationKey n1String = null;
 		  CollationKey n2String = null;
 
@@ -271,9 +273,21 @@ public class NodeSorter
 				  
 				  n1String = k.m_col.getCollationKey(str1);
 				  n2String = k.m_col.getCollationKey(str2);
-			  } 
-		     
-			  result = n1String.compareTo(n2String);
+			  }
+			  
+			  String collationUri = k.getCollationUri();			  			  
+			  
+			  if (collationUri != null) {
+				 XPathCollationSupport xpathCollationSupport = m_xctxt.getXPathCollationSupport();
+				 
+				 String str1 = n1String.getSourceString();
+				 String str2 = n2String.getSourceString();
+				 
+				 result = xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri); 
+			  }
+			  else {
+			     result = n1String.compareTo(n2String);
+			  }
 		  }
 
 		  //Process caseOrder parameter
@@ -294,6 +308,7 @@ public class NodeSorter
 		  {
 			  result = -result;
 		  }
+		  
 	  }  //end else
 
 	  if (result == 0)

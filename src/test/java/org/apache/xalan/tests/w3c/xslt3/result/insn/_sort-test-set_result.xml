@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-22T10:57:52Z" fail="19" name="sort" pass="62" run="81" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-22T16:39:36Z" fail="15" name="sort" pass="66" run="81" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="sort-003"/>
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
@@ -19,31 +19,16 @@
    <testResult status="pass" testName="sort-017"/>
    <testResult status="pass" testName="sort-018"/>
    <testResult status="fail" testName="sort-019"/>
-   <testResult status="fail" testName="sort-020"/>
+   <testResult status="pass" testName="sort-020"/>
    <testResult status="pass" testName="sort-021"/>
    <testResult status="pass" testName="sort-022"/>
    <testResult status="pass" testName="sort-023"/>
    <testResult status="pass" testName="sort-024"/>
    <testResult status="pass" testName="sort-025"/>
    <testResult status="pass" testName="sort-026"/>
-   <testResult status="fail" testName="sort-027">
-      <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="sort-028">
-      <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
-&#13;
-</outResult>
-      <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
-   <testResult status="fail" testName="sort-029">
-      <outResult>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;&lt;out lang="default-order"/&gt;&#13;
-&#13;
-</outResult>
-   </testResult>
+   <testResult status="pass" testName="sort-027"/>
+   <testResult status="pass" testName="sort-028"/>
+   <testResult status="pass" testName="sort-029"/>
    <testResult status="pass" testName="sort-030"/>
    <testResult status="pass" testName="sort-031"/>
    <testResult status="pass" testName="sort-032"/>

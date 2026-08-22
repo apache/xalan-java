@@ -43,7 +43,7 @@ public class XSLanguage extends XSToken {
 	 * Default constructor.
 	 */
 	public XSLanguage() {
-		// no op
+		// No op
 	}
 	
 	/**
@@ -55,10 +55,12 @@ public class XSLanguage extends XSToken {
 	public XSLanguage(String xsLanguageStrValue) throws TransformerException {
 		Pattern pattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*");
 		Matcher matcher = pattern.matcher(xsLanguageStrValue);
+		
 		if (!matcher.matches()) {
-			throw new TransformerException("FORG0001 : A string value " + xsLanguageStrValue + " doesn't conform "
-					                                                                         + "to xs:language's value and lexical space.");	
+			throw new TransformerException("XTDE0030 : The string value " + xsLanguageStrValue + " doesn't conform "
+					                                                                           + "with schema type 'language' value space.");	
 		}
+		
 		m_languageStrValue = xsLanguageStrValue;
 	}
 	
@@ -92,7 +94,8 @@ public class XSLanguage extends XSToken {
 	}
 	
 	/**
-	 * Implementation of operation equals, for the type xs:language.
+	 * XPath 3.1 operator equals implementation, for the 
+	 * type xs:language.
 	 */
 	public boolean eq(XSLanguage obj2) {		
 		boolean result = false;
@@ -103,7 +106,8 @@ public class XSLanguage extends XSToken {
 	}
 	
 	/**
-	 * Implementation of operation not equals, for the type xs:language.
+	 * XPath 3.1 operator not equals implementation, for the 
+	 * type xs:language.
 	 */
 	public boolean ne(XSLanguage obj2) {
 		boolean result = false;

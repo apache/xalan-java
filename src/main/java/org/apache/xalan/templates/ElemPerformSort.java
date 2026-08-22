@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -33,11 +34,16 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.functions.FuncNumber;
+import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.types.XSLanguage;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSString;
@@ -336,6 +342,78 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 					                                                                            + "instructions at begining of perform-sort "
 					                                                                            + "instruction.", srcLocator);
 		}
+		
+		int sortElemCount = m_sortElems.size();
+		
+		for (int idx = 0; idx < sortElemCount; idx++) {
+    	    ElemSort elemSort = (ElemSort)m_sortElems.get(idx);
+    	    
+    	    if (idx > 0) {
+    	       if (elemSort.isStableDeclared()) {
+    	    	  throw new TransformerException("XTSE1017 : Only the first XSL 'sort' element within a sequence of "
+					    	    	  		                                                                            + "'sort' elements can have an attribute named "
+					    	    	  		                                                                            + "'stable'.", elemSort);	
+    	       }
+    	    }
+    	    
+    	    XPath xslSortSelect = elemSort.getSelect();
+    	    
+    	    if (xslSortSelect != null) {
+    	    	Expression xpathExpr = xslSortSelect.getExpression();
+    	    	
+    	    	if (xpathExpr instanceof XSL3ConstructorOrExtensionFunction) {
+    	    		XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtFunc = (XSL3ConstructorOrExtensionFunction)xpathExpr;
+    	    		String funcName = xsl3ConstructorOrExtFunc.getFunctionName();
+    	    		String namespace = xsl3ConstructorOrExtFunc.getNamespace();
+    	    		
+    	    		if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespace) && (Keywords.XS_DURATION).equals(funcName)) {
+    	    			throw new TransformerException("XTDE1030 : An XSL instruction perform-sort's sort key cannot be with XML Schema type 'duration'.", elemSort);
+    	    		}
+    	    	}
+    	    }
+    	    else if (elemSort.getFirstChildElem() == null) {
+    	    	xslSortSelect = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	    	
+    	    	elemSort.setSelect(xslSortSelect);    	    	    	    	    	    	
+    	    }
+    	    
+            AVT langAvt = elemSort.getLang();
+    	    
+    	    if (langAvt != null) {
+    	       String langStr = langAvt.evaluate(xctxt, sourceNode, elemSort);
+    	       
+    	       if (!"".equals(langStr)) {
+    	    	   // Construction XSLanguage object instance, does 
+    	    	   // xs:language value space type check.
+    	    	   
+    	    	   XSLanguage xsLanguage = new XSLanguage(langStr); 
+    	       }
+    	       else {
+    	    	  elemSort.setLang(null); 
+    	       }
+    	    }
+	    	
+    	    if (elemSort.getLang() != null) {
+    	    	AVT dataTypeAvt = elemSort.getDataType();
+    	    	String dataTypeStr = dataTypeAvt.evaluate(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	    	    	    	
+    	    	if ((Constants.ELEMNAME_NUMBER_STRING).equals(dataTypeStr) || (xslSortSelect.getExpression() instanceof FuncNumber)) {
+    	    	   // xsl:sort lang has no effect on numeric data
+    	    		
+    	    	   elemSort.setLang(null);
+    	    	}
+    	    }
+    	    
+    	    AVT collationAvt = elemSort.getCollation();
+    	    
+    	    if (collationAvt != null) {
+    	    	String collationUri = collationAvt.evaluate(xctxt, sourceNode, elemSort);
+
+    	    	if (!XPathCollationSupport.isCollationSupported(collationUri)) {
+    	    		throw new TransformerException("XTDE1035 : An XSL sort, collation '" + collationUri + "' is not supported.", elemSort);
+    	    	}
+    	    }
+    	}
 
 		try {												
 			SerializationHandler handler = transformer.getSerializationHandler();

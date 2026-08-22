@@ -616,7 +616,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   public Object extFunction(String ns, String funcName, 
                             Vector argVec, Object methodKey)
             throws javax.xml.transform.TransformerException
-  {//System.out.println("TransImpl.extFunction() " + ns + " " + funcName +" " + getExtensionsTable());
+  {
     return getExtensionsTable().extFunction(ns, funcName, 
                                         argVec, methodKey,
                                         getXPathContext().getExpressionContext());   
@@ -3386,6 +3386,13 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
     	 xpathSelect = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
       }
       
+      String collationUri = null;
+      AVT collatonAvt = sort.getCollation();
+      
+      if (collatonAvt != null) {
+         collationUri = collatonAvt.evaluate(xctxt, sourceNodeContext, sort);
+      }
+      
       NodeSortKey nodeSortKey = null;
       
       if (!treatAsNumbers && (xpathSelect.getExpression() instanceof FuncNumber)) {
@@ -3395,12 +3402,12 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
       if (foreachOrPerformSort instanceof ElemForEach) {
     	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
     			                        descending, langString, caseOrderUpper, 
-    			                        (ElemForEach)foreachOrPerformSort);
+    			                        (ElemForEach)foreachOrPerformSort, collationUri);
       }
       else {    	      	  
     	  nodeSortKey = new NodeSortKey(this, xpathSelect, treatAsNumbers,
     			                        descending, langString, caseOrderUpper, 
-    			                        (ElemPerformSort)foreachOrPerformSort);
+    			                        (ElemPerformSort)foreachOrPerformSort, collationUri);
       }
       
       keys.addElement(nodeSortKey);    	  	  
@@ -3506,7 +3513,7 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
         
               sortKeys.addElement(new NodeSortKey(this, sortElem.getSelect(), treatAsNumbers,
                                                            descending, langString, caseOrderUpper,
-                                                           forEachGroup));
+                                                           forEachGroup, null));
               if (m_debug) {
                  getTraceManager().emitTraceEndEvent(sortElem);
               }          
