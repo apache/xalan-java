@@ -349,8 +349,8 @@ public class ElemMapEntry extends ElemTemplateElement {
 	    			valueObj1 = XslTransformData.m_xpathNamedFunctionRefSequence;
 	    		}
 	    	}
-	    	else if (XslTransformData.m_xsl_perform_sort_resultSeq != null) {
-	    		valueObj1 = XslTransformData.m_xsl_perform_sort_resultSeq; 
+	    	else if (XslTransformData.m_xsl_perform_sort_rSeq != null) {
+	    		valueObj1 = XslTransformData.m_xsl_perform_sort_rSeq; 
 	    	}
 	    	else {
 	    		NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  

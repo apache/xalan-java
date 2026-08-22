@@ -1355,8 +1355,9 @@ public class ElemVariable extends ElemTemplateElement
     			  }
     		  }
     	  }
-    	  else if (XslTransformData.m_xsl_perform_sort_resultSeq != null) {
-    		  var = XslTransformData.m_xsl_perform_sort_resultSeq; 
+    	  else if (XslTransformData.m_xsl_perform_sort_rSeq != null) {
+    		  var = XslTransformData.m_xsl_perform_sort_rSeq; 
+    		  XslTransformData.m_xsl_perform_sort_rSeq = null;
     	  }
     	  else if (ElemMap.m_xpath_map_seq != null) {
     		  var = ElemMap.m_xpath_map_seq;

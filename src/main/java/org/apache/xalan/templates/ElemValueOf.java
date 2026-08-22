@@ -489,8 +489,20 @@ public class ElemValueOf extends ElemTemplateElement {
                   if (expr instanceof XSL3ConstructorOrExtensionFunction) {
                 	  XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)expr;
                 	  XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
-                      
-                	  XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
+                	  
+                	  XObject evalResult = null;
+                	  
+                	  boolean xslPerformSortResultPrev = (XslTransformData.m_xsl_perform_sort_rSeq != null);
+                	  
+                	  evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
+                	  
+                	  boolean xslPerformSortResultAfter = (XslTransformData.m_xsl_perform_sort_rSeq != null);
+                	  
+                	  if (!xslPerformSortResultPrev && xslPerformSortResultAfter) {
+                		 evalResult = XslTransformData.m_xsl_perform_sort_rSeq;
+                		 
+                		 XslTransformData.m_xsl_perform_sort_rSeq = null;
+                	  }
                 	  
                 	  if (evalResult instanceof XPathMap) {
                 		 throw new TransformerException("FOTY0013 : An XSL value-of instruction evaluation cannot atomize an xdm map.", this);

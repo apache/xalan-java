@@ -87,6 +87,7 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_ILLEGAL_ATTRIBUTE = "ER_ILLEGAL_ATTRIBUTE";
   public static final String ER_NULL_SOURCENODE_APPLYIMPORTS = "ER_NULL_SOURCENODE_APPLYIMPORTS";
   public static final String ER_CANNOT_ADD = "ER_CANNOT_ADD";
+  public static final String ER_PERFORM_SORT_CANNOT_ADD = "ER_PERFORM_SORT_CANNOT_ADD";
   public static final String ER_KEY_CANNOT_ADD = "ER_KEY_CANNOT_ADD";
   public static final String ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES="ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES";
   public static final String ER_NO_NAME_ATTRIB = "ER_NO_NAME_ATTRIB";
@@ -503,7 +504,9 @@ public class XSLTErrorResources extends ListResourceBundle
       "XTSE0010 : [{2}, {3}] An XSL transformation processing could not add ''{0}'' to ''{1}''. An "
 				                                                             + "XSL key declaration cannot have both "
 				                                                             + "''use'' attrbute and non-empty content."},
-
+  { ER_PERFORM_SORT_CANNOT_ADD,
+     "XTSE1040 : [{2}, {3}] An XSL transformation processing could not add ''{0}'' to ''{1}''."},
+  
     { ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES, 
       "sourceNode is null in handleApplyTemplatesInstruction!"},
 

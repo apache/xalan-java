@@ -48,8 +48,8 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
-import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
 import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
 import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
@@ -817,10 +817,12 @@ public class ElemFunction extends ElemTemplate
     				  }
     			  }
 
-    			  if (ElemPerformSort.m_namespace_result_seq.size() > 0) {
-    				  result = ElemPerformSort.m_namespace_result_seq;            	 
+    			  if (XslTransformData.m_xsl_perform_sort_rSeq != null) {
+    				  result = XslTransformData.m_xsl_perform_sort_rSeq;            	 
+    				  
     				  funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);            	 
-    				  (ElemPerformSort.m_namespace_result_seq).clear();
+    				  
+    				  XslTransformData.m_xsl_perform_sort_rSeq = null;
     			  }
     			  else if (result instanceof XSString) {
     				  funcResultConvertedVal = XPathSequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);

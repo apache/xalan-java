@@ -126,7 +126,7 @@ public class XslTransformData {
      * Class field, to refer to XSL stylesheet transformation result from 
      * xsl:perform-sort instruction.
      */
-    public static ResultSequence m_xsl_perform_sort_resultSeq = null;
+    public static ResultSequence m_xsl_perform_sort_rSeq = null;
     
     /**
      * Class field, to refer to xsl:variable name list, for cyclic 
@@ -163,7 +163,7 @@ public class XslTransformData {
 		m_xpathNamedFunctionRefSequence.clear();
 		m_xslResultDocumentUriStrList.clear();
 		m_is_xsl_test_invocation = false;
-		m_xsl_perform_sort_resultSeq = null;
+		m_xsl_perform_sort_rSeq = null;
 		m_xsl_variable_qname_list.clear();
 		m_ns_hashtable = null;
 	}		
