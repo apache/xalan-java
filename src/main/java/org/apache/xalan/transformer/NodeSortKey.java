@@ -49,6 +49,8 @@ public class NodeSortKey
 
   /** Locale we're in          */
   Locale m_locale;
+  
+  String m_langValue;
 
   /** Prefix resolver to use          */
   org.apache.xml.utils.PrefixResolver m_namespaceContext;
@@ -118,6 +120,8 @@ public class NodeSortKey
     }
 
     m_col = Collator.getInstance(m_locale);
+    
+    m_langValue = langValue;
 
     if (null == m_col)
     {
@@ -135,6 +139,14 @@ public class NodeSortKey
    */
   public XPath getSelectPattern() {
 	 return m_selectPat; 
+  }
+  
+  public String getLangValue() {
+	 return m_langValue;
+  }
+  
+  public void setLangValue(String langValue) {
+	 m_langValue = langValue;  
   }
   
   public String getCollationUri() {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-22T16:39:36Z" fail="15" name="sort" pass="66" run="81" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-25T16:46:43Z" fail="10" name="sort" pass="71" run="81" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="sort-003"/>
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
@@ -11,14 +11,14 @@
    <testResult status="pass" testName="sort-009"/>
    <testResult status="pass" testName="sort-010"/>
    <testResult status="pass" testName="sort-011"/>
-   <testResult status="fail" testName="sort-012"/>
+   <testResult status="pass" testName="sort-012"/>
    <testResult status="pass" testName="sort-013"/>
    <testResult status="pass" testName="sort-014"/>
    <testResult status="pass" testName="sort-015"/>
    <testResult status="pass" testName="sort-016"/>
    <testResult status="pass" testName="sort-017"/>
    <testResult status="pass" testName="sort-018"/>
-   <testResult status="fail" testName="sort-019"/>
+   <testResult status="pass" testName="sort-019"/>
    <testResult status="pass" testName="sort-020"/>
    <testResult status="pass" testName="sort-021"/>
    <testResult status="pass" testName="sort-022"/>
@@ -42,7 +42,7 @@
    <testResult status="pass" testName="sort-040"/>
    <testResult status="pass" testName="sort-041"/>
    <testResult status="pass" testName="sort-042"/>
-   <testResult status="fail" testName="sort-043"/>
+   <testResult status="pass" testName="sort-043"/>
    <testResult status="pass" testName="sort-044"/>
    <testResult status="pass" testName="sort-045"/>
    <testResult status="fail" testName="sort-046"/>
@@ -50,7 +50,7 @@
    <testResult status="pass" testName="sort-048"/>
    <testResult status="pass" testName="sort-049"/>
    <testResult status="pass" testName="sort-050"/>
-   <testResult status="fail" testName="sort-051"/>
+   <testResult status="pass" testName="sort-051"/>
    <testResult status="pass" testName="sort-052"/>
    <testResult status="fail" testName="sort-053"/>
    <testResult status="pass" testName="sort-054"/>
@@ -60,7 +60,7 @@
    <testResult status="pass" testName="sort-058"/>
    <testResult status="pass" testName="sort-059"/>
    <testResult status="pass" testName="sort-060"/>
-   <testResult status="fail" testName="sort-061"/>
+   <testResult status="pass" testName="sort-061"/>
    <testResult status="fail" testName="sort-062"/>
    <testResult status="fail" testName="sort-063"/>
    <testResult status="pass" testName="sort-064"/>

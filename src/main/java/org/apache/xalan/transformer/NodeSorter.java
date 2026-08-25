@@ -236,6 +236,8 @@ public class NodeSorter
 		  // Use collation keys for faster compare, but note that whitespaces 
 		  // etc... are treated differently from if we were comparing Strings.
 		  
+		  String langValue = k.getLangValue();
+		  
 		  if ((n1.m_key1Value instanceof XSAnyAtomicType) && (n2.m_key1Value instanceof XSAnyAtomicType)) {
 			 XObject xObj1 = (XSAnyAtomicType)(n1.m_key1Value);
 			 XObject xObj2 = (XSAnyAtomicType)(n2.m_key1Value);
@@ -285,16 +287,23 @@ public class NodeSorter
 				 
 				 result = xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri); 
 			  }
+			  else if (langValue != null) {
+				  result = n1String.compareTo(n2String);
+			  }
 			  else {
-			     result = n1String.compareTo(n2String);
+				  String str1 = n1String.getSourceString();
+				  String str2 = n2String.getSourceString();
+				  
+				  result = str1.compareTo(str2);
 			  }
 		  }
 
-		  //Process caseOrder parameter
+		  // Process xsl:sort, 'case-order' parameter
+		  
 		  if (k.m_caseOrderUpper)
 		  {
-			  String tempN1 = n1String.getSourceString().toLowerCase();
-			  String tempN2 = n2String.getSourceString().toLowerCase();
+			  String tempN1 = (n1String.getSourceString()).toLowerCase();
+			  String tempN2 = (n2String.getSourceString()).toLowerCase();
 
 			  if (tempN1.equals(tempN2))
 			  {
@@ -303,7 +312,8 @@ public class NodeSorter
 			  }
 		  }
 
-		  //Process order parameter
+		  // Process xsl:sort, 'order' parameter
+		  
 		  if (k.m_descending)
 		  {
 			  result = -result;
@@ -323,6 +333,7 @@ public class NodeSorter
 	  {      
 		  if (n1.m_xobj == null) {
 		     DTM dtm = xctxt.getDTM(n1.m_node);		  
+		     
 		     result = dtm.isNodeAfter(n1.m_node, n2.m_node) ? -1 : 1;
 		  }
 		  else {

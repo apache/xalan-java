@@ -3381,8 +3381,9 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
       }
       
       XPath xpathSelect = sort.getSelect();
-      if (xpathSelect == null) {
+      if ((xpathSelect == null) && (sort.getFirstChildElem() == null)) {
     	 SourceLocator srcLocator = xctxt.getSAXLocator();
+    	 
     	 xpathSelect = new XPath(".", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null); 
       }
       

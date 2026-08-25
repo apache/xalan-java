@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -159,6 +160,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     protected static List<String> m_skipped_tests_list = new ArrayList<String>();
     
     protected static String m_collationUri = null;
+    
+    private String m_xml_document_url_str = null;
 	
 	/**
 	 * Method definition, to run all XSL transformation tests from 
@@ -272,7 +275,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     							   String envName = elemNode.getAttribute(NAME_ATTR);
     							   
     							   if (envName.equals(xslTestCaseEnvObj)) {
-    								   xmlDocInpStr = getXMLInputDocStr(elemNode);    							   
+    								   xmlDocInpStr = getXMLInputDocStr(elemNode); 
+    								   
     								   NodeList nodeList1 = elemNode.getElementsByTagName("stylesheet");
     								   
     								   if (nodeList1.getLength() == 0) {
@@ -327,10 +331,14 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				   if (!"".equals(envFileName)) {
     					   URI uri = new URI(m_xslTransformTestSetFilePath);
     					   uri = uri.resolve(envFileName);
+    					   
+    					   m_xml_document_url_str = uri.toString(); 
+    					   
     					   xmlDocInpStr = getStringContentFromUrl(uri.toURL());					  
     				   }
     				   else {
     					   Element xmlContentElem = (Element)((envSrcElem.getFirstChild()).getNextSibling());
+    					   
     					   xmlDocInpStr = xmlContentElem.getTextContent();     				  
     				   }
 
@@ -445,16 +453,31 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   Source source = null;
 
     		   if (xmlDocInpStr != null) {
-    			   if (!m_xslTransformTestSetFilePath.contains("expr/axes/")) {
-    				   StringReader strReader = new StringReader(xmlDocInpStr);
-    				   InputSource inpSrc = new InputSource(strReader);
-    				   XMLReader xmlReader = XMLReaderFactory.createXMLReader();	
-    				   source = new SAXSource(xmlReader, inpSrc);
+    			   if (!m_xslTransformTestSetFilePath.contains("expr/axes/")) {    				   
+    				   if ((m_xml_document_url_str != null) && m_xml_document_url_str.endsWith("insn/sort/sort018.xml")) {
+    					   // An XML input document encoding is, iso-8859-1" 
+    					   
+    					   InputStream inpStream = (new URL(m_xml_document_url_str)).openStream();    					      					  
+
+    					   source = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+    					   
+    					   inpStream.close();
+    				   }
+    				   else {
+    					   StringReader strReader = new StringReader(xmlDocInpStr);
+    					   InputSource inpSrc = new InputSource(strReader);
+    					   XMLReader xmlReader = XMLReaderFactory.createXMLReader();	
+    					   
+    					   source = new SAXSource(xmlReader, inpSrc);
+    				   }
     			   }
     			   else {    				       				   
     				   byte[] byteArr = xmlDocInpStr.getBytes(StandardCharsets.UTF_8);
     				   InputStream inpStream = new ByteArrayInputStream(byteArr);    		       		   
+    				   
     				   source = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+    				   
+    				   inpStream.close();
     			   }
     		   }
     		   
@@ -2277,10 +2300,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				else {    					    					    					
     					try {
     						URI uri = new URI(m_xslTransformTestSetFilePath);
-    						uri = uri.resolve(fileName);    						
-							result = getStringContentFromUrl(uri.toURL());
+    						uri = uri.resolve(fileName);    				
+    						
+    						m_xml_document_url_str = uri.toString();
+    						
+							result = getStringContentFromUrl(uri.toURL());														
 						} catch (Exception ex) {
-							// no op
+							// No op
 						}
     				}
     				

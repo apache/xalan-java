@@ -457,8 +457,11 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 							count++;
 
 							if (count == 1) {
-								// If the first node within nodeset is an XML namespace 
-								// node, the sibling nodes are treated similarly.
+								/**
+								 * If the first node within an xdm sequence is an 
+								 * XML namespace node, then other XML sibling nodes 
+								 * are also assumed to be XML namespace nodes.
+								 */
 								
 								DTM dtm = xctxt.getDTM(nextNode); 
 								if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {
@@ -486,8 +489,11 @@ public class ElemPerformSort extends ElemTemplateElement implements ExpressionOw
 							count++;
 
 							if (count == 1) {
-								// If the first node within nodeset is an XML namespace 
-								// node, the sibling nodes are treated similarly.
+								/**
+								 * If the first node within an xdm sequence is an 
+								 * XML namespace node, then other XML sibling nodes 
+								 * are also assumed to be XML namespace nodes.
+								 */
 								
 								DTM dtm = xctxt.getDTM(nextNode); 
 								if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {

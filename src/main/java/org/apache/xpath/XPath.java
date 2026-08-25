@@ -48,6 +48,7 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
@@ -931,6 +932,14 @@ public class XPath implements Serializable, ExpressionOwner
 	  XObject result = null;
 
 	  boolean isProcessAsNodeset = true;
+	  
+	  if (m_mainExp instanceof SelfIteratorNoPredicate) {
+		  if (xctxt.getXPath3ContextItem() != null) {
+			 result = xctxt.getXPath3ContextItem();
+			 
+			 return result;
+		  }
+	  }
 
 	  if (m_mainExp instanceof LocPathIterator) {
 		  LocPathIterator locPathIterator = (LocPathIterator)m_mainExp;
@@ -940,6 +949,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  
 		  try {			  
 			  ExpressionNode exprNode = m_mainExp.getExpressionOwner();
+			  
 			  if (exprNode instanceof ElemCopyOf) {
 				  ElemCopyOf elemCopyOf = (ElemCopyOf)exprNode;
 				  boolean isXmlSourceAbsent = elemCopyOf.getXMLSourceAbsent();
@@ -954,7 +964,7 @@ public class XPath implements Serializable, ExpressionOwner
 				  }
 			  }
 			  else {
-			     // REVISIT : Other XSL template elements needs to be handled
+			      // REVISIT : Other XSL template elements needs to be handled
 			  }
 			  
 			  dtmIter = locPathIterator.asIterator(xctxt, contextNode);
@@ -971,6 +981,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  if (isProcessAsNodeset) {
 			  if (m_mainExp instanceof NodeTest) {
 				 // Check for the possibility of XPath named function reference				  
+				 
 				 result = evaluateXPathNamedFunctionReference((NodeTest)m_mainExp, xctxt);				 
 			  }
 			  else {
@@ -979,6 +990,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  }
 		  else {
 			  String xpathPatternStr = getPatternString();
+			  
 			  if (xpathPatternStr.contains("[") && xpathPatternStr.endsWith("]")) {
 				  result = evaluateXPathExprWithPredicate(xpathPatternStr, xctxt);          
 			  }  
@@ -992,6 +1004,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  
 		  te.setLocator(this.getLocator());
 		  ErrorListener errListener = xctxt.getErrorListener();
+		  
 		  if ((errListener != null) && !m_is_concreteException_processing)
 		  {
 			  errListener.error(te);
@@ -1018,8 +1031,10 @@ public class XPath implements Serializable, ExpressionOwner
 			  msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XPATH_ERROR, null);
 
 		  }  
+		  
 		  TransformerException te = new TransformerException(msg, getLocator(), ex);
 		  ErrorListener el = xctxt.getErrorListener();
+		  
 		  if (null != el)
 		  {
 			  el.fatalError(te);
