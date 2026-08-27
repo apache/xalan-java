@@ -1112,7 +1112,7 @@ public class XSLTErrorResources extends ListResourceBundle
     // the attribute value and {0} is the attribute name.
   //The following codes are shared with the warning codes...
     { INVALID_QNAME,
-     "Illegal value: {1} used for QNAME attribute: {0}"},
+     "XTSE0020 : Illegal value {1} used for QName attribute: {0}"},
 
     // Note to translators:  The following message is used if the value of
     // an attribute in a stylesheet is invalid.  "ENUM" is the XML data-type of

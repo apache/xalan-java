@@ -52,8 +52,10 @@ public class XslContextItemTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
         
+        m_init_context_item_available = true;
+                
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
@@ -62,7 +64,9 @@ public class XslContextItemTests extends XslTransformTestsUtil {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";
+        
+        m_init_context_item_available = true;
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
@@ -74,7 +78,9 @@ public class XslContextItemTests extends XslTransformTestsUtil {
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";
         
-        m_initTemplateName = "main";
+        m_init_context_item_available = true;
+        
+        m_initTemplateName = "main";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

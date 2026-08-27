@@ -697,6 +697,7 @@ public class QName implements java.io.Serializable
 	  else if (object instanceof QName) {
 		  QName qname = (QName)object;
 		  boolean isLocalNameEqual = (getLocalName()).equals(qname.getLocalName());
+		  
 		  if (isLocalNameEqual) {
 			  String thisNs = getNamespaceURI();
 			  String argNs = qname.getNamespaceURI();

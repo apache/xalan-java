@@ -53,8 +53,8 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
 import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
@@ -695,6 +695,7 @@ public class InstanceOf extends XPathOperator
       else if (xdmValue instanceof XMLNodeCursorImpl) {
     	  xdmValue = xdmValue.getFresh();
     	  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmValue;
+    	  
     	  if (xmlNodeCursorImpl.m_is_for_each_group) {
     		  // This XMLNodeCursorImpl object is constructed via xsl:for-each-group 
     		  // instruction, to group a sequence of atomic values.
@@ -811,7 +812,9 @@ public class InstanceOf extends XPathOperator
                                                                          IOException, TransformerException, Exception {
 	  
 	  boolean isInstanceOf = false;
-          
+	  
+	  DTMCursorIterator dtmIter = (DTMCursorIterator)((nodeSet.iter()).clone());
+	  
 	  int nodeSetLen = nodeSet.getLength();
 	  	  	  	  
 	  XPathSequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
@@ -835,11 +838,12 @@ public class InstanceOf extends XPathOperator
 		  isInstanceOf = false; 
 	  }
 	  else {
-		  DTMCursorIterator dtmIter = nodeSet.iterRaw();
+		  dtmIter = nodeSet.iter();
 
 		  List<Boolean> nodeSetSequenceTypeResultList = new ArrayList<Boolean>();
 
 		  int nextNode;
+		  
 		  while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {			   
 			  DTM dtm = dtmIter.getDTM(nextNode);
 			  java.lang.String nodeName = dtm.getNodeName(nextNode);
@@ -848,8 +852,39 @@ public class InstanceOf extends XPathOperator
 			  short nodeType = dtm.getNodeType(nextNode);
 
 			  if (nodeType == DTM.DOCUMENT_NODE) {				  
-				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND)) {
-					  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
+				  if ((seqTypeKindTest != null) && (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND)) {					  
+					  XPathSequenceTypeKindTest seqTypeSubKindTest = seqTypeKindTest.getSeqTypeSubKindTest();
+					  
+					  if ((seqTypeSubKindTest != null) && (seqTypeSubKindTest.getKindVal() == XPathSequenceTypeSupport.ELEMENT_KIND)) {
+						  java.lang.String nodeLocalName = seqTypeSubKindTest.getNodeLocalName();
+						  java.lang.String nsUri = seqTypeSubKindTest.getNodeNsUri();
+						  
+						  if (nodeLocalName != null) {
+							  QName qName1 = new QName(nsUri, nodeLocalName);
+
+							  int child = dtm.getFirstChild(nextNode);
+
+							  if (dtm.getNodeType(child) == DTM.ELEMENT_NODE) {							 
+								  java.lang.String localName2 = dtm.getLocalName(child);
+								  java.lang.String nsUri2 = dtm.getNamespaceURI(child);
+								  QName qName2 = new QName(nsUri2, localName2);
+
+								  if (qName2.equals(qName1)) {
+									  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
+								  }
+							  }
+					      }
+						  else {
+							  int child = dtm.getFirstChild(nextNode);
+							  
+							  if (dtm.getNodeType(child) == DTM.ELEMENT_NODE) {	
+								 nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
+							  }
+						  }
+					  }
+					  else {
+						  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
+					  }
 				  }
 				  else {
 					  isInstanceOf = false;

@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -219,14 +220,14 @@ public class TemplateList implements java.io.Serializable
     		
     		QName funcName = newFunc.getName();
     		
-    		String prefix = funcName.getPrefix();
     		String namespace = funcName.getNamespace();
-    		if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace) || 
-    				                                                                      (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
-    				                                                                      (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace)) {
-    			throw new TransformerException("XTSE0080 : An XSL user-defined function " + funcName.toString() + " has a namespace prefix '" + prefix + "' "
-					    					                                                                                                 + "within its name, that refers to "
-					    					                                                                                                 + "an XSL reserved namespace.");
+    		
+    		if ((Constants.S_XSLNAMESPACEURL).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace) || 
+    				                                               (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
+    				                                               (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) ||
+    				                                               (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(namespace) ||
+    				                                               (Constants.XSL_ERROR_NAMESACE).equals(namespace)) {
+    			throw new TransformerException("XTSE0080 : An XSL stylesheet function name " + funcName.toString() + " uses an reserved namespace '" + namespace + "'.");
     		}
     		
     		int funcLineNo = newFunc.getLineNumber();

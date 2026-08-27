@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:58Z" fail="20" name="function" pass="67" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-27T11:27:27Z" fail="11" name="function" pass="76" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -26,7 +26,12 @@
    <testResult status="skipped" testName="function-0120a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-0120b"/>
    <testResult status="pass" testName="function-0121"/>
-   <testResult status="pass" testName="function-0122"/>
+   <testResult status="fail" testName="function-0122">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: XTSE0080 : An XSL stylesheet function name {http://www.w3.org/2005/xqt-errors}count-elements uses an reserved namespace 'http://www.w3.org/2005/xqt-errors'.
+javax.xml.transform.TransformerException: XTSE0080 : An XSL stylesheet function name {http://www.w3.org/2005/xqt-errors}count-elements uses an reserved namespace 'http://www.w3.org/2005/xqt-errors'.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="function-0201"/>
    <testResult status="pass" testName="function-0202"/>
    <testResult status="pass" testName="function-0203"/>
@@ -41,7 +46,7 @@
    <testResult status="pass" testName="function-0602"/>
    <testResult status="fail" testName="function-0701">
       <outResult>
-         <errTrace>XTTE0570 : The supplied value cannot be cast to type xs:integer*.</errTrace>
+         <errTrace>XTTE0780 : The supplied value cannot be cast to type xs:integer*.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="function-0901"/>
@@ -54,23 +59,15 @@
    <testResult status="fail" testName="function-1009"/>
    <testResult status="pass" testName="function-1011"/>
    <testResult status="pass" testName="function-1012"/>
-   <testResult status="fail" testName="function-1013"/>
+   <testResult status="pass" testName="function-1013"/>
    <testResult reason="Xalan configured" status="skipped" testName="function-1014"/>
    <testResult status="pass" testName="function-1015"/>
    <testResult status="pass" testName="function-1016"/>
-   <testResult status="fail" testName="function-1017">
-      <outResult>
-         <errTrace>XTTE0570 : The supplied value cannot be cast to type xs:integer.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="function-1018">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="function-1017"/>
+   <testResult status="pass" testName="function-1018"/>
    <testResult status="pass" testName="function-1019"/>
    <testResult status="pass" testName="function-1020"/>
-   <testResult status="fail" testName="function-1021">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:x="http://xxx.com/"/&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="function-1021"/>
    <testResult status="fail" testName="function-1022">
       <outResult>
          <errTrace>org.xml.sax.SAXException: Line# : 85, Column# : 44 XPST0003 : A location path was expected, but the following token was encountered =.
@@ -87,9 +84,7 @@ java.lang.Exception: Line# : 85, Column# : 44 XPST0003 : A location path was exp
    <testResult status="pass" testName="function-1030"/>
    <testResult status="pass" testName="function-1031"/>
    <testResult status="pass" testName="function-1032"/>
-   <testResult status="fail" testName="function-1033">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="function-1033"/>
    <testResult status="fail" testName="function-1034">
       <outResult>
          <errTrace>XPST0003 : A location path was expected, but the following token was encountered [.</errTrace>
@@ -111,29 +106,14 @@ java.lang.Exception: Line# : 85, Column# : 44 XPST0003 : A location path was exp
    <testResult status="skipped" testName="function-1902" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-2001"/>
    <testResult status="skipped" testName="function-2002" xsltVersion="XSLT 2.0/1.0 only test case"/>
-   <testResult status="fail" testName="function-2101">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="function-2102">
-      <outResult>
-         <errTrace>Illegal value: foo:test? used for QNAME attribute: name</errTrace>
-         <errTrace>java.lang.RuntimeException: ElemTemplateElement error: xsl:function must have a name attribute.</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="function-2103">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="function-2101"/>
+   <testResult status="pass" testName="function-2102"/>
+   <testResult status="pass" testName="function-2103"/>
    <testResult status="pass" testName="function-2104"/>
    <testResult status="pass" testName="function-2105"/>
-   <testResult status="fail" testName="function-2106">
-      <outResult>
-         <errTrace>javax.xml.transform.TransformerException: XPST0017 : An XSL function {http://example.com/namespace}pi call's argument count is not equal to number of function's param declarations.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-2106"/>
    <testResult status="pass" testName="function-2107"/>
-   <testResult status="fail" testName="function-2108">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;abc&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="function-2108"/>
    <testResult status="pass" testName="function-2109"/>
    <testResult feature="streaming" status="skipped" testName="function-5001"/>
    <testResult feature="streaming" status="skipped" testName="function-5002"/>

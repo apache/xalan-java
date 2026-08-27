@@ -28,11 +28,14 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.functions.FuncCurrent;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 
@@ -142,8 +145,10 @@ public class AVTPartXPath extends AVTPart
   {
 	  
 	ExpressionNode exprParentNode = (m_xpath.getExpression()).exprGetParent();
+	
 	if (exprParentNode instanceof ElemTemplateElement) {
 		String xpathDefaultNamespace = XPathParser.getXPathDefaultNamespace((ElemTemplateElement)exprParentNode);
+		
 		if (xpathDefaultNamespace != null) {
 		   m_xpath = new XPath(m_xpath.getPatternString(), xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);		
 		}
@@ -152,12 +157,82 @@ public class AVTPartXPath extends AVTPart
     XObject xobj = null;
     
     Expression expression = m_xpath.getExpression();
+    
+    String xpathPatternStr = (m_xpath.getPatternString()).trim();    
+    
+    int idx1 = xpathPatternStr.indexOf('[');
+    int idx2 = xpathPatternStr.lastIndexOf('[');
+    
+    if (xpathPatternStr.startsWith("$") && (idx1 != -1) && (idx1 == idx2)) {
+       // An XPath expression is like, $abc[..], i.e variable 
+       // reference followed by one predicate.
+    	
+       String varRef = xpathPatternStr.substring(0, idx1);
+       String predicateStr1 = xpathPatternStr.substring(idx1 + 1, xpathPatternStr.length() - 1);
+       
+       XPath xpathObj = new XPath(varRef, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
+       
+       XObject xObj = xpathObj.execute(xctxt, context, xctxt.getNamespaceContext());
+       
+       if (xObj instanceof ResultSequence) {
+    	   ResultSequence rSeq = (ResultSequence)xObj;
+    	   int size1 = rSeq.size();
+    	   
+    	   XPath xpathObj2 = new XPath(predicateStr1, xctxt.getSAXLocator(), xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	   
+    	   Expression expr1 = xpathObj2.getExpression();
+    	   
+    	   if (expr1 instanceof FuncCurrent) {
+    		  if (xctxt.getXPath3ContextItem() != null) {
+    			 XObject xObj2 = xctxt.getXPath3ContextItem();
+    			 
+    			 if (xObj2 instanceof XSNumericType) {
+    				XSNumericType xsNumericType = (XSNumericType)xObj2;
+    				String str1 = xsNumericType.stringValue();
+    				
+    				double dbl = Double.valueOf(str1);
+    				int idx = (int)dbl;
+    				
+    				if ((idx >= 1) && (idx <= size1)) {
+    				   XObject resultObj = rSeq.item(idx - 1);
+    				   
+    				   String str2 = XslTransformEvaluationHelper.getStrVal(resultObj);
+    				   buf.append(str2);
+    				   
+    				   return;
+    				}
+    			 }
+    			 else if (xObj2 instanceof XNumber) {
+    				double dbl = ((XNumber)xObj2).num();
+                    int idx = (int)dbl;
+    				
+    				if ((idx >= 1) && (idx <= size1)) {
+    				   XObject resultObj = rSeq.item(idx - 1);
+    				   
+    				   String str2 = XslTransformEvaluationHelper.getStrVal(resultObj);
+    				   buf.append(str2);
+    				   
+    				   return;
+    				}
+    			 }
+    		  }
+    	   }
+    	   else {
+    		  XObject xObj2 = xpathObj2.execute(xctxt, context, xctxt.getNamespaceContext());
+    		  
+    		  // REVISIT
+    	   }
+       }
+    }
+    
     if (expression instanceof LocPathIterator) {
     	LocPathIterator locPathIterator = (LocPathIterator)expression;
+    	
     	try {
     		DTMCursorIterator dtmCursorIterator = locPathIterator.asIterator(xctxt, context);
     		StringBuffer strBuff = new StringBuffer();
     		int nextNode = DTM.NULL;
+    		
     		while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
     			XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, xctxt);
     			strBuff.append(xmlNodeCursorImpl.str() + " ");
@@ -165,6 +240,7 @@ public class AVTPartXPath extends AVTPart
 
     		String str1 = strBuff.toString();
     		int strLength = str1.length();
+    		
     		if (strLength > 0) {
     			str1 = str1.substring(0, strLength - 1);
     		}
@@ -196,6 +272,7 @@ public class AVTPartXPath extends AVTPart
     	   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
     	   int nextNode;
     	   StringBuffer strBuff = new StringBuffer();
+    	   
     	   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
     		  XMLNodeCursorImpl node1 = new XMLNodeCursorImpl(nextNode, xctxt);
     		  String str1 = node1.str();
@@ -208,6 +285,7 @@ public class AVTPartXPath extends AVTPart
     	   ResultSequence rSeq = (ResultSequence)xobj;
     	   int rSeqLength = rSeq.size();
     	   StringBuffer strBuff = new StringBuffer();
+    	   
     	   for (int idx = 0; idx < rSeqLength; idx++) {
     		  XObject xObj = rSeq.item(idx);
     		  String str1 = XslTransformEvaluationHelper.getStrVal(xObj);

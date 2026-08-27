@@ -416,13 +416,15 @@ public class ElemFunction extends ElemTemplate
     	  String funcLocalName = m_name.getLocalName();
     	  String funcNameSpaceUri = m_name.getNamespaceURI();
 
-    	  // Validate few of the information of xsl:function's xsl:param declarations      
+    	  // Validate few of the information of xsl:function's xsl:param declarations 
+    	  
     	  Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
     	  int idx = 0;
 
     	  PrefixResolver prefixResolver = xctxt.getNamespaceContext();
     	  boolean isOnlyElemTextLiteral = false;
     	  boolean isOtherElem = false;
+    	  
     	  for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
     		  if ((elem instanceof ElemTextLiteral) && !isOtherElem) {
     			  isOnlyElemTextLiteral = true; 
@@ -471,36 +473,37 @@ public class ElemFunction extends ElemTemplate
 
     		  idx++;
     	  }
-
-    	  if (xslParamMap.size() != argSequence.size()) {
-    		  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-															    				  " call's argument count is not equal "
-															    				  + "to number of function's param declarations.", srcLocator);  
-    	  }
-
+    	  
     	  Collection<Integer> xslParamIdxs = xslParamMap.values();
     	  Object[] idxArr = xslParamIdxs.toArray();
+    	  
     	  if (idxArr.length > 0) {
     		  Arrays.sort(idxArr);
     		  int currVal = ((Integer)idxArr[0]).intValue();
     		  if (currVal != 0) {
-    			  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-															    					  " declaration has a non 'param' declaration as first child "
-															    					  + "element of 'function'.", srcLocator); 
+    			  throw new TransformerException("XTSE0010 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+															    					                        " declaration has a non 'param' declaration as first child "
+															    					                    + "element of 'function'.", srcLocator); 
     		  }
 
     		  for (int idx1 = 1; idx1 < idxArr.length; idx1++) {
     			  int nextVal = ((Integer)idxArr[idx1]).intValue();
     			  if (nextVal != (currVal + 1)) {
-    				  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
-																    						  " declaration has a non 'param' declaration between two "
-																    						  + "'param' declarations.", srcLocator); 
+    				  throw new TransformerException("XTSE0010 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+																    						                " declaration has a non 'param' declaration between two "
+																    						                + "'param' declarations.", srcLocator); 
     			  }
     			  else {
     				  currVal = nextVal;  
     			  }
     		  }
     	  }
+
+    	  if (xslParamMap.size() != argSequence.size()) {
+    		  throw new TransformerException("XPST0017 : An XSL function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+															    				  " call's argument count is not equal "
+															    				  + "to number of function's param declarations.", srcLocator);  
+    	  }    	  
 
     	  if (m_newEachTime != null) {
     		  String xslFuncNewEachTimeNormalizedValue = m_newEachTime.trim();

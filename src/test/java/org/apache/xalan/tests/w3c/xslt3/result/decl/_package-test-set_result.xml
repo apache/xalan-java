@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:39:08Z" fail="31" name="package" pass="23" run="54" skipped="18" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-27T11:27:50Z" fail="30" name="package" pass="24" run="54" skipped="18" statusUnknown="0">
    <testResult status="pass" testName="package-001"/>
    <testResult status="pass" testName="package-001a"/>
    <testResult status="pass" testName="package-001b"/>
@@ -117,11 +117,7 @@
    <testResult status="fail" testName="package-908">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="package-909">
-      <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: name</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="package-909"/>
    <testResult status="fail" testName="package-910">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#13;
     &#13;
@@ -156,7 +152,7 @@
    </testResult>
    <testResult status="fail" testName="package-914b">
       <outResult>
-         <errTrace>Illegal value: #unnamed used for QNAME attribute: default-mode</errTrace>
+         <errTrace>XTSE0020 : Illegal value #unnamed used for QName attribute: default-mode</errTrace>
          <errTrace>XTDE0045 : An XSL stylesheet, initial mode must be 'public' within XSL stylesheet 'package' element.</errTrace>
       </outResult>
    </testResult>

@@ -25,6 +25,8 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
@@ -156,7 +158,14 @@ public class ElemContextItem extends ElemTemplateElement {
 	{
 		XPathContext xctxt = transformer.getXPathContext();
 		
-		final int contextNode = xctxt.getCurrentNode(); 
+		int contextNode = DTM.NULL;
+		
+		if (transformer.getInitContextItemAvailable()) {
+		   contextNode = xctxt.getCurrentNode();
+		}
+		else {
+		   contextNode = DTM.NULL;
+		}
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
@@ -196,40 +205,59 @@ public class ElemContextItem extends ElemTemplateElement {
         	  m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
         	  m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
         	throw new TransformerException("XTSE0010 : An XSL context-item instruction's attribute \"use\" can have possible values "
-        			                                                              + "'required', 'optional', 'absent'. Value occured in "
-        			                                                              + "stylesheet: '" + m_useAttr + "'.", srcLocator);
+        			                                                              + "'required', 'optional', 'absent'. Value specified within "
+        			                                                              + "stylesheet is '" + m_useAttr + "'.", srcLocator);
         }        
-        else if ((enclosingXslTemplateName == null) && (m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
+        
+        if ((enclosingXslTemplateName == null) && (m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
         	                                         m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
         	throw new TransformerException("XTSE0020 : An XSL context-item instruction appearing within an XSL template declaration "
         			                                    + "with no \"name\" attribute must specify value of \"use\" attribute as 'required'.", srcLocator);
         }        
-        else if (m_useAttr.equals(Constants.ATTRVAL_ABSENT) && (contextNode != DTM.NULL)) {
-            throw new TransformerException("XTSE0020 : An XSL context-item instruction has its attribute \"use\" value as 'absent', but "
+        
+        if (m_useAttr.equals(Constants.ATTRVAL_ABSENT) && transformer.getInitContextItemAvailable()) {
+            throw new TransformerException("XTSE0020 : An XSL context-item instruction attribute \"use\" value is 'absent', but "
             		                                                                                                 + "the context item exists.", srcLocator);
         }
-        else if (m_useAttr.equals(Constants.ATTRVAL_REQUIRED) && (contextNode == DTM.NULL)) {
-            throw new TransformerException("XTSE0020 : An XSL context-item instruction has its attribute \"use\" value as 'required', but "
+        
+        if (m_useAttr.equals(Constants.ATTRVAL_REQUIRED) && !transformer.getInitContextItemAvailable()) {
+            throw new TransformerException("XTTE3090 : An XSL context-item instruction attribute \"use\" value is 'required', but "
             		                                                                                                 + "the context item is absent.", srcLocator);
         }
         
-        String xpathExprStr = ". instance of " + m_asAttr;
-        
-        XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-        
-        XObject evalResult = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-        if (!evalResult.bool()) {
-        	String nodeName = null;
-            if (contextNode != DTM.NULL) {
-            	DTM dtm = xctxt.getDTM(contextNode);
-            	Node node = dtm.getNode(contextNode);
-            	nodeName = node.getNodeName();
+        if (m_asAttr != null) {        	
+        	XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+            XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+            XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
+            
+            int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+            
+            if (itemTypeOccurenceIndicator != XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) {
+            	throw new TransformerException("XTSE0020 : An XSL context-item instruction 'as' attribute, cannot "
+            			                                                                       + "have sequence type occurence "
+            			                                                                       + "indicator.", srcLocator);
             }
-        	String errMesgSuffix = (nodeName != null) ? " The supplied node '" + nodeName + "' doesn't conform." : "";
-        	throw new TransformerException("XTTE0590 : The required item type of the context item for the template "
-        			                                                                                    + "rule is " + m_asAttr + "." + errMesgSuffix, srcLocator);
+        	
+        	String xpathExprStr = ". instance of " + m_asAttr;
+
+        	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+        	XObject evalResult = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+        	if (!evalResult.bool()) {
+        		String nodeName = null;
+        		if (contextNode != DTM.NULL) {
+        			DTM dtm = xctxt.getDTM(contextNode);
+        			Node node = dtm.getNode(contextNode);
+        			nodeName = node.getNodeName();
+        		}
+
+        		String errMesgSuffix = (nodeName != null) ? " The supplied node '" + nodeName + "' doesn't conform." : "";
+        		
+        		throw new TransformerException("XTTE0590 : The required item type of the context item for the template "
+        				                                                                                     + "rule is " + m_asAttr + "." + errMesgSuffix, srcLocator);
+        	}
         }
-        
 	}
 
 }

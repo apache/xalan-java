@@ -1911,7 +1911,7 @@ public class XPathSequenceTypeSupport {
             }
             else {
                String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);  	               
-               throw new TransformerException("XTTE0570 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + "."); 
+               throw new TransformerException("XTTE0780 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + "."); 
             }
         }
         catch (TransformerException ex) {
@@ -1919,7 +1919,7 @@ public class XPathSequenceTypeSupport {
         }
         catch (Exception ex) {
         	String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);        	
-        	throw new TransformerException("XTTE0570 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + ".");
+        	throw new TransformerException("XTTE0780 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + ".");
         }
         
         return result;

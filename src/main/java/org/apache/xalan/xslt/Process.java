@@ -57,6 +57,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xerces.parsers.DOMParser;
@@ -171,6 +172,8 @@ public class Process
 	  String initialTemplateName = null;
 	  String initialModeName = null;
 	  String initialFuncName = null;
+	  
+	  boolean xslInitContextItemAvailable = false;
 
 	  /**
 	   * The default java.io.PrintWriter diagnostic writer.
@@ -245,7 +248,6 @@ public class Process
 		  ContentHandler contentHandler = null;
 		  int recursionLimit=-1;
 		  String encoding = "UTF-8";
-		  boolean enableAssert = false;
 
 		  for (int i = 0; i < argv.length; i++)
 		  {
@@ -737,6 +739,10 @@ public class Process
 			  System.err.println(msg);
 			  doExit(msg);
 		  }
+		  
+		  if (inFileName != null) {
+			 xslInitContextItemAvailable = true;	  
+		  }
 
 		  // Note that there are usage cases for calling this class without 
 		  // a -IN arg. The main XSL transformation occurs here.
@@ -779,8 +785,8 @@ public class Process
 					  Document xslDOM = docBuilder.parse(inpSrc);
 
 					  stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
-				  }
-				  if (flavor.equals("s2s"))
+				  }				  
+				  else if (flavor.equals("s2s"))
 				  {
 					  InputSource inpSrc = new InputSource(xslFileName);
 					  if (encoding != null) {
@@ -876,6 +882,8 @@ public class Process
 
 				  Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
 				  
+				  ((TransformerImpl)transformer).setInitContextItemAvailable(xslInitContextItemAvailable); 
+				  
 				  if (!useXSLTC) {
 					  if (null != xslFileName) {
 						  File file = new File(xslFileName);
@@ -929,7 +937,7 @@ public class Process
 				  if (uriResolver != null)
 					  transformer.setURIResolver(uriResolver);
 				  
-				  if (inFileName == null) {
+				  if (inFileName == null) {					 					 
 					 inFileName = xslFileName; 
 				  }
 				  

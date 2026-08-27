@@ -113,6 +113,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     
     protected static String m_xsl_test_dir_base_uri = null;
     
+    protected boolean m_init_context_item_available = false;
+    
     /**
      * Class constructor.
      */
@@ -190,6 +192,8 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            if (m_xsl_test_dir_base_uri != null) {
         	   transformer.setParameter(BASE_DIR, m_xsl_test_dir_base_uri); 
            }
+           
+           ((TransformerImpl)transformer).setInitContextItemAvailable(m_init_context_item_available);
 
            transformer.transform(xmlInpSrc, new DOMResult(outNode));
            

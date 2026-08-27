@@ -453,6 +453,12 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
   private boolean m_isXslIterateOnCompletionActive = false;
   
   /**
+   * A class field, to indicate that an XSL transformation's 
+   * initial context item is present, or absent. 
+   */
+  private boolean m_init_ctxt_item_available = false;
+  
+  /**
    * This Xalan-J transformation property is used, to determine whether 
    * XML Schema validation of XML input document is enabled or not for an
    * XSL transformation instance.
@@ -5645,6 +5651,14 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 		   }
 	     }
 	  }
+
+      public boolean getInitContextItemAvailable() {
+	     return m_init_ctxt_item_available;
+      }
+
+      public void setInitContextItemAvailable(boolean initCtxtItemAvailable) {
+	     this.m_init_ctxt_item_available = initCtxtItemAvailable;
+      }
 
 }  // end TransformerImpl class
 
