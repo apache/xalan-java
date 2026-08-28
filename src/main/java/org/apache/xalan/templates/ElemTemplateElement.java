@@ -125,7 +125,7 @@ public class ElemTemplateElement extends UnImplNode
     * current group stack. Having stack for keeping fn:current-group
     * values, helps solve issue of nested xsl:for-each-group instructions.
     */
-   static Stack<List<Integer>> m_groupNodesDtmHandlesStack = new Stack<List<Integer>>();
+   static Stack<List<Integer>> m_groupNodeDtmHandleStack = new Stack<List<Integer>>();
    
    /**
     * This class field refers to xsl:merge evaluation's merge key
@@ -154,7 +154,12 @@ public class ElemTemplateElement extends UnImplNode
     */
    public static XPathMap m_xpath_map = null;
    
-
+   /**
+    * Class field, which may have xsl:for-each-group function 
+    * fn:current-group() result.
+    */
+   private ResultSequence m_current_group = null;
+   
   /**
    * Construct a template element instance.
    */
@@ -1829,7 +1834,7 @@ public class ElemTemplateElement extends UnImplNode
 	  List<Integer> result = null;
 	  
 	  try {
-		 result = m_groupNodesDtmHandlesStack.peek();
+		 result = m_groupNodeDtmHandleStack.peek();
 	  }
 	  catch (EmptyStackException ex) {
 		 // no op 
@@ -1839,12 +1844,12 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {	  
-	  m_groupNodesDtmHandlesStack.push(groupNodesDtmHandles);
+	  m_groupNodeDtmHandleStack.push(groupNodesDtmHandles);
   }
   
   public void popGroupNodesDtmHandles() {	  
 	  try {
-		  m_groupNodesDtmHandlesStack.pop(); 
+		  m_groupNodeDtmHandleStack.pop(); 
 	  }
 	  catch (EmptyStackException ex) {
 		  // no op  
@@ -3092,6 +3097,14 @@ public class ElemTemplateElement extends UnImplNode
 	   }
 	   
 	   return result;
+  }
+  
+  public ResultSequence getCurrentGroup() {
+	  return m_current_group;
+  }
+
+  public void setCurrentGroup(ResultSequence rSeq) {
+	 m_current_group = rSeq;	
   }
 
 }

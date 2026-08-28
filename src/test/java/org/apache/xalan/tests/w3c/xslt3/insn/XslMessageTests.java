@@ -38,9 +38,12 @@ public class XslMessageTests extends W3CXslTransformTestsUtil {
     	
     	m_testResultFileName = "_message-test-set_result.xml";
     	
-    	m_skipped_tests_list.add("message-0308");  // Xalan-J's xslt 3.0 implementation goes into INF loop
-    	m_skipped_tests_list.add("message-0309");  // Xalan-J's xslt 3.0 implementation goes into INF loop
-    	m_skipped_tests_list.add("message-0310");  // Xalan-J's xslt 3.0 implementation goes into INF loop
+    	// Xalan-J xslt3.0 implementation goes to inf 
+    	// loop, with following test cases.
+    	
+    	m_skipped_tests_list.add("message-0308");
+    	m_skipped_tests_list.add("message-0309");
+    	m_skipped_tests_list.add("message-0310");
     }
 
     @AfterClass

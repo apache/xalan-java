@@ -556,7 +556,7 @@ public class ElemTemplate extends ElemTemplateElement
 						  String nodeExpectedLocalName = seqTypeKindTest.getNodeLocalName();
 						  String nodeExpectedNsUri = seqTypeKindTest.getNodeNsUri();
 						  String dataTypeExpectedLocalName = seqTypeKindTest.getDataTypeLocalName();
-						  String dataTypeExpectedNsUri = seqTypeKindTest.getDataTypeUri();
+						  String dataTypeExpectedNsUri = seqTypeKindTest.getDataTypeNsUri();
 						  if (((nodeExpectedLocalName == null) || ("".equals(nodeExpectedLocalName))) || 
 								                                                          (dataTypeExpectedLocalName == null) || (Keywords.XS_UNTYPED_ATOMIC.equals(dataTypeExpectedLocalName) && 
 								                                                           XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(dataTypeExpectedNsUri))) {						  

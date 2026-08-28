@@ -921,7 +921,7 @@ public class InstanceOf extends XPathOperator
 								  break;
 							  }
 						  }
-						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
+						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeNsUri())) {
 							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
 							  
 							  /**
@@ -1114,7 +1114,7 @@ public class InstanceOf extends XPathOperator
 								  break; 
 							  }
 						  }
-						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
+						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeNsUri())) {
                               XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());							  
 							  java.lang.String dataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
 							  java.lang.String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";

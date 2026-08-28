@@ -692,7 +692,7 @@ public class XPathSequenceTypeSupport {
 	            		   Object obj1 = xNodeSetForDOM.object();
 	            		   if (obj1 instanceof DTMNodeList) {	            			   
 	            			   String dataTypeExpectedLocalName = sequenceTypeKindTest.getDataTypeLocalName();
-	            			   String dataTypeExpectedNsUri = sequenceTypeKindTest.getDataTypeUri();
+	            			   String dataTypeExpectedNsUri = sequenceTypeKindTest.getDataTypeNsUri();
 	            			   if ((dataTypeExpectedLocalName == null) || (Keywords.XS_UNTYPED.equals(dataTypeExpectedLocalName) && 
 	            					                                       XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(dataTypeExpectedNsUri))) {
 	            				   /**

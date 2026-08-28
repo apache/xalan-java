@@ -1409,7 +1409,7 @@ public class ElemFunction extends ElemTemplate
     			 String typeNodeLocalName = seqTypeKindTest.getNodeLocalName();
     			 String typeNodeNsUri = seqTypeKindTest.getNodeNsUri();
     			 String typeDataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
-    			 String typeDataTypeUri = seqTypeKindTest.getDataTypeUri();
+    			 String typeDataTypeUri = seqTypeKindTest.getDataTypeNsUri();
 
     			 String nodeLocalName = node.getLocalName();
     			 String nodeNsUri = node.getNamespaceURI();

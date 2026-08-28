@@ -66,6 +66,7 @@ public class FuncCurrentGroupingKey extends Function
     	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
   	  
     	boolean isFnCurrentGroupingKeyRefValidContext = false; 
+    	
     	while (elemTemplateElement != null) {
     		if (elemTemplateElement instanceof ElemForEachGroup) {
     			isFnCurrentGroupingKeyRefValidContext = true;
@@ -78,6 +79,7 @@ public class FuncCurrentGroupingKey extends Function
 
     	if (!isFnCurrentGroupingKeyRefValidContext) {
     		elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
+    		
     		(elemTemplateElement.m_groupingKeyStack).clear();
     	} 
     	
@@ -88,6 +90,7 @@ public class FuncCurrentGroupingKey extends Function
         
         while ((groupingKeyObj == null) && (currElemTemplateElement != null)) {            
            currElemTemplateElement = currElemTemplateElement.getParentElem();
+           
            if (currElemTemplateElement != null) {
                groupingKeyObj = currElemTemplateElement.getGroupingKey();
            }
@@ -102,7 +105,7 @@ public class FuncCurrentGroupingKey extends Function
         }
         else if (XSL_GROUPING_KEY_ABSENT.equals(groupingKeyObj.toString())) {
         	throw new javax.xml.transform.TransformerException("XTDE1071 : An XSL 'for-each-group' instruction's current-grouping-key "
-        			                                                                                                            + "value is not available.", srcLocator);
+        			                                                                                                                 + "value is not available.", srcLocator);
         }
         
         if (groupingKeyObj instanceof XslForEachGroupCompositeGroupingKey) {

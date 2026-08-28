@@ -337,7 +337,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ATTRNAME_INPUT_TYPE_ANNOTATIONS = "input-type-annotations",
       ATTRNAME_ERRORS = "errors",
       ATTRNAME_ITEM_SEPARATOR = "item-separator",
-      ATTRNAME_USE_WHEN = "use-when";
+      ATTRNAME_USE_WHEN = "use-when",
+      ATTRNAME_AS = "as";
 
   /** IDs for XSL attribute types. These are associated
    * with the string literals in the TransformerImpl class.

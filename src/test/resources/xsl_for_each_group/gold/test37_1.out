@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group desc="abc">
+    <map>
+      <key>number</key>
+      <value>1</value>
+      <key>desc</key>
+      <value>abc</value>
+    </map>
+    <map>
+      <key>number</key>
+      <value>2</value>
+      <key>desc</key>
+      <value>abc</value>
+    </map>
+  </group>
+  <group desc="pqr">
+    <map>
+      <key>number</key>
+      <value>3</value>
+      <key>desc</key>
+      <value>pqr</value>
+    </map>
+    <map>
+      <key>number</key>
+      <value>4</value>
+      <key>desc</key>
+      <value>pqr</value>
+    </map>
+    <map>
+      <key>number</key>
+      <value>5</value>
+      <key>desc</key>
+      <value>pqr</value>
+    </map>
+  </group>
+  <group desc="xyz">
+    <map>
+      <key>number</key>
+      <value>6</value>
+      <key>desc</key>
+      <value>xyz</value>
+    </map>
+    <map>
+      <key>number</key>
+      <value>7</value>
+      <key>desc</key>
+      <value>xyz</value>
+    </map>
+  </group>
+</result>

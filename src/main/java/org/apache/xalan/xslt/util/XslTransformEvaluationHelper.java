@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
@@ -55,6 +56,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathForExpr;
@@ -722,11 +724,12 @@ public class XslTransformEvaluationHelper {
      * @param resultSeq				The supplied XPath sequence object
      * @return						boolean value true or false
      */
-    public static boolean isSequenceContainsAllXdmAtomicValues(ResultSequence resultSeq) {
+    public static boolean isXdmSequenceContainsAtomicValues(ResultSequence resultSeq) {
     	
     	boolean result = true;
     	
     	int size1 = resultSeq.size();
+    	
     	for (int idx = 0; idx < size1; idx++) {
     		XObject seqItem = resultSeq.item(idx);
     		if (!((seqItem instanceof XNumber) || (seqItem instanceof XBooleanStatic) || (seqItem instanceof XBoolean) || 
@@ -1210,6 +1213,42 @@ public class XslTransformEvaluationHelper {
  			   }
  		   }
  	   }
+    }
+    
+    /**
+     * Method definition, to check whether the supplied string
+     * value argument, is one of XSL built-in namespace uri.
+     * 
+     * @param nsUri                      The supplied string value
+     * @return                           Boolean true or false
+     */
+    public static boolean isXslBuiltInNamespace(String nsUri) {
+    	
+    	boolean result = false;
+    	
+    	if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
+    	   result = true;
+    	}
+    	else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {
+    	   result = true;
+    	}
+        else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {
+           result = true;
+    	}
+        else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {
+           result = true;
+    	}
+        else if ((Constants.S_XSLNAMESPACEURL).equals(nsUri)) {
+        	result = true;
+     	}
+        else if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(nsUri)) {
+        	result = true;
+     	}
+        else if ((Constants.XSL_ERROR_NAMESACE).equals(nsUri)) {
+        	result = true;
+     	}
+    	
+    	return result;
     }
     
     /**

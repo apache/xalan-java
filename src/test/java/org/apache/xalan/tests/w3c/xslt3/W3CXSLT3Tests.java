@@ -90,20 +90,20 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XslCallTemplateTests.class, XslFnCopyOfTests.class, XslVariableTests.class, XslAsAttrTests.class, XslAvtAttrTests.class, 
-	            XslSequenceTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class, XslApplyTemplatesTests.class,
+@SuiteClasses({ XslFnCopyOfTests.class, XslSortTests.class, XslFunctionTests.class, XslContextItemTests.class, XslGlobalContextItemTests.class,
+	            XslCallTemplateTests.class, XslVariableTests.class, XslAsAttrTests.class, XslAvtAttrTests.class, 
+	            XslSequenceTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class, XslApplyTemplatesTests.class,	            
 	            XslIterateTests.class, XslForEachGroupTests.class, XslHigherOrderFunctionTests.class, XslTryTests.class, 
-	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslElementTests.class, 
-	            XslSortTests.class, XslFunctionTests.class, XslCharacterMapTests.class, XslAttributeSetTests.class, XslFnPositionTests.class, 
+	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslElementTests.class, 	             
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, XslMathTests.class, 
-	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, 
+	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class,
+	            XslCharacterMapTests.class, XslAttributeSetTests.class, XslFnPositionTests.class,
 	            XslNodeTests.class, XslDateTests.class, XslNamespaceTests.class, XslStringTests.class, XslFnDeepEqualTests.class, 
 	            XslFnFormatNumberTests.class, XslRegexTests.class, XslRegexSyntaxTests.class, XslDocumentTests.class,
 	            XslXPathDefaultNamespaceAttrTests.class, XslExpandTextAttrTests.class, XslFnJsonToXmlTests.class,
 	            XslBuiltInTemplateTests.class, XslModeTests.class, XslDisableOutputEscapingAttrTests.class, XslTunnelAttrTests.class,
 	            XslParamTests.class, XslStripSpaceTests.class, XslTemplateTests.class, XslFnXmlToJsonTests.class, XslMessageTests.class,
-	            XslConstructNodeTests.class, XslWhitespaceTests.class, XslPackageTests.class, XslGlobalContextItemTests.class, 
-	            XslContextItemTests.class, XslMapsTests.class, XslFnKeyTests.class })
+	            XslConstructNodeTests.class, XslWhitespaceTests.class, XslPackageTests.class, XslMapsTests.class, XslFnKeyTests.class })
 public class W3CXSLT3Tests {
 
 }

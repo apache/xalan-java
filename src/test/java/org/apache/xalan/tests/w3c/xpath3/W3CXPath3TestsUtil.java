@@ -2428,8 +2428,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     
     /**
      * Method definition, to get an XPath normalized string
-     * by replacing all substrings of form "..." to '...', to 
-     * make them XPath legal string literals. 
+     * by replacing all substrings with form "..." to '...', to 
+     * make them XPath compatible string literals. 
      * 
      * @param xpathExprStr                The supplied XPath string value
      * @return                            An XPath normalized string value

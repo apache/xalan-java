@@ -1035,7 +1035,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 	   
 	   final int sourceNode = xctxt.getCurrentNode();
 	   
-	   boolean isXslHomogeneousInpSource = evalResult.isHomogeneousSource();
+	   boolean isXslHomogeneousInpSource = evalResult.isDataHomogeneousSource();
 	   
 	   if (evalResult instanceof ResultSequence) {
 		   ResultSequence resultSeq = (ResultSequence)evalResult;

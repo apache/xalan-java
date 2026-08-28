@@ -24,6 +24,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemFunction;
+import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -87,6 +89,27 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
 		  XSLTElementDef def = getElemDef();
 		  Class classObject = def.getClassObject();
 		  ElemTemplateElement elem = null;
+		  
+		  if ((Constants.S_XSLNAMESPACEURL).equals(def.getNamespace()) && (Constants.ELEMNAME_CONTEXT_ITEM_STRING).equals(def.getName())) {
+			 ElemTemplateElement elemTemplateElement = handler.getElemTemplateElement();
+			 
+			 if (elemTemplateElement instanceof ElemFunction) {
+				throw new org.xml.sax.SAXException("XTSE0010 : An XSL stylesheet instruction 'context-item', may only appear as child of stylesheet instruction 'template'."); 
+			 }
+			 else if (!(elemTemplateElement instanceof ElemTemplate)) {
+				throw new org.xml.sax.SAXException("XTSE0010 : An XSL stylesheet instruction 'context-item', may only appear as child of stylesheet instruction 'template'."); 
+			 }
+			 
+			 int attrLength = attributes.getLength();
+
+			 for (int idx = 0; idx < attrLength; idx++) {
+				 String attrLocalName = attributes.getLocalName(idx);		
+
+				 if (!((Constants.ATTRNAME_AS).equals(attrLocalName) || (Constants.ELEMNAME_USE_STRING).equals(attrLocalName) || (Constants.ATTRNAME_USE_WHEN).equals(attrLocalName))) {
+					 throw new org.xml.sax.SAXException("XTSE0090 : An XSL stylesheet instruction 'context-item', cannot have an attribute with name '" + attrLocalName + "'.");
+				 }
+			 }
+		  }		  		  
 
 		  try
 		  {

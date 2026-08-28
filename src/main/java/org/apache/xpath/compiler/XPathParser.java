@@ -1388,7 +1388,7 @@ public class XPathParser
            sequenceTypeKindTest.setNodeLocalName(nodeNsParts[0]);
            sequenceTypeKindTest.setNodeNsUri(nodeNsParts[1]);
            sequenceTypeKindTest.setDataTypeLocalName(nodeDataTypeParts[0]);
-           sequenceTypeKindTest.setDataTypeUri(nodeDataTypeParts[1]);
+           sequenceTypeKindTest.setDataTypeNsUri(nodeDataTypeParts[1]);
            
            if (nodeDataTypeParts[1] == null) {
         	  // Check for a possibility, of data type being an user-defined schema type
@@ -8896,7 +8896,8 @@ public class XPathParser
 	   if (xsModel != null) {
 		   // A pre-compiled schema is available. Currently this is due to user's request
 		   // for an XML input document validation via command-line option -val.
-		   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
+		   
+		   setSchemaXsTypeDefinition(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
 	   }
 	   else {
 		   String xmlSchemaDocumentStr = null;
@@ -8917,7 +8918,7 @@ public class XPathParser
 			   xsModel = xsLoader.load(lsInput);    						
 
 			   if (xsModel != null) {
-				   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);	    							    						
+				   setSchemaXsTypeDefinition(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);	    							    						
 			   }
 			   else {
 				   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, from child "
@@ -8943,7 +8944,7 @@ public class XPathParser
 	   if (xsModel != null) {
 		   // A pre-compiled schema is available. Currently this is due to user's request
 		   // for an XML input document validation via command-line option -val.
-		   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
+		   setSchemaXsTypeDefinition(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
 	   }
 	   else {
 		   XSLoaderImpl xsLoader = new XSLoaderImpl();
@@ -8986,7 +8987,7 @@ public class XPathParser
 				   }
 
 				   if (xsModel != null) {				   
-					   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
+					   setSchemaXsTypeDefinition(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
 				   }
 				   else {
 					   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, "
@@ -9011,7 +9012,7 @@ public class XPathParser
    /**
     * Set XSTypeDefinition object instance on an XPathSequenceTypeExpr object.  
     */
-   private void setXsTypeDefinitionOnSequenceTypeExpr(XSModel xsModel, XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
+   private void setSchemaXsTypeDefinition(XSModel xsModel, XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
 		   											  String typeName) throws TransformerException {
 	   
 	   XSTypeDefinition xsTypeDefinition = xsModel.getTypeDefinition(typeName, typeNamespace);

@@ -37,9 +37,7 @@ public class XPathSequenceType extends XObject {
     private static final long serialVersionUID = -8207360998434418776L;
 
     private int builtInSequenceType;
-    
-    private XSTypeDefinition xsTypeDefinition;
-    
+            
     private int itemTypeOccurrenceIndicator;
     
     private XPathSequenceTypeKindTest sequenceTypeKindTest;
@@ -49,6 +47,8 @@ public class XPathSequenceType extends XObject {
     private XPathSequenceTypeMapTest sequenceTypeMapTest;
     
     private XPathSequenceTypeArrayTest sequenceTypeArrayTest;
+    
+    private XSTypeDefinition xsTypeDefinition;
 
     public int getBuiltInSequenceType() {
         return builtInSequenceType;
@@ -57,14 +57,6 @@ public class XPathSequenceType extends XObject {
     public void setBuiltInSequenceType(int sequenceType) {
         this.builtInSequenceType = sequenceType;
     }
-
-    public XSTypeDefinition getXsTypeDefinition() {
-		return xsTypeDefinition;
-	}
-
-	public void setXsTypeDefinition(XSTypeDefinition xsTypeDefinition) {
-		this.xsTypeDefinition = xsTypeDefinition;
-	}
 
 	public int getItemTypeOccurrenceIndicator() {
         return itemTypeOccurrenceIndicator;
@@ -104,6 +96,14 @@ public class XPathSequenceType extends XObject {
 
 	public void setSequenceTypeArrayTest(XPathSequenceTypeArrayTest sequenceTypeArrayTest) {
 		this.sequenceTypeArrayTest = sequenceTypeArrayTest;
+	}
+	
+	public XSTypeDefinition getXsTypeDefinition() {
+		return xsTypeDefinition;
+	}
+
+	public void setXsTypeDefinition(XSTypeDefinition xsTypeDefinition) {
+		this.xsTypeDefinition = xsTypeDefinition;
 	}
 	
 	/**

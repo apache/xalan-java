@@ -516,7 +516,7 @@ public class XPathSequenceConstructor extends Expression {
         }
         
         if (isSourceKind1 && isSourceKind2) {
-           result.setHomogeneousSource(true);
+           result.setDataHomogeneousSource(true);
         }
         
         return result;

@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
@@ -47,6 +48,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xml.utils.DefaultErrorHandler;
+import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
@@ -114,6 +116,10 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     protected static String m_xsl_test_dir_base_uri = null;
     
     protected boolean m_init_context_item_available = false;
+    
+    public static final String EMPTY_STRING = "";
+    
+    public static final String XS_COLON = "xs:";
     
     /**
      * Class constructor.
@@ -440,6 +446,39 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		Assert.fail();    
     	}
     }
+     
+     /**
+      * This method is used by, Xalan-J XSL 3 java extension function calls
+      * used within few .xsl test files.
+      * 
+      * @return  current date value
+      */
+     public static Date getCurrentDate() {
+         Date currentDate = new Date();
+       
+         return currentDate;
+     }
+    
+     /**
+      * This method is used by, Xalan-J XSL 3 java extension function calls
+      * used within few .xsl test files.
+      * 
+      * @return  default time zone offset string
+      */
+     public static String getDefaultTimezoneOffsetStr() {
+         String timeZoneoffsetStr = null;
+        
+         String dateStr = (OffsetDateTime.now()).toString();
+         if (dateStr.endsWith("Z")) {
+             timeZoneoffsetStr = "Z";   
+         }
+         else {
+             int dateStrLength = dateStr.length();
+             timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
+         }
+        
+         return timeZoneoffsetStr;
+     }
     
      /**
       * This function is invoked by many of the Xalan-J XSL 3 test 
@@ -905,36 +944,74 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     }
     
     /**
-     * This method is used by, Xalan-J XSL 3 java extension function calls
-     * used within few .xsl test files.
+     * Method definition, to get an XPath normalized string
+     * by replacing all substrings with form "..." to '...', to 
+     * make them XPath compatible string literals. 
      * 
-     * @return  current date value
+     * @param xpathExprStr                The supplied XPath string value
+     * @return                            An XPath normalized string value
      */
-    public static Date getCurrentDate() {
-        Date currentDate = new Date();
-      
-        return currentDate;
-    }
-   
+    protected String getXPathNormalizedStr(String xpathExprStr) {
+		
+		String result = null;
+		
+		xpathExprStr = replaceExpandedNsDecl(xpathExprStr);
+
+		int idx1 = xpathExprStr.indexOf("\"");
+		int idx2 = -1;
+		int strLength = xpathExprStr.length();
+		if (strLength > 1) {
+			while (idx1 != -1) {
+				String str1 = xpathExprStr.substring(0, idx1); 
+				String str2 = xpathExprStr.substring(idx1 + 1);    									 
+				idx2 = str2.indexOf("\"");
+				String xpathExprStrNew = null;
+				if (idx2 != -1) {
+					String x1 = str2.substring(0, idx2);
+					str2 = "'" + x1 + "'";
+					String prefixStr = str1 + str2;
+					String suffixStr = xpathExprStr.substring(prefixStr.length());
+					xpathExprStrNew = prefixStr + suffixStr;    									       									   
+				}
+
+				if (xpathExprStrNew != null) {
+					xpathExprStr = xpathExprStrNew; 
+					idx1 = xpathExprStr.indexOf("\"");
+				}
+				else {
+					break;	
+				}
+			}
+		}
+		
+		result = xpathExprStr;
+		
+		return result;
+	}
+    
     /**
-     * This method is used by, Xalan-J XSL 3 java extension function calls
-     * used within few .xsl test files.
+     * Method definition, to do string replacement, by replacing
+     * expanded XML namespace references with their corresponding
+     * abbreviations.
      * 
-     * @return  default time zone offset string
+     * @param xpathExprStr                    The supplied XPath expression 
+     *                                        string.
+     * @return                                The replacement string
      */
-    public static String getDefaultTimezoneOffsetStr() {
-        String timeZoneoffsetStr = null;
-       
-        String dateStr = (OffsetDateTime.now()).toString();
-        if (dateStr.endsWith("Z")) {
-            timeZoneoffsetStr = "Z";   
-        }
-        else {
-            int dateStrLength = dateStr.length();
-            timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
-        }
-       
-        return timeZoneoffsetStr;
-    }
+    private String replaceExpandedNsDecl(String xpathExprStr) {
+		
+    	String result = null;    
+		
+    	xpathExprStr = xpathExprStr.replace("Q{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}", EMPTY_STRING);
+    	xpathExprStr = xpathExprStr.replace("Q{" + XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}", "math:");
+    	xpathExprStr = xpathExprStr.replace("Q{" + XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}", "map:");
+    	xpathExprStr = xpathExprStr.replace("Q{" + XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}", "array:");
+    	xpathExprStr = xpathExprStr.replace("Q{" + org.apache.xalan.templates.Constants.XSL_ERROR_NAMESACE + "}", "err:");
+    	xpathExprStr = xpathExprStr.replace("Q{" + XMLConstants.W3C_XML_SCHEMA_NS_URI + "}", XS_COLON);
+    	
+    	result = xpathExprStr; 
+		
+		return result;
+	}
     
 }

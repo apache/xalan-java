@@ -21,11 +21,17 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
+import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
+import org.apache.xpath.composite.XPathSequenceTypeKindTest;
+import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
@@ -156,18 +162,19 @@ public class ElemContextItem extends ElemTemplateElement {
 	 */
 	public void execute(TransformerImpl transformer) throws TransformerException
 	{
-		XPathContext xctxt = transformer.getXPathContext();
 		
-		int contextNode = DTM.NULL;
-		
-		if (transformer.getInitContextItemAvailable()) {
-		   contextNode = xctxt.getCurrentNode();
-		}
-		else {
-		   contextNode = DTM.NULL;
-		}
+		XPathContext xctxt = transformer.getXPathContext();				
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
+		
+        int sourceNode = DTM.NULL;
+		
+		if (transformer.getInitContextItemAvailable()) {
+		   sourceNode = xctxt.getCurrentNode();
+		}
+		else {
+		   sourceNode = DTM.NULL;
+		}
 		
         ElemTemplateElement parentTemplateElem = getParentElem();
         
@@ -181,14 +188,15 @@ public class ElemContextItem extends ElemTemplateElement {
         }
         else if (prevSiblingNode != null) {
         	String prevSiblingNodeName = prevSiblingNode.getNodeName();
-        	throw new TransformerException("XTSE0010 : An XSL context-item instruction can only occur as first "
-		                                                                             + "child element of XSL template instruction. An element '" + 
-		        			                                                         prevSiblingNodeName + "' occured as previous sibling to XSL context-item "
-		        			                                                         + "instruction.", srcLocator);
+        	
+        	throw new TransformerException("XTSE0010 : An XSL instruction context-item can only occur as first "
+						                                                                             + "child element of XSL template instruction. An element '" + 
+						        			                                                         prevSiblingNodeName + "' occured as previous sibling to XSL context-item "
+						        			                                                         + "instruction.", srcLocator);
         }
         else {
-        	throw new TransformerException("XTSE0010 : An XSL context-item instruction can only occur as first "
-        			                                                                 + "child element of XSL template instruction.", srcLocator);
+        	throw new TransformerException("XTSE0010 : An XSL instruction context-item can only occur as first "
+        			                                                                                 + "child element of XSL template instruction.", srcLocator);
         }
         
         if (m_useAttr == null) {
@@ -198,57 +206,96 @@ public class ElemContextItem extends ElemTemplateElement {
         	 * "use"'s run-time value to 'optional' which is default value of "use" 
         	 * attribute.
         	 */
+        	
         	m_useAttr = Constants.ATTRVAL_OPTIONAL; 
         }
         
         if (!(m_useAttr.equals(Constants.ATTRVAL_REQUIRED) || 
         	  m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
         	  m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
-        	throw new TransformerException("XTSE0010 : An XSL context-item instruction's attribute \"use\" can have possible values "
-        			                                                              + "'required', 'optional', 'absent'. Value specified within "
-        			                                                              + "stylesheet is '" + m_useAttr + "'.", srcLocator);
+        	
+        	throw new TransformerException("XTSE0020 : An XSL instruction context-item attribute \"use\" can have possible values "
+        			                                                              					+ "'required', 'optional', 'absent'. The value specified within "
+        			                                                              					+ "an XSL stylesheet is '" + m_useAttr + "'.", srcLocator);
         }        
         
         if ((enclosingXslTemplateName == null) && (m_useAttr.equals(Constants.ATTRVAL_OPTIONAL) || 
-        	                                         m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
-        	throw new TransformerException("XTSE0020 : An XSL context-item instruction appearing within an XSL template declaration "
-        			                                    + "with no \"name\" attribute must specify value of \"use\" attribute as 'required'.", srcLocator);
+        	                                                                                   m_useAttr.equals(Constants.ATTRVAL_ABSENT))) {
+        	throw new TransformerException("XTSE0020 : An XSL instruction context-item, within an XSL template declaration "
+        			                                                                                + "with no \"name\" attribute must specify "
+        			                                                                                + "value of attribute \"use\" as 'required'.", srcLocator);
         }        
         
         if (m_useAttr.equals(Constants.ATTRVAL_ABSENT) && transformer.getInitContextItemAvailable()) {
-            throw new TransformerException("XTSE0020 : An XSL context-item instruction attribute \"use\" value is 'absent', but "
-            		                                                                                                 + "the context item exists.", srcLocator);
+            throw new TransformerException("XTSE0020 : An XSL instruction context-item attribute \"use\" value is 'absent', but "
+            		                                                                                                 + "the context item is available.", srcLocator);
         }
         
         if (m_useAttr.equals(Constants.ATTRVAL_REQUIRED) && !transformer.getInitContextItemAvailable()) {
-            throw new TransformerException("XTTE3090 : An XSL context-item instruction attribute \"use\" value is 'required', but "
+            throw new TransformerException("XTTE3090 : An XSL instruction context-item attribute \"use\" value is 'required', but "
             		                                                                                                 + "the context item is absent.", srcLocator);
-        }
+        }                
         
         if (m_asAttr != null) {        	
         	XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
-            XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+            XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());            
             XPathSequenceType seqExpectedTypeData = (XPathSequenceType)seqTypeExpressionEvalResult;
             
-            int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+            int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator(); 
+            
+            int xsBuiltInSeqType = seqExpectedTypeData.getBuiltInSequenceType();
+            XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+            XPathSequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+            XPathSequenceTypeMapTest seqTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
+            XPathSequenceTypeArrayTest seqTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
+            XSTypeDefinition XSTypeDefinition = seqExpectedTypeData.getXsTypeDefinition(); 
+            
+            if ((xsBuiltInSeqType == 0) && (seqTypeKindTest == null) && (seqTypeFunctionTest == null) 
+            		                                                                           && (seqTypeMapTest == null) && (seqTypeArrayTest == null) 
+            		                                                                           && (XSTypeDefinition == null)) {
+            	throw new TransformerException("XTSE0020 : An XSL instruction context-item has an attribute \"as\", that refers to an unknown type.", srcLocator);
+            }
+            else if ((xsBuiltInSeqType == 0) && ((XSTypeDefinition == null) || !XslTransformEvaluationHelper.isXslBuiltInNamespace(XSTypeDefinition.getNamespace()))) {
+            	if (seqTypeKindTest != null) {
+            	   String dataTypeNsUri = seqTypeKindTest.getDataTypeNsUri();
+            	   
+            	   if ((dataTypeNsUri != null) && !XslTransformEvaluationHelper.isXslBuiltInNamespace(dataTypeNsUri)) {
+            		  throw new TransformerException("XPST0008 : An XSL instruction context-item has an attribute \"as\", that "
+            		  		                                                                           + "refers to a type with namespace " 
+            				                                                                           + dataTypeNsUri + ", which is not imported via an XML schema.", srcLocator);  
+            	   }
+            	}
+            	else {
+            	   throw new TransformerException("XPST0008 : An XSL instruction context-item has an attribute \"as\", that "
+                                                                                                      + "refers to a type, which is not imported via "
+                                                                                                      + "an XML schema.", srcLocator);
+            	}
+            }
             
             if (itemTypeOccurenceIndicator != XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) {
-            	throw new TransformerException("XTSE0020 : An XSL context-item instruction 'as' attribute, cannot "
-            			                                                                       + "have sequence type occurence "
-            			                                                                       + "indicator.", srcLocator);
+            	throw new TransformerException("XTSE0020 : An XSL instruction context-item attribute \"as\", cannot have sequence type "
+            																													 + "occurence indicator.", srcLocator);
+            }
+            
+            if (m_useAttr.equals(Constants.ATTRVAL_ABSENT) && (itemTypeOccurenceIndicator == 
+            		                                                                         XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT)) {
+            	throw new TransformerException("XTSE3088 : An XSL instruction context-item attribute \"as\" requires context item to be available, but context-item "
+            			                                                                                                          + "attribute 'use' value is 'absent'.", 
+            			                                                                                                          srcLocator);	
             }
         	
         	String xpathExprStr = ". instance of " + m_asAttr;
 
         	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
-        	XObject evalResult = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+        	XObject evalResult = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 
         	if (!evalResult.bool()) {
         		String nodeName = null;
-        		if (contextNode != DTM.NULL) {
-        			DTM dtm = xctxt.getDTM(contextNode);
-        			Node node = dtm.getNode(contextNode);
+        		
+        		if (sourceNode != DTM.NULL) {
+        			DTM dtm = xctxt.getDTM(sourceNode);
+        			Node node = dtm.getNode(sourceNode);
         			nodeName = node.getNodeName();
         		}
 

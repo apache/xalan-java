@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-27T11:27:50Z" fail="10" name="context-item" pass="21" run="31" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-28T16:21:34Z" fail="3" name="context-item" pass="28" run="31" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="context-item-001"/>
    <testResult status="pass" testName="context-item-002"/>
    <testResult status="pass" testName="context-item-003"/>
@@ -8,17 +8,9 @@
    <testResult status="pass" testName="context-item-007"/>
    <testResult status="pass" testName="context-item-008"/>
    <testResult status="pass" testName="context-item-009"/>
-   <testResult status="fail" testName="context-item-010">
-      <outResult>
-         <errTrace>XTTE0590 : The required item type of the context item for the template rule is xs:integer.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="context-item-010"/>
    <testResult status="pass" testName="context-item-011"/>
-   <testResult status="fail" testName="context-item-012">
-      <outResult>
-         <errTrace>XTTE0590 : The required item type of the context item for the template rule is document-node(element(doc)). The supplied node '#document' doesn't conform.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="context-item-012"/>
    <testResult status="pass" testName="context-item-013"/>
    <testResult status="pass" testName="context-item-014"/>
    <testResult status="pass" testName="context-item-015"/>
@@ -29,45 +21,27 @@
    <testResult status="pass" testName="context-item-018"/>
    <testResult status="pass" testName="context-item-019"/>
    <testResult status="pass" testName="context-item-901"/>
-   <testResult status="fail" testName="context-item-902">
+   <testResult status="pass" testName="context-item-902"/>
+   <testResult status="pass" testName="context-item-903">
       <outResult>
-         <errTrace>XTTE0590 : The required item type of the context item for the template rule is my:percentage.</errTrace>
-      </outResult>
-      <outResult>
-         <errTrace>XTTE0590 : The required item type of the context item for the template rule is my:percentage.</errTrace>
+         <errTrace>XPST0008 : An XSL instruction context-item has an attribute "as", that refers to a type with namespace http://all.mine.com/, which is not imported via an XML schema.</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="context-item-903">
-      <outResult>
-         <errTrace>XTTE0590 : The required item type of the context item for the template rule is element(*, my:percentage).</errTrace>
-      </outResult>
-      <outResult>
-         <errTrace>XTTE0590 : The required item type of the context item for the template rule is element(*, my:percentage).</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="context-item-904">
-      <outResult>
-         <errTrace>XTSE0010 : An XSL context-item instruction's attribute "use" can have possible values 'required', 'optional', 'absent'. Value specified within stylesheet is 'no-way'.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="context-item-904"/>
    <testResult status="pass" testName="context-item-905"/>
    <testResult status="pass" testName="context-item-906"/>
-   <testResult status="fail" testName="context-item-907">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;22 22 22 22 22&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="context-item-907"/>
    <testResult status="pass" testName="context-item-908"/>
    <testResult status="pass" testName="context-item-909"/>
-   <testResult status="fail" testName="context-item-910">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;2222222222&lt;/out&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="context-item-910"/>
    <testResult status="fail" testName="context-item-911">
       <outResult>
-         <errTrace>XTTE3090 : An XSL context-item instruction attribute "use" value is 'required', but the context item is absent.</errTrace>
+         <errTrace>XTTE3090 : An XSL instruction context-item attribute "use" value is 'required', but the context item is absent.</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="context-item-912">
       <outResult>
-         <errTrace>XTTE3090 : An XSL context-item instruction attribute "use" value is 'required', but the context item is absent.</errTrace>
+         <errTrace>XTTE3090 : An XSL instruction context-item attribute "use" value is 'required', but the context item is absent.</errTrace>
       </outResult>
    </testResult>
 </testrun>

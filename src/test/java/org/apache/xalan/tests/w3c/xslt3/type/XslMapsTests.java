@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XSL 3.0 transformation 
- * tests for XPath maps types.
+ * tests for XSLT 3.0 maps.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -38,11 +38,15 @@ public class XslMapsTests extends W3CXslTransformTestsUtil {
     	
     	m_testResultFileName = "_maps-test-set_result.xml";
     	
-    	// Xalan xslt3.0 implementation goes to INF loop, with this test case.
+    	// Xalan-J xslt3.0 implementation goes to inf loop, with this test case
     	m_skipped_tests_list.add("maps-011");
     	
+    	// Xalan-J xslt3.0 implementation seems to work fine, for this test case
+    	m_skipped_tests_list.add("maps-017");
+    	
     	// The following XSLT 3.0 test cases, use an XML namespace http://www.w3.org/2011/xpath-functions/map
-    	// from earlier XSL 3 specification drafts. Skipping these XSL test cases for now.
+    	// from earlier XSL 3 specification drafts, as mentioned within W3C XSL 3 'map' test set.
+    	
     	m_skipped_tests_list.add("maps-906a");
     	m_skipped_tests_list.add("maps-906b");
     	m_skipped_tests_list.add("maps-906c");
@@ -54,7 +58,7 @@ public class XslMapsTests extends W3CXslTransformTestsUtil {
     	m_skipped_tests_list.add("maps-906i");
     	m_skipped_tests_list.add("maps-906j");
     	m_skipped_tests_list.add("maps-906k");
-    	m_skipped_tests_list.add("maps-906l");
+    	m_skipped_tests_list.add("maps-906l");    	    	
     }
 
     @AfterClass

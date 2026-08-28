@@ -348,7 +348,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	  }
   }
 
-  
   /**
    * Method definition, to do an XSL transformation of each xdm node or/and
    * other kinds of xdm items, that are selected by xsl:apply-templates

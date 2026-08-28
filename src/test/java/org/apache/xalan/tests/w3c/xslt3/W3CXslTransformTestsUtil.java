@@ -456,7 +456,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   if (!m_xslTransformTestSetFilePath.contains("expr/axes/")) {    				   
     				   if ((m_xml_document_url_str != null) && (m_xml_document_url_str.endsWith("insn/sort/sort018.xml") || 
     						                                    m_xml_document_url_str.endsWith("insn/attribute/attribute-03.xml"))) {
-    					   // An XML input document encoding is, iso-8859-1" 
+    					   // An XML input document encoding is, iso-8859-1
     					   
     					   InputStream inpStream = (new URL(m_xml_document_url_str)).openStream();    					      					  
 
@@ -489,7 +489,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         		   xslSource.setSystemId(xslStylesheetUriStr); 
     		   }
     		   else {
-                   // An XSL stylesheet document encoding is, iso-8859-1" 
+                   // An XSL stylesheet document encoding is, iso-8859-1
 				   
 				   InputStream inpStream = (new URL(xslStylesheetUriStr)).openStream();    					      					  
 
@@ -862,7 +862,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		String expErrCodeName = null;
 		
-		elemTestResult.setAttribute("testName", testCaseName);		
+		elemTestResult.setAttribute("testName", testCaseName);
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
@@ -1729,6 +1729,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	else {
             		xslTrfExpectedResultXPathStr = elemNode.getTextContent();            		
             	}
+            	
+            	xslTrfExpectedResultXPathStr = getXPathNormalizedStr(xslTrfExpectedResultXPathStr);
 
             	Document xmlInpDoc1 = m_xmlDocumentBuilder.parse(new ByteArrayInputStream((resultStrWriter.toString()).getBytes()));
             	String xmlStr1 = serializeXmlDomElementNode(xmlInpDoc1);
@@ -1736,7 +1738,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	StringReader strReader = new StringReader(xmlStr1);             	            	
             	
                 xslTrfExpectedResultXPathStr = "if (" + xslTrfExpectedResultXPathStr + ") then "
-                		                                                           + "true() else exists(" + xslTrfExpectedResultXPathStr + ")";
+                		                                                             + "true() else exists(" + xslTrfExpectedResultXPathStr + ")";
             	
             	System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);            	            	
             	

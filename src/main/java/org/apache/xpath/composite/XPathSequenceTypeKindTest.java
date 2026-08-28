@@ -51,7 +51,7 @@ public class XPathSequenceTypeKindTest {
     /**
      * Data type's namespace uri.
      */
-    private String m_dataTypeUri;
+    private String m_dataTypeNsUri;
     
     /**
      * Sequence type kind test may have, another contained sequence 
@@ -91,12 +91,12 @@ public class XPathSequenceTypeKindTest {
         this.m_dataTypeLocalName = dataTypeName;
     }
     
-    public String getDataTypeUri() {
-        return m_dataTypeUri;
+    public String getDataTypeNsUri() {
+        return m_dataTypeNsUri;
     }
 
-    public void setDataTypeUri(String dataTypeUri) {
-        this.m_dataTypeUri = dataTypeUri;
+    public void setDataTypeNsUri(String dataTypeNsUri) {
+        this.m_dataTypeNsUri = dataTypeNsUri;
     }
     
     public XPathSequenceTypeKindTest getSeqTypeSubKindTest() {
@@ -125,7 +125,7 @@ public class XPathSequenceTypeKindTest {
     	String nodeLocalName2 = sequenceTypeKindTest2.getNodeLocalName();
     	String nodeNsUri2 = sequenceTypeKindTest2.getNodeNsUri();
         String dataTypeLocalName2 = sequenceTypeKindTest2.getDataTypeLocalName();
-        String dataTypeUri2 = sequenceTypeKindTest2.getDataTypeUri();
+        String dataTypeUri2 = sequenceTypeKindTest2.getDataTypeNsUri();
         
         if (this.m_kindVal != kindVal2) {
            result = false;
@@ -163,13 +163,13 @@ public class XPathSequenceTypeKindTest {
         else if ((m_dataTypeLocalName != null) && !(this.m_dataTypeLocalName).equals(dataTypeLocalName2)) {
            result = false;
         }
-        else if ((this.m_dataTypeUri == null) && (dataTypeUri2 != null)) {
+        else if ((this.m_dataTypeNsUri == null) && (dataTypeUri2 != null)) {
            result = false;
         }
-        else if ((this.m_dataTypeUri != null) && (dataTypeUri2 == null)) {
+        else if ((this.m_dataTypeNsUri != null) && (dataTypeUri2 == null)) {
            result = false;
         }
-        else if ((m_dataTypeUri != null) && !(this.m_dataTypeUri).equals(dataTypeUri2)) {
+        else if ((m_dataTypeNsUri != null) && !(this.m_dataTypeNsUri).equals(dataTypeUri2)) {
            result = false;
         }
     	

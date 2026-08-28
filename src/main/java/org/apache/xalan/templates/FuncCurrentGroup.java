@@ -65,6 +65,7 @@ public class FuncCurrentGroup extends Function
 	   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
 	  
 	   boolean isFnCurrentGroupRefValidContext = false; 
+	   
 	   while (elemTemplateElement != null) {
 		   if (elemTemplateElement instanceof ElemForEachGroup) {
 			   isFnCurrentGroupRefValidContext = true;
@@ -77,15 +78,35 @@ public class FuncCurrentGroup extends Function
 	  
 	   if (!isFnCurrentGroupRefValidContext) {
 		  elemTemplateElement = (ElemTemplateElement)getExpressionOwner();
-		  (elemTemplateElement.m_groupNodesDtmHandlesStack).clear();
+		  
+		  (elemTemplateElement.m_groupNodeDtmHandleStack).clear();
 	   }   	   
 
 	   TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
-	   ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();       
+	   ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();
+	   
+	   ElemTemplateElement currElemTemplateElement2 = currElemTemplateElement; 
+	   	   	   
+	   while (currElemTemplateElement != null) {
+		  ResultSequence rSeq = currElemTemplateElement.getCurrentGroup();
+		  
+		  if (rSeq != null) {
+			 result = rSeq;
+			 
+			 return result;
+		  }
+		  
+		  currElemTemplateElement = currElemTemplateElement.getParentElem();
+	   }
+
+	   currElemTemplateElement = currElemTemplateElement2;  
+
 
 	   List<Integer> groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
+	   
 	   while ((groupNodesDtmHandles == null) && (currElemTemplateElement != null)) {
 		   currElemTemplateElement = currElemTemplateElement.getParentElem();
+		   
 		   if (currElemTemplateElement != null) {
 			   groupNodesDtmHandles = currElemTemplateElement.getGroupNodesDtmHandles();
 		   }
@@ -94,15 +115,18 @@ public class FuncCurrentGroup extends Function
 	   if (groupNodesDtmHandles != null) {
 		   if (isFnCurrentGroupRefValidContext) {
 			   boolean isGroupingAtomicValues = elemTemplateElement.getIsGroupingXdmAtomicValues();
+			   
 			   if (isGroupingAtomicValues) {
-				   ResultSequence rSeq = new ResultSequence();
+				   ResultSequence rSeq2 = new ResultSequence();
 				   int rSeqLength = groupNodesDtmHandles.size();
+				   
 				   for (int idx = 0; idx < rSeqLength; idx++) {
 					   int nodeHandle = groupNodesDtmHandles.get(idx);
-					   rSeq.add(new XMLNodeCursorImpl(nodeHandle, xctxt));
+					   
+					   rSeq2.add(new XMLNodeCursorImpl(nodeHandle, xctxt));
 				   }
 
-				   result = rSeq;
+				   result = rSeq2;
 			   }
 			   else {
 				   result = new XMLNodeCursorImpl(groupNodesDtmHandles, xctxt);
