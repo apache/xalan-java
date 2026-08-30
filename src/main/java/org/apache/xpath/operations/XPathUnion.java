@@ -37,12 +37,15 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Class definition, supporting implementation for XPath 3.1 
- * operators '|' & 'union' (which are XPath equivalent operators). 
+ * Class definition, implementing XPath 3.1 operators '|' 
+ * & 'union', which are synonyms of each other.
  * 
- * This class, evaluates XPath union operator, by using
- * XPath expression string values for union operator's first 
- * and second operands.
+ * This class, augments functionality provided by class method 
+ * UnionPathIterator.createUnionIterator(..), that has been
+ * part of Xalan-J XSLT 1.0 implementation.
+ * 
+ * An XPath 3.1 operators '|' & 'union', represents set union 
+ * of two node sets, by node identity.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -89,8 +92,8 @@ public class XPathUnion extends Expression
   }
 
   /**
-   * Method definition, to get XPath operator '|' & 
-   * 'union' evaluation result.
+   * Method definition, to find result of XPath 3.1 operators 
+   * '|' & 'union'.
    *  
    * @throws javax.xml.transform.TransformerException
    */
@@ -108,6 +111,14 @@ public class XPathUnion extends Expression
 	  
 	  m_rstr = normalizeStrBoundaryParens(m_rstr.trim());
 	  
+      List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+	  
+      if (prefixTable != null) {
+    	  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable); 
+
+    	  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+      }
+	  
 	  int idx = m_lstr.lastIndexOf("/");
 	  
 	  // Regex pattern for strings like, text(), node()
@@ -117,8 +128,6 @@ public class XPathUnion extends Expression
 	  // XML node handles for result of XPath 3.1 operator 'union'.
 	  
 	  List<Integer> nodeHandleResultLst = new ArrayList<Integer>();
-	  
-	  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 	  
 	  XMLNodeCursorImpl xmlNodeCursorImpl = null;
 	  
@@ -463,28 +472,6 @@ public class XPathUnion extends Expression
   public boolean deepEquals(Expression expr) {
 	  // no op
 	  return false;
-  }
-  
-  /**
-   * Method definition, to normalize XPath expression string
-   * by removing parenthesis '(' from beginning and ')' from 
-   * the end of the supplied string value.
-   * 
-   * @param str1 					The supplied string value
-   * @return                        The normalized string value
-   */
-  private java.lang.String normalizeStrBoundaryParens(java.lang.String str1) {
-	  
-	  java.lang.String result = null;
-	  
-	  if (str1.startsWith("(") && str1.endsWith(")")) {
-		 result = str1.substring(1, str1.length() - 1);  
-	  }
-	  else {
-		 result = str1;  
-	  }
-	  
-	  return result;
   }
 
 }

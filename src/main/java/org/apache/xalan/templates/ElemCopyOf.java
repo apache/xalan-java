@@ -395,7 +395,7 @@ public class ElemCopyOf extends ElemTemplateElement
     	  }
       }
       
-      String xpathPatternStr = m_selectExpression.getPatternString();
+      String xpathPatternStr = m_selectExpression.getPatternString();      
       if (xpathPatternStr.startsWith("/") && !xpathPatternStr.startsWith("//")) {
     	  DTM dtm = xctxt.getDTM(sourceNode);
     	  int documentNodeHandle = dtm.getDocument();

@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.util.ArrayList;
@@ -36,7 +33,10 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An implementation of XPath 'intersect' operation.
+ * An implementation of XPath 3.1 operator 'intersect'.
+ * 
+ * An XPath 3.1 operator 'intersect', represents set intersection 
+ * of two node sets, by node identity.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,7 +48,8 @@ public class Intersect extends XPathOperator
   private static final long serialVersionUID = 5559048164177617210L;
 
   /**
-   * Method to find result of XPath 'intersect' operation.
+   * Method definition, to find result of XPath 3.1 operator 
+   * 'intersect'.
    *  
    * @throws javax.xml.transform.TransformerException
    */

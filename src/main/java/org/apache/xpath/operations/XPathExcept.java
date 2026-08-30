@@ -23,6 +23,8 @@ import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.Expression;
@@ -98,40 +100,52 @@ public class XPathExcept extends Expression
 	  
 	  final int sourceNode = xctxt.getCurrentNode();
 
-	  SourceLocator srcLocator = xctxt.getSAXLocator();	  	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-	  XPath lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+      m_lstr = normalizeStrBoundaryParens(m_lstr.trim());
+	  
+	  m_rstr = normalizeStrBoundaryParens(m_rstr.trim());
+	  
+	  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+	  
+	  if (prefixTable != null) {
+    	  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable); 
+
+    	  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+      }
+	  
+	  XPath xpath1 = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	  
 	  if (m_vars != null) {
-		  lxpath.fixupVariables(m_vars, m_globals_size);
+		  xpath1.fixupVariables(m_vars, m_globals_size);
 	  }		  
 
-	  XObject lxObj = lxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+	  XObject xObj1 = xpath1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 	  
 	  List<Integer> nodeHandleLstFirst = new ArrayList<Integer>(); 
 	  
-	  if (lxObj instanceof XMLNodeCursorImpl) {
-		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)lxObj;
+	  if (xObj1 instanceof XMLNodeCursorImpl) {
+		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj1;
 		 DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
 		 
 		 int nextNode = DTM.NULL;
 		 while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 			nodeHandleLstFirst.add(nextNode); 
 		 }		 
-	  }
+	  }	  	  
 	  
-      XPath rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+      XPath xpath2 = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	  
 	  if (m_vars != null) {
-		  rxpath.fixupVariables(m_vars, m_globals_size);
+		  xpath2.fixupVariables(m_vars, m_globals_size);
 	  }		  
 
-	  XObject rxObj = rxpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+	  XObject xObj2 = xpath2.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 	  
 	  List<Integer> nodeHandleLstSecond = new ArrayList<Integer>();
 	  
-	  if (rxObj instanceof XMLNodeCursorImpl) {
-		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)rxObj;
+	  if (xObj2 instanceof XMLNodeCursorImpl) {
+		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj2;
 		 DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
 		 
 		 int nextNode = DTM.NULL;

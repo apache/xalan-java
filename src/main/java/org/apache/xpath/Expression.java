@@ -839,5 +839,27 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 
 	  return result;
   }
+  
+  /**
+   * Method definition, to normalize XPath expression string
+   * by removing parenthesis '(' from beginning and ')' from 
+   * the end of the, supplied string value.
+   * 
+   * @param str1 					The supplied string value
+   * @return                        The normalized string value
+   */
+  protected String normalizeStrBoundaryParens(String str1) {
+	  
+	  String result = null;
+	  
+	  if (str1.startsWith("(") && str1.endsWith(")")) {
+		 result = str1.substring(1, str1.length() - 1);  
+	  }
+	  else {
+		 result = str1;  
+	  }
+	  
+	  return result;
+  }
 
 }

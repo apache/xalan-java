@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.operations;
 
 import java.util.ArrayList;
@@ -33,7 +30,10 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An implementation of XPath 'except' operation.
+ * An implementation of XPath 3.1 operator 'except'.
+ * 
+ * An XPath 3.1 operator 'except', represents set difference 
+ * of two node sets, by node identity.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -45,7 +45,8 @@ public class Except extends XPathOperator
   private static final long serialVersionUID = 4245891832019437588L;
 
   /**
-   * Method to find result of XPath 'except' operation.
+   * Method definition, to find result of XPath 3.1 operator 
+   * 'except'.
    *  
    * @throws javax.xml.transform.TransformerException
    */
@@ -60,14 +61,16 @@ public class Except extends XPathOperator
     XObject expr2 = m_right.execute(xctxt);
     
     if ((expr1 instanceof XMLNodeCursorImpl) && (expr2 instanceof XMLNodeCursorImpl)) {
-    	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr1).iterRaw();
+    	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr1).iter();
         int nextNode;
         List<Integer> nodeHandleList1 = new ArrayList<Integer>();
+        
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
         	nodeHandleList1.add(Integer.valueOf(nextNode)); 
         }
         
-        dtmIter = ((XMLNodeCursorImpl)expr2).iterRaw();
+        dtmIter = ((XMLNodeCursorImpl)expr2).iter();
+        
         List<Integer> nodeHandleList2 = new ArrayList<Integer>();
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
         	nodeHandleList2.add(Integer.valueOf(nextNode)); 

@@ -43,6 +43,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.PathComponent;
 import org.apache.xpath.axes.WalkerFactory;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -115,6 +117,21 @@ public class Variable extends Expression implements PathComponent
   }
   
   protected boolean m_isGlobal = false;
+  
+  /**
+   * When there's a function call suffix, as last step within 
+   * an XPath expression, similar to $var/func(..), we keep a 
+   * compiled Function object for func(..) within this class field.  
+   */
+  private Function m_func_expr = null;
+
+  /**
+   * When there's a dynamic function call suffix, as last step 
+   * within an XPath expression, similar to $var/$func(..), we 
+   * keep a compiled XPathDynamicFunctionCall object for $func(..) 
+   * within this class field.  
+   */
+  private XPathDynamicFunctionCall m_dfc_expr = null;
   
   /**
    * This function is used to fixup variables from QNames to stack frame 
@@ -522,6 +539,22 @@ public class Variable extends Expression implements PathComponent
   			return true;
   	}
   	return false;
+  }
+  
+  public void setFuncExpr(Function expr) {		
+	 m_func_expr = expr;
+  }
+
+  public Function getFuncExpr() {
+	 return m_func_expr;
+  }
+
+  public void setDynamicFuncCallExpr(XPathDynamicFunctionCall dfc) {
+	 m_dfc_expr = dfc;
+  }
+
+  public XPathDynamicFunctionCall getDynamicFuncCallExpr() {
+	 return m_dfc_expr;
   }
   
   /**

@@ -1,9 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:40Z" fail="2" name="prod-AxisStep.abbr" pass="13" run="15" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-30T11:41:03Z" fail="2" name="prod-AxisStep.abbr" pass="19" run="21" statusUnknown="0">
+   <testResult status="pass" testName="abbreviatedSyntax-1"/>
    <testResult status="pass" testName="abbreviatedSyntax-2"/>
    <testResult status="pass" testName="abbreviatedSyntax-3"/>
    <testResult status="pass" testName="abbreviatedSyntax-5"/>
    <testResult status="pass" testName="abbreviatedSyntax-6"/>
+   <testResult status="pass" testName="abbreviatedSyntax-7"/>
    <testResult status="pass" testName="abbreviatedSyntax-8"/>
+   <testResult status="pass" testName="abbreviatedSyntax-9"/>
+   <testResult status="pass" testName="abbreviatedSyntax-10"/>
+   <testResult status="pass" testName="abbreviatedSyntax-12"/>
+   <testResult status="pass" testName="abbreviatedSyntax-13"/>
    <testResult status="pass" testName="abbreviatedSyntax-14"/>
    <testResult status="pass" testName="abbreviatedSyntax-16"/>
    <testResult status="pass" testName="abbreviatedSyntax-17"/>

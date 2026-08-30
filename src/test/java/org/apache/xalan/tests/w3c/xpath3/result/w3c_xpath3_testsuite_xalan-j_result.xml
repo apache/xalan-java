@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-08-18T10:59:54Z" desc="W3C XPath 3.1 test suite results" fail="1132" pass="8227" run="9363" skipped="19" success="87.87%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-08-30T11:42:04Z" desc="W3C XPath 3.1 test suite results" fail="1119" pass="8246" run="9369" skipped="19" success="88.01%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="7" run="7" success="100.0%"/>
     <array-filter fail="0" pass="11" run="11" success="100.0%"/>
@@ -121,13 +121,13 @@
     <op-divide-yearMonthDuration-by-yearMonthDuration fail="2" pass="21" run="23" success="91.3%"/>
     <op-divide-yearMonthDuration fail="3" pass="25" run="28" success="89.29%"/>
     <op-duration-equal fail="0" pass="144" run="144" success="100.0%"/>
-    <op-except fail="11" pass="14" run="25" success="56.0%"/>
+    <op-except fail="4" pass="21" run="25" success="84.0%"/>
     <op-gDay-equal fail="5" pass="40" run="45" success="88.89%"/>
     <op-gMonth-equal fail="1" pass="38" run="39" success="97.44%"/>
     <op-gMonthDay-equal fail="7" pass="38" run="45" success="84.44%"/>
     <op-gYear-equal fail="3" pass="37" run="40" success="92.5%"/>
     <op-gYearMonth-equal fail="3" pass="37" run="40" success="92.5%"/>
-    <op-intersect fail="9" pass="23" run="32" success="71.88%"/>
+    <op-intersect fail="4" pass="28" run="32" success="87.5%"/>
     <op-is-same-node fail="5" pass="17" run="22" success="77.27%"/>
     <op-multiply-dayTimeDuration fail="5" pass="28" run="33" success="84.85%"/>
     <op-multiply-yearMonthDuration fail="10" pass="30" run="40" success="75.0%"/>
@@ -167,16 +167,16 @@
   </op>
   <prod>
     <prod-ArrowPostfix fail="19" pass="21" run="40" success="52.5%"/>
-    <prod-AxisStep.abbr fail="2" pass="13" run="15" success="86.67%"/>
+    <prod-AxisStep.abbr fail="2" pass="19" run="21" success="90.48%"/>
     <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
     <prod-AxisStep.ancestor fail="1" pass="20" run="21" success="95.24%"/>
     <prod-AxisStep.following-sibling fail="1" pass="20" run="21" success="95.24%"/>
     <prod-AxisStep.following fail="1" pass="20" run="21" success="95.24%"/>
     <prod-AxisStep.preceding-sibling fail="1" pass="17" run="18" success="94.44%"/>
     <prod-AxisStep.preceding fail="1" pass="16" run="17" success="94.12%"/>
-    <prod-AxisStep fail="55" pass="181" run="236" success="76.69%"/>
+    <prod-AxisStep fail="54" pass="181" run="235" success="77.02%"/>
     <prod-CastableExpr fail="148" pass="700" run="848" success="82.55%"/>
-    <prod-ForClause fail="16" pass="58" run="74" success="78.38%"/>
+    <prod-ForClause fail="16" pass="59" run="75" success="78.67%"/>
     <prod-GeneralComp.eq fail="34" pass="85" run="119" success="71.43%"/>
     <prod-GeneralComp.ge fail="17" pass="41" run="58" success="70.69%"/>
     <prod-GeneralComp.gt fail="17" pass="50" run="67" success="74.63%"/>

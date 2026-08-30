@@ -2499,6 +2499,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     	if (nsMap.size() > 0) {
     	   Set<Entry<String, String>> mapEntrySet1 = nsMap.entrySet();
     	   Iterator<Entry<String, String>> iter1 = mapEntrySet1.iterator();
+    	   
     	   while (iter1.hasNext()) {
     		  Entry<String, String> mapEntry1 = iter1.next();
     		  String prefix = mapEntry1.getKey();
