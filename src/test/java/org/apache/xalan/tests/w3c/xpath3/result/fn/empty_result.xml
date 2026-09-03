@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:02Z" fail="3" name="fn-empty" pass="49" run="52" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:55Z" fail="4" name="fn-empty" pass="48" run="52" statusUnknown="0">
    <testResult status="pass" testName="fn-emptyint1args-1"/>
    <testResult status="pass" testName="fn-emptyint1args-2"/>
    <testResult status="pass" testName="fn-emptyint1args-3"/>
@@ -43,7 +43,7 @@
    <testResult status="pass" testName="K-SeqEmptyFunc-3"/>
    <testResult status="fail" testName="K-SeqEmptyFunc-4"/>
    <testResult status="pass" testName="K-SeqEmptyFunc-5"/>
-   <testResult status="pass" testName="K-SeqEmptyFunc-6"/>
+   <testResult status="fail" testName="K-SeqEmptyFunc-6"/>
    <testResult status="pass" testName="K-SeqEmptyFunc-7"/>
    <testResult status="pass" testName="K-SeqEmptyFunc-8"/>
    <testResult status="fail" testName="K-SeqEmptyFunc-9"/>

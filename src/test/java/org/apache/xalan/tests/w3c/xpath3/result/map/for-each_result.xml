@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:57Z" fail="0" name="map-for-each" pass="15" run="15" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:48Z" fail="1" name="map-for-each" pass="15" run="16" statusUnknown="0">
    <testResult status="pass" testName="map-for-each-001"/>
    <testResult status="pass" testName="map-for-each-002"/>
    <testResult status="pass" testName="map-for-each-003"/>
@@ -6,6 +6,7 @@
    <testResult status="pass" testName="map-for-each-005"/>
    <testResult status="pass" testName="map-for-each-006"/>
    <testResult status="pass" testName="map-for-each-007"/>
+   <testResult status="fail" testName="map-for-each-008"/>
    <testResult status="pass" testName="map-for-each-009"/>
    <testResult status="pass" testName="map-for-each-010"/>
    <testResult status="pass" testName="map-for-each-011"/>

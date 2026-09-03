@@ -75,19 +75,17 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		
 		if (m_arg0 instanceof NodeTest) {
   		   if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-  			  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function format-integer(), "
-  			  		                                                                  + "but the supplied type is a function type, which cannot be atomized.", srcLocator); 
+  			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 function call 'format-integer' first argument, should be an xdm atomic value.", srcLocator);
   		   }
   	    }
 		else if (m_arg0 instanceof XPathInlineFunction) {
-		   throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function format-integer(), "
-                        															  + "but the supplied type is a function type, which cannot be atomized.", srcLocator);
+		   throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 function call 'format-integer' first argument, should be an xdm atomic value.", srcLocator);
 		}
 
 		Expression[] exprArray = getArgs();
 
 		if ((m_arg1 == null) || ((exprArray != null) && (exprArray.length > 0))) {
-			throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function format-integer can have either two or three arguments.", srcLocator);
+			throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function call 'format-integer', can have either two or three arguments.", srcLocator);
 		}
 		
 		XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
@@ -105,20 +103,25 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		}
         
         String str0 = null;
+        
         if (arg0Obj instanceof ResultSequence) {
         	ResultSequence rSeq = (ResultSequence)arg0Obj;
+        	
         	if (rSeq.size() == 1) {
         		arg0Obj = rSeq.item(0);
         	}
         	else {
-        		throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to XPath function call format-integer() must be a sequence of length one.", srcLocator); 
+        		throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'format-integer', cannot be a sequence, "
+        				                                                                                                   + "with size greater than one.", srcLocator);
         	}
         }
         
         if (arg0Obj instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;
+           
            if (xmlNodeCursorImpl.getLength() > 1) {
-        	   throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to XPath function call format-integer() must be a sequence of length one.", srcLocator);
+        	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'format-integer', cannot be a sequence, "
+                       																							          + "with size greater than one.", srcLocator);
            }
            
            str0 = xmlNodeCursorImpl.str();
@@ -129,28 +132,29 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 
 		long arg0Long = 0;
 		
-		boolean arg0FormatError = false;
+		boolean arg0NumFormatErr = false;
+		
 		try {
 			arg0Long = Long.valueOf(str0);
+			
 			if (str0.contains(".")) {
-				arg0FormatError = true; 
+				arg0NumFormatErr = true; 
 			}
 		}
 		catch (NumberFormatException ex) {
-			arg0FormatError = true;
+			arg0NumFormatErr = true;
 		}
 
-		if (arg0FormatError) {
-			throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath function format-integer's first argument, "
-					                                                                                                  + "is not a valid representation of "
-					                                                                                                  + "an XML Schema type integer.", srcLocator);
+		if (arg0NumFormatErr) {
+			throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function call 'format-integer' first argument, is not an integer.", srcLocator);
 		}
 		
 		XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		
-		String pictureStr1 = XslTransformEvaluationHelper.getStrVal(arg1Obj);
+		String picStr1 = XslTransformEvaluationHelper.getStrVal(arg1Obj);
 		
 		String str2 = null;		
+		
 		if (m_arg2 != null) {
 		   XObject arg2Obj = getFunctionArgEffectiveValue(m_arg2, xctxt);
 		   
@@ -160,6 +164,7 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		ElemNumber elemNumber = new ElemNumber();
 
 		Locale locale = null;
+		
 		if (str2 != null) {
 			locale = new Locale(str2.toUpperCase(), "");
 		}
@@ -169,42 +174,46 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 
 		elemNumber.setLocale(locale);
 		
-		String formattedNumberResultStr = null;
+		String formattedNumberStr = null;
 				
-		int picStrLength = pictureStr1.length();
+		int picStrLength = picStr1.length();
+		
 		if (picStrLength == 0) {
-			throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                    + "second argument specifies an "
-																				                    + "invalid picture string. The supplied picture "
-																				                    + "string has length zero.", srcLocator);	
+			throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', picture string cannot be a zero length string.", srcLocator);	
+		}
+			
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(".*,{2,}.*");
+		java.util.regex.Matcher matcher = pattern.matcher(picStr1);
+		
+		if (matcher.matches()) {
+		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid "
+		   		                                                                                    + "picture string '" + picStr1 + "'. "
+		   		                                                                                    + "The picture string has consecutive separator characters.", srcLocator);			
 		}
 		
-		int idx = pictureStr1.lastIndexOf(';');
+		int idx = picStr1.lastIndexOf(';');
 		
 		String primaryFormatToken = null;
 		String formatModifier = null;		
+		
 		if (idx == -1) {
-		   primaryFormatToken = pictureStr1;
-		   
 		   // The format modifier is absent
+			
+		   primaryFormatToken = picStr1;		   		   
 		}
 		else if (idx == 0) {
 		   // Picture string ';' is invalid
 			
-		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                    + "second argument specifies an "
-																				                    + "invalid picture string '" + pictureStr1 + "'.", srcLocator);
+		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator);
 		}
 		else if (idx == (picStrLength - 1)) {
 		   // Picture string primary_format_token; is invalid, for e.g w;
 			
-		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                    + "second argument specifies an "
-																				                    + "invalid picture string '" + pictureStr1 + "'.", srcLocator);
+		   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator);
 		}
 		else {
-		   primaryFormatToken = pictureStr1.substring(0, idx);
-		   formatModifier = pictureStr1.substring(idx + 1);
+		   primaryFormatToken = picStr1.substring(0, idx);
+		   formatModifier = picStr1.substring(idx + 1);
 		}
 		
 		elemNumber.setFormatRawValue(primaryFormatToken);
@@ -215,26 +224,16 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		if (formatModifier != null) {		   	
 		   int idx2 = formatModifier.indexOf('(');
 		   int idx3 = formatModifier.lastIndexOf(')');
+		   
 		   if ((idx2 != -1) && (idx3 != -1) && (idx2 < idx3)) {
 			   String str1 = formatModifier.substring(idx2, idx3 + 1); 
+			   
 			   if (!StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
-				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                       + "second argument specifies an "
-																				                       + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
-			   }
-			   else {
-				   /**
-				    * Xalan-J ignores any substring like "(...)" wrt this, although
-				    * XPath 3.1 F&O spec allows this syntax and XPath function 
-				    * implementation for fn:format-integer may ascribe implementation 
-				    * specific meaning to this.
-				    */
-			   }
+				  throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator); 
+			   }			   
 		   }
 		   else if ((idx2 != -1) || (idx3 != -1)) {
-			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                       + "second argument specifies an "
-																				                       + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator); 
 		   }
 		   
 		   if ((idx2 != -1) && (idx3 != -1)) {
@@ -244,50 +243,49 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 		   }
 			
 		   int formatModifierLength = formatModifier.length();
+		   
 		   if (formatModifierLength == 1) {
 			   char c1 = formatModifier.charAt(0);
+			   
 			   if (c1 == 'c') {
 				   // Cardinal numbering is been followed
+				   
 				   isCardinalNumbering = true; 
 			   }
 			   else if (c1 == 'o') {
 				   // Ordinal numbering is been followed
+				   
 				   isCardinalNumbering = false; 
 			   }
 			   else {
-				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																					                           + "second argument specifies an "
-																					                           + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator); 
 			   }			   
 		   }
 		   else if (formatModifierLength == 2) {
 			   char c1 = formatModifier.charAt(0);
+			   
 			   if (c1 == 'c') {
 				   // Cardinal numbering is been followed
+				   
 				   isCardinalNumbering = true; 
 			   }
 			   else if (c1 == 'o') {
 				   // Ordinal numbering is been followed
+				   
 				   isCardinalNumbering = false; 
 			   }
 			   else {
-				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																					                           + "second argument specifies an "
-																					                           + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator); 
 			   }			   
 			   
 			   char c2 = formatModifier.charAt(1);
 			   
 			   if (!((c2 == 'a') || (c2 == 't'))) {
-				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                             + "second argument specifies an "
-																				                             + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+				   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator); 
 			   }
 		   }
 		   else {
-			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-																				                              + "second argument specifies an "
-																				                              + "invalid picture string '" + pictureStr1 + "'.", srcLocator); 
+			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator); 
 		   }
 		}
 		
@@ -298,30 +296,73 @@ public class FuncFormatInteger extends FunctionMultiArgs {
 				                                                                                      || "I".equals(primaryFormatToken)) {
 			ExpressionNode exprOwnerNode = getExpressionOwner();
 			TransformerImpl transformerImpl = null;
+			
 			if (exprOwnerNode instanceof ElemTemplateElement) {
 				ElemTemplateElement elemTemplateElement = (ElemTemplateElement)exprOwnerNode;
 				StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(elemTemplateElement);
 				transformerImpl = stylesheetRoot.getTransformerImpl();		   		   		   		   
 			}
 
-			formattedNumberResultStr = elemNumber.formatNumberList(transformerImpl, new long[] { arg0Long }, DTM.NULL, !isCardinalNumbering);
+			formattedNumberStr = elemNumber.formatNumberList(transformerImpl, new long[] { arg0Long }, DTM.NULL, !isCardinalNumbering);
 		}
-		else {
-			NumberFormat nf = NumberFormat.getIntegerInstance(locale);
-			DecimalFormat df = (DecimalFormat)nf;
-			try {
-			   df.applyPattern(pictureStr1);
+		else {			
+			if (m_arg2 == null) {
+			   int inpNumberLength = str0.length();
+			   int picStringLength = picStr1.length();
+			   
+			   // Integer number formatting for zero padding, picture string
+			   
+			   pattern = java.util.regex.Pattern.compile("0+1");
+			   matcher = pattern.matcher(picStr1);
+			   
+			   java.util.regex.Pattern pattern2 = java.util.regex.Pattern.compile("99+");
+			   java.util.regex.Matcher matcher2 = pattern2.matcher(picStr1);
+			   
+			   if ((arg0Long > 0) && (picStringLength >= inpNumberLength) && matcher.matches()) {				  
+		          String strFormat = "%0" + picStringLength + "d";
+		          
+		          formattedNumberStr = String.format(strFormat, arg0Long); 
+			   }
+			   else if ((arg0Long < 0) && "9".equals(picStr1)) {
+				  formattedNumberStr = str0; 
+			   }
+			   else if ((arg0Long < 0) && (picStringLength >= (inpNumberLength - 1)) && matcher2.matches()) {
+				  long abs1 = (arg0Long * -1);
+				  
+                  String strFormat = "%0" + picStringLength + "d";
+		          
+		          formattedNumberStr = "-" + String.format(strFormat, abs1); 
+			   }
+			   else {
+				   NumberFormat numberFormat = NumberFormat.getIntegerInstance(locale);
+				   DecimalFormat decimalFormat = (DecimalFormat)numberFormat;
+
+				   try {
+					   decimalFormat.applyPattern(picStr1);
+				   }
+				   catch (IllegalArgumentException ex) {
+					   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator);
+				   }
+
+				   formattedNumberStr = decimalFormat.format(arg0Long);  
+			   }
 			}
-			catch (IllegalArgumentException ex) {
-			   throw new javax.xml.transform.TransformerException("FODF1310 : An XPath function format-integer's "
-			   		                                                                                          + "second argument specifies an "
-			   		                                                                                          + "invalid picture string '" + pictureStr1 + "'.", srcLocator);
+			else {
+				NumberFormat numberFormat = NumberFormat.getIntegerInstance(locale);
+				DecimalFormat decimalFormat = (DecimalFormat)numberFormat;
+				
+				try {
+				   decimalFormat.applyPattern(picStr1);
+				}
+				catch (IllegalArgumentException ex) {
+					throw new javax.xml.transform.TransformerException("FODF1310 : An XPath 3.1 function call 'format-integer', specifies an invalid picture string '" + picStr1 + "'.", srcLocator);
+				}
+				
+				formattedNumberStr = decimalFormat.format(arg0Long);
 			}
-			
-			formattedNumberResultStr = df.format(arg0Long);
 		}
 		   
-		result = new XSString(formattedNumberResultStr);
+		result = new XSString(formattedNumberStr);
 		
 		return result;
 		

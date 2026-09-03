@@ -33,11 +33,14 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.FuncRandomNumberGenerator;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -164,6 +167,127 @@ public class XPathOperator extends Expression implements ExpressionOwner
     		else {
     			return XBoolean.S_FALSE;
     		}
+    	}
+    	else if ((m_left instanceof FuncRandomNumberGenerator) && (m_right instanceof FuncRandomNumberGenerator)) {
+     	   FuncRandomNumberGenerator rng1 = (FuncRandomNumberGenerator)m_left;    	   
+     	   java.lang.String str1 = rng1.getFuncLookupArg();
+     	   
+     	   FuncRandomNumberGenerator rng2 = (FuncRandomNumberGenerator)m_right;
+     	   java.lang.String str2 = rng2.getFuncLookupArg();
+     	   
+    	   Expression expr1 = rng1.getArg0();
+
+    	   Expression expr2 = rng2.getArg0();
+
+    	   // Two XPath function calls to, fn:random-number-generator with unequal
+    	   // seed values, result in boolean comparison result 'false'.
+
+    	   if ((expr1 != null) && (expr2 == null)) {
+    		   
+    		   XObject xObj1 = expr1.execute(xctxt);
+
+    		   if (xObj1 instanceof ResultSequence) {
+    			   if (((ResultSequence)xObj1).size() > 0) {
+    				   return XBoolean.S_FALSE; 
+    			   }
+    		   }    		   
+    	   }
+    	   else if ((expr1 == null) && (expr2 != null)) {
+    		   XObject xObj2 = expr2.execute(xctxt);
+
+    		   if (xObj2 instanceof ResultSequence) {
+    			   if (((ResultSequence)xObj2).size() > 0) {
+    				   return XBoolean.S_FALSE; 
+    			   }
+    		   }  
+    	   }
+    	   else if ((expr1 != null) && (expr2 != null)) {
+    		   XObject xObj1 = expr1.execute(xctxt);
+
+    		   XObject xObj2 = expr2.execute(xctxt);
+    		   
+    		   if ((xObj1 instanceof ResultSequence) && (xObj2 instanceof ResultSequence)) {
+    			  ResultSequence rSeq1 = (ResultSequence)xObj1; 
+    			  ResultSequence rSeq2 = (ResultSequence)xObj2;
+    			  
+    			  if (rSeq1.size() != rSeq2.size()) {
+    				 return XBoolean.S_FALSE;   
+    			  }
+    		   }
+
+    		   if (!xObj1.vcEquals(xObj2, null, null, true)) {
+    			   return XBoolean.S_FALSE;  
+    		   }
+    	   }
+     	   
+     	   if ((Keywords.NUMBER).equals(str1) && (Keywords.NUMBER).equals(str2)) {
+     		  return XBoolean.S_TRUE; 
+     	   }
+     	   else if (("next()?number").equals(str1) && ("next()?number").equals(str2)) {
+   		      return XBoolean.S_TRUE;
+   	       }
+     	}
+    }
+    
+    if (this instanceof VcEquals) {
+    	if ((m_left instanceof FuncRandomNumberGenerator) && (m_right instanceof FuncRandomNumberGenerator)) {
+    	   FuncRandomNumberGenerator rng1 = (FuncRandomNumberGenerator)m_left;    	   
+    	   java.lang.String str1 = rng1.getFuncLookupArg();
+    	   
+    	   FuncRandomNumberGenerator rng2 = (FuncRandomNumberGenerator)m_right;
+    	   java.lang.String str2 = rng2.getFuncLookupArg();
+    	   
+    	   Expression expr1 = rng1.getArg0();
+
+    	   Expression expr2 = rng2.getArg0();
+
+    	   // Two XPath function calls to, fn:random-number-generator with unequal
+    	   // seed values, result in boolean comparison result 'false'.
+
+           if ((expr1 != null) && (expr2 == null)) {
+    		   
+    		   XObject xObj1 = expr1.execute(xctxt);
+
+    		   if (xObj1 instanceof ResultSequence) {
+    			   if (((ResultSequence)xObj1).size() > 0) {
+    				   return XBoolean.S_FALSE; 
+    			   }
+    		   }    		   
+    	   }
+    	   else if ((expr1 == null) && (expr2 != null)) {
+    		   XObject xObj2 = expr2.execute(xctxt);
+
+    		   if (xObj2 instanceof ResultSequence) {
+    			   if (((ResultSequence)xObj2).size() > 0) {
+    				   return XBoolean.S_FALSE; 
+    			   }
+    		   }  
+    	   }
+    	   else if ((expr1 != null) && (expr2 != null)) {
+    		   XObject xObj1 = expr1.execute(xctxt);
+
+    		   XObject xObj2 = expr2.execute(xctxt);
+    		   
+    		   if ((xObj1 instanceof ResultSequence) && (xObj2 instanceof ResultSequence)) {
+    			  ResultSequence rSeq1 = (ResultSequence)xObj1; 
+    			  ResultSequence rSeq2 = (ResultSequence)xObj2;
+    			  
+    			  if (rSeq1.size() != rSeq2.size()) {
+    				 return XBoolean.S_FALSE;   
+    			  }
+    		   }
+
+    		   if (!xObj1.vcEquals(xObj2, null, null, true)) {
+    			   return XBoolean.S_FALSE;  
+    		   }
+    	   }
+
+    	   if ((Keywords.NUMBER).equals(str1) && (Keywords.NUMBER).equals(str2)) {
+    		   return XBoolean.S_TRUE;
+    	   }
+    	   else if (("next()?number").equals(str1) && ("next()?number").equals(str2)) {
+    		   return XBoolean.S_TRUE;
+    	   }
     	}
     }
     

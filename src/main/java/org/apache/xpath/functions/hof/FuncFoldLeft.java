@@ -31,6 +31,9 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -50,6 +53,8 @@ import org.apache.xpath.util.XPath3ExpressionUtil;
 public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
     
     private static final long serialVersionUID = -3772850377799360556L;
+    
+    private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
     
     /**
      * Class constructor.
@@ -94,6 +99,8 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         
         XPathInlineFunction foldLeftInlineFuncArg = null;
         
+        XPathNamedFunctionReference xpathNamedFunctionRef = null;
+        
         ElemFunction elemFunction = null;
         
         TransformerImpl transformerImpl = null;
@@ -114,6 +121,9 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         }        
         else if (m_arg2 instanceof XPathInlineFunction) {
            foldLeftInlineFuncArg = (XPathInlineFunction)m_arg2;                                           
+        }
+        else if (m_arg2 instanceof XPathNamedFunctionReference) {
+           xpathNamedFunctionRef = (XPathNamedFunctionReference)m_arg2;
         }
         else if (m_arg2 instanceof NodeTest) {
            transformerImpl = getTransformerImplFromXPathExpression(m_arg2);
@@ -171,8 +181,28 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
 																					        				+ "parameters. Expected 2.", srcLocator); 
         	}
         }
+        else if (xpathNamedFunctionRef != null) {            
+            int size1 = foldLeftFirstArgSeq.size();        	
+        	
+        	for (int idx = 0; idx < size1; idx++) {
+        		ResultSequence argSequence = new ResultSequence();        		        		        		
+        		
+        		if (idx == 0) {                        				    				    				
+        			argSequence.add(foldLeftBaseVal);
+        		}
+        		else {
+        			argSequence.add(evalResult);    				                   
+        		}
+        		
+        		argSequence.add(foldLeftFirstArgSeq.item(idx));
+
+        		evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference(xpathNamedFunctionRef, null, 
+        				                                                                                     argSequence, null, null, 0, getExpressionOwner(), xctxt);
+        	}
+        }
         else if (elemFunction != null) {
         	int size1 = foldLeftFirstArgSeq.size();        	
+        	
         	for (int idx = 0; idx < size1; idx++) {
         		ResultSequence argSequence = new ResultSequence();        		        		        		
         		

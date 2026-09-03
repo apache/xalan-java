@@ -23,27 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for various XPath 3.1 functions.
+ * for, XPath 3.1 function fn:format-integer.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FnFunction3Tests extends W3CXPath3TestsUtil {
+public class XPath3FnFormatIntegerTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/format-integer.xml";
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
-    	
-        m_test_set_fileArr = new String[] { "floor.xml", "true.xml", "false.xml", "head.xml", "hours-from-dateTime.xml", 
-        		                            "hours-from-duration.xml", "hours-from-time.xml", "implicit-timezone.xml", "index-of.xml" };
-        
         m_resultSubFolderName = "fn";
-        
-        m_test_set_result_fileArr = new String[] { "floor_result.xml", "true_result.xml", "false_result.xml", "head_result.xml", 
-        		                                   "hours-from-dateTime_result.xml", "hours-from-duration_result.xml", "hours-from-time_result.xml", 
-        		                                   "implicit-timezone_result.xml", "index-of_result.xml" };
+    	
+    	m_testResultFileName = "format-integer_result.xml";
     }
 
     @AfterClass
@@ -55,8 +49,8 @@ public class XPath3FnFunction3Tests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFnTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslFnFormatIntegerTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

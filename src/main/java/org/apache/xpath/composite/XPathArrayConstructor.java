@@ -213,32 +213,6 @@ public class XPathArrayConstructor extends Expression {
            }
         }
         
-        /*int size2 = result.size();
-        int xdmEmptyArrCount = 0;
-        for (int idx = 0; idx < size2; idx++) {
-        	XObject xObj = result.get(idx);        	
-        	if ((xObj instanceof XPathArray) && (((XPathArray)xObj).size() == 0)) {
-        		xdmEmptyArrCount++; 
-        	}           
-        }
-        
-        if (xdmEmptyArrCount == 1) {
-        	XPathArray xpathArr2 = new XPathArray(); 
-        	for (int idx = 0; idx < size2; idx++) {
-               XObject xObj = result.get(idx);
-               if (xObj instanceof XPathArray) {
-            	   if (((XPathArray)xObj).size() > 0) {
-            	      xpathArr2.add(xObj);
-            	   }
-               }
-               else {
-            	   xpathArr2.add(xObj);
-               }
-        	}
-        	
-        	result = xpathArr2; 
-        }*/
-        
         return result;
     }
 

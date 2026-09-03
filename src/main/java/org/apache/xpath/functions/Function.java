@@ -71,6 +71,13 @@ public abstract class Function extends Expression
    private String m_localName = null;
    
    private String m_namespace = null;
+   
+   /**
+    * Class field used to implement XPath 3.1 function call, syntax 
+    * like, func()?.. , for example, when an XPath 3.1 function call 
+    * returns an xdm map.
+    */   
+   private String m_func_lookup_arg = null;
 
    /**
    * Set an argument expression for a function.  This method is called by the 
@@ -85,7 +92,6 @@ public abstract class Function extends Expression
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-			// throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
       reportWrongNumberArgs();
   }
 
@@ -227,6 +233,14 @@ public abstract class Function extends Expression
 
   public void setNamespace(String namespace) {
 	  this.m_namespace = namespace;
+  }
+  
+  public String getFuncLookupArg() {
+	  return m_func_lookup_arg;
+  }
+
+  public void setFuncLookupArg(String funcLookupStr) {
+	  this.m_func_lookup_arg = funcLookupStr;
   }
   
 }

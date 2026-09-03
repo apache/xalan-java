@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:43Z" fail="24" name="fn-sum" pass="187" run="211" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:28Z" fail="25" name="fn-sum" pass="187" run="212" statusUnknown="0">
    <testResult status="pass" testName="fn-sumint1args-1"/>
    <testResult status="pass" testName="fn-sumint1args-2"/>
    <testResult status="pass" testName="fn-sumint1args-3"/>
@@ -204,6 +204,7 @@
    <testResult status="pass" testName="fn-sum-11"/>
    <testResult status="fail" testName="fn-sum-12"/>
    <testResult status="fail" testName="fn-sum-13"/>
+   <testResult status="fail" testName="fn-sum-14"/>
    <testResult status="pass" testName="cbcl-sum-func-001"/>
    <testResult status="fail" testName="cbcl-sum-func-002"/>
    <testResult status="fail" testName="cbcl-sum-func-003"/>

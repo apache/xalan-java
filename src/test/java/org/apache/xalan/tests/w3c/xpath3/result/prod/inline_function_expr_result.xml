@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:41Z" fail="9" name="prod-InlineFunctionExpr" pass="17" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:27Z" fail="9" name="prod-InlineFunctionExpr" pass="18" run="27" statusUnknown="0">
    <testResult status="pass" testName="inline-fn-001"/>
    <testResult status="pass" testName="inline-fn-002"/>
    <testResult status="pass" testName="inline-fn-003"/>
@@ -11,6 +11,7 @@
    <testResult status="pass" testName="inline-fn-011"/>
    <testResult status="pass" testName="inline-fn-012"/>
    <testResult status="pass" testName="inline-fn-012a"/>
+   <testResult status="pass" testName="inline-fn-013"/>
    <testResult status="fail" testName="inline-fn-014"/>
    <testResult status="fail" testName="inline-fn-016"/>
    <testResult status="pass" testName="inline-fn-021"/>

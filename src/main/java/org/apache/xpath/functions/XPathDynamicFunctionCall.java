@@ -181,11 +181,11 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, m_ArrowOpArgObj, 
 																					    	    			xctxt, prefixTable, m_vars, m_globals_size, 
 																					    	    			m_xpathVarList, m_funcRefVarName);               
-	           if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
-	        	  evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
-	        			                                                                  null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
-	        			                                                                  xctxt); 
-	           }
+	            if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
+	        	   evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
+	        			                                                                      null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+	        			                                                                      xctxt); 
+	            }
 	        }
     	    else if (functionRef instanceof XPathMap) {
      		   evalResult = getDfcResultFromXdmMap((XPathMap)functionRef, xctxt, srcLocator, contextNode, prefixTable);

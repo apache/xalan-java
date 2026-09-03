@@ -100,6 +100,8 @@ public class FuncArrayFilter extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
+        final int sourceNode = xctxt.getCurrentNode();
+        
         if (m_vars != null) {
            m_arg0.fixupVariables(m_vars, m_globals_size);
         }
@@ -127,7 +129,7 @@ public class FuncArrayFilter extends Function2Args {
          	}
             
             result = evaluateFnArrayFilter((XPathArray)xObj0, inlineFuncArg, xctxt); 
-        }
+        }        
         else if (m_arg1 instanceof Function) {
         	Function function = (Function)m_arg1;        	        	
         	        	
@@ -259,17 +261,37 @@ public class FuncArrayFilter extends Function2Args {
             	throw ex;
             }
         	catch (WrongNumberArgsException ex) {
-        		// no op
+        		// No op
         	}
         }
         else if (m_arg1 instanceof XPathNamedFunctionReference) {
         	XPathNamedFunctionReference xpathNamedFunctionRef = (XPathNamedFunctionReference)m_arg1;
         	String funcName = xpathNamedFunctionRef.getFuncName();
+        	
         	short arity = xpathNamedFunctionRef.getArity();
-        	if (arity != 1) {
+        	
+        	if (arity == 1) {
+        		xObj0 = getNormalizedXdmArray((XPathArray)xObj0);
+
+        		if (((XPathArray)xObj0).size() == 0) {
+        			result = new XPathArray();
+
+        			return result;
+        		}
+        		
+        		String xpathInlineFuncExpr = "function($arg) { " + funcName + "($arg) }";
+        		
+        		XPath xpathObj = new XPath(xpathInlineFuncExpr, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        		
+        		XObject xObj = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+        		
+        		XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj;
+        		
+        		result = evaluateFnArrayFilter((XPathArray)xObj0, xpathInlineFunction, xctxt);
+        	}
+        	else {
         	   throw new TransformerException("XPTY0004 : The supplied function '" + funcName + "' has " + arity + " parameters. A "
-        	   		                                                                          + "function with one parameter is expected.", 
-        	   		                                                                                                                 srcLocator);
+                                                                                              + "function with one parameter is expected.", srcLocator);
         	}
         }
         else if (xObj1 instanceof XPathMap) {

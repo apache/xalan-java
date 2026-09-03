@@ -94,6 +94,7 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 
 		URI uri1 = null;
 		String pathStr = null;
+		
 		try {
 			DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 			Document document = docBuilder.newDocument();
@@ -108,6 +109,7 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 			int totalPass = 0;
 			int totalFail = 0;
 			int totalSkipped = 0;
+			
 			for (int idx = 0; idx < strArray.length; idx++) {
 				String testSetKindName = strArray[idx];	                       // e.g, decl, expr etc				
 				pathStr = folderRoot + File.separator + testSetKindName;
@@ -117,9 +119,11 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 				}
 				
 				File file = new File(pathStr);
+				
 				if (file.isDirectory()) {
 					String[] fileNames = file.list();
 					Element testSetKindElem = document.createElement(testSetKindName);
+					
 					for (int idx2 = 0; idx2 < fileNames.length; idx2++) {
 						String fileName = fileNames[idx2];
 						String localFilePath = (pathStr + File.separator + fileName);						
@@ -137,13 +141,20 @@ public class W3CXPath3TestSuiteXalanResultSummarize {
 						
 						int skipped = 0;
 						String skippedStr = docElem.getAttribute(W3CXPath3TestsUtil.SKIPPED);
+						
 						if ((skippedStr != null) && !"".equals(skippedStr)) {
 							skipped = Integer.valueOf(skippedStr);
 						    totalSkipped += skipped;
 						}
 						
-						double successPer = ((pass / (double)run)) * 100;
+						double successPer = 0.9;
+						
+						if (run > 0) {
+						   successPer = ((pass / (double)run)) * 100;
+						}
+						
 						double successPerDbl = (Double.valueOf(decimalFormat.format(Double.valueOf(String.valueOf(successPer))))).doubleValue();
+						
 						Element testSetElem = document.createElement(testSetName);
 						testSetElem.setAttribute(W3CXPath3TestsUtil.RUN, String.valueOf(run));
 						testSetElem.setAttribute(W3CXPath3TestsUtil.PASS, String.valueOf(pass));

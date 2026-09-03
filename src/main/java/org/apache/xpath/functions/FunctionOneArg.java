@@ -228,8 +228,10 @@ public class FunctionOneArg extends Function implements ExpressionOwner
  	 XPathArray result = new XPathArray();
 
  	 int size2 = xpathArr.size();
+ 	 
  	 for (int idx = 0; idx < size2; idx++) {
  		 XObject xObj = xpathArr.get(idx);
+ 		 
  		 if (xObj instanceof XPathArray) {
  			 if (((XPathArray)xObj).size() > 0) {
  				 result.add(xObj);  

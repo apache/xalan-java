@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:43Z" fail="0" name="array-size" pass="6" run="6" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:28Z" fail="0" name="array-size" pass="7" run="7" statusUnknown="0">
    <testResult status="pass" testName="array-size-001"/>
    <testResult status="pass" testName="array-size-002"/>
    <testResult status="pass" testName="array-size-003"/>
    <testResult status="pass" testName="array-size-004"/>
    <testResult status="pass" testName="array-size-005"/>
    <testResult status="pass" testName="array-size-006"/>
+   <testResult status="pass" testName="array-size-007"/>
 </testrun>

@@ -71,8 +71,8 @@ public class FuncSort extends FunctionMultiArgs
     }
     
     /**
-     * The number of arguments passed to the fn:sort function 
-     * call.
+     * The number of arguments provided, to an 
+     * XPath 3.1 function call fn:sort.
      */
     private int numOfArgs = 0;
 
@@ -92,6 +92,16 @@ public class FuncSort extends FunctionMultiArgs
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         String collationUri = xctxt.getDefaultCollation();
+        
+        if (m_arg2 != null) {
+        	numOfArgs = 3;	
+        }
+        else if (m_arg1 != null) {
+        	numOfArgs = 2;
+        }
+        else if (m_arg0 != null) {
+        	numOfArgs = 1;
+        }
         
         if ((numOfArgs == 2) || (numOfArgs == 3)) {           
            XObject XObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);

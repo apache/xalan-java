@@ -1194,8 +1194,6 @@ public class Compiler extends XPathOpMap
    */
   protected Expression group(int opPos) throws TransformerException
   {
-
-    // no-op
     return compile(opPos + 2);
   }
 
@@ -1881,32 +1879,34 @@ private static final boolean DEBUG = false;
 
 	  opPos = getFirstChildPos(opPos);
 
-	  int funcID = getOp(opPos);
+	  int funcId = getOp(opPos);
 
 	  opPos++;
 
-	  if (-1 != funcID)
-	  {		  		  
-		  Function func = m_functionTable.getFunction(funcID);
+	  if (funcId != -1)
+	  {		  		  		  
+		  Function func = m_functionTable.getFunction(funcId);
 
 		  /**
 		   * It is a trick for function-available. Since the function table is an
 		   * instance field, insert this table at compilation time for later usage
 		   */
 
-		  if (func instanceof FuncExtFunctionAvailable)
+		  if (func instanceof FuncExtFunctionAvailable) {
 			  ((FuncExtFunctionAvailable) func).setFunctionTable(m_functionTable);
+		  }
 
 		  func.postCompileStep(this);
 
-		  String funcName1 = m_functionTable.getFunctionName(funcID);
+		  String funcName1 = m_functionTable.getFunctionName(funcId);
 
 		  try
 		  {
 			  int i = 0;
 			  
 			  boolean funcLookup = false;
-			  if (funcID == FunctionTable.FUNC_FUNCTION_LOOKUP) {
+			  
+			  if (funcId == FunctionTable.FUNC_FUNCTION_LOOKUP) {
 				 // This XPath function compilation is, for an
 				 // XPath 3.1 function fn:function-lookup.
 				  
@@ -1922,6 +1922,7 @@ private static final boolean DEBUG = false;
 				  else if (i <= 1) {
 					 // XPath expression compilation for function 
 					 // fn:function-lookup's argument.
+					  
 					 func.setArg(compile(p), i); 
 				  }
 				  else {
@@ -1943,12 +1944,14 @@ private static final boolean DEBUG = false;
 			  {
 				  // This allows us to, permit the absence of XPath function's first 
 				  // argument. while evaluating an XPath 3.1 operator "=>".
+				  
 				  i++;
 			  }
 
 			  if (m_verify_func_arg_count) {
 				  if (!(Keywords.FUNC_CONCAT_STRING.equals(funcName1) || Keywords.FROM_SELF_ABBREVIATED_STRING.equals(funcName1))) {
 					  Short[] funcArityArr = func.getArity();					  
+					  
 					  if (funcLookup) {
 						 Short[] newFuncArityArr = new Short[2];
 						 
@@ -1958,6 +1961,7 @@ private static final boolean DEBUG = false;
 						 funcArityArr = newFuncArityArr;
 						 
 						 FuncFunctionLookup funcFunctionLookup = (FuncFunctionLookup)func;
+						 
 						 if (funcFunctionLookup.getExtendedArg() != null) {						 
 						    i--;
 						 }
@@ -1969,8 +1973,10 @@ private static final boolean DEBUG = false;
 					  }
 
 					  boolean funcArityErr = true;
+					  
 					  for (int idx = 0; idx < funcArityArr.length; idx++) {
 						  Short arity = funcArityArr[idx];
+						  
 						  if (arity == i) {
 							  funcArityErr = false; 
 						  }
@@ -1978,9 +1984,11 @@ private static final boolean DEBUG = false;
 
 					  if (funcArityErr) {
 						  StringBuffer strBuff = new StringBuffer();
+						  
 						  for (int idx = 0; idx < funcArityArr.length; idx++) {
 							  Short arity = funcArityArr[idx];
 							  strBuff.append(arity);
+							  
 							  if (idx < (funcArityArr.length - 1)) {
 								  strBuff.append(","); 
 							  }
@@ -1996,6 +2004,7 @@ private static final boolean DEBUG = false;
 				  else {
 					  int minArity = func.getMinArity();
 					  int maxArity = func.getMaxArity();
+					  
 					  if ((i < minArity) || (i > maxArity)) {
 						  m_errorHandler.fatalError(new TransformerException(
 								  XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
@@ -2013,6 +2022,16 @@ private static final boolean DEBUG = false;
 																	XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
 																			          new Object[]{funcName1, wnae.getMessage()}), m_locator));
 			  }
+		  }
+		  
+		  if ((XPathParser.m_unary_lookup_list).size() > 0) {
+			 // There's a function call like, func(..)?abc
+			  
+			 int size1 = (XPathParser.m_unary_lookup_list).size();			 
+			 String funcLookupStr = (XPathParser.m_unary_lookup_list).get(size1 - 1);
+			 (XPathParser.m_unary_lookup_list).remove(size1 - 1);
+			 
+			 func.setFuncLookupArg(funcLookupStr);
 		  }
 
 		  return func;

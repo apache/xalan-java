@@ -360,6 +360,10 @@ public class XPathParser
   
   private boolean m_op_group_parse = false;
   
+  private String m_func_name = null;
+  
+  static List<String> m_unary_lookup_list = new ArrayList<String>();
+  
   /**
    * This is used to, replace <xsl:template match="$x/abc"> to equivalent
    * XSLT template like <xsl:template match="/root/abc">, where there's
@@ -440,7 +444,7 @@ public class XPathParser
       
       m_isXPathExprBeginParse = true;
       
-      Expr();                
+      Expr();
 
       if (m_token != null)
       {    	
@@ -1096,19 +1100,13 @@ public class XPathParser
   void warn(String msg, Object[] args) throws TransformerException
   {
 
-    String fmsg = XSLMessages.createXPATHWarning(msg, args);
-    ErrorListener ehandler = this.getErrorListener();
+	  String fmsg = XSLMessages.createXPATHWarning(msg, args);
+	  ErrorListener ehandler = this.getErrorListener();
 
-    if (null != ehandler)
-    {
-      // TO DO: Need to get stylesheet Locator from here.
-      ehandler.warning(new TransformerException(fmsg, m_sourceLocator));
-    }
-    else
-    {
-      // Should never happen.
-      System.err.println(fmsg);
-    }
+	  if (ehandler != null)
+	  {
+		  ehandler.warning(new TransformerException(fmsg, m_sourceLocator));
+	  }
   }
   
   private String getXPathStrFromComponentParts(List<String> xpathExprStrPartList) {
@@ -2503,7 +2501,7 @@ public class XPathParser
                   								      m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos1);
 		 
 	  }
-	  else if (tokenIs("?")) {
+	  else if (tokenIs('?')) {
 		  // A function argument placeholder, for a function call partial 
 		  // function application.
 		  
@@ -5864,11 +5862,60 @@ public class XPathParser
     }
     else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3)))
     {
-      matchFound = FunctionCall();
+        matchFound = FunctionCall();                
+        
+        if ((Keywords.FUNC_RANDOM_NUMBER_GENERATOR).equals(m_func_name)) {
+        	if (tokenIs(Keywords.Q_MARK)) {
+        		// XPath parse for function call expression like, 
+        		// fn:random-number-generator()?...
+        		
+        		consumeExpected(Keywords.Q_MARK);
+        		
+        		String funcSuffix = m_token;
+        		
+        		if ((Keywords.NUMBER).equals(funcSuffix)) {
+        		   consumeExpected(Keywords.NUMBER);
+        		}
+        		else if ((Keywords.NEXT).equals(funcSuffix)) {
+        		   consumeExpected(Keywords.NEXT);
+        		   
+        		   if (tokenIs('(')) {
+        			   consumeExpected('(');
+        			   consumeExpected(')');
+
+        			   funcSuffix += "()";
+
+        			   if (tokenIs(Keywords.Q_MARK)) {
+        				   consumeExpected(Keywords.Q_MARK);
+
+        				   funcSuffix += Keywords.Q_MARK;
+        				   funcSuffix += m_token;
+
+        				   if (tokenIs(Keywords.NUMBER)) {
+        					   consumeExpected(Keywords.NUMBER); 
+        				   }
+        				   else if (tokenIs(Keywords.PERMUTE)) {
+        					   funcSuffix = xpathParseRandomNumGeneratorPermute(funcSuffix);
+        				   }
+        				   else {
+        					   error(XPATHErrorResources.ER_UNEXPECTED_TOKEN, new Object[]{ m_token, Keywords.Q_MARK }); 
+        				   }        			           			   
+        			   }
+        		   }
+        		}
+        		else if ((Keywords.PERMUTE).equals(funcSuffix)) {
+        			funcSuffix = xpathParseRandomNumGeneratorPermute(funcSuffix);
+        		}
+
+        		m_unary_lookup_list.add(funcSuffix);
+        	}
+        	
+        	m_func_name = null;
+        }
     }
     else
     {
-      matchFound = false;
+        matchFound = false;
     }
 
     return matchFound;
@@ -6188,7 +6235,7 @@ public class XPathParser
 	    			xpathExprStr = (strBuff.toString()).trim(); 
 	    			
 	    			if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) && 
-	    					                                                 StringUtil.isStrHasBalancedParentheses(xpathExprStr, '(', ')')) {
+	    					                                                    StringUtil.isStrHasBalancedParentheses(xpathExprStr, '(', ')')) {
 	    				isXPathExprOk = true;
 	    				
 	    				break;
@@ -6199,8 +6246,27 @@ public class XPathParser
 	    	  }
 	       }
 	       
-	       if (isXPathExprOk) {
-	    	   xpathExprStr = xpathExprStr.replace(" : ", ":");
+	       if (isXPathExprOk) {	    	   
+	    	   boolean isEmptySeq = isXPathExprStrEmptySeq(xpathExprStr);
+	    	   
+	    	   if (!isEmptySeq) {
+	    		   // Normalizing whitespaces within substring like,
+	    		   // (( & )).
+	    		   
+	    		   xpathExprStr = xpathExprStr.replaceAll("\\(\\s+\\(", "((");
+	    		   xpathExprStr = xpathExprStr.replaceAll("\\)\\s+\\)", "))");
+
+	    		   if (xpathExprStr.startsWith("(") && xpathExprStr.endsWith(")")) {	    			   
+	    			   xpathExprStr = xpathExprStr.substring(1, xpathExprStr.length() - 1);
+
+	    			   xpathExprStr = xpathExprStr.trim();	    	
+	    		   }
+
+	    		   xpathExprStr = xpathExprStr.replace(" : ", ":");
+	    	   }
+	    	   else {
+	    		   xpathExprStr = "()"; 
+	    	   }
 
 	    	   insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
 
@@ -6226,7 +6292,7 @@ public class XPathParser
 	    	   
 	    	   seqConstructorXPathParts = new ArrayList<String>();
 	    	   
-	    	   parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');
+	    	   parseSequenceOrArrayLiteralConstructor(seqConstructorXPathParts, '(', ')');	    	   
 	       }
 	       
 	       if (tokenIs(')') && !lookahead(null, 1)) {
@@ -6459,7 +6525,25 @@ public class XPathParser
     		}
     		
     		consumeExpected(']');
-        }    	    	
+        } 
+    	
+    	// Remove any, XPath empty expressions from list
+    	
+    	int size1 = arrConstructorXPathParts.size();
+
+    	List<String> list1 = new ArrayList<String>();
+    	    	
+    	for (int idx = 0; idx < size1; idx++) {
+    		String str1 = arrConstructorXPathParts.get(idx);
+
+    		if (!"".equals(str1)) {
+    			list1.add(str1); 
+    		}
+    	}
+
+    	if (list1.size() != size1) {
+    		arrConstructorXPathParts = list1; 
+    	}
 
     	insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
     	
@@ -6506,7 +6590,8 @@ public class XPathParser
     }    
     else if (tokenIs('?')) {
        // A function argument placeholder, for a function call partial 
-       // function application.    	
+       // function application.
+    	
        appendOp(2, OpCodes.XPath3OpCodes.OP_FUNC_ARG_PLACEHOLDER);
        
        consumeExpected('?');
@@ -6515,13 +6600,14 @@ public class XPathParser
        m_funcArgPlaceHolderList.add(funcArgPlaceholder);
     }
     else if (lookahead(':', 1)) {
-       // XPath parse for named function reference, for XPath built-in functions 
-   	   // and stylesheet functions.
+       // XPath parse for named function reference, for XPath built-in 
+   	   // functions and stylesheet functions.
        
        xpathParseNamedFuncRefNsQual(opPos);
     }
     else if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
-       // XPath parse for named function reference, for XPath built-in functions    	
+       // XPath parse for named function reference, for XPath built-in functions
+    	
        xpathParseNamedFuncRefWithoutNsQual(opPos);
     }
     else if (tokenIs("if") || tokenIs("some") || tokenIs("every") || tokenIs("let") || tokenIs("for")) {
@@ -6628,7 +6714,10 @@ public class XPathParser
         
        m_xpath_inlineFunction = xpathInlineFunctionExpr();               
     }
-    else {
+    else if ((m_tokenChar == '\'') || (m_tokenChar == '"')) {
+       OrExpr();
+    }
+    else {       
        TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
        
        StringBuffer strBuff = new StringBuffer();
@@ -6767,7 +6856,9 @@ public class XPathParser
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
 						  new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
-			  }         
+			  }
+			  
+			  m_func_name = m_token; 
 
 			  switch (funcTok)
 			  {
@@ -6876,7 +6967,10 @@ public class XPathParser
 
 			  nextToken();
 		  }
-		  else {  
+		  else {
+			  // XPath parse for the, function call patterns like, xs:type(..),
+			  // ns0:func(..) and Xalan-J extension functions.
+			  
 			  appendOp(4, OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION);
 
 			  m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH + 1, m_queueMark - 1);
@@ -6897,7 +6991,9 @@ public class XPathParser
 		  {
 			  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
 					  new Object[]{"{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
-		  }      
+		  }
+		  
+		  m_func_name = m_token; 
 
 		  switch (funcTok)
 		  {		  
@@ -11673,5 +11769,84 @@ public class XPathParser
     	 
     	 return result;
      }
+     
+     /**
+      * Method definition, to do XPath parse for function call 
+      * fn:random-number-generator parameter use like: 
+      * 
+      * fn:random-number-generator()?permute(..), 
+      * fn:random-number-generator()?next()?permute(..)
+      * 
+      * @param funcSuffix                     Supplied, partially computed fn:random-number-generator 
+      *                                       suffix, string.
+      * @return                               fn:random-number-generator suffix, string value.
+      * @throws TransformerException
+      */
+     private String xpathParseRandomNumGeneratorPermute(String funcSuffix) throws TransformerException {
+    		
+    	 String result = funcSuffix;
+
+    	 consumeExpected(Keywords.PERMUTE);
+
+    	 StringBuffer strBuff = new StringBuffer();
+
+    	 strBuff.append("( ");
+    	 consumeExpected('(');
+
+    	 String str1 = null;
+
+    	 boolean isXPathExprOk = false;
+
+    	 while (m_token != null) {
+    		 strBuff.append(m_token + " ");
+    		 str1 = (strBuff.toString()).trim();
+
+    		 if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+    			 consumeExpected(')');
+
+    			 isXPathExprOk = true;
+
+    			 break; 
+    		 }
+
+    		 nextToken();
+    	 }
+
+    	 if (isXPathExprOk) {
+    		 result += str1; 	
+    	 }
+    	 else {
+    		 error(XPATHErrorResources.ER_FN_RANDOM_NUMBER_GENERATOR, new Object[]{});
+    	 }
+
+    	 return result;
+      }
+     
+      /**
+       * Method definition, to check whether an XPath expression
+       * string represents an empty sequence.
+       * 
+       * @param xpathExprStr                      The supplied XPath expression
+       *                                          string.
+       * @return                                  Boolean value true or false
+       */
+      private boolean isXPathExprStrEmptySeq(String xpathExprStr) {
+
+    	 boolean result = true;
+
+    	 int size1 = xpathExprStr.length();
+
+    	 for (int idx = 0; idx < size1; idx++) {
+    		 char chr = xpathExprStr.charAt(idx);
+
+    		 if (!((chr == '(') || (chr == ')') || (chr == ',') || (chr == ' '))) {
+    			 result = false;
+
+    			 break;
+    		 }
+    	 }
+    	 
+    	 return result;
+      }
   
 }

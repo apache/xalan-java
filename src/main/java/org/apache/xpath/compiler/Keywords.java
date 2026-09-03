@@ -837,8 +837,10 @@ public class Keywords
   /** current function string (Proprietary). */
   public static final String FUNC_DOCLOCATION_STRING = "document-location";
   
+  
   /**
-   * XPath 3.1 language keywords.
+   * XPath 3.1 language keywords. This is a subset of XPath 3.1 language
+   * keywords.
    */
   
   public static final String UNION = "union";
@@ -846,6 +848,15 @@ public class Keywords
   public static final String INTERSECT = "intersect";
   
   public static final String EXCEPT = "except";
+  
+  public static final String NEXT = "next";
+  
+  public static final String Q_MARK = "?";
+  
+  public static final String NUMBER = "number";
+  
+  public static final String PERMUTE = "permute";
+  
 
   static {	  
 	  m_axisnames.put(FROM_ANCESTORS_STRING, new Integer(OpCodes.FROM_ANCESTORS));

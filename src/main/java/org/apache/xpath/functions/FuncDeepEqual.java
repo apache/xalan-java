@@ -29,9 +29,11 @@ import org.apache.xerces.dom.ElementImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.Constants;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.functions.hof.FuncSort;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -94,8 +96,8 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  XObject arg0Val = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		  
 		  XObject arg1Val = getFunctionArgEffectiveValue(m_arg1, xctxt);
-	      
-	      m_xpathCollationSupport = xctxt.getXPathCollationSupport();
+		  
+          m_xpathCollationSupport = xctxt.getXPathCollationSupport();
 		  
 	      String collationUri = null;
 	      
@@ -109,6 +111,83 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		  }
 		  else {
 			 collationUri = xctxt.getDefaultCollation(); 
+		  }
+		  
+		  if ((m_arg0 instanceof FuncRandomNumberGenerator) && (m_arg1 instanceof FuncRandomNumberGenerator)) {
+			 FuncRandomNumberGenerator rng1 = (FuncRandomNumberGenerator)m_arg0;
+			 
+			 FuncRandomNumberGenerator rng2 = (FuncRandomNumberGenerator)m_arg1;
+			 
+			 Expression expr1 = rng1.getArg0();
+			 
+			 Expression expr2 = rng2.getArg0();
+			 
+			 // Two XPath function calls to, fn:random-number-generator with unequal
+	    	 // seed values, result in boolean comparison result 'false'.
+			 
+			 if ((expr1 != null) && (expr2 == null)) {
+				result = new XSBoolean(false);
+				
+				return result;
+			 }
+			 else if ((expr1 == null) && (expr2 != null)) {
+				result = new XSBoolean(false);
+					
+				return result;
+			 }
+			 else if ((expr1 != null) && (expr2 != null)) {
+				 XObject xObj1 = expr1.execute(xctxt);
+
+				 XObject xObj2 = expr2.execute(xctxt);
+
+				 if ((xObj1 instanceof ResultSequence) && (xObj2 instanceof ResultSequence)) {
+					 ResultSequence rSeq1 = (ResultSequence)xObj1; 
+					 ResultSequence rSeq2 = (ResultSequence)xObj2;
+
+					 if (rSeq1.size() != rSeq2.size()) {
+						result = new XSBoolean(false);
+							
+						return result;  
+					 }
+				 }
+
+				 if (!xObj1.vcEquals(xObj2, null, null, true)) {
+					 result = new XSBoolean(false);
+						
+					 return result;  
+				 }
+			 }
+			 
+			 if ((arg0Val instanceof ResultSequence) && (arg1Val instanceof ResultSequence)) {
+				 ResultSequence rSeq1 = (ResultSequence)arg0Val; 
+				 ResultSequence rSeq2 = (ResultSequence)arg1Val;
+
+				 int size1 = rSeq1.size();
+				 int size2 = rSeq2.size();
+
+				 if (size1 == size2) {
+					 FuncSort funcSort = new FuncSort();
+					 funcSort.setArg0(rSeq1);				   
+					 rSeq1 = (ResultSequence)(funcSort.execute(xctxt));
+
+					 funcSort.setArg0(rSeq2);
+					 rSeq2 = (ResultSequence)(funcSort.execute(xctxt));
+
+					 boolean result1 = isTwoSequenceDeepEqual(rSeq1, rSeq2, xctxt, collationUri);
+
+					 if (result1) {
+						 result = new XSBoolean(true);
+					 }
+					 else {
+						 result = new XSBoolean(false);
+					 }
+				 }
+				 else {
+					 result = new XSBoolean(false); 
+				 }
+			 }
+			 
+			 return result;
 		  }
 		  
 		  ResultSequence resultSeq0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg0Val, xctxt);

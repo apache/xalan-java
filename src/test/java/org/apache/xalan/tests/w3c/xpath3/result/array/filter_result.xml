@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:43Z" fail="0" name="array-filter" pass="11" run="11" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:28Z" fail="0" name="array-filter" pass="12" run="12" statusUnknown="0">
    <testResult status="pass" testName="array-filter-001"/>
    <testResult status="pass" testName="array-filter-002"/>
+   <testResult status="pass" testName="array-filter-003"/>
    <testResult status="pass" testName="array-filter-004"/>
    <testResult status="pass" testName="array-filter-005"/>
    <testResult status="pass" testName="array-filter-006"/>

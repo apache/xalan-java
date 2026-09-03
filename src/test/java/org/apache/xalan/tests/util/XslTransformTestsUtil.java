@@ -229,26 +229,26 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
            StreamResult streamResult = new StreamResult(resultStrWriter);
            identityTransformer.transform(new DOMSource(outNode), streamResult);
            
-           String actualResultStr1 = (resultStrWriter.toString()).trim();
+           String normalizedResultStr1 = (resultStrWriter.toString()).trim();
            
            byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
            String expectedResultStr1 = (new String(goldFileBytes)).trim();
 
            if ((XSLTestConstants.XML).equals(m_fileComparisonType)) {
-        	   if (!isXMLFileContentsEqual(expectedResultStr1, actualResultStr1)) {
+        	   if (!isXMLFileContentsEqual(expectedResultStr1, normalizedResultStr1)) {
         		   Assert.fail(); 
         	   }
            }
            else if ((XSLTestConstants.HTML).equals(m_fileComparisonType)) { 
-        	   Assert.assertEquals(expectedResultStr1, actualResultStr1);
+        	   Assert.assertEquals(expectedResultStr1, normalizedResultStr1);
            }
            else if ((XSLTestConstants.JSON).equals(m_fileComparisonType)) {
-        	   if (!isJsonFileContentsEqual(expectedResultStr1, actualResultStr1)) {
+        	   if (!isJsonFileContentsEqual(expectedResultStr1, normalizedResultStr1)) {
         		   Assert.fail();
         	   } 
            }
            else if ((XSLTestConstants.TEXT).equals(m_fileComparisonType)) {
-        	   Assert.assertEquals(expectedResultStr1, actualResultStr1);
+        	   Assert.assertEquals(expectedResultStr1, normalizedResultStr1);
            }              
         }
         catch (Exception ex) {

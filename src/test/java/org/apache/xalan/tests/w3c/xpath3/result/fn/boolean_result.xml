@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:41Z" fail="6" name="fn-boolean" pass="132" run="138" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:26Z" fail="7" name="fn-boolean" pass="131" run="138" statusUnknown="0">
    <testResult status="pass" testName="fn-booleanint1args-1"/>
    <testResult status="pass" testName="fn-booleanint1args-2"/>
    <testResult status="pass" testName="fn-booleanint1args-3"/>
@@ -116,7 +116,7 @@
    <testResult status="pass" testName="K-SeqBooleanFunc-25"/>
    <testResult status="pass" testName="K-SeqBooleanFunc-26"/>
    <testResult status="pass" testName="K-SeqBooleanFunc-27"/>
-   <testResult status="pass" testName="K-SeqBooleanFunc-28"/>
+   <testResult status="fail" testName="K-SeqBooleanFunc-28"/>
    <testResult status="pass" testName="K-SeqBooleanFunc-29"/>
    <testResult status="fail" testName="K-SeqBooleanFunc-30"/>
    <testResult status="pass" testName="K-SeqBooleanFunc-31"/>

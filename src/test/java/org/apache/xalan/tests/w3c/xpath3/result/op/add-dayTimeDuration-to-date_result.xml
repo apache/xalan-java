@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:57Z" fail="1" name="op-add-dayTimeDuration-to-date" pass="21" run="22" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:48Z" fail="0" name="op-add-dayTimeDuration-to-date" pass="22" run="22" statusUnknown="0">
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date2args-1"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date2args-2"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date2args-3"/>
@@ -14,7 +14,7 @@
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date-8"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date-9"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date-10"/>
-   <testResult status="fail" testName="op-add-dayTimeDuration-to-date-12"/>
+   <testResult status="pass" testName="op-add-dayTimeDuration-to-date-12"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date-13"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date-14"/>
    <testResult status="pass" testName="op-add-dayTimeDuration-to-date-15"/>

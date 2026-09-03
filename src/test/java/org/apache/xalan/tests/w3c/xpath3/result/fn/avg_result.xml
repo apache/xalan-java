@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-18T10:59:06Z" fail="72" name="fn-avg" pass="143" run="215" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:29Z" fail="20" name="fn-avg" pass="191" run="211" statusUnknown="0">
    <testResult status="pass" testName="fn-avgint1args-1"/>
    <testResult status="pass" testName="fn-avgint1args-2"/>
    <testResult status="pass" testName="fn-avgint1args-3"/>
@@ -107,64 +107,60 @@
    <testResult status="fail" testName="fn-avg-mix-args-005"/>
    <testResult status="pass" testName="fn-avg-mix-args-006"/>
    <testResult status="pass" testName="fn-avg-mix-args-007"/>
-   <testResult status="fail" testName="fn-avg-mix-args-008"/>
-   <testResult status="fail" testName="fn-avg-mix-args-009"/>
-   <testResult status="fail" testName="fn-avg-mix-args-010"/>
-   <testResult status="fail" testName="fn-avg-mix-args-011"/>
-   <testResult status="fail" testName="fn-avg-mix-args-012"/>
-   <testResult status="fail" testName="fn-avg-mix-args-013"/>
-   <testResult status="fail" testName="fn-avg-mix-args-014"/>
-   <testResult status="fail" testName="fn-avg-mix-args-015"/>
-   <testResult status="fail" testName="fn-avg-mix-args-016"/>
-   <testResult status="fail" testName="fn-avg-mix-args-017"/>
+   <testResult status="pass" testName="fn-avg-mix-args-008"/>
+   <testResult status="pass" testName="fn-avg-mix-args-009"/>
+   <testResult status="pass" testName="fn-avg-mix-args-010"/>
+   <testResult status="pass" testName="fn-avg-mix-args-011"/>
+   <testResult status="pass" testName="fn-avg-mix-args-012"/>
+   <testResult status="pass" testName="fn-avg-mix-args-014"/>
+   <testResult status="pass" testName="fn-avg-mix-args-016"/>
+   <testResult status="pass" testName="fn-avg-mix-args-017"/>
    <testResult status="pass" testName="fn-avg-mix-args-018"/>
-   <testResult status="fail" testName="fn-avg-mix-args-019"/>
-   <testResult status="fail" testName="fn-avg-mix-args-020"/>
-   <testResult status="fail" testName="fn-avg-mix-args-021"/>
-   <testResult status="fail" testName="fn-avg-mix-args-022"/>
-   <testResult status="fail" testName="fn-avg-mix-args-023"/>
-   <testResult status="fail" testName="fn-avg-mix-args-024"/>
-   <testResult status="fail" testName="fn-avg-mix-args-025"/>
-   <testResult status="fail" testName="fn-avg-mix-args-026"/>
-   <testResult status="fail" testName="fn-avg-mix-args-027"/>
+   <testResult status="pass" testName="fn-avg-mix-args-019"/>
+   <testResult status="pass" testName="fn-avg-mix-args-021"/>
+   <testResult status="pass" testName="fn-avg-mix-args-023"/>
+   <testResult status="pass" testName="fn-avg-mix-args-024"/>
+   <testResult status="pass" testName="fn-avg-mix-args-025"/>
+   <testResult status="pass" testName="fn-avg-mix-args-026"/>
+   <testResult status="pass" testName="fn-avg-mix-args-027"/>
    <testResult status="pass" testName="fn-avg-mix-args-028"/>
    <testResult status="fail" testName="fn-avg-mix-args-029"/>
    <testResult status="fail" testName="fn-avg-mix-args-030"/>
    <testResult status="fail" testName="fn-avg-mix-args-031"/>
    <testResult status="fail" testName="fn-avg-mix-args-032"/>
-   <testResult status="fail" testName="fn-avg-mix-args-033"/>
-   <testResult status="fail" testName="fn-avg-mix-args-034"/>
-   <testResult status="fail" testName="fn-avg-mix-args-035"/>
-   <testResult status="fail" testName="fn-avg-mix-args-036"/>
-   <testResult status="fail" testName="fn-avg-mix-args-037"/>
-   <testResult status="fail" testName="fn-avg-mix-args-038"/>
-   <testResult status="fail" testName="fn-avg-mix-args-039"/>
-   <testResult status="fail" testName="fn-avg-mix-args-040"/>
-   <testResult status="fail" testName="fn-avg-mix-args-041"/>
-   <testResult status="fail" testName="fn-avg-mix-args-042"/>
-   <testResult status="fail" testName="fn-avg-mix-args-043"/>
-   <testResult status="fail" testName="fn-avg-mix-args-044"/>
-   <testResult status="fail" testName="fn-avg-mix-args-045"/>
-   <testResult status="fail" testName="fn-avg-mix-args-046"/>
-   <testResult status="fail" testName="fn-avg-mix-args-047"/>
-   <testResult status="fail" testName="fn-avg-mix-args-048"/>
-   <testResult status="fail" testName="fn-avg-mix-args-049"/>
-   <testResult status="fail" testName="fn-avg-mix-args-050"/>
-   <testResult status="fail" testName="fn-avg-mix-args-051"/>
-   <testResult status="fail" testName="fn-avg-mix-args-052"/>
-   <testResult status="fail" testName="fn-avg-mix-args-053"/>
-   <testResult status="fail" testName="fn-avg-mix-args-054"/>
-   <testResult status="fail" testName="fn-avg-mix-args-055"/>
-   <testResult status="fail" testName="fn-avg-mix-args-056"/>
-   <testResult status="fail" testName="fn-avg-mix-args-057"/>
-   <testResult status="fail" testName="fn-avg-mix-args-058"/>
-   <testResult status="fail" testName="fn-avg-mix-args-059"/>
-   <testResult status="fail" testName="fn-avg-mix-args-060"/>
-   <testResult status="fail" testName="fn-avg-mix-args-061"/>
-   <testResult status="fail" testName="fn-avg-mix-args-062"/>
-   <testResult status="fail" testName="fn-avg-mix-args-063"/>
-   <testResult status="fail" testName="fn-avg-mix-args-064"/>
-   <testResult status="fail" testName="fn-avg-mix-args-065"/>
+   <testResult status="pass" testName="fn-avg-mix-args-033"/>
+   <testResult status="pass" testName="fn-avg-mix-args-034"/>
+   <testResult status="pass" testName="fn-avg-mix-args-035"/>
+   <testResult status="pass" testName="fn-avg-mix-args-036"/>
+   <testResult status="pass" testName="fn-avg-mix-args-037"/>
+   <testResult status="pass" testName="fn-avg-mix-args-038"/>
+   <testResult status="pass" testName="fn-avg-mix-args-039"/>
+   <testResult status="pass" testName="fn-avg-mix-args-040"/>
+   <testResult status="pass" testName="fn-avg-mix-args-041"/>
+   <testResult status="pass" testName="fn-avg-mix-args-042"/>
+   <testResult status="pass" testName="fn-avg-mix-args-043"/>
+   <testResult status="pass" testName="fn-avg-mix-args-044"/>
+   <testResult status="pass" testName="fn-avg-mix-args-045"/>
+   <testResult status="pass" testName="fn-avg-mix-args-046"/>
+   <testResult status="pass" testName="fn-avg-mix-args-047"/>
+   <testResult status="pass" testName="fn-avg-mix-args-048"/>
+   <testResult status="pass" testName="fn-avg-mix-args-049"/>
+   <testResult status="pass" testName="fn-avg-mix-args-050"/>
+   <testResult status="pass" testName="fn-avg-mix-args-051"/>
+   <testResult status="pass" testName="fn-avg-mix-args-052"/>
+   <testResult status="pass" testName="fn-avg-mix-args-053"/>
+   <testResult status="pass" testName="fn-avg-mix-args-054"/>
+   <testResult status="pass" testName="fn-avg-mix-args-055"/>
+   <testResult status="pass" testName="fn-avg-mix-args-056"/>
+   <testResult status="pass" testName="fn-avg-mix-args-057"/>
+   <testResult status="pass" testName="fn-avg-mix-args-058"/>
+   <testResult status="pass" testName="fn-avg-mix-args-059"/>
+   <testResult status="pass" testName="fn-avg-mix-args-060"/>
+   <testResult status="pass" testName="fn-avg-mix-args-061"/>
+   <testResult status="pass" testName="fn-avg-mix-args-062"/>
+   <testResult status="pass" testName="fn-avg-mix-args-063"/>
+   <testResult status="pass" testName="fn-avg-mix-args-064"/>
+   <testResult status="pass" testName="fn-avg-mix-args-065"/>
    <testResult status="fail" testName="fn-avg-mix-args-066"/>
    <testResult status="pass" testName="K-SeqAVGFunc-1"/>
    <testResult status="pass" testName="K-SeqAVGFunc-2"/>
