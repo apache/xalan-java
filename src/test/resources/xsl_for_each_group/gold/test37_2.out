@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group desc="abc">
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">1</number>
+      <string key="desc">abc</string>
+    </map>
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">2</number>
+      <string key="desc">abc</string>
+    </map>
+  </group>
+  <group desc="pqr">
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">4</number>
+      <string key="desc">pqr</string>
+    </map>
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">5</number>
+      <string key="desc">pqr</string>
+    </map>
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">3</number>
+      <string key="desc">pqr</string>
+    </map>
+  </group>
+  <group desc="xyz">
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">6</number>
+      <string key="desc">xyz</string>
+    </map>
+    <map xmlns="http://www.w3.org/2005/xpath-functions">
+      <number key="number">7</number>
+      <string key="desc">xyz</string>
+    </map>
+  </group>
+</result>

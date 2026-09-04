@@ -908,6 +908,24 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									else if (ASSERT_DEEP_EQ.equals(nodeName2)) {
 										if (xpathResultObj != null) {
 											FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
+																																	
+											if (xpathResultObj instanceof XNumber) {
+											   XNumber xNumber = (XNumber)xpathResultObj;
+											   
+											   if (xNumber.getXsDecimal() != null) {
+												  xpathResultObj = xNumber.getXsDecimal();  
+											   }
+											   else if (xNumber.getXsDouble() != null) {
+												  xpathResultObj = xNumber.getXsDouble();   
+											   }
+											   else if (xNumber.getXsInteger() != null) {
+												  xpathResultObj = xNumber.getXsInteger();  
+											   }
+											   else {
+												  xpathResultObj = new XSDouble(xNumber.num()); 
+											   }
+											}
+											
 											funcDeepEqual.setArg(xpathResultObj, 0);
 											
 											boolean isCompOk = false;
@@ -920,6 +938,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												   try {
 												      xsDouble2 = new XSDouble(str2);
 												      funcDeepEqual.setArg(xsDouble2, 1);												      
+												      
 												      isCompOk = true;
 												   }
 												   catch (TransformerException ex) {
@@ -1444,6 +1463,24 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														}
 
 														FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
+														
+														if (xpathResultObj instanceof XNumber) {
+														   XNumber xNumber = (XNumber)xpathResultObj;
+														   
+														   if (xNumber.getXsDecimal() != null) {
+															  xpathResultObj = xNumber.getXsDecimal();  
+														   }
+														   else if (xNumber.getXsDouble() != null) {
+															  xpathResultObj = xNumber.getXsDouble();   
+														   }
+														   else if (xNumber.getXsInteger() != null) {
+															  xpathResultObj = xNumber.getXsInteger();  
+														   }
+														   else {
+															  xpathResultObj = new XSDouble(xNumber.num()); 
+														   }
+														}
+														
 														funcDeepEqual.setArg(xpathResultObj, 0);
 														
 														boolean isCompOk = false;
@@ -2013,10 +2050,27 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 														}
 
-														FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
-														funcDeepEqual.setArg(xpathResultObj, 0);
+                                                        FuncDeepEqual funcDeepEqual = new FuncDeepEqual();
+														
+														if (xpathResultObj instanceof XNumber) {
+														   XNumber xNumber = (XNumber)xpathResultObj;
+														   
+														   if (xNumber.getXsDecimal() != null) {
+															  xpathResultObj = xNumber.getXsDecimal();  
+														   }
+														   else if (xNumber.getXsDouble() != null) {
+															  xpathResultObj = xNumber.getXsDouble();   
+														   }
+														   else if (xNumber.getXsInteger() != null) {
+															  xpathResultObj = xNumber.getXsInteger();  
+														   }
+														   else {
+															  xpathResultObj = new XSDouble(xNumber.num()); 
+														   }
+														}
 														
 														boolean isCompOk = false;
+														
 														if (xpathResultObj instanceof XSNumericType) {
 															if ((xpathExpectedObj instanceof XSString) || (xpathExpectedObj instanceof XString)) {
 															   String str2 = XslTransformEvaluationHelper.getStrVal(xpathExpectedObj);

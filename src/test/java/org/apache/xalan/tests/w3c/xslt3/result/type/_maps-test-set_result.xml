@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-28T16:22:11Z" fail="20" name="maps" pass="16" run="36" skipped="14" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-04T11:13:44Z" fail="17" name="maps" pass="19" run="36" skipped="14" statusUnknown="0">
    <testResult status="fail" testName="maps-001">
       <outResult>
          <errTrace>XPTY0004 : An index value used with an xdm sequence reference, is not numeric.</errTrace>
@@ -24,15 +24,9 @@
    <testResult status="pass" testName="maps-015"/>
    <testResult status="pass" testName="maps-016"/>
    <testResult reason="Xalan configured" status="skipped" testName="maps-017"/>
-   <testResult status="fail" testName="maps-018">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-019">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-020">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out/&gt;</outResult>
-   </testResult>
+   <testResult status="pass" testName="maps-018"/>
+   <testResult status="pass" testName="maps-019"/>
+   <testResult status="pass" testName="maps-020"/>
    <testResult status="fail" testName="maps-901a">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
    </testResult>

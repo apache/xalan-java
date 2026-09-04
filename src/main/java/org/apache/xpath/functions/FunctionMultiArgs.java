@@ -66,8 +66,11 @@ public class FunctionMultiArgs extends Function3Args
           throws WrongNumberArgsException
   {
 
-    if (argNum < 3)
-      super.setArg(arg, argNum);
+    if (argNum < 3) {
+      if (arg != null) {
+         super.setArg(arg, argNum);
+      }
+    }
     else
     {
       if (null == m_args)

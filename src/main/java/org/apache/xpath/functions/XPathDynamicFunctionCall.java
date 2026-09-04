@@ -211,20 +211,21 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	   evalResult = getDfcResultFromSchemaSimpleTypeRef(functionRef, xctxt, srcLocator, contextNode, prefixTable);
     	       }
     	       else {
-    	    	   evalResult = XObject.create(new XSString("")); 
+    	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : Variable '" + m_funcRefVarName + "' used to invoke an XPath dynamic "
+    	    	   		 																						 + "function call, refers to neither a "
+    	    	   		 																						 + "function, map or array.", srcLocator); 
     	       }
     	    }
       }
       else {
-         throw new javax.xml.transform.TransformerException("XPST0008 : Variable '" + m_funcRefVarName + "' has "
-                                                                                                       + "not been declared, or its declaration is not in scope.", 
-                                                                                                                                              xctxt.getSAXLocator());    
+         throw new javax.xml.transform.TransformerException("XPST0008 : Variable '" + m_funcRefVarName + "' has not been declared, or its declaration "
+         		                                                                                       + "is not in scope.", srcLocator);    
       }
        
       if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
     	 evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, null, 
-    			                                                        xctxt, prefixTable, m_vars, m_globals_size, 
-    			                                                        m_xpathVarList, m_funcRefVarName); 
+								    			                                                        xctxt, prefixTable, m_vars, m_globals_size, 
+								    			                                                        m_xpathVarList, m_funcRefVarName); 
       }
                
       return evalResult;

@@ -35,10 +35,14 @@ import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.json.FuncJsonDoc;
+import org.apache.xpath.functions.json.FuncJsonToXml;
+import org.apache.xpath.functions.json.FuncParseJson;
+import org.apache.xpath.functions.json.FuncXmlToJson;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An XPath 3.1 arrow operator, "=>" implementation. 
+ * An XPath 3.1 arrow operator "=>" implementation. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -97,11 +101,133 @@ public class XPathArrowOp extends XPathOperator
       }
       else {
     	  Function function = (Function)m_right;
-
-    	  if (function instanceof Function3Args) {
+    	  
+    	  if (function instanceof FuncParseJson) {
+    		  FuncParseJson funcParseJson = (FuncParseJson)function; 
+    		  
+    		  funcParseJson.setArg0(null);
+    		  
+    		  try {
+				funcParseJson.setArg(null, 1);
+			  } 
+    		  catch (WrongNumberArgsException ex) {
+				// No op
+			  }
+    		  
+              Function3Args funcThreeArgs = (Function3Args)function;
+    		  
+    		  Expression arg0 = funcThreeArgs.getArg0();
+    		  
+    		  funcParseJson.setArg0(m_left);
+    		  
+    		  try {
+    			  if (arg0 != null) {
+    				 funcParseJson.setArg(arg0, 1);
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
+    					  																							    + "XPath 3.1 operator =>.", srcLocator);
+    		  }
+    		  
+    		  result = funcParseJson.execute(xctxt); 
+    	  }
+    	  else if (function instanceof FuncJsonDoc) {
+    		  FuncJsonDoc funcJsonDoc = (FuncJsonDoc)function; 
+    		  
+    		  funcJsonDoc.setArg0(null);
+    		  
+    		  try {
+				funcJsonDoc.setArg(null, 1);
+			  } 
+    		  catch (WrongNumberArgsException ex) {
+				// No op
+			  }
+    		  
+              Function3Args funcThreeArgs = (Function3Args)function;
+    		  
+    		  Expression arg0 = funcThreeArgs.getArg0();
+    		  
+    		  funcJsonDoc.setArg0(m_left);
+    		  
+    		  try {
+    			  if (arg0 != null) {
+    				 funcJsonDoc.setArg(arg0, 1);
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
+    					  																							    + "XPath 3.1 operator =>.", srcLocator);
+    		  }
+    		  
+    		  result = funcJsonDoc.execute(xctxt); 
+    	  }
+    	  else if (function instanceof FuncJsonToXml) {
+    		  FuncJsonToXml funcJsonToXml = (FuncJsonToXml)function; 
+    		  
+    		  funcJsonToXml.setArg0(null);
+    		  
+    		  try {
+				funcJsonToXml.setArg(null, 1);
+			  } 
+    		  catch (WrongNumberArgsException ex) {
+				// No op
+			  }
+    		  
+              Function3Args funcThreeArgs = (Function3Args)function;
+    		  
+    		  Expression arg0 = funcThreeArgs.getArg0();
+    		  
+    		  funcJsonToXml.setArg0(m_left);
+    		  
+    		  try {
+    			  if (arg0 != null) {
+    				 funcJsonToXml.setArg(arg0, 1);
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
+    					  																							    + "XPath 3.1 operator =>.", srcLocator);
+    		  }
+    		  
+    		  result = funcJsonToXml.execute(xctxt);
+    	  }
+    	  else if (function instanceof FuncXmlToJson) {
+    		  FuncXmlToJson xmlToJson = (FuncXmlToJson)function; 
+    		  
+    		  xmlToJson.setArg0(null);
+    		  
+    		  try {
+				xmlToJson.setArg(null, 1);
+			  } 
+    		  catch (WrongNumberArgsException ex) {
+				// No op
+			  }
+    		  
+              Function3Args funcThreeArgs = (Function3Args)function;
+    		  
+    		  Expression arg0 = funcThreeArgs.getArg0();
+    		  
+    		  xmlToJson.setArg0(m_left);
+    		  
+    		  try {
+    			  if (arg0 != null) {
+    				 xmlToJson.setArg(arg0, 1);
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  throw new javax.xml.transform.TransformerException("FORX0003 : An error occured, during evaluation for "
+    					  																							    + "XPath 3.1 operator =>.", srcLocator);
+    		  }
+    		  
+    		  result = xmlToJson.execute(xctxt);
+    	  }
+    	  else if (function instanceof Function3Args) {
     		  Function3Args funcThreeArgs = (Function3Args)function;
+    		  
     		  Expression arg0 = funcThreeArgs.getArg0();
     		  Expression arg1 = funcThreeArgs.getArg1();
+    		  
     		  funcThreeArgs.setArg0(m_left);
 
     		  try {
@@ -131,6 +257,7 @@ public class XPathArrowOp extends XPathOperator
     		  }
     		  else {     		
     			  Expression arg0 = funcTwoArgs.getArg0();
+    			  
     			  funcTwoArgs.setArg0(m_left);
     			  
     			  try {     		   
@@ -155,6 +282,7 @@ public class XPathArrowOp extends XPathOperator
     		  }
     		  else {
     			  funcOneArg.setArg0(m_left);
+    			  
     			  result = funcOneArg.execute(xctxt);
     		  }
     	  }    	  

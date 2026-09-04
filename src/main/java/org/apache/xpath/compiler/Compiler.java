@@ -135,30 +135,29 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 public class Compiler extends XPathOpMap
 {
 	
-	/** The error listener where errors will be sent.  If this is null, errors 
-	 *  and warnings will be sent to System.err.  May be null.    */
+	/**
+	 * An javax.xml.transform.ErrorListener object instance, where errors 
+	 * shall be sent. If this object instance is null, errors and warnings 
+	 * will be sent to System.err. May be null.
+	 */
 	ErrorListener m_errorHandler;
 
-	/** The source locator for the expression being compiled.  May be null. */
+	/**
+	 * An javax.xml.transform.SourceLocator object instance, for an 
+	 * XPath expression being compiled. May be null. 
+	 */
 	SourceLocator m_locator;
 
 	/**
-	 * The FunctionTable for all xpath build-in functions
+	 * The FunctionTable object instance for all XPath built-in 
+	 * functions.
 	 */
 	private FunctionTable m_functionTable;
-
-	/**
-	 * We store within this class field, the fact that, there is
-	 * an XPath expression of kind "... => functionCall()".
-	 */
-	private boolean m_isFunctionCallPrecededByArrow = false;
+	
+	private boolean m_arrow_op_func_check = false;
 	
 	private static boolean m_isFuncCallPrecededByFuncLookup = false;
 	
-	/**
-	 * Class field, denoting to skip XPath built-in function arity 
-	 * verification, for few XPath parse cases.
-	 */
 	public static boolean m_verify_func_arg_count = true;
 	
 	private static boolean m_xpath_ignore_compile_err = false;
@@ -277,11 +276,8 @@ public class Compiler extends XPathOpMap
       expr = range(opPos); break;
     case OpCodes.XPath3OpCodes.OP_STR_CONCAT :
       expr = strConcat(opPos); break;
-    case OpCodes.XPath3OpCodes.OP_ARROW :
-      m_isFunctionCallPrecededByArrow = true;
-      expr = arrowOp(opPos);
-      m_isFunctionCallPrecededByArrow = false;
-      break;
+    case OpCodes.XPath3OpCodes.OP_ARROW :      
+      expr = arrowOp(opPos); break;
     case OpCodes.OP_MINUS :
       expr = minus(opPos); break;
     case OpCodes.OP_MULT :
@@ -543,7 +539,23 @@ public class Compiler extends XPathOpMap
 		  int leftPos = getFirstChildPos(opPos);
 		  int rightPos = getNextOpPos(leftPos);
 		  
-		  xpathOp1.setLeftRight(compile(leftPos), compile(rightPos));
+		  if (xpathOp1 instanceof XPathArrowOp) {
+			  m_arrow_op_func_check = false;
+		  }
+		  
+		  Expression expr1 = compile(leftPos);
+		  
+		  if (xpathOp1 instanceof XPathArrowOp) {
+		     m_arrow_op_func_check = true;
+		  }
+		  
+		  Expression expr2 = compile(rightPos);
+		  
+		  xpathOp1.setLeftRight(expr1, expr2);
+		  
+		  if (xpathOp1 instanceof XPathArrowOp) {
+			 m_arrow_op_func_check = false; 
+		  }
 		  
 		  result = xpathOp1;
 	  }
@@ -1940,10 +1952,15 @@ private static final boolean DEBUG = false;
 				  }
 			  }
 
-			  if (m_isFunctionCallPrecededByArrow) 
-			  {
-				  // This allows us to, permit the absence of XPath function's first 
-				  // argument. while evaluating an XPath 3.1 operator "=>".
+			  if (m_arrow_op_func_check) 
+			  {				  
+				  /**
+				   * An XPath 3.1 arrow operator "=>" is followed by a 
+				   * function call.
+				   * 
+				   * Increment the function argument count, to the correct
+				   * value as specified for the function.
+				   */
 				  
 				  i++;
 			  }

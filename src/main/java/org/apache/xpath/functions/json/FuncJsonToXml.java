@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -57,14 +58,7 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an XPath 3.1 function, fn:json-to-xml.
- * 
- * The result of the function call fn:json-to-xml,
- * is an XML document conforming to an XML Schema document
- * specified at : https://www.w3.org/TR/xpath-functions-31/#schema-for-json.
- * 
- * (It's also useful to refer, to following json RFC : 
- * https://datatracker.ietf.org/doc/html/rfc7159)
+ * Implementation of an XPath 3.1 function fn:json-to-xml.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -109,21 +103,10 @@ public class FuncJsonToXml extends JsonFunction
            throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-to-xml needs to have "
            		                                                                                              + "at-least one argument.", srcLocator);
         }
-        else if (m_arg2 != null) {
-           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-to-xml can "
-           		                                                                                              + "have either one or two arguments.", srcLocator);
-        }
-        
-        String jsonStr = null;
-        
-        if (arg0 instanceof Variable) {
-           XObject arg0Obj = ((Variable)arg0).execute(xctxt);
-           jsonStr = (XslTransformEvaluationHelper.getStrVal(arg0Obj)).trim(); 
-        }
-        else {
-           XObject arg0Obj = arg0.execute(xctxt);
-           jsonStr = (XslTransformEvaluationHelper.getStrVal(arg0Obj)).trim();
-        }
+
+        XObject arg0Obj = arg0.execute(xctxt);
+           
+        String jsonStr = (XslTransformEvaluationHelper.getStrVal(arg0Obj)).trim();
                  
         XPathMap optionsMap = null;
         
@@ -135,6 +118,7 @@ public class FuncJsonToXml extends JsonFunction
         
         if (arg1 != null) {
            XObject arg1Obj = null;
+           
            if (arg1 instanceof Variable) {
         	  arg1Obj = ((Variable)arg1).execute(xctxt);               
            }
@@ -153,6 +137,7 @@ public class FuncJsonToXml extends JsonFunction
         	  Map<XObject, XObject> optionsNativeMap = optionsMap.getNativeMap();
         	  Set<Entry<XObject,XObject>> optionEntries = optionsNativeMap.entrySet();
         	  Iterator<Entry<XObject,XObject>> optionsIter = optionEntries.iterator();
+        	  
         	  while (optionsIter.hasNext()) {
         		 Entry<XObject,XObject> mapEntry = optionsIter.next();
         		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
@@ -226,6 +211,7 @@ public class FuncJsonToXml extends JsonFunction
         }
         catch (JSONException ex) {
            String jsonParseErrStr = ex.getMessage();
+           
            throw new javax.xml.transform.TransformerException("FOJS0003 : The function call fn:json-to-xml's first argument is, not "
 											           		                                                     + "a correct JSON lexical string. The JSON parser produced following "
 											           		                                                     + "parse error: " + jsonParseErrStr + ". The fn:json-to-xml function call "
@@ -238,14 +224,16 @@ public class FuncJsonToXml extends JsonFunction
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         
-        DocumentBuilder dBuilder = null;		
+        DocumentBuilder documentBuilder = null;
+        
         try {
-		   dBuilder = dbf.newDocumentBuilder();
-		} catch (ParserConfigurationException ex) {
-		   throw new javax.xml.transform.TransformerException("FOJS0001 : A run-time error has occured, within an XML parser library implementation.", srcLocator);
+		   documentBuilder = dbf.newDocumentBuilder();
+		} 
+        catch (ParserConfigurationException ex) {
+		   throw new TransformerException("FOJS0001 : A run-time error has occured, within an XML parser library implementation.", srcLocator);
 		}
 		
-        Document document = dBuilder.newDocument();
+        Document document = documentBuilder.newDocument();
         
         constructXmlDom(jsonObj, document, document, null);
         

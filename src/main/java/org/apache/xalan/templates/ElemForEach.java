@@ -60,6 +60,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.operations.Variable;
@@ -1652,24 +1653,47 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
 				   int count = 0;
 				   
+				   boolean spaceCharSerCheck = false;
+				   
 				   for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
-						                                                                        elemTemplateElem = elemTemplateElem.m_nextSibling) {
-					   count++;					   
+						                                                                             elemTemplateElem = elemTemplateElem.m_nextSibling) {
+					   count++;	
+					   
+					   if ((elemTemplateElem instanceof ElemSequence) && (resultSeqItem instanceof XPathMap)) {
+						  ElemSequence elemSequence = (ElemSequence)elemTemplateElem;
+						  
+						  if (elemSequence.getFirstChildElem() == null) {
+							 ElemCopyOf elemCopyOf = new ElemCopyOf();							 
+							 
+							 elemCopyOf.setSelect(elemSequence.getSelect());
+							 elemCopyOf.setXpathDefaultNamespace(elemSequence.getXpathDefaultNamespace());
+							 elemCopyOf.setExpandText(elemSequence.getExpandText());
+							 elemCopyOf.setUseWhen(elemSequence.getUseWhen());
+							 
+							 elemTemplateElem = elemCopyOf;
+							 
+							 if (count == 1) {
+							    spaceCharSerCheck = true;
+							 }
+						  }
+					   }
+					   
 					   xctxt.setSAXLocator(elemTemplateElem);
 					   transformer.setCurrentElement(elemTemplateElem);
 					   elemTemplateElem.execute(transformer);              
 				   }
 				   
-				   boolean isSpaceToEmit = false;
+				   boolean emitSpaceChar = false;
+				   
 				   ElemTemplateElement parentElem = getParentElem();
 				   
-				   if (((count == 1) && (this.m_firstChild instanceof ElemSequence)) && 
-						                                            !((parentElem instanceof ElemFunction) || 
-						                                              (parentElem instanceof ElemVariable))) {
-					   isSpaceToEmit = true; 
+				   if (((count == 1) && !spaceCharSerCheck && (this.m_firstChild instanceof ElemSequence)) && 
+										                                                                  !((parentElem instanceof ElemFunction) || 
+										                                                                    (parentElem instanceof ElemVariable))) {
+					   emitSpaceChar = true; 
 				   }
 				   
-				   if (isSpaceToEmit && (idx < (inpSeqSize - 1)) && !(resultSeqItem instanceof XMLNodeCursorImpl)) {
+				   if (emitSpaceChar && (idx < (inpSeqSize - 1)) && !(resultSeqItem instanceof XMLNodeCursorImpl)) {
 					  // Emit " " separator character, after processing an xdm non-node item
 					  SerializationHandler handler = transformer.getSerializationHandler();
 					  String strVal = " ";
@@ -1679,8 +1703,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 					  }
 					  catch (SAXException ex) {
 						  throw new TransformerException("XTDE1030 : An XSL tranformation error has occured, while "
-						  		                                                                           + "processing XSL for-each's "
-						  		                                                                           + "contained sequence constructor.", srcLocator); 
+						  		                                                                            + "processing XSL for-each's "
+						  		                                                                            + "contained sequence constructor.", srcLocator); 
 					  }
 				   }
 

@@ -465,11 +465,21 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslForEachGroupTest43() {
+    public void xslForEachGroupTest43_1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37_1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37_1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test37_1.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslForEachGroupTest43_2() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37_2.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37_2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test37_2.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
