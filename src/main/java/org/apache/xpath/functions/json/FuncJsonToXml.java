@@ -29,12 +29,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.objects.XBoolean;
@@ -43,7 +42,6 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,44 +90,37 @@ public class FuncJsonToXml extends JsonFunction
 	 */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
     {
+    	
     	XObject result = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        Expression arg0 = m_arg0;        
-        Expression arg1 = m_arg1;
-        
-        if ((arg0 == null) && (arg1 == null)) {
-           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-to-xml needs to have "
-           		                                                                                              + "at-least one argument.", srcLocator);
+        if ((m_arg0 == null) && (m_arg1 == null)) {
+           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function 'json-to-xml' needs to have at least one argument.", srcLocator);
         }
 
-        XObject arg0Obj = arg0.execute(xctxt);
+        XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
            
         String jsonStr = (XslTransformEvaluationHelper.getStrVal(arg0Obj)).trim();
                  
         XPathMap optionsMap = null;
         
-        // The following are function fn:json-to-xml 'options' default values, 
-        // in absence of fn:json-to-xml's 'options' argument.
+        // The following are XPath 3.1 function fn:json-to-xml 'options' default values, 
+        // when function fn:json-to-xml's argument 'options' is absent.
+        
   	    boolean optionIsLiberal = false;        	          	          	          	  
+  	    
   	    String optionDuplicatesValStr = XSLJsonConstants.DUPLICATES_RETAIN;
+  	    
   	    boolean optionValidate = XSLJsonConstants.VALIDATE_FALSE;
         
-        if (arg1 != null) {
-           XObject arg1Obj = null;
-           
-           if (arg1 instanceof Variable) {
-        	  arg1Obj = ((Variable)arg1).execute(xctxt);               
-           }
-           else {
-        	  arg1Obj = arg1.execute(xctxt);                
-           }
+        if (m_arg1 != null) {
+           XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
            
            if (!(arg1Obj instanceof XPathMap)) {
-        	  throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-to-xml's optional second "
-									        	  		                                                       + "argument should be a map, that specifies options for "
-									        	  		                                                       + "the function call fn:json-to-xml.", srcLocator); 
+        	  throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function 'json-to-xml' optional second argument should be an xdm map, "
+        	  		                                                                                                                     + "that specifies options for the "
+        	  		                                                                                                                     + "function call 'json-to-xml'.", srcLocator); 
            }
            else {
         	  optionsMap = (XPathMap)arg1Obj;        	          	       
@@ -142,11 +133,11 @@ public class FuncJsonToXml extends JsonFunction
         		 Entry<XObject,XObject> mapEntry = optionsIter.next();
         		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
         		 XObject optionValue = mapEntry.getValue();
+        		 
         		 if (!OPTIONS_SUPPORTED_LIST.contains(keyStr)) {
-        			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used for the "
-											        					                                       + "function call fn:json-to-xml, is not supported. "
-											        					                                       + "This implementation supports, only the options 'liberal', "
-											        					                                       + "'duplicates' and 'validate' for the function fn:json-to-xml.", srcLocator); 
+        			throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-to-xml' option '" + keyStr + "' is not supported. This "
+        					                                                                                                          + "implementation supports, the function "
+        					                                                                                                          + "'json-to-xml' options 'liberal', 'duplicates', 'validate'.", srcLocator); 
         		 }
         		 else if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
         			if ((optionValue instanceof XSBoolean) || (optionValue instanceof XBoolean) 
@@ -154,21 +145,20 @@ public class FuncJsonToXml extends JsonFunction
         				optionIsLiberal = optionValue.bool();        			   
         			}
         			else {
-        			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-to-xml option "
-										        			   		                                            + "\"liberal\"'s value is not of type xs:boolean.", 
-										        			   		                                            srcLocator);
+        			   throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-to-xml' option \"liberal\" value is not of an XML schema type boolean.", srcLocator);
         			}
         		 }
         		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
         			if (!((optionValue instanceof XString) || (optionValue instanceof XSString))) {
-        				throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:json-to-xml option duplicate's value is not of type xs:string.", srcLocator);
+        				throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'json-to-xml' option \"duplicate\" value is not of an XML schema type string.", srcLocator);
         			}
         			else {
         				optionDuplicatesValStr = XslTransformEvaluationHelper.getStrVal(optionValue);        			
+        				
         				if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) || XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
         						                                                                   XSLJsonConstants.DUPLICATES_RETAIN.equals(optionDuplicatesValStr))) {
-        					throw new javax.xml.transform.TransformerException("FOJS0005 : The function fn:json-to-xml option duplicates's value is not one of following : "
-        							                                                                             + "'reject', 'use-first', 'retain'.", srcLocator);
+        					throw new javax.xml.transform.TransformerException("FOJS0005 : An XPath 3.1 function call 'json-to-xml' option \"duplicates\" value is not one of following : 'reject', 'use-first', "
+        																																												            + "'retain'.", srcLocator);
         				}
         			}
         		 }
@@ -178,16 +168,13 @@ public class FuncJsonToXml extends JsonFunction
         				 optionValidate = optionValue.bool();        			   
         			 }
         			 else {
-        				 throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-to-xml option "
-																				        						 + "\"validate\"'s value is not of type xs:boolean.", 
-																				        						 srcLocator);
+        				 throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-to-xml' option \"validate\"' value is not of an XML schema type boolean.", srcLocator);
         			 } 
         		 }
         	  }
         	  
         	  if (optionValidate && (XSLJsonConstants.DUPLICATES_RETAIN).equals(optionDuplicatesValStr)) {
-        		 throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-to-xml option values duplicates : 'retain' "
-        		 		                                                                                         + "and validate : 'true' are not compatible.", srcLocator); 
+        		 throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function 'json-to-xml' option values duplicates : 'retain' and validate : 'true' are not compatible.", srcLocator); 
         	  }
            }
         }
@@ -204,19 +191,19 @@ public class FuncJsonToXml extends JsonFunction
         	  jsonObj = new JSONArray(jsonStr, jsonParserConf); 
            }
            else {
-        	  throw new javax.xml.transform.TransformerException("FOJS0003 : The function call fn:json-to-xml's first argument is, not "
-													                                                             + "a correct JSON lexical string. A JSON string can only start with "
-													                                                             + "characters '{', or '['.", srcLocator); 
+        	  throw new javax.xml.transform.TransformerException("FOJS0003 : An XPath 3.1 function call 'json-to-xml' first argument is, not "
+													                                                                                    + "a correct json lexical string. A json string can only start with "
+													                                                                                    + "characters '{', or '['.", srcLocator); 
            }
         }
         catch (JSONException ex) {
            String jsonParseErrStr = ex.getMessage();
            
-           throw new javax.xml.transform.TransformerException("FOJS0003 : The function call fn:json-to-xml's first argument is, not "
-											           		                                                     + "a correct JSON lexical string. The JSON parser produced following "
-											           		                                                     + "parse error: " + jsonParseErrStr + ". The fn:json-to-xml function call "
-											           		                                                     + "options used were liberal : " + optionIsLiberal + ", duplicates : " + 
-											           		                                                     optionDuplicatesValStr + ".", srcLocator);
+           throw new javax.xml.transform.TransformerException("FOJS0003 : An XPath 3.1 function call 'json-to-xml' first argument is, not "
+																           		                                                     + "a correct json lexical string. The json parse resulted in following "
+																           		                                                     + "error: " + jsonParseErrStr + ". The function call 'json-to-xml' "
+																           		                                                     + "options used were liberal : " + optionIsLiberal + ", duplicates : " + 
+																           		                                                     optionDuplicatesValStr + ".", srcLocator);
         }
         
         System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
@@ -230,56 +217,58 @@ public class FuncJsonToXml extends JsonFunction
 		   documentBuilder = dbf.newDocumentBuilder();
 		} 
         catch (ParserConfigurationException ex) {
-		   throw new TransformerException("FOJS0001 : A run-time error has occured, within an XML parser library implementation.", srcLocator);
+		   throw new TransformerException("FOJS0001 : An XML parser configuration exception has occured.", srcLocator);
 		}
 		
         Document document = documentBuilder.newDocument();
         
         constructXmlDom(jsonObj, document, document, null);
         
-        DTMManager dtmManager = xctxt.getDTMManager();
-        int resultNodeDtmHandle = DTM.NULL;
+        DTM dtm = null;
         
         if ((XSLJsonConstants.DUPLICATES_RETAIN).equals(optionDuplicatesValStr)) {
            mutateXmlDom(document.getDocumentElement());
-           resultNodeDtmHandle = dtmManager.getDTMHandleFromNode(document); 
+           
+           dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);
         }
         else if (optionValidate == XSLJsonConstants.VALIDATE_TRUE) {
            try {
         	   String xmlDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(document);
-        	   if (isXmlStrValidWithJsonSchema(xmlDocStr)) {
-        		   // REVISIT : An XML document node 'document' is validated with a
-        		   // schema, but as required by XPath 3.1 F&O spec the resulting xdm 
-        		   // node after XML Schema validation, doesn't carry type annotations
-        		   // on XML element and attribute nodes.
-        		   resultNodeDtmHandle = dtmManager.getDTMHandleFromNode(document);  
+        	   
+        	   if (isXmlStrValidWithJsonSchema(xmlDocStr)) {        		            		           		   
+        		  dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);
         	   }
            }
            catch (Exception ex) {
         	   throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);
            }
         }
-        else {
-        	resultNodeDtmHandle = dtmManager.getDTMHandleFromNode(document);
+        else {        	
+           dtm = xctxt.getDTM(new DOMSource(document), true, null, false, false);
         }
         
-        result = new XMLNodeCursorImpl(resultNodeDtmHandle, dtmManager);           
+        int resultNodeDtmHandle = dtm.getDocument(); 
+        
+        result = new XMLNodeCursorImpl(resultNodeDtmHandle, xctxt);
         
         return result;
     }
     
     /**
-     * Method definition, to mutate XML DOM object for xdm map's
-     * duplicate key resolution option 'retain'.
+     * Method definition, to mutate XML org.w3c.dom.Element object 
+     * instance for xdm map's duplicate key resolution option 'retain'.
      * 
-     * @param currElem  XML document's context element that needs
-     *                  to be mutated.
+     * @param currElem                         An XML document's, document 
+     *                                         element that needs to be mutated.
      */
     private void mutateXmlDom(Element currElem) {
-        String nodeName = currElem.getNodeName();      
+        
+    	String nodeName = currElem.getNodeName();      
+        
         if ("map".equals(nodeName)) {
         	List<SortableXmlDomElement> mapElemChildList = new ArrayList<SortableXmlDomElement>();
         	Node node = currElem.getFirstChild();
+        	
         	while (node != null) {
         		Element elem = (Element)node;
         		String keyStr = elem.getAttribute("key");
@@ -295,6 +284,7 @@ public class FuncJsonToXml extends JsonFunction
         	mapElemChildList.sort(null);                      
 
         	NodeList nodeList = currElem.getChildNodes();
+        	
         	for (int idx = 0; idx < nodeList.getLength(); idx++) {
         		Node node1 = nodeList.item(idx);
         		currElem.removeChild(node1);
@@ -308,12 +298,15 @@ public class FuncJsonToXml extends JsonFunction
         }
         else if ("array".equals(nodeName)) {
         	Node node = currElem.getFirstChild();
+        	
         	while (node != null) {
         		Element elem = (Element)node;
         		String nodeName2 = elem.getNodeName();
+        		
         		if ("map".equals(nodeName2)) {
         			List<SortableXmlDomElement> mapElemChildList = new ArrayList<SortableXmlDomElement>();
                 	Node node2 = elem.getFirstChild();
+                	
                 	while (node2 != null) {
                 		Element elem2 = (Element)node2;
                 		String keyStr = elem2.getAttribute("key");
@@ -329,6 +322,7 @@ public class FuncJsonToXml extends JsonFunction
                 	mapElemChildList.sort(null);
                 	
                 	NodeList nodeList = elem.getChildNodes();
+                	
                 	for (int idx = 0; idx < nodeList.getLength(); idx++) {
                 		Node node1 = nodeList.item(idx);
                 		elem.removeChild(node1);
@@ -383,6 +377,7 @@ public class FuncJsonToXml extends JsonFunction
 			
 			SortableXmlDomElement sortableXmlDomElem2 = (SortableXmlDomElement)obj2;
 			int idx2 = sortableXmlDomElem2.getIdx();
+			
 			if (m_idx < idx2) {
 			   result = -1;	
 			}
@@ -395,7 +390,9 @@ public class FuncJsonToXml extends JsonFunction
     }
     
     /**
-     * Method definition, to construct an XML DOM object from a supplied JSON object.
+     * Method definition, to construct an XML org.w3c.dom.Document object 
+     * instance from the supplied json (org.json.JSONObject, org.json.JSONArray) 
+     * object.
      * 
      * @param jsonObj        An object that is either of type org.json.JSONObject, or 
      *                       org.json.JSONArray. 
@@ -414,11 +411,13 @@ public class FuncJsonToXml extends JsonFunction
     	if (jsonObj instanceof JSONObject) {
     		Element mapElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.MAP);
     		parentNode.appendChild(mapElem);    		
+    		
     		if (keyVal != null) {
     		   mapElem.setAttribute(XSLJsonConstants.KEY, keyVal);	
     		}
     		
 	    	Iterator<String> jsonKeys = ((JSONObject)jsonObj).keys();	    	
+	    	
 	    	while (jsonKeys.hasNext()) {
 	      	   String key = jsonKeys.next();
 	      	   Object value = ((JSONObject)jsonObj).get(key);
@@ -450,8 +449,10 @@ public class FuncJsonToXml extends JsonFunction
 	      		  mapElem.appendChild(arrayElem);
 	      		  JSONArray jsonArr = (JSONArray)value;
 	      		  int arrLen = jsonArr.length();
-	    		  for (int idx = 0; idx < arrLen; idx++) {
+	    		  
+	      		  for (int idx = 0; idx < arrLen; idx++) {
 	    			  Object arrItem = jsonArr.get(idx);
+	    			  
 	    			  if (arrItem instanceof String) {
 	    				  Element strElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
 	    				  Text text = document.createTextNode((String)arrItem);
@@ -494,6 +495,7 @@ public class FuncJsonToXml extends JsonFunction
     	}
     	else if (jsonObj instanceof JSONArray) {
     		Element arrayElem = null;
+    		
     		if (parentNode.getNodeType() == Node.DOCUMENT_NODE) {
     		   arrayElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
      		}
@@ -509,8 +511,10 @@ public class FuncJsonToXml extends JsonFunction
     		
     		JSONArray jsonArr = (JSONArray)jsonObj;	      		  
     		int arrLen = jsonArr.length();
+    		
     		for (int idx = 0; idx < arrLen; idx++) {
     		   Object arrItem = jsonArr.get(idx);
+    		   
     		   if (arrItem instanceof String) {
     			  Element strElem = document.createElementNS(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
   	      		  Text text = document.createTextNode((String)arrItem);

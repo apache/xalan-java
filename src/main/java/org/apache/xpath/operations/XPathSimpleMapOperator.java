@@ -33,48 +33,52 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class SimpleMapOperator extends XPathOperator
+public class XPathSimpleMapOperator extends XPathOperator
 {
     
    private static final long serialVersionUID = -1467842928587523219L;
 
    /**
-    * Apply an XPath operation to two operands, and return the result.
+    * Apply an XPath operator to two operands, and return the result.
     *
-    * @param left non-null reference to the evaluated left operand.
-    * @param right non-null reference to the evaluated right operand.
+    * @param left non-null reference to the evaluated first operand.
+    * @param right non-null reference to the evaluated second operand.
     *
-    * @return non-null reference to the XObject that represents the result of the operation.
+    * @return non-null reference to an XObject object instance that 
+    *         represents the result of an XPath simple map operator's 
+    *         evaluation. 
     *
     * @throws javax.xml.transform.TransformerException
     */
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       XObject result = null;
+       
+	   XObject result = null;
        
        final int sourceNode = xctxt.getCurrentNode();
        
-       XObject xObjL = null;
+       XObject xObj0 = null;
        
        if (m_left instanceof SelfIteratorNoPredicate) {
     	   XObject contextItem = xctxt.getXPath3ContextItem();
     	   if (contextItem != null) {
-    		   xObjL = contextItem;  
+    		   xObj0 = contextItem;  
     	   }
     	   else {
-    		   xObjL = m_left.execute(xctxt); 
+    		   xObj0 = m_left.execute(xctxt); 
     	   }
        }
        else {  
-    	   xObjL = m_left.execute(xctxt);
+    	   xObj0 = m_left.execute(xctxt);
        }
        
-       if (xObjL instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xObjL;
+       if (xObj0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xObj0;
            DTMCursorIterator dtmIter = xsObjNodeSet.iterRaw();
            
            int nextNode = DTM.NULL;           
            ResultSequence resultSeq = new ResultSequence();            
+           
            while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
               xctxt.pushCurrentNode(nextNode);
               
@@ -89,10 +93,11 @@ public class SimpleMapOperator extends XPathOperator
            
            result = resultSeq;
        }
-       else if (xObjL instanceof ResultSequence) {
-           ResultSequence inpSeq = (ResultSequence)xObjL;
+       else if (xObj0 instanceof ResultSequence) {
+           ResultSequence inpSeq = (ResultSequence)xObj0;
            ResultSequence resultSeq = new ResultSequence();
            int size1 = inpSeq.size();
+           
            for (int idx = 0; idx < size1; idx++) {
         	   XObject xObj = inpSeq.item(idx);              
           	  
@@ -122,7 +127,7 @@ public class SimpleMapOperator extends XPathOperator
     	   int prevCtxtPosition = xctxt.getXPath3ContextPosition();
     	   int prevCtxtSize = xctxt.getXPath3ContextSize();
 
-    	   xctxt.setXPath3ContextItem(xObjL);
+    	   xctxt.setXPath3ContextItem(xObj0);
     	   xctxt.setXPath3ContextPosition(1);
     	   xctxt.setXPath3ContextSize(1);
 

@@ -40,7 +40,7 @@ import org.json.JSONException;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of an XPath 3.1 function, fn:parse-json.
+ * Implementation of an XPath 3.1 function fn:parse-json.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -85,12 +85,10 @@ public class FuncParseJson extends JsonFunction {
         Expression arg1 = m_arg1;
         
         if ((arg0 == null) && (arg1 == null)) {
-           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:parse-json needs to have "
-            		                                                                                    + "at-least one argument.", srcLocator);
+           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function 'parse-json' may have either one or two arguments.", srcLocator);
         }
         else if (m_arg2 != null) {
-           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:parse-json can "
-            		                                                                                    + "have either one or two arguments.", srcLocator);
+           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function 'parse-json' may have either one or two arguments.", srcLocator);
         }
         
         boolean optionIsLiberalVal = false;
@@ -104,6 +102,7 @@ public class FuncParseJson extends JsonFunction {
            // fn:parse-json function was called, with two arguments
         	
            XObject arg1Value = null;
+           
            if (arg1 instanceof Variable) {
         	  arg1Value = ((Variable)arg1).execute(xctxt);
            }
@@ -122,10 +121,11 @@ public class FuncParseJson extends JsonFunction {
         		 Entry<XObject,XObject> mapEntry = optionsIter.next();
         		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
         		 XObject optionValue = mapEntry.getValue();
+        		 
         		 if (!OPTION_SUPPORTED_LIST.contains(keyStr)) {
-        			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used with function call "
-        					                                                                    + "fn:parse-json, is not supported. This implementation "
-        					                                                                    + "supports, fn:parse-json options 'liberal', 'duplicates'.", srcLocator); 
+        			throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'parse-json' option '" + keyStr + "' is not supported. "
+        					                                                                                                         + "This implementation supports, function "
+        					                                                                                                         + "'parse-json' options 'liberal', 'duplicates'.", srcLocator); 
         		 }
         		 
         		 if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
@@ -133,8 +133,7 @@ public class FuncParseJson extends JsonFunction {
         			   optionIsLiberalVal = optionValue.bool();        			   
         			}
         			else {
-        			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:parse-json option "
-					        			   		                                               + "\"liberal\"'s value is not of type xs:boolean.", srcLocator);
+        			   throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function 'parse-json' option \"liberal\" value is not of XML schema type boolean.", srcLocator);
         			}
         		 }
         		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
@@ -143,9 +142,8 @@ public class FuncParseJson extends JsonFunction {
         			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) ||
         				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) ||
         				  XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr))) {
-        				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:parse-json option "
-				                                                                               + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
-				                                                                               + "'use-last'.", srcLocator);
+        				throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function 'parse-json' option \"duplicates\" value is not one of following : 'reject', "
+        						                                                                                                                                + "'use-first', 'use-last'.", srcLocator);
         			}        			
         		 }
         	  }
@@ -153,8 +151,7 @@ public class FuncParseJson extends JsonFunction {
         	  result = getJsonXdmValue(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);
            }
            else {
-        	  throw new javax.xml.transform.TransformerException("FOUT1190 : The second argument provided for function call "
-        	  		                                                                           + "fn:parse-json to represent 'options' is not a map.", srcLocator);  
+        	  throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'parse-json' second argument representing 'options' is not an xdm map.", srcLocator);  
            }
         }
             
@@ -169,14 +166,7 @@ public class FuncParseJson extends JsonFunction {
      * @throws WrongNumberArgsException
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-    {
-       /*if (!((argNum == 1) || (argNum == 2))) {
-          reportWrongNumberArgs();
-       }
-       else {
-          fNumOfArgs = argNum;   
-       }*/
-       
+    {       
        fNumOfArgs = argNum;
     }
     
@@ -192,8 +182,8 @@ public class FuncParseJson extends JsonFunction {
     }
 
     /**
-     * Method definition to JSON parse an input string, and return a corresponding 
-     * xdm value.
+     * Method definition, to json parse the supplied input string, and 
+     * return a corresponding xdm value.
      * 
      * @param xpath                              Represents first argument provided to function fn:parse-json.
      * @param xctxt                              XPath context object
@@ -221,11 +211,11 @@ public class FuncParseJson extends JsonFunction {
 			result = getJsonXdmValueFromStr(arg0StrValue, optionIsLiberal, optionDuplicatesValStr);
 		}
 		catch (JSONException ex) {			
-		    throw new javax.xml.transform.TransformerException("FOUT1190 : The function call fn:parse-json's first argument is not a "
-		    		                                                                 + "correct JSON lexical string. The XPath JSON parse options used were : "
-		    		                                                                 + "liberal: " + optionIsLiberal + ", duplicates: " + 
-		    		                                                                 optionDuplicatesValStr + ". The JSON parser emitted following error message: " + 
-		    		                                                                 ex.getMessage() + ".", srcLocator);
+		    throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'parse-json' first argument is not a "
+		    		                                                                                                             + "correct json lexical string. The XPath json parse options used were : "
+		    		                                                                                                             + "liberal: " + optionIsLiberal + ", duplicates: " + 
+		    		                                                                                                             optionDuplicatesValStr + ". The json parse resulted in following error message: " + 
+		    		                                                                                                             ex.getMessage() + ".", srcLocator);
 		}
 		
 		return result;

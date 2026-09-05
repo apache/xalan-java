@@ -39,14 +39,13 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
-import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.json.JSONException;
 
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of an XPath 3.1 function, fn:json-doc.
+ * Implementation of an XPath 3.1 function fn:json-doc.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -87,16 +86,11 @@ public class FuncJsonDoc extends JsonFunction {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        Expression arg0 = m_arg0;        
-        Expression arg1 = m_arg1;
-        
-        if ((arg0 == null) && (arg1 == null)) {
-           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-doc needs to have "
-            		                                                                                    + "at-least one argument.", srcLocator);
+        if ((m_arg0 == null) && (m_arg1 == null)) {
+           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function 'json-doc' may have either one or two arguments.", srcLocator);
         }
         else if (m_arg2 != null) {
-           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath function fn:json-doc can "
-            		                                                                                    + "have either one or two arguments.", srcLocator);
+           throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function 'json-doc' may have either one or two arguments.", srcLocator);
         }
         
         boolean optionIsLiberalVal = false;
@@ -104,18 +98,13 @@ public class FuncJsonDoc extends JsonFunction {
         String optionDuplicatesValStr = XSLJsonConstants.DUPLICATES_USE_FIRST; 
         
         if (fNumOfArgs == 1) {
-           result = getFnJsonDocResult(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);           
+           result = getFnJsonDocResult(m_arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);           
         }
         else {
-           // fn:json-doc function was called, with two arguments
+           // An XPath 3.1 function fn:json-doc, has been called 
+           // with two arguments.
         	
-           XObject arg1Value = null;
-           if (arg1 instanceof Variable) {
-        	  arg1Value = ((Variable)arg1).execute(xctxt);
-           }
-           else {
-        	  arg1Value = arg1.execute(xctxt); 
-           }
+           XObject arg1Value = getFunctionArgEffectiveValue(m_arg1, xctxt);
            
            if (arg1Value instanceof XPathMap) {
         	  XPathMap optionsMap = (XPathMap)arg1Value;
@@ -129,9 +118,9 @@ public class FuncJsonDoc extends JsonFunction {
          		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
          		 XObject optionValue = mapEntry.getValue();
          		 if (!OPTION_SUPPORTED_LIST.contains(keyStr)) {
-         			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used with function call "
-         					                                                                    + "fn:json-doc, is not supported. This implementation "
-         					                                                                    + "supports, fn:json-doc options 'liberal', 'duplicates'.", srcLocator); 
+         			throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-doc' option '" + keyStr + "' is not "
+         					                                                                                                       + "supported. This implementation supports "
+         					                                                                                                       + "function 'json-doc' options 'liberal', 'duplicates'.", srcLocator);
          		 }
          		 
          		 if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
@@ -139,8 +128,7 @@ public class FuncJsonDoc extends JsonFunction {
          			   optionIsLiberalVal = optionValue.bool();        			   
          			}
          			else {
-         			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option "
- 					        			   		                                               + "\"liberal\"'s value is not of type xs:boolean.", srcLocator);
+         			   throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-doc' option \"liberal\" value is not of an XML schema type boolean.", srcLocator);
          			}
          		 }
          		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
@@ -149,18 +137,17 @@ public class FuncJsonDoc extends JsonFunction {
          			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) ||
          				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) ||
          				  XSLJsonConstants.DUPLICATES_USE_LAST.equals(optionDuplicatesValStr))) {
-         				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-doc option "
- 				                                                                               + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
- 				                                                                               + "'use-last'.", srcLocator);
+         				throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-doc' option \"duplicates\" value "
+         						                                                                                                                  + "is not one of following : 'reject', "
+         						                                                                                                                  + "'use-first', 'use-last'.", srcLocator);
          			}        			
          		 }
         	  }
         	  
-        	  result = getFnJsonDocResult(arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);
+        	  result = getFnJsonDocResult(m_arg0, xctxt, optionIsLiberalVal, optionDuplicatesValStr);
            }
            else {
-        	   throw new javax.xml.transform.TransformerException("FOUT1190 : The second argument provided for function call "
-                                                                                              + "fn:json-doc to represent 'options' is not a map.", srcLocator);  
+        	   throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'json-doc' 'options' argument is not an xdm map.", srcLocator);  
            }
         }
             
@@ -175,15 +162,8 @@ public class FuncJsonDoc extends JsonFunction {
      * @throws WrongNumberArgsException
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-    {
-       /*if (!((argNum == 1) || (argNum == 2))) {
-          reportWrongNumberArgs();
-       }
-       else {
-          fNumOfArgs = argNum;   
-       }*/       
-
-    	fNumOfArgs = argNum;
+    {      
+       fNumOfArgs = argNum;
     }
     
     /**
@@ -201,7 +181,8 @@ public class FuncJsonDoc extends JsonFunction {
      * Method definition to JSON parse an input string, and return a corresponding 
      * xdm value.
      * 
-     * @param xpath                              Represents first argument provided to function fn:parse-json
+     * @param xpathExpr                          Represents first argument provided to 
+     *                                           function fn:parse-json.
      * @param xctxt                              XPath context object
      * @param optionIsLiberal                    Function call fn:json-doc option liberal's value
      * @param optionDuplicatesValStr             Function call fn:json-doc option duplicates's value
@@ -213,27 +194,31 @@ public class FuncJsonDoc extends JsonFunction {
      *  
      * @throws javax.xml.transform.TransformerException
      */
-	private XObject getFnJsonDocResult(Expression xpath, XPathContext xctxt, boolean optionIsLiberal, 
-                                                                             String optionDuplicatesValStr) 
-			                                                                                         throws javax.xml.transform.TransformerException {
+	private XObject getFnJsonDocResult(Expression xpathExpr, XPathContext xctxt, boolean optionIsLiberal, String optionDuplicatesValStr) 
+			                                                                                             throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
-		XObject arg0Value = xpath.execute(xctxt);
+		XObject arg0Value = getFunctionArgEffectiveValue(xpathExpr, xctxt);
+		
 		String hrefStrVal = XslTransformEvaluationHelper.getStrVal(arg0Value);
 		
 		URL resolvedArg0Url = null;
 
 		try {
 			URI arg0Uri = new URI(hrefStrVal);
-			String stylesheetSystemId = srcLocator.getSystemId();  // base uri of stylesheet, if available
+			
+			// XSL stylesheet base uri if available			
+			String stylesheetSystemId = srcLocator.getSystemId();
 
 			if (!arg0Uri.isAbsolute() && (stylesheetSystemId != null)) {
 				// If the first argument is a relative uri reference, then 
 				// resolve the relative uri using base uri of the stylesheet.
+				
 				URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+				
 				resolvedArg0Url = resolvedUriArg.toURL(); 
 			}
 
@@ -247,22 +232,22 @@ public class FuncJsonDoc extends JsonFunction {
 
 		}
 		catch (URISyntaxException ex) {
-			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
-					                                                                  + "or cannot be resolved to an absolute uri.", srcLocator);  
+			throw new javax.xml.transform.TransformerException("FODC0005 : An XPath 3.1 function call 'json-doc' error has occured. The uri '" + hrefStrVal + "' is not a "
+					                                                                                                                           + "valid absolute uri, or cannot be resolved "
+					                                                                                                                           + "to an absolute uri.", srcLocator);  
 		}
 		catch (MalformedURLException ex) {
-			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
-					                                                                  + "or cannot be resolved to an absolute uri.", srcLocator);
+			throw new javax.xml.transform.TransformerException("FODC0005 : An XPath 3.1 function call 'json-doc' error has occured. The uri '" + hrefStrVal + "' is not a "
+					                                                                                                                           + "valid absolute uri, or cannot be resolved "
+					                                                                                                                           + "to an absolute uri.", srcLocator);
 		}
 		catch (IOException ex) {
-			throw new javax.xml.transform.TransformerException("FODC0002 : The information from uri '" + hrefStrVal + "' cannot be retrieved.", srcLocator);
+			throw new javax.xml.transform.TransformerException("FODC0002 : An XPath 3.1 function call 'json-doc' error has occured. The information from uri '" + hrefStrVal + "' cannot be retrieved.", srcLocator);
 		}
 		catch (JSONException ex) {
-			throw new javax.xml.transform.TransformerException("FOUT1190 : The function call fn:parse-json's first argument is not a "
-																                      + "correct JSON lexical string. The XPath JSON parse options used were : "
-																                      + "liberal: " + optionIsLiberal + ", duplicates: " + 
-																                      optionDuplicatesValStr + ". The JSON parser emitted following error message: " + 
-																                      ex.getMessage() + ".", srcLocator); 
+			throw new javax.xml.transform.TransformerException("FOUT1190 : An XPath 3.1 function call 'parse-json' first argument is not a correct json lexical string. The json parse options used were : liberal: " + optionIsLiberal + ", duplicates: " 
+																                                                                                                 	                                                  + optionDuplicatesValStr + ". The json parse "
+																                                                                                                 	                                                  + "resulted in following errors : " + ex.getMessage() + ".", srcLocator); 
 		}
 		
 		return result;

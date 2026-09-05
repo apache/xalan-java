@@ -75,7 +75,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.operations.Range;
-import org.apache.xpath.operations.SimpleMapOperator;
+import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
 import org.apache.xpath.patterns.NodeTest;
@@ -441,8 +441,8 @@ public class XslTransformEvaluationHelper {
                                                                                 execute(xctxt));
            sum = sumResultSequence(seqCtrEvalResult);
         }
-        else if (expr instanceof SimpleMapOperator) {
-           SimpleMapOperator simpleMapOperator = (SimpleMapOperator)expr;
+        else if (expr instanceof XPathSimpleMapOperator) {
+           XPathSimpleMapOperator simpleMapOperator = (XPathSimpleMapOperator)expr;
            ResultSequence simpleMapOperatorResult = (ResultSequence)(simpleMapOperator.
                                                                                   execute(xctxt));
            sum = sumResultSequence(simpleMapOperatorResult);

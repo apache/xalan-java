@@ -88,7 +88,7 @@ import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Pos;
 import org.apache.xpath.operations.Range;
-import org.apache.xpath.operations.SimpleMapOperator;
+import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.TreatAs;
 import org.apache.xpath.operations.Variable;
@@ -822,13 +822,13 @@ public class Compiler extends XPathOpMap
    * 
    * @param opPos The current position in the m_opMap array
    * 
-   * @return reference to {@link org.apache.xpath.operations.SimpleMapOperator} instance.
+   * @return reference to {@link org.apache.xpath.operations.XPathSimpleMapOperator} instance.
    * 
    * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression simpleMapOperator(int opPos) throws TransformerException
   {
-    return compileXPathOperator(new SimpleMapOperator(), opPos);
+    return compileXPathOperator(new XPathSimpleMapOperator(), opPos);
   }
   
   /**

@@ -483,5 +483,15 @@ public class XslForEachGroupTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslForEachGroupTest43_3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37_3.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test37_3.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test37_2.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
