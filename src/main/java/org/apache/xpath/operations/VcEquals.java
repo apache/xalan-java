@@ -59,7 +59,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * An implementation of XPath 3.1 value comparison 
+ * An implementation of XPath 3.1 value comparison, 
  * operator 'eq'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

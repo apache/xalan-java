@@ -47,6 +47,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSNumericType;
+
 /**
  * A class definition, providing common implementation 
  * features for XPath expression language binary operators. 
@@ -567,6 +569,32 @@ public class XPathOperator extends Expression implements ExpressionOwner
 	  boolean result = ((xObj instanceof XPathInlineFunction) || (xObj instanceof XPathNamedFunctionReference)
 			                                                  || (xObj instanceof ElemFunctionItem));
 	  
+	  return result;
+  }
+  
+  /**
+   * Method definition, to check whether the supplied xdm
+   * sequence contains all items as numeric.
+   * 
+   * @param rSeq                         The supplied xdm sequence
+   * @return                             Boolean value true or false;
+   */
+  protected boolean isXdmSeqAllNumeric(ResultSequence rSeq) {
+	  
+	  boolean result = true;
+
+	  int size1 = rSeq.size();
+
+	  for (int idx = 0; idx < size1; idx++) {
+         XObject xObj = rSeq.item(idx);
+         
+         if (!((xObj instanceof XNumber) || (xObj instanceof XSNumericType))) {
+        	result = false;
+        	
+        	break;
+         }
+	  }
+
 	  return result;
   }
   

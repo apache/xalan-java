@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:00Z" fail="12" name="op-node-after" pass="14" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:39Z" fail="10" name="op-node-after" pass="16" run="26" statusUnknown="0">
    <testResult status="fail" testName="nodeexpression33"/>
    <testResult status="fail" testName="nodeexpression35"/>
    <testResult status="fail" testName="nodeexpression36"/>
    <testResult status="fail" testName="nodeexpression41"/>
    <testResult status="pass" testName="nodeexpression43"/>
-   <testResult status="fail" testName="nodeexpression44"/>
+   <testResult status="pass" testName="nodeexpression44"/>
    <testResult status="fail" testName="nodeexpression45"/>
-   <testResult status="fail" testName="nodeexpression47"/>
+   <testResult status="pass" testName="nodeexpression47"/>
    <testResult status="pass" testName="nodeexpression48"/>
    <testResult status="pass" testName="nodeexpressionhc11"/>
    <testResult status="pass" testName="nodeexpressionhc12"/>

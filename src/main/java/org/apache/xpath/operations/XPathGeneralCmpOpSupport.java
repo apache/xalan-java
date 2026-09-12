@@ -297,16 +297,34 @@ public class XPathGeneralCmpOpSupport {
 		boolean result = false;
 		
 		int size1 = lSeq.size();
+		
 		for (int idx = 0; idx < size1; idx++) {
 			XObject xObj1 = lSeq.item(idx);
+			
+			if (xObj1 instanceof XNumber) {
+				XNumber xNumber = (XNumber)xObj1;
+
+				if (xNumber.getXsDecimal() != null) {
+					xObj1 = xNumber.getXsDecimal();  
+				}
+				else if (xNumber.getXsDouble() != null) {
+					xObj1 = xNumber.getXsDouble(); 
+				}
+				else if (xNumber.getXsInteger() != null) {
+					xObj1 = xNumber.getXsInteger(); 
+				}
+			}
+			
 			if (xObj1 instanceof XNumber) {
 				result = lessThan((XNumber)xObj1, rSeq, isEqualsOption);				
+				
 				if (result) {
 				   break;	
 				}
 			}
 			else if (xObj1 instanceof XSNumericType) {
 				result = lessThan((XSNumericType)xObj1, rSeq, isEqualsOption);
+				
 				if (result) {
 					break;	
 				}
@@ -314,11 +332,13 @@ public class XPathGeneralCmpOpSupport {
             else if (xObj1 instanceof XMLNodeCursorImpl) {
                XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj1;
                java.lang.String lStrVal = xmlNodeCursorImpl.str();
+               
                try {
 					double lhsDbl = Double.valueOf(lStrVal);
 					xObj1 = new XNumber(lhsDbl);
 					
-					result = lessThan((XSNumericType)xObj1, rSeq, isEqualsOption);
+					result = lessThan((XNumber)xObj1, rSeq, isEqualsOption);
+					
 					if (result) {
 						break;	
 					}
@@ -596,16 +616,34 @@ public class XPathGeneralCmpOpSupport {
 		boolean result = false;
 		
 		int size1 = lSeq.size();
+		
 		for (int idx = 0; idx < size1; idx++) {
 			XObject xObj1 = lSeq.item(idx);
+			
+			if (xObj1 instanceof XNumber) {
+			   XNumber xNumber = (XNumber)xObj1;
+			   
+			   if (xNumber.getXsDecimal() != null) {
+				   xObj1 = xNumber.getXsDecimal();  
+			   }
+			   else if (xNumber.getXsDouble() != null) {
+				   xObj1 = xNumber.getXsDouble(); 
+			   }
+			   else if (xNumber.getXsInteger() != null) {
+				   xObj1 = xNumber.getXsInteger(); 
+			   }
+			}
+			
 			if (xObj1 instanceof XNumber) {
 				result = greaterThan((XNumber)xObj1, rSeq, isEqualsOption);				
+				
 				if (result) {
 				   break;	
 				}
 			}
 			else if (xObj1 instanceof XSNumericType) {
 				result = greaterThan((XSNumericType)xObj1, rSeq, isEqualsOption);
+				
 				if (result) {
 					break;	
 				}
@@ -613,11 +651,13 @@ public class XPathGeneralCmpOpSupport {
             else if (xObj1 instanceof XMLNodeCursorImpl) {
                XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj1;
                java.lang.String lStrVal = xmlNodeCursorImpl.str();
+               
                try {
 					double lhsDbl = Double.valueOf(lStrVal);
 					xObj1 = new XNumber(lhsDbl);
 					
-					result = greaterThan((XSNumericType)xObj1, rSeq, isEqualsOption);
+					result = greaterThan((XNumber)xObj1, rSeq, isEqualsOption);
+					
 					if (result) {
 						break;	
 					}

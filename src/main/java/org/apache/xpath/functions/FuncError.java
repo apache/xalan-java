@@ -20,19 +20,14 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.XPathOperator;
 
-import xml.xpath31.processor.types.XSQName;
-
 /**
  * Implementation of an XPath 3.1 function fn:error.
- * 
- * This function, always raises an XPath dynamic error.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -42,6 +37,8 @@ public class FuncError extends FunctionMultiArgs
 {
     
 	private static final long serialVersionUID = 2926562472111015885L;
+	
+	public static final String CALL_TO_FUNCTION_ERR = "call to function 'error'";
 
 	/**
      * Default constructor.
@@ -69,7 +66,7 @@ public class FuncError extends FunctionMultiArgs
     	ExpressionNode exprNode = exprGetParent();
     	
     	if (exprNode instanceof XPathOperator) {
-    	   throw new TransformerException("FOER0000 : An XPath binary operator's operand cannot be of type none.");
+    	   throw new TransformerException("FOER0000 : An XPath operator's operand cannot be of type none.");
     	}
 
     	if (m_arg0 != null) {
@@ -81,21 +78,22 @@ public class FuncError extends FunctionMultiArgs
     	}
 
     	if (m_arg2 != null) {
-    		// Presently, an errValue object instance is always an empty sequence,
+    		// Currently, an errValue object instance is always an empty sequence,
     		// and this is ignored by an implementation of this class.
-    		XObject errValue = getFunctionArgEffectiveValue(m_arg2, xctxt);
+    		
+    		// REVISIT
     	}
 
     	String errMesgStr = "";
+    	
     	if (errDesc != null) {
     		errMesgStr = XslTransformEvaluationHelper.getStrVal(errCode) + " : " + XslTransformEvaluationHelper.getStrVal(errDesc);   
     	}
     	else if (errCode != null) {
-    		errMesgStr = XslTransformEvaluationHelper.getStrVal(errCode) + " : Raised by XPath 'error' function call."; 
+    		errMesgStr = XslTransformEvaluationHelper.getStrVal(errCode) + " :  An XPath dynamic error has occured, due to " + CALL_TO_FUNCTION_ERR + "."; 
     	}
     	else {
-    		XObject defErrCode = new XSQName("err", "FOER0000", Constants.XSL_ERROR_NAMESACE);
-    		errMesgStr = XslTransformEvaluationHelper.getStrVal(defErrCode) + " : An XPath dynamic error has occured."; 
+    		errMesgStr = "FOER0000 : An XPath dynamic error has occured, due to " + CALL_TO_FUNCTION_ERR + "."; 
     	}    	
 
     	throw new javax.xml.transform.TransformerException(errMesgStr, srcLocator);    

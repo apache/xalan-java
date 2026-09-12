@@ -274,8 +274,10 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    
 	    if (m_useWhen != null) {
 	    	boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+	    	
 	    	if (result1) {
 	    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+	    		
 	    		if (!useWhenResult.bool()) {
 	    			return;
 	    		}
@@ -287,6 +289,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
 	    }
 	    
 	    ElemTemplateElement parentElem = getParentElem();
+	    
 	    if (!(parentElem instanceof ElemTry)) {
 	    	throw new TransformerException("XTSE3150 : An XSL catch element can occur, only as child of xsl try element.", srcLocator);
 	    }
@@ -314,6 +317,7 @@ public class ElemCatch extends ElemTemplateElement implements ExpressionOwner {
     		ResultSequence rSeq = new ResultSequence();
 			rSeq.add(xpathEvalResult);
 			SerializationHandler handler = transformer.getSerializationHandler(); 
+			
 			try {
 				ElemCopyOf.copyOfActionOnResultSequence(rSeq, transformer, handler, xctxt, false, this);
 			} 

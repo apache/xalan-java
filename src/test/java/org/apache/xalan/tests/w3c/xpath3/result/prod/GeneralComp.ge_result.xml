@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:42Z" fail="17" name="prod-GeneralComp.ge" pass="41" run="58" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:07Z" fail="8" name="prod-GeneralComp.ge" pass="50" run="58" statusUnknown="0">
    <testResult status="pass" testName="generalexpression496"/>
    <testResult status="pass" testName="generalexpression497"/>
    <testResult status="pass" testName="generalexpression498"/>
@@ -32,22 +32,22 @@
    <testResult status="pass" testName="generalexpression568"/>
    <testResult status="pass" testName="generalexpression572"/>
    <testResult status="pass" testName="generalexpression573"/>
-   <testResult status="fail" testName="generalexpression574"/>
+   <testResult status="pass" testName="generalexpression574"/>
    <testResult status="pass" testName="generalexpression575"/>
    <testResult status="pass" testName="generalexpression576"/>
    <testResult status="pass" testName="generalexpression577"/>
-   <testResult status="fail" testName="generalexpression578"/>
+   <testResult status="pass" testName="generalexpression578"/>
    <testResult status="pass" testName="generalexpression582"/>
-   <testResult status="fail" testName="generalexpression583"/>
-   <testResult status="fail" testName="generalexpression584"/>
+   <testResult status="pass" testName="generalexpression583"/>
+   <testResult status="pass" testName="generalexpression584"/>
    <testResult status="pass" testName="generalexpression585"/>
    <testResult status="pass" testName="generalexpression586"/>
    <testResult status="pass" testName="generalexpression587"/>
-   <testResult status="fail" testName="generalexpression588"/>
-   <testResult status="fail" testName="generalexpression592"/>
-   <testResult status="fail" testName="generalexpression593"/>
-   <testResult status="fail" testName="generalexpression594"/>
-   <testResult status="fail" testName="greaterthaneqonanyuri-1"/>
+   <testResult status="pass" testName="generalexpression588"/>
+   <testResult status="pass" testName="generalexpression592"/>
+   <testResult status="pass" testName="generalexpression593"/>
+   <testResult status="pass" testName="generalexpression594"/>
+   <testResult status="pass" testName="greaterthaneqonanyuri-1"/>
    <testResult status="fail" testName="K-GenCompGTEQ-1"/>
    <testResult status="fail" testName="K-GenCompGTEQ-2"/>
    <testResult status="fail" testName="K-GenCompGTEQ-3"/>

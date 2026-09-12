@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:42Z" fail="20" name="prod-GeneralComp.lt" pass="54" run="74" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:07Z" fail="14" name="prod-GeneralComp.lt" pass="60" run="74" statusUnknown="0">
    <testResult status="pass" testName="generalexpression199"/>
    <testResult status="pass" testName="generalexpression200"/>
    <testResult status="pass" testName="generalexpression201"/>
@@ -28,11 +28,11 @@
    <testResult status="pass" testName="generalexpression237"/>
    <testResult status="pass" testName="generalexpression268"/>
    <testResult status="pass" testName="generalexpression269"/>
-   <testResult status="fail" testName="generalexpression270"/>
-   <testResult status="fail" testName="generalexpression271"/>
+   <testResult status="pass" testName="generalexpression270"/>
+   <testResult status="pass" testName="generalexpression271"/>
    <testResult status="pass" testName="generalexpression275"/>
-   <testResult status="fail" testName="generalexpression276"/>
-   <testResult status="fail" testName="generalexpression277"/>
+   <testResult status="pass" testName="generalexpression276"/>
+   <testResult status="pass" testName="generalexpression277"/>
    <testResult status="pass" testName="generalexpression278"/>
    <testResult status="pass" testName="generalexpression279"/>
    <testResult status="pass" testName="generalexpression280"/>
@@ -44,10 +44,10 @@
    <testResult status="pass" testName="generalexpression289"/>
    <testResult status="pass" testName="generalexpression290"/>
    <testResult status="pass" testName="generalexpression291"/>
-   <testResult status="fail" testName="generalexpression295"/>
+   <testResult status="pass" testName="generalexpression295"/>
    <testResult status="pass" testName="generalexpression296"/>
    <testResult status="pass" testName="generalexpression297"/>
-   <testResult status="fail" testName="lessthanonanyuri-1"/>
+   <testResult status="pass" testName="lessthanonanyuri-1"/>
    <testResult status="fail" testName="K-GenCompLT-1"/>
    <testResult status="fail" testName="K-GenCompLT-2"/>
    <testResult status="fail" testName="K-GenCompLT-3"/>

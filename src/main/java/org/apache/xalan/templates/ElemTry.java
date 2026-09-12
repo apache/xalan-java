@@ -32,6 +32,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncError;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
@@ -283,8 +284,10 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    
 	    if (m_useWhen != null) {
 	    	boolean result1 = isXPathExpressionStatic(m_useWhen.getExpression());
+	    	
 	    	if (result1) {
 	    		XObject useWhenResult = m_useWhen.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+	    		
 	    		if (!useWhenResult.bool()) {
 	    			return;
 	    		}
@@ -313,6 +316,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    // occurrence validity.
 	    
 	    Node node = getLastChildElem();	    
+	    
 	    while (node instanceof ElemFallback) {
 	       node = node.getPreviousSibling();
 	    }
@@ -343,6 +347,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    		// available xsl:catch instruction.
 	    		
 	    		SourceLocator srcLocator1 = ex.getLocator();	    		
+	    		
 	    		if (srcLocator1 == null) {
 	    		   ex.setLocator(srcLocator);
 	    		}
@@ -361,6 +366,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    		if (!(t instanceof ElemCatch)) {
 	    			xctxt.setSAXLocator(t);
 	    			transformer.setCurrentElement(t);
+	    			
 	    			try {
 	    				transformer.transformToRTF(t);	    				
 	    				t.execute(transformer);
@@ -370,7 +376,8 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 	    				// available xsl:catch instruction.
 	    				
 	    				SourceLocator srcLocator1 = ex.getLocator();
-	    	    		if (srcLocator1 == null) {
+	    	    		
+	    				if (srcLocator1 == null) {
 	    	    		   ex.setLocator(srcLocator);
 	    	    		}
 	    	    		
@@ -444,9 +451,11 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 			String errMesg = ex.getMessage();				
 			int colonIdx = errMesg.indexOf(':');
 			String exceptionErrCodeLocalStr = null;
+			
 			if (colonIdx != -1) {
 				exceptionErrCodeLocalStr = errMesg.substring(colonIdx + 1);
 				colonIdx = exceptionErrCodeLocalStr.indexOf(':');
+				
 				if (colonIdx != -1) {
 					exceptionErrCodeLocalStr = (exceptionErrCodeLocalStr.substring(0, colonIdx)).trim();
 				}
@@ -459,15 +468,17 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 				exceptionErrCodeLocalStr = errMesg;
 			}
 			
-			boolean isRaisedByFnError = errMesg.contains("XPath 'error' function");
+			boolean isRaisedByFnError = errMesg.contains(FuncError.CALL_TO_FUNCTION_ERR);
 
 			ElemCatch elemCatch = getXslCatchElemToHandleException(transformer, xctxt, exceptionErrCodeLocalStr, 
 					                                                                                          this, isRaisedByFnError);						
 
 			if (elemCatch != null) {												
 				String xslTrfModuleStr = transformer.getUriStrOfXslStylesheet();
+				
 				if (xslTrfModuleStr != null) {				   
 					int idx = xslTrfModuleStr.lastIndexOf('/');
+					
 					if (idx > -1) {
 					   int strLength = xslTrfModuleStr.length();
 					   xslTrfModuleStr = "/" + xslTrfModuleStr.substring(idx + 1, strLength);
@@ -478,6 +489,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 				}
 				
 				String errMesg2 = null;				
+				
 				if (exceptionErrCodeLocalStr.length() > 8) {
 					colonIdx = errMesg.indexOf(':');					
 					exceptionErrCodeLocalStr = (errMesg.substring(0, colonIdx)).trim();
@@ -498,6 +510,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 				}
 				
 				int idx = errMesg.indexOf(':');
+				
 				if ((idx < 10) && errMesg.startsWith("X")) {
 				   errMesg = (errMesg.substring(idx + 1)).trim();
 				}
@@ -510,6 +523,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 				// err:column-number within XPath evaluation context.
 				
 				xpathVarMap.put(errCodeKey, new XSQName(errCodePrfxStr, exceptionErrCodeLocalStr, Constants.XSL_ERROR_NAMESACE));
+				
 				if (xslTrfModuleStr != null) {
 				   xpathVarMap.put(errModuleKey, new XSString(xslTrfModuleStr));
 				}
@@ -530,8 +544,9 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 			}
 		}
 		finally {
-			// Delete variable bindings within XML err: namespace that were 
-			// created for xsl:catch processing, from XPath expression context.			
+			// Remove variable bindings within XML err: namespace that were 
+			// created for xsl:catch processing, from XPath expression context.
+			
 			xpathVarMap.remove(errCodeKey);
 			xpathVarMap.remove(errDescKey);
 			xpathVarMap.remove(errLineNumKey);
@@ -563,12 +578,14 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 			if (t instanceof ElemCatch) {				
 				ElemCatch elemCatch = (ElemCatch)t;
 				QName[] qNameArr = elemCatch.getErrors();
+				
 				if ((qNameArr == null) || ((qNameArr.length == 1) && "*".equals((qNameArr[0]).getLocalName()))) {
 					/**
 					 * This xsl:catch element doesn't have an attribute "errors",
 					 * or an attribute "errors" value is "*". Therefore, this xsl:catch
 					 * element is a suitable recovery handler for this exception.
 					 */
+					
 					xslDesiredCatchElem = elemCatch;
 					
 					break;
@@ -577,6 +594,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 					for (int idx = 0; idx < qNameArr.length; idx++) {
 						QName xslCatchErrQName = qNameArr[idx];
 						String xslCatchErrorNs = xslCatchErrQName.getNamespace();
+						
 						if (xslCatchErrorNs == null) {
 							if (!isRaisedByFnError) {
 								continue;
@@ -595,6 +613,7 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 							 * xsl:catch's error declaration. Therefore, this xsl:catch 
 							 * element is a suitable recovery handler for this exception.
 							 */
+							
 							xslDesiredCatchElem = elemCatch;
 							
 							break;
@@ -616,7 +635,9 @@ public class ElemTry extends ElemTemplateElement implements ExpressionOwner {
 			 * available within this xsl:try's ancestor scope (i.e, any other
 			 * xsl:try ancestor element that can handle this exception).
 			 */
+			
 			ElemTemplateElement parentElem = elemTry.getParentElem();
+			
 			while ((parentElem != null) && !(parentElem instanceof ElemTry)) {
 			   parentElem = parentElem.getParentElem();
 			}

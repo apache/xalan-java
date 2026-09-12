@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:00Z" fail="12" name="op-numeric-add" pass="119" run="131" skipped="11" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:39Z" fail="10" name="op-numeric-add" pass="121" run="131" skipped="11" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-addint2args-1"/>
    <testResult status="pass" testName="op-numeric-addint2args-2"/>
    <testResult status="pass" testName="op-numeric-addint2args-3"/>
@@ -95,9 +95,9 @@
    <testResult status="pass" testName="K-NumericAdd-30"/>
    <testResult status="pass" testName="K-NumericAdd-31"/>
    <testResult status="pass" testName="K-NumericAdd-32"/>
-   <testResult status="fail" testName="K-NumericAdd-33"/>
+   <testResult status="pass" testName="K-NumericAdd-33"/>
    <testResult status="fail" testName="K-NumericAdd-34"/>
-   <testResult status="fail" testName="K-NumericAdd-35"/>
+   <testResult status="pass" testName="K-NumericAdd-35"/>
    <testResult status="fail" testName="K-NumericAdd-36"/>
    <testResult status="fail" testName="K-NumericAdd-37"/>
    <testResult status="fail" testName="K-NumericAdd-38"/>

@@ -61,11 +61,11 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3ExceptTests.class, XPath3FnAbsTests.class,
+@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3GeneralCompTests.class, XPath3ExceptTests.class, XPath3FnAbsTests.class,
 	            XPath3InlineFunctionExprTests.class, XPath3FnFormatIntegerTests.class, XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, 
 	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
 	            XPath3IntersectTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class, 
-	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3GeneralCompTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
+	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
 	            XPath3FnSumTests.class, XPath3FunctionArrayAppendTests.class, XPath3FunctionArraySizeTests.class, XPath3FunctionArrayFilterTests.class,
 	            XPath3FunctionArrayFoldLeftTests.class, XPath3FunctionArrayFoldRightTests.class, XPath3FunctionArrayForeachTests.class,
 	            XPath3FnNumberTests.class, XPath3FunctionArrayGetTests.class, XPath3FunctionArrayHeadTests.class, XPath3XsDurationEqualTests.class, 

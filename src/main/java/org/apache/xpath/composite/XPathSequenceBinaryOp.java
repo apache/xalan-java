@@ -221,20 +221,20 @@ public class XPathSequenceBinaryOp extends Expression {
 		return false;
 	}
 
-	public String getLeft() {
+	public String getLeftStr() {
 		return m_leftStr;
 	}
 
-	public void setLeft(String left) {
-		this.m_leftStr = left;
+	public void setLeftStr(String leftStr) {
+		this.m_leftStr = leftStr;
 	}
 
-	public String getRight() {
+	public String getRightStr() {
 		return m_rightStr;
 	}
 
-	public void setRight(String right) {
-		this.m_rightStr = right;
+	public void setRightStr(String rightStr) {
+		this.m_rightStr = rightStr;
 	}
 
 	public String getXPathOpStr() {

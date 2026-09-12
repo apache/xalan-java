@@ -568,6 +568,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 								dtm.setDocumentBaseURI(sourceDocUrlStr);
 
 								int docNodeHandle = dtm.getDocument();
+								
+								xctxt.pushCurrentNode(docNodeHandle);
+								
 								XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(docNodeHandle, xctxt);
 
 								xpathVarMap2.put(new QName(roleName), xmlNodeCursorImpl);
@@ -766,6 +769,12 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									finally {
 										if (!xpathVarMap2.isEmpty()) {
 											xpathVarMap2.clear();
+										}
+										
+										int sourceNode = xctxt.getCurrentNode();
+										
+										if (sourceNode != DTM.NULL) {
+										   xctxt.popCurrentNode();
 										}
 									}
 
