@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
@@ -6439,22 +6441,8 @@ public class XPathParser
     			 strBuff_2.append(m_token + " ");
     			 str_2 = (strBuff_2.toString()).trim();
     		  }
-    		  
-    		  if (tokenIs(',') && (xpathOpNameStr != null)) {
-    			 if ((str_1 != null) && (str_2 != null)) {
-    				if (str_1.startsWith("(") && str_1.endsWith(")") && str_2.startsWith("(") && str_2.endsWith(")")) {
-    				   if (StringUtil.isStrHasBalancedParentheses(str_1, '(', ')') && 
-    						                                                          StringUtil.isStrHasBalancedParentheses(str_2, '(', ')')) {
-    					   isXpathExprOk = true;
-    					   
-    					   consumeExpected(',');
-    					   
-    					   break;
-    				   }
-    				}
-    			 }
-    		  }
-    		  else if (tokenIs(')') && (xpathOpNameStr != null)) {
+    		      		  
+    		  if (tokenIs(')') && (xpathOpNameStr != null)) {
     			 if ((str_1 != null) && (str_2 != null)) {
     				 if ((str_1 != null) && (str_2 != null)) {
     					 if (str_1.startsWith("(") && str_1.endsWith(")") && str_2.startsWith("(") && str_2.endsWith(")")) {
@@ -6470,6 +6458,20 @@ public class XPathParser
     				 } 
      			 } 
     		  }
+    		  else if (tokenIs(',') && (xpathOpNameStr != null)) {
+     			 if ((str_1 != null) && (str_2 != null)) {
+     				if (str_1.startsWith("(") && str_1.endsWith(")") && str_2.startsWith("(") && str_2.endsWith(")")) {
+     				   if (StringUtil.isStrHasBalancedParentheses(str_1, '(', ')') && 
+     						                                                          StringUtil.isStrHasBalancedParentheses(str_2, '(', ')')) {
+     					   isXpathExprOk = true;
+     					   
+     					   consumeExpected(',');
+     					   
+     					   break;
+     				   }
+     				}
+     			 }
+     		  }
     		  
     		  nextToken();
     	   }
@@ -6864,7 +6866,7 @@ public class XPathParser
     					String str2 = (strBuff.toString()).trim();
     					
     					if ((tokenIs(',') && StringUtil.isStrHasBalancedParentheses(trimTrailingChar(str2),'(', ')')) || 
-                                                     (tokenIs(']') && StringUtil.isStrHasBalancedParentheses(trimTrailingChar(str2),'[', ']'))) {
+                                                     														(tokenIs(']') && StringUtil.isStrHasBalancedParentheses(trimTrailingChar(str2),'[', ']'))) {
     						str2 = (str2.substring(0, str2.length() - 1)).trim();
     						arrConstructorXPathParts.add(str2);
     						
@@ -7136,33 +7138,43 @@ public class XPathParser
        int idx = xpathExprStr.lastIndexOf('/');
        
        if (idx != -1) {
-    	  String xpathLhsStr = xpathExprStr.substring(0, idx);    	  
-    	  String xpathRhsStr = xpathExprStr.substring(idx + 1);
+    	  String xpathPrefixStr = xpathExprStr.substring(0, idx);    	  
+    	  String xpathSuffixStr = xpathExprStr.substring(idx + 1);
     	  
-    	  if (xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI) || 
-													    			  		xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
-													    			  		xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
-													    			  		xpathLhsStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
+    	  if (xpathPrefixStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI) || 
+													    			  		         xpathPrefixStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
+													    			  		         xpathPrefixStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) ||
+													    			  		         xpathPrefixStr.endsWith(XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
               restoreTokenQueueXPathParsePos(prevTokenQueuePos);
               
     		  Expr(); 
     	  }
-    	  else if (isXPathBuiltInFunctionCall(xpathLhsStr) && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr) 
-    			                                                                            || "comment()".equals(xpathRhsStr))) {
+    	  else if ((isXPathBuiltInFunctionCall(xpathPrefixStr) || xpathPrefixStr.startsWith("/") || "".equals(xpathPrefixStr)) 
+    			                                                                                             && (xpathSuffixStr.endsWith("text()") || 
+    			                                                                                            	 xpathSuffixStr.endsWith("node()") || 
+    			                                                                                            	 xpathSuffixStr.endsWith("comment()"))) {
     		  appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_BUILT_IN_NODE_KIND_EXPR);
+    		  
+    		  if (xpathPrefixStr.endsWith("/")) {
+    			 xpathPrefixStr = xpathPrefixStr.substring(0, xpathPrefixStr.length() - 1);
+    			 xpathSuffixStr = ".//" + xpathSuffixStr;
+    		  }
+    		  else if ("".equals(xpathPrefixStr)) {
+    			 xpathPrefixStr = "/"; 
+    		  }
 
     		  m_xpathBuiltInNodeKindExpr = new XPathBuiltInNodeKindExpr();    		      		  
-    		  m_xpathBuiltInNodeKindExpr.setNodeStr(xpathRhsStr);    		  
+    		  m_xpathBuiltInNodeKindExpr.setNodeStr(xpathSuffixStr);    		  
     		  
-    		  if (xpathLhsStr.length() > 0) {
-    			  m_xpathBuiltInNodeKindExpr.setXpathPrefixStr(xpathLhsStr);
-    		  } 
+    		  if (xpathPrefixStr.length() > 0) {
+    			 m_xpathBuiltInNodeKindExpr.setXpathPrefixStr(xpathPrefixStr);
+    		  }    		  
     	  }
-    	  else if (!isStrHasXPathAxisNamePrefix(xpathRhsStr) && (xpathRhsStr.endsWith("()") || xpathRhsStr.endsWith("(.)"))) {
+    	  else if (!isStrHasXPathAxisNamePrefix(xpathSuffixStr) && (xpathSuffixStr.endsWith("()") || xpathSuffixStr.endsWith("(.)"))) {    		      		  
     		  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_XPATH_EXPR_WITH_FUNC_CALL_SUFFIX);    		  
 
 			  m_xpathExprWithFuncCallSuffix = new XPathExprFunctionCallSuffix();
-			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);
+			  m_xpathExprWithFuncCallSuffix.setXPathExprStr(xpathExprStr);    		  
     	  }
     	  else {
     		  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
@@ -9150,7 +9162,7 @@ public class XPathParser
        }
        else if (tokenIs("namespace-node")) {
            sequenceTypeKindTest = new XPathSequenceTypeKindTest();
-           sequenceTypeKindTest.setKindVal(XPathSequenceTypeSupport.NAMESPACE_NODE_KIND);          
+           sequenceTypeKindTest.setKindVal(XPathSequenceTypeSupport.NAMESPACE_KIND);          
            nextToken();
            consumeExpected('(');
            consumeExpected(')');
@@ -12020,9 +12032,86 @@ public class XPathParser
     	 
     	 String result = null;
 
-    	 String xpathExprStr = expression;
+    	 String xpathExprStr = expression; 
     	 
-    	 xpathExprStr = xpathExprStr.trim(); 
+    	 Pattern pattern1 = Pattern.compile("(\\*|\\w+)\\:\\(\\:\\w+\\:\\)(\\*|\\w+)");
+    	 Matcher matcher1 = pattern1.matcher(xpathExprStr);
+
+    	 if (matcher1.matches()) {
+    		 throw new TransformerException("XPST0003 : An XPath 3.1 comment syntax error, within XPath expression "
+																				    				 + "string '" + xpathExprStr + "'. "
+																				    				 + "An XPath comment, cannot appear between the ncname and the colon."); 
+    	 }
+
+    	 pattern1 = Pattern.compile("(\\*|\\w+)\\(\\:\\w+\\:\\)\\:(\\*|\\w+)");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+
+    	 if (matcher1.matches()) {
+    		 throw new TransformerException("XPST0003 : An XPath 3.1 comment syntax error, within XPath expression "
+																				    				 + "string '" + xpathExprStr + "'. "
+																				    				 + "Within an XML name string, an XPath comment, cannot appear between namespace prefix and colon."); 
+    	 }
+
+    	 pattern1 = Pattern.compile("(\\*|\\w+)\\s+\\:(\\*|\\w+)");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+
+    	 if (matcher1.matches()) {
+    		 throw new TransformerException("XPST0003 : An XPath 3.1 XML name syntax error, within XPath expression "
+																				    				  + "string '" + xpathExprStr + "'. "
+																				    				  + "Within an XML name string, whitespace cannot appear between the namespace prefix and the colon."); 
+    	 }
+    	 
+    	 pattern1 = Pattern.compile("(\\*|\\w+)\\:\\s+(\\*|\\w+)");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+
+    	 if (matcher1.matches()) {
+    		 throw new TransformerException("XPST0003 : An XPath 3.1 XML name syntax error, within XPath expression "
+																				    				  + "string '" + xpathExprStr + "'. "
+																				    				  + "Within an XML name string, whitespace cannot appear between the colon and ncname."); 
+    	 }
+
+    	 pattern1 = Pattern.compile("(\\*|\\w+)\\:");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+
+    	 if (matcher1.matches()) {
+    		 throw new TransformerException("XPST0003 : An XPath expression string has syntax error. An XPath expression contains an unexpected character ':'."); 
+    	 }
+    	 
+    	 if (xpathExprStr.endsWith("//")) {
+    		 throw new TransformerException("XPST0003 : An XPath expression has an unexpected trailing token '//'.");
+    	 }
+    	 
+    	 if (!"/".equals(xpathExprStr) && xpathExprStr.endsWith("/")) {
+    		int size1 = xpathExprStr.length();
+    		
+    		if (!(xpathExprStr.charAt(size1 - 2) == ' ')) {
+    		   throw new TransformerException("XPST0003 : An XPath expression has an unexpected trailing token '//'.");	
+    		}
+    	 }
+    	 
+    	 pattern1 = Pattern.compile("([0-9]*\\.)?[0-9]+\\[\\.\\.\\]");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+    	 
+    	 if (matcher1.matches()) {
+    		throw new TransformerException("XPTY0020 : An XPath axis step .. cannot be used within a predicate, since context item is not an xdm node.");
+    	 }
+    	 
+    	 pattern1 = Pattern.compile("([0-9]*\\.)?[0-9]+\\[element\\(\\)\\]");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+    	 
+    	 if (matcher1.matches()) {
+     		throw new TransformerException("XPTY0020 : An XPath axis step child::element() cannot be used within a predicate, since "
+     																											             + "context item is not an xdm node.");
+     	 }
+    	 
+    	 pattern1 = Pattern.compile("([0-9]*\\.)?[0-9]+/.*");
+    	 matcher1 = pattern1.matcher(xpathExprStr);
+    	 
+    	 if (matcher1.matches()) {
+    		throw new TransformerException("XPTY0019 : An XPath expression '/' first operand should be a node. The supplied value is an xdm atomic type.");
+    	 }
+    	 
+    	 xpathExprStr = xpathExprStr.trim();
     	 
     	 if ((xpathExprStr.startsWith("'") && xpathExprStr.endsWith("'")) || 
     		 (xpathExprStr.startsWith("\"") && xpathExprStr.endsWith("\""))) {

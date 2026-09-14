@@ -1107,7 +1107,7 @@ public class ElemVariable extends ElemTemplateElement
     				  XPathSequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
     				  int seqTypeKindVal = seqTypeKindTest.getKindVal(); 
     				  
-    				  if (seqTypeKindVal == XPathSequenceTypeSupport.NAMESPACE_NODE_KIND) {    		    		    		
+    				  if (seqTypeKindVal == XPathSequenceTypeSupport.NAMESPACE_KIND) {    		    		    		
     					  if (var instanceof ResultSequence) {
     						  ResultSequence rSeq2 = (ResultSequence)var;
     						  int rSeqLength = rSeq2.size();

@@ -57,11 +57,12 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * An implementation of XPath 3.1 value comparison 
+ * An implementation of XPath 3.1 value comparison, 
  * operator 'gt'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -164,6 +165,32 @@ public class VcGt extends XPathRelationalOp
      	  else {
      		 xctxt = new XPathContext();
      	  } 
+      }
+
+      if ((left instanceof XString) || (left instanceof XSString)) {
+    	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+
+    	  if ((Constants.XS_VALID_TRUE).equals(str1)) {
+    		 left = getXsObjectFromValidatedInfo(left, xctxt);
+    	  } 
+      }
+      
+      if ((right instanceof XString) || (right instanceof XSString)) {
+    	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+
+    	  if ((Constants.XS_VALID_TRUE).equals(str1)) {
+    		 right = getXsObjectFromValidatedInfo(right, xctxt);
+    	  } 
+      }
+
+      if (((left instanceof XString) || (left instanceof XSString)) && 
+                                                                   ((right instanceof XNumber) || (right instanceof XSNumericType))) {
+         throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare a numeric value to string."); 
+      }
+
+      if (((left instanceof XNumber) || (left instanceof XSNumericType)) && 
+                                                                        ((right instanceof XString) || (right instanceof XSString))) {
+         throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare a numeric value to string."); 
       }
 	  
       if (left instanceof XPathMap) {
@@ -596,7 +623,7 @@ public class VcGt extends XPathRelationalOp
 	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
-				                                                          (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
+				                                                                       (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'gt' cannot, compare values of schema "
 					                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
 		  }

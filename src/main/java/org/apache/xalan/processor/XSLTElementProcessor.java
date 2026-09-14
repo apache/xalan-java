@@ -19,6 +19,8 @@ package org.apache.xalan.processor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.transform.TransformerException;
 
@@ -391,10 +393,45 @@ public class XSLTElementProcessor extends ElemTemplateElement
     			{
     				String attrName = attributes.getQName(i);
     				String attrValue = attributes.getValue(i);
+    				
+    				Pattern pattern1 = Pattern.compile("(\\*|\\w+)\\:\\(\\:\\w+\\:\\)(\\*|\\w+)");
+    				Matcher matcher1 = pattern1.matcher(attrValue);
+
+    				if (matcher1.matches()) {
+    					handler.error(XSLTErrorResources.ER_XPATH_COMMENT_SYNTAX1, new Object[]{ attrValue }, null);
+    				}
+
+    				pattern1 = Pattern.compile("(\\*|\\w+)\\(\\:\\w+\\:\\)\\:(\\*|\\w+)");
+    				matcher1 = pattern1.matcher(attrValue);
+
+    				if (matcher1.matches()) {
+    					handler.error(XSLTErrorResources.ER_XPATH_COMMENT_SYNTAX2, new Object[]{ attrValue }, null);
+    				}
+
+    				pattern1 = Pattern.compile("(\\*|\\w+)\\s+\\:(\\*|\\w+)");
+    				matcher1 = pattern1.matcher(attrValue);
+
+    				if (matcher1.matches()) {
+    					handler.error(XSLTErrorResources.ER_XPATH_NAME_STR1, new Object[]{ attrValue }, null);
+    				}
+
+    				pattern1 = Pattern.compile("(\\*|\\w+)\\:\\s+(\\*|\\w+)");
+    				matcher1 = pattern1.matcher(attrValue);
+
+    				if (matcher1.matches()) {
+    					handler.error(XSLTErrorResources.ER_XPATH_NAME_STR2, new Object[]{ attrValue }, null);
+    				}
+    				
+    				pattern1 = Pattern.compile("(\\*|\\w+)\\:");
+    		    	matcher1 = pattern1.matcher(attrValue);
+    		    	
+    		    	if (matcher1.matches()) {
+    					handler.error(XSLTErrorResources.ER_XPATH_NAME_STR3, new Object[]{ attrValue }, null);
+    				}
 
     				// Remove any available XPath comments, from an XML 
     				// attribute value.
-    				if (StringUtil.isStrHasXPathBalancedCommentDelim(attrValue)) {  
+    				if (StringUtil.isStrHasXPathBalancedCommentDelim(attrValue)) {      					    					
     					attrValue = StringUtil.removeXPathComments(attrValue);
     				}
     				    				    				    			

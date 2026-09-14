@@ -1189,7 +1189,7 @@ public class InstanceOf extends XPathOperator
 				  }
 			  }
 			  else if (nodeType == DTM.NAMESPACE_NODE) {				  
-				  if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NAMESPACE_NODE_KIND) {
+				  if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NAMESPACE_KIND) {
 					  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 				  }
 			  }

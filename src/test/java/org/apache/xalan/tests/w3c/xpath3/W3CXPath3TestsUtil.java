@@ -1887,8 +1887,34 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														
 														XObject xpathExpectedObj2 = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 														
-														if (xpathResultObj instanceof ResultSequence) {
-															ResultSequence rSeq1 = (ResultSequence)xpathResultObj;
+														ResultSequence rSeq1 = new ResultSequence();
+														
+														XObject xpathResultObj1 = xpathResultObj;  
+														
+														if (xpathResultObj1 instanceof XMLNodeCursorImpl) {
+														   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathResultObj1;
+														   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+														   
+														   int nextNode = DTM.NULL;
+														   
+														   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+															  XMLNodeCursorImpl node3 = new XMLNodeCursorImpl(nextNode, xctxt);
+															  String str1 = node3.str();
+															  
+															  DTM dtm = xctxt.getDTM(nextNode);
+															  
+															  if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {																										 
+																 str1 = dtm.getLocalName(nextNode);
+															  }
+															  
+															  rSeq1.add(new XSString(str1));
+														   }
+														   
+														   xpathResultObj1 = rSeq1; 
+														}
+														
+														if (xpathResultObj1 instanceof ResultSequence) {
+															rSeq1 = (ResultSequence)xpathResultObj1;
 															ResultSequence rSeq2 = (ResultSequence)xpathExpectedObj2;												
 															
 															int size3 = rSeq1.size();
@@ -2470,8 +2496,34 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														
 														XObject xpathExpectedObj2 = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 														
-														if (xpathResultObj instanceof ResultSequence) {
-															ResultSequence rSeq1 = (ResultSequence)xpathResultObj;
+                                                        ResultSequence rSeq1 = new ResultSequence();
+														
+														XObject xpathResultObj1 = xpathResultObj;  
+														
+														if (xpathResultObj1 instanceof XMLNodeCursorImpl) {
+														   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathResultObj1;
+														   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+														   
+														   int nextNode = DTM.NULL;
+														   
+														   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+															  XMLNodeCursorImpl node3 = new XMLNodeCursorImpl(nextNode, xctxt);
+															  String str1 = node3.str();
+															  
+															  DTM dtm = xctxt.getDTM(nextNode);
+															  
+															  if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {																										 
+																 str1 = dtm.getLocalName(nextNode);
+															  }
+															  
+															  rSeq1.add(new XSString(str1));
+														   }
+														   
+														   xpathResultObj1 = rSeq1; 
+														}
+														
+														if (xpathResultObj1 instanceof ResultSequence) {
+															rSeq1 = (ResultSequence)xpathResultObj1;
 															ResultSequence rSeq2 = (ResultSequence)xpathExpectedObj2;												
 															
 															int size3 = rSeq1.size();
@@ -2521,8 +2573,34 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 									}
 									else if (ASSERT_PERMUTATION.equals(nodeName2)) {										
 										if (xpathResultObj != null) {
-											if (xpathResultObj instanceof ResultSequence) {
-												ResultSequence rSeq1 = (ResultSequence)xpathResultObj;
+											ResultSequence rSeq1 = new ResultSequence();
+											
+											XObject xpathResultObj1 = xpathResultObj;  
+											
+											if (xpathResultObj1 instanceof XMLNodeCursorImpl) {
+											   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathResultObj1;
+											   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+											   
+											   int nextNode = DTM.NULL;
+											   
+											   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+												  XMLNodeCursorImpl node2 = new XMLNodeCursorImpl(nextNode, xctxt);
+												  String str1 = node2.str();
+												  
+												  DTM dtm = xctxt.getDTM(nextNode);
+												  
+												  if (dtm.getNodeType(nextNode) == DTM.NAMESPACE_NODE) {																										 
+													 str1 = dtm.getLocalName(nextNode);
+												  }
+												  
+												  rSeq1.add(new XSString(str1));
+											   }
+											   
+											   xpathResultObj1 = rSeq1; 
+											}
+											
+											if (xpathResultObj1 instanceof ResultSequence) {
+												rSeq1 = (ResultSequence)xpathResultObj1;
 												ResultSequence rSeq2 = (ResultSequence)xpathExpectedObj;												
 												
 												int size2 = rSeq1.size();

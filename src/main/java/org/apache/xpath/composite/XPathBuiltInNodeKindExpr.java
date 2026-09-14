@@ -126,10 +126,8 @@ public class XPathBuiltInNodeKindExpr extends Expression {
 		    DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
 
 		    int nextNode = DTM.NULL;
-		    while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-		    	DTM dtm = xctxt.getDTM(nextNode);
-		    	short nodeType = dtm.getNodeType(nextNode);
-		    	
+		    
+		    while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {		    	
 		    	nodeHandleSeq.add(Integer.valueOf(nextNode));
 		    }
 		}
@@ -161,8 +159,11 @@ public class XPathBuiltInNodeKindExpr extends Expression {
 
 			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;
 			DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iter();
-			int nextNode;
-			DTMManager dtmManager = xctxt.getDTMManager();			 
+			
+			int nextNode = DTM.NULL;
+			
+			DTMManager dtmManager = xctxt.getDTMManager();
+			
 			while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
 				XMLNodeCursorImpl nodeRef = new XMLNodeCursorImpl(nextNode, dtmManager);
 				rSeq.add(nodeRef);
@@ -173,11 +174,12 @@ public class XPathBuiltInNodeKindExpr extends Expression {
 		   ResultSequence rSeq2 = new ResultSequence();
 		   
 		   Integer predicateIntVal = null;
+		   
 		   try {
 			   predicateIntVal = Integer.valueOf(m_xpathPredicateValStr);
 		   }
 		   catch (NumberFormatException ex) {
-			   // no op 
+			   // No op 
 		   }
 		   
 		   int nodeCount = rSeq.size();
@@ -212,6 +214,7 @@ public class XPathBuiltInNodeKindExpr extends Expression {
 		   if (m_xpathSuffixValStr != null) {
 			   nodeCount = rSeq2.size();
 			   ResultSequence rSeq3 = new ResultSequence();
+			   
 			   for (int idx = 0; idx < nodeCount; idx++) {
 				   XMLNodeCursorImpl nodeRef = (XMLNodeCursorImpl)(rSeq2.item(idx));
 				   int contextNode1 = (nodeRef.iter()).nextNode();
@@ -227,8 +230,10 @@ public class XPathBuiltInNodeKindExpr extends Expression {
 					   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObjResult;					   
 					   DTMCursorIterator nodeIter1 = xmlNodeCursorImpl.iter();
 					   
-					   int nextNode;
+					   int nextNode = DTM.NULL;
+					   
 					   DTMManager dtmManager = xctxt.getDTMManager();			 
+					   
 					   while ((nextNode = nodeIter1.nextNode()) != DTM.NULL) {
 						   XMLNodeCursorImpl nodeRef2 = new XMLNodeCursorImpl(nextNode, dtmManager);
 						   rSeq3.add(nodeRef2);
@@ -256,12 +261,13 @@ public class XPathBuiltInNodeKindExpr extends Expression {
 	
 	@Override
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// no op
+		// No op
 	}
 
 	@Override
 	public boolean deepEquals(Expression expr) {
-		// no op
+		// No op
+		
 		return false;
 	}
 	

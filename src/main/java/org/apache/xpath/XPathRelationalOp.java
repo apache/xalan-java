@@ -29,6 +29,14 @@ import org.apache.xpath.operations.XPathOperator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * A class definition, providing common utility methods to
+ * support XPath relational operator evaluation.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
+ */
 public class XPathRelationalOp extends XPathOperator {
 
 	private static final long serialVersionUID = 8090025880595978756L;
@@ -76,7 +84,7 @@ public class XPathRelationalOp extends XPathOperator {
     	   docBuilder = docBuilderFactory.newDocumentBuilder();
     	}
     	catch (Exception ex) {
-    	   // no op
+    	   // No op
     	}
     	
     	Document document = docBuilder.newDocument();

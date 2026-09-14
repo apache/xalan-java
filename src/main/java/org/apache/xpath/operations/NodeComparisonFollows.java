@@ -24,8 +24,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * A class definition, to implement XPath 3.1 node comparison 
- * operator '>>'.
+ * A class definition, to implement XPath 3.1 operator '>>'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

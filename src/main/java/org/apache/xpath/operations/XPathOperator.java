@@ -18,6 +18,7 @@
 package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemTemplate;
@@ -26,10 +27,13 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -51,7 +55,15 @@ import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * A class definition, providing common implementation 
- * features for XPath expression language binary operators. 
+ * features for XPath expression language binary operators.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Joseph Kesselman <keshlam@alum.mit.edu>
+ * @author Morris Kwan <mkwan@apache.org>, Brian James Minchau,
+ *         Christine Li <jycli@apache.org>, Sarah McNamara <mcnamara@apache.org>   
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3.1 specific changes, to this class)  
  */
 public class XPathOperator extends Expression implements ExpressionOwner
 {
@@ -73,8 +85,9 @@ public class XPathOperator extends Expression implements ExpressionOwner
   protected XPathContext m_xctxt;
   
   /**
-   * This function is used to fixup variables from QNames to stack frame 
+   * Method definition, to fixup variables from QNames to stack frame 
    * indexes at stylesheet build time.
+   * 
    * @param vars List of QNames that correspond to variables.  This list 
    * should be searched backwards for the first qualified name that 
    * corresponds to the variable reference qname.  The position of the 
@@ -98,10 +111,10 @@ public class XPathOperator extends Expression implements ExpressionOwner
   public boolean canTraverseOutsideSubtree()
   {
 
-    if (null != m_left && m_left.canTraverseOutsideSubtree())
+    if ((m_left != null) && m_left.canTraverseOutsideSubtree())
       return true;
 
-    if (null != m_right && m_right.canTraverseOutsideSubtree())
+    if ((m_right != null) && m_right.canTraverseOutsideSubtree())
       return true;
 
     return false;
@@ -132,8 +145,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
       
     XObject left = null;
@@ -295,6 +307,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
     
     if (m_left instanceof XSL3ConstructorOrExtensionFunction) {
     	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_left;
+    	
     	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
     		left = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
     	}
@@ -304,6 +317,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
     }
     else if (m_left instanceof SelfIteratorNoPredicate) {
     	XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+    	
     	if (xpath3ContextItem != null) {
     		left = xpath3ContextItem;     
     	}
@@ -328,11 +342,13 @@ public class XPathOperator extends Expression implements ExpressionOwner
 					int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
 					ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
 					ElemFunction elemFunction = null;
+					
 					if (elemTemplate != null) {
 						elemFunction = (ElemFunction)elemTemplate;
 						int xslFuncDefnParamCount = elemFunction.getArity();                      
 						java.lang.String str = funcLocalNameRef.substring(hashCharIdx + 1);
 						int funcRefParamCount = (Integer.valueOf(str)).intValue();
+						
 						if (funcRefParamCount != xslFuncDefnParamCount) {
 							throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
 																															" cannot resolve to a function "
@@ -362,6 +378,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
 
     if (m_right instanceof XSL3ConstructorOrExtensionFunction) {
     	XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_right;
+    	
     	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
     		right = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
     	}
@@ -371,6 +388,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
     }
     else if (m_right instanceof SelfIteratorNoPredicate) {
     	XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+    	
     	if (xpath3ContextItem != null) {
     		right = xpath3ContextItem;     
     	}
@@ -395,11 +413,13 @@ public class XPathOperator extends Expression implements ExpressionOwner
 					int funcArity = Integer.valueOf(funcLocalNameRef.substring(hashCharIdx + 1));        		   
 					ElemTemplate elemTemplate = templateList.getXslFunction(new QName(funcNamespace, funcNameRef2), funcArity);
 					ElemFunction elemFunction = null;
+					
 					if (elemTemplate != null) {
 						elemFunction = (ElemFunction)elemTemplate;
 						int xslFuncDefnParamCount = elemFunction.getArity();                      
 						java.lang.String str = funcLocalNameRef.substring(hashCharIdx + 1);
 						int funcRefParamCount = (Integer.valueOf(str)).intValue();
+						
 						if (funcRefParamCount != xslFuncDefnParamCount) {
 							throw new javax.xml.transform.TransformerException("FORG0006 : An XPath named function reference " + funcLocalNameRef + 
 																															" cannot resolve to a function "
@@ -551,6 +571,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
 
 	  ExpressionNode exprNode = selfIteratorNoPredicate.getExpressionOwner();
 	  XObject contextItem = getXPath3ContextItem(exprNode);
+	  
 	  if (contextItem != null) {
 		  result = contextItem;  
 	  }
@@ -599,6 +620,52 @@ public class XPathOperator extends Expression implements ExpressionOwner
   }
   
   /**
+   * Method definition, to get an XObject object instance with 
+   * an appropriate type annotation, when the supplied XObject 
+   * value is the result of XML schema document validation. 
+   * 
+   * @param xObj                             The supplied XObject value
+   * @param xctxt                            An XPath context object
+   * @return                                 A valid XObject value
+   * @throws TransformerException
+   */
+  protected XObject getXsObjectFromValidatedInfo(XObject xObj, XPathContext xctxt) throws TransformerException {
+  	  
+  	  XObject result = null;
+
+  	  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xObj.getXsTypeDefinition());
+
+  	  java.lang.String xsSimpleTypeName = xsSimpleTypeDecl.getTypeName();
+  	  java.lang.String xsSimpleTypeNs = xsSimpleTypeDecl.getNamespace();
+
+  	  Object obj1 = xObj.object();
+  	  java.lang.String str1_2 = obj1.toString();
+
+  	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(xsSimpleTypeNs)) {
+  		  java.lang.String str2 = "xs:" + xsSimpleTypeName + "('" + str1_2 + "')";
+
+  		  XPath xpath1 = new XPath(str2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+  		  result = xpath1.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext()); 
+  	  }
+  	  else {
+  		  XSSimpleTypeDecl xsSimeBaseTypeDecl = (XSSimpleTypeDecl)(xsSimpleTypeDecl.getBaseType());
+  		  java.lang.String xsSimpleBaseTypeName = xsSimeBaseTypeDecl.getTypeName();
+  		  java.lang.String xsSimpleBaseTypeNs = xsSimeBaseTypeDecl.getNamespace();    			  
+
+  		  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(xsSimpleBaseTypeNs)) {
+  			  java.lang.String str2 = "xs:" + xsSimpleBaseTypeName + "('" + str1_2 + "')";
+
+  			  XPath xpath1 = new XPath(str2, null, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+  			  result = xpath1.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext()); 
+  		  }
+  	  }
+
+  	  return result;
+  }
+  
+  /**
    * Method definition, to get an XPath context item, given 
    * a supplied non-expression XSL stylesheet node.
    * 
@@ -615,6 +682,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
 	  XObject result = null;
 
 	  ExpressionNode stylesheetRootNode = null;
+	  
 	  while (exprNode != null) {
 		  stylesheetRootNode = exprNode;
 		  exprNode = exprNode.exprGetParent();                     
@@ -623,6 +691,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
 	  StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
 	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
 	  XPathContext xpathContext = transformerImpl.getXPathContext();
+	  
 	  result = xpathContext.getXPath3ContextItem();
 
 	  return result;

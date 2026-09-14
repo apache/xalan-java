@@ -248,7 +248,7 @@ public class XPathSequenceTypeSupport {
     
     public static int TEXT_KIND = 103;
     
-    public static int NAMESPACE_NODE_KIND = 104;
+    public static int NAMESPACE_KIND = 104;
     
     public static int NODE_KIND = 105;
     
@@ -2539,7 +2539,7 @@ public class XPathSequenceTypeSupport {
                         }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
-                         if (sequenceTypeKindTest.getKindVal() == NAMESPACE_NODE_KIND) {
+                         if (sequenceTypeKindTest.getKindVal() == NAMESPACE_KIND) {
                             convertedResultSeq.add(nodeSetItem); 
                          }
                          else {
@@ -2655,7 +2655,7 @@ public class XPathSequenceTypeSupport {
 		
 		result = ((seqTypekindVal == XPathSequenceTypeSupport.ELEMENT_KIND) || 
 										                      (seqTypekindVal == XPathSequenceTypeSupport.ATTRIBUTE_KIND) || 
-										                      (seqTypekindVal == XPathSequenceTypeSupport.NAMESPACE_NODE_KIND) || 
+										                      (seqTypekindVal == XPathSequenceTypeSupport.NAMESPACE_KIND) || 
 										                      (seqTypekindVal == XPathSequenceTypeSupport.NODE_KIND));
 		
 		return result; 

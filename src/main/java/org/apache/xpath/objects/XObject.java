@@ -49,6 +49,7 @@ import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
+import org.apache.xpath.types.XSHexBinary;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -496,19 +497,80 @@ public class XObject extends Expression implements Serializable, Cloneable
   }
 
   /**
-   * Cast result object to a boolean. Always issues an error.
+   * Method definition, to get effective boolean value
+   * for this XObject instance.
    *
-   * @return false
+   * @return                   Boolean value true or false
    *
    * @throws javax.xml.transform.TransformerException
    */
   public boolean bool() throws javax.xml.transform.TransformerException
-  {
+  {	  
+	  
+	  boolean result = false;
 
-    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER,
-          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a number");
+	  if (this instanceof XNumber) {
+         XObject xObj = XslTransformEvaluationHelper.getXdmNumericValueFromXNumber((XNumber)this);
+         
+         if (xObj instanceof XSDouble) {
+        	Double dbl = ((XSDouble)xObj).doubleValue();
+        	
+        	if (!(dbl.isNaN() || (dbl == 0))) {
+         	   result = true;
+         	}
+         }
+         else if ((xObj instanceof XSDecimal) || (xObj instanceof XSInteger)) {
+        	String str1 = XslTransformEvaluationHelper.getStrVal(xObj);        	
+        	BigDecimal bigDecimal1 = new BigDecimal(str1);
+        	
+        	if (!(bigDecimal1.compareTo(BigDecimal.valueOf(0)) == 0)) {
+        	   result = true;
+        	}
+         }
+         else {
+        	XNumber xNum = (XNumber)this;
+        	Double dbl = Double.valueOf(xNum.num());
+        	
+        	if (!(dbl.isNaN() || (dbl == 0))) {
+        	   result = true;
+        	}
+         }
+	  }
+	  else if (this instanceof XSNumericType) {
+         if (this instanceof XSDouble) {
+        	XSDouble xsDouble = (XSDouble)this;
+        	Double dbl = xsDouble.doubleValue();
+        	
+        	if (!(dbl.isNaN() || (dbl == 0))) {
+         	   result = true;
+         	}
+         }
+         else if (this instanceof XSFloat) {
+        	XSFloat xsFloat = (XSFloat)this;
+        	Float flt = xsFloat.floatValue();
+        	
+        	if (!(flt.isNaN() || (flt == 0))) {
+          	   result = true;
+          	}
+         }
+         else {
+        	String str1 = XslTransformEvaluationHelper.getStrVal(this);        	
+         	BigDecimal bigDecimal1 = new BigDecimal(str1);
+         	
+         	if (!(bigDecimal1.compareTo(BigDecimal.valueOf(0)) == 0)) {
+         	   result = true;
+         	} 
+         }
+	  }
+	  else if (this instanceof XSHexBinary) {
+		 throw new TransformerException("FORG0006 : An xdm value with an XML schema type 'hexBinary', "
+		 		                                                                                     + "doesn't have an effective boolean value."); 
+	  }
+	  else {
+		 error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER, new Object[]{ getTypeString() });
+	  }
 
-    return false;
+	  return result;
   }
   
   /**

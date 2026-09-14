@@ -57,11 +57,12 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * An implementation of XPath 3.1 value comparison 
+ * An implementation of XPath 3.1 value comparison, 
  * operator 'ge'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -142,28 +143,54 @@ public class VcGe extends XPathRelationalOp
       }
       
       StylesheetRoot stylesheetRoot = null;
-	  
+
       if (XslTransformData.m_stylesheetRoot != null) {
     	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
     	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  
+
     	  if (!XslTransformData.m_use_when) {
-    	     xctxt = transformerImpl.getXPathContext();
+    		  xctxt = transformerImpl.getXPathContext();
     	  }
     	  else {
-    		 xctxt = new XPathContext();
+    		  xctxt = new XPathContext();
     	  }
       }
       else {
     	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
-    	  
+
     	  if ((stylesheetRoot != null) && !XslTransformData.m_use_when) {
-    		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-     	     xctxt = transformerImpl.getXPathContext();
-     	  }
-     	  else {
-     		 xctxt = new XPathContext();
-     	  } 
+    		  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+    		  xctxt = transformerImpl.getXPathContext();
+    	  }
+    	  else {
+    		  xctxt = new XPathContext();
+    	  } 
+      }
+      
+      if ((left instanceof XString) || (left instanceof XSString)) {
+    	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+
+    	  if ((Constants.XS_VALID_TRUE).equals(str1)) {
+    		 left = getXsObjectFromValidatedInfo(left, xctxt);
+    	  } 
+      }
+      
+      if ((right instanceof XString) || (right instanceof XSString)) {
+    	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+
+    	  if ((Constants.XS_VALID_TRUE).equals(str1)) {
+    		 right = getXsObjectFromValidatedInfo(right, xctxt);
+    	  } 
+      }
+
+      if (((left instanceof XString) || (left instanceof XSString)) && 
+                                                                   ((right instanceof XNumber) || (right instanceof XSNumericType))) {
+         throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ge' cannot, compare a numeric value to string."); 
+      }
+
+      if (((left instanceof XNumber) || (left instanceof XSNumericType)) && 
+                                                                        ((right instanceof XString) || (right instanceof XSString))) {
+         throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ge' cannot, compare a numeric value to string."); 
       }
 	  
       if (left instanceof XPathMap) {
@@ -593,9 +620,10 @@ public class VcGe extends XPathRelationalOp
 	  }
 	  
 	  // Validating an XPath 3.1 operator 'ge' operands compatibility for value comparison	  
+	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
-				                                                          (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
+				                                                                       (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ge' cannot, compare values of schema "
 					                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
 		  }

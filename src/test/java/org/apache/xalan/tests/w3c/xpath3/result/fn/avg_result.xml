@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:29Z" fail="20" name="fn-avg" pass="191" run="211" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-14T10:22:47Z" fail="22" name="fn-avg" pass="209" run="231" statusUnknown="0">
    <testResult status="pass" testName="fn-avgint1args-1"/>
    <testResult status="pass" testName="fn-avgint1args-2"/>
    <testResult status="pass" testName="fn-avgint1args-3"/>
@@ -53,7 +53,10 @@
    <testResult status="pass" testName="fn-avgdec2args-3"/>
    <testResult status="pass" testName="fn-avgdec2args-4"/>
    <testResult status="pass" testName="fn-avgdec2args-5"/>
+   <testResult status="pass" testName="fn-avgdbl2args-1"/>
+   <testResult status="pass" testName="fn-avgdbl2args-2"/>
    <testResult status="pass" testName="fn-avgdbl2args-3"/>
+   <testResult status="pass" testName="fn-avgdbl2args-4"/>
    <testResult status="pass" testName="fn-avgdbl2args-5"/>
    <testResult status="pass" testName="fn-avgflt2args-1"/>
    <testResult status="pass" testName="fn-avgflt2args-2"/>
@@ -112,12 +115,16 @@
    <testResult status="pass" testName="fn-avg-mix-args-010"/>
    <testResult status="pass" testName="fn-avg-mix-args-011"/>
    <testResult status="pass" testName="fn-avg-mix-args-012"/>
+   <testResult status="pass" testName="fn-avg-mix-args-013"/>
    <testResult status="pass" testName="fn-avg-mix-args-014"/>
+   <testResult status="pass" testName="fn-avg-mix-args-015"/>
    <testResult status="pass" testName="fn-avg-mix-args-016"/>
    <testResult status="pass" testName="fn-avg-mix-args-017"/>
    <testResult status="pass" testName="fn-avg-mix-args-018"/>
    <testResult status="pass" testName="fn-avg-mix-args-019"/>
+   <testResult status="pass" testName="fn-avg-mix-args-020"/>
    <testResult status="pass" testName="fn-avg-mix-args-021"/>
+   <testResult status="pass" testName="fn-avg-mix-args-022"/>
    <testResult status="pass" testName="fn-avg-mix-args-023"/>
    <testResult status="pass" testName="fn-avg-mix-args-024"/>
    <testResult status="pass" testName="fn-avg-mix-args-025"/>
@@ -167,6 +174,14 @@
    <testResult status="pass" testName="K-SeqAVGFunc-3"/>
    <testResult status="pass" testName="K-SeqAVGFunc-4"/>
    <testResult status="pass" testName="K-SeqAVGFunc-5"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-6"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-7"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-8"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-9"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-10"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-11"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-12"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-13"/>
    <testResult status="fail" testName="K-SeqAVGFunc-14"/>
    <testResult status="fail" testName="K-SeqAVGFunc-15"/>
    <testResult status="pass" testName="K-SeqAVGFunc-17"/>
@@ -179,6 +194,8 @@
    <testResult status="pass" testName="K-SeqAVGFunc-26"/>
    <testResult status="pass" testName="K-SeqAVGFunc-27"/>
    <testResult status="fail" testName="K-SeqAVGFunc-28"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-29"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-30"/>
    <testResult status="fail" testName="K-SeqAVGFunc-31"/>
    <testResult status="fail" testName="K-SeqAVGFunc-32"/>
    <testResult status="fail" testName="K-SeqAVGFunc-33"/>
@@ -190,6 +207,8 @@
    <testResult status="pass" testName="K-SeqAVGFunc-40"/>
    <testResult status="fail" testName="K-SeqAVGFunc-42"/>
    <testResult status="pass" testName="K-SeqAVGFunc-43"/>
+   <testResult status="fail" testName="K2-SeqAVGFunc-1"/>
+   <testResult status="fail" testName="K2-SeqAVGFunc-2"/>
    <testResult status="pass" testName="K2-SeqAVGFunc-3"/>
    <testResult status="pass" testName="fn-avg-1"/>
    <testResult status="pass" testName="fn-avg-2"/>
@@ -199,6 +218,7 @@
    <testResult status="pass" testName="fn-avg-8"/>
    <testResult status="pass" testName="fn-avg-9"/>
    <testResult status="pass" testName="fn-avg-10"/>
+   <testResult status="pass" testName="cbcl-avg-001"/>
    <testResult status="pass" testName="cbcl-avg-002"/>
    <testResult status="pass" testName="cbcl-avg-003"/>
    <testResult status="pass" testName="cbcl-avg-004"/>

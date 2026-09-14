@@ -86,7 +86,9 @@ public class FuncGenerateId extends FunctionDef1Arg
 			}		 		 
 		}	
 		
-		int which = DTM.NULL;
+		// Variable for node handle of node, for
+		// which fn:generate-id result value is needed.		
+		int nodeHandle = DTM.NULL;
 		
 		if ((xpath3CtxtItem == null) && (m_arg0 != null)) {
 			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);			
@@ -104,12 +106,12 @@ public class FuncGenerateId extends FunctionDef1Arg
 			   }
 			   else {
 				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is "
-				  		                                                                          + "an xdm sequence with size "
-				  		                                                                          + "greater than one.", srcLocator); 
+				  		                                                                                       + "an xdm sequence with size "
+				  		                                                                                       + "greater than one.", srcLocator); 
 			   }
 			   
 			   if (xObj0 instanceof XMLNodeCursorImpl) {
-				  which = (((XMLNodeCursorImpl)xObj0).iter()).nextNode(); 
+				  nodeHandle = (((XMLNodeCursorImpl)xObj0).iter()).nextNode(); 
 			   }
 			   else {
 				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is not an xdm node.", srcLocator);
@@ -120,13 +122,13 @@ public class FuncGenerateId extends FunctionDef1Arg
 			}
 		}
 		
-		if (which == DTM.NULL) {
-		   which = getArg0AsNode(xctxt);
+		if (nodeHandle == DTM.NULL) {
+		   nodeHandle = getArg0AsNode(xctxt);
 		}
 
-		if (DTM.NULL != which)
+		if (nodeHandle != DTM.NULL)
 		{			
-			result = new XSString("N" + Integer.toHexString(which).toUpperCase());
+			result = new XSString("N" + Integer.toHexString(nodeHandle).toUpperCase());
 		}
 		else {
 			result = new XSString((XString.EMPTYSTRING).str());

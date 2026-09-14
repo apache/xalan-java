@@ -20,7 +20,11 @@ package org.apache.xpath.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * This class represents, an XPath 3.1 xdm sequence.
@@ -129,13 +133,34 @@ public class ResultSequence extends XObject
     }
     
     /**
-     * Cast result object to a boolean.
+     * Method definition, to get effective boolean value
+     * for an xdm sequence.
      *
-     * @return True if the size of this 'ResultSequence' object
-     * is greater than 0.
+     * @return                     Boolean value true or false
      */
-    public boolean bool() {
-        return (m_list.size() > 0);       
+    public boolean bool() throws TransformerException {
+    	
+    	boolean result = false;
+    	
+    	int size1 = m_list.size();
+    	
+    	if (size1 > 1) {
+    	   XObject xObj = m_list.get(0);
+    	   
+    	   if ((xObj instanceof XNumber) || (xObj instanceof XSNumericType)) {
+    		  throw new TransformerException("FORG0006 : An xdm sequence with size greater than one, "
+    		  		                                                                               + "where sequence first item is "
+    		  		                                                                               + "numeric, is not defined."); 
+    	   }
+    	   else {
+    		  result = true; 
+    	   }
+    	}
+    	else {
+    	   result = (size1 > 0);
+    	}
+    	
+    	return result;
     }
     
     /**

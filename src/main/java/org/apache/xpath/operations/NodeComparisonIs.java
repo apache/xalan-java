@@ -24,8 +24,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * A class definition, to implement XPath 3.1 node comparison 
- * operator 'is'. 
+ * A class definition, to implement XPath 3.1 operator 'is'. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -54,8 +53,8 @@ public class NodeComparisonIs extends XPathOperator
        
 	   XObject result = null;
        
-       XMLNodeCursorImpl lNodeSet = null;
-       XMLNodeCursorImpl rNodeSet = null;
+       XMLNodeCursorImpl xmlNodeCursorImpl1 = null;
+       XMLNodeCursorImpl xmlNodeCursorImpl2 = null;
        
        if (left instanceof ResultSequence) {
     	  if (((ResultSequence)left).size() == 0) {
@@ -74,50 +73,51 @@ public class NodeComparisonIs extends XPathOperator
        }
        
        if (left instanceof XMLNodeCursorImpl) {
-          lNodeSet = (XMLNodeCursorImpl)left;
+          xmlNodeCursorImpl1 = (XMLNodeCursorImpl)left;
        }
        else if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1) && 
-    		                                                             (((ResultSequence)left).item(0) instanceof XMLNodeCursorImpl)) {
-    	   lNodeSet = (XMLNodeCursorImpl)(((ResultSequence)left).item(0));  
+    		                                                                            (((ResultSequence)left).item(0) instanceof XMLNodeCursorImpl)) {
+    	   xmlNodeCursorImpl1 = (XMLNodeCursorImpl)(((ResultSequence)left).item(0));  
        }
        
-       if (lNodeSet != null) {
-          lNodeSet = (XMLNodeCursorImpl)(lNodeSet.getFresh());
+       if (xmlNodeCursorImpl1 != null) {
+          xmlNodeCursorImpl1 = (XMLNodeCursorImpl)(xmlNodeCursorImpl1.getFresh());
        }
        
        if (right instanceof XMLNodeCursorImpl) {
-          rNodeSet = (XMLNodeCursorImpl)right; 
+          xmlNodeCursorImpl2 = (XMLNodeCursorImpl)right; 
        }
        else if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 1) && 
-                                                                           (((ResultSequence)right).item(0) instanceof XMLNodeCursorImpl)) {
-    	   rNodeSet = (XMLNodeCursorImpl)(((ResultSequence)right).item(0));  
+                                                                                          (((ResultSequence)right).item(0) instanceof XMLNodeCursorImpl)) {
+    	   xmlNodeCursorImpl2 = (XMLNodeCursorImpl)(((ResultSequence)right).item(0));  
        }
        
-       if (rNodeSet != null) {
-          rNodeSet = (XMLNodeCursorImpl)(rNodeSet.getFresh());
+       if (xmlNodeCursorImpl2 != null) {
+          xmlNodeCursorImpl2 = (XMLNodeCursorImpl)(xmlNodeCursorImpl2.getFresh());
        }
        
-       if ((lNodeSet != null) && (rNodeSet != null)) {    	   
-    	   int lNodeHandle = (lNodeSet.iter()).nextNode();
-    	   int rNodeHandle = (rNodeSet.iter()).nextNode();
+       if ((xmlNodeCursorImpl1 != null) && (xmlNodeCursorImpl2 != null)) {
+    	   xmlNodeCursorImpl1 = (XMLNodeCursorImpl)(xmlNodeCursorImpl1.getFresh());
+    	   xmlNodeCursorImpl2 = (XMLNodeCursorImpl)(xmlNodeCursorImpl2.getFresh());
+    			   
+    	   int nodeHandle1 = (xmlNodeCursorImpl1.iter()).nextNode();
+    	   int nodeHandle2 = (xmlNodeCursorImpl2.iter()).nextNode();
 
-    	   if ((lNodeHandle == DTM.NULL) || (rNodeHandle == DTM.NULL)) {
+    	   if ((nodeHandle1 == DTM.NULL) || (nodeHandle2 == DTM.NULL)) {
     		   result = new ResultSequence();  
     	   }
-    	   else if (lNodeHandle == rNodeHandle) {
+    	   else if (nodeHandle1 == nodeHandle2) {    		      		   
     		   result = XBoolean.S_TRUE;
     	   }
     	   else {
     		   result = XBoolean.S_FALSE;  
     	   }
        }
-       else if (lNodeSet == null) {
-    	   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of lhs operand of XPath "
-    	   		                                                                                  + "operator 'is' is not a singleton node."); 
+       else if (xmlNodeCursorImpl1 == null) {
+    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'is' first operand doesn't exisit."); 
        }
-       else if (rNodeSet == null) {
-    	   throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied item type of rhs operand of XPath "
-    	   		                                                                                  + "operator 'is' is not a singleton node.");
+       else if (xmlNodeCursorImpl2 == null) {
+    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'is' second operand doesn't exisit.");
        }
        
        return result; 

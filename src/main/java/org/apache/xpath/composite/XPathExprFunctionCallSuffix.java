@@ -97,6 +97,7 @@ public class XPathExprFunctionCallSuffix extends Expression {
         int idx = m_xpathExprStr.lastIndexOf('/');
         String xpathLhsStr = m_xpathExprStr.substring(0, idx);
         boolean isXPathLhsExprMutated = false;
+        
         if (m_xpathExprStr.charAt(idx - 1) == '/') {
         	isXPathLhsExprMutated = true;
         	xpathLhsStr += "/node()";	
@@ -115,16 +116,21 @@ public class XPathExprFunctionCallSuffix extends Expression {
     	if (lhsResult instanceof XMLNodeCursorImpl) {
     		ResultSequence resultSeq = new ResultSequence();
     		XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)lhsResult;
+    		
     		DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
-    		int nextNode;
+    		
+    		int nextNode = DTM.NULL;
+    		
     		while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
     			XObject xObj2 = null;    		      		  
+    			
     			if (isXPathLhsExprMutated && "node()".equals(xpathRhsStr)) {
     				xObj2 = new XMLNodeCursorImpl(nextNode, xctxt);
     				resultSeq.add(xObj2);
     			}
     			else if (isXPathLhsExprMutated && "text()".equals(xpathRhsStr)) {
     				DTM dtm = xctxt.getDTM(nextNode);
+    				
     				if (dtm.getNodeType(nextNode) == DTM.TEXT_NODE) {
     					xObj2 = new XMLNodeCursorImpl(nextNode, xctxt);
     					resultSeq.add(xObj2);
@@ -132,6 +138,7 @@ public class XPathExprFunctionCallSuffix extends Expression {
     			}
     			else if (isXPathLhsExprMutated && "comment()".equals(xpathRhsStr)) {
     				DTM dtm = xctxt.getDTM(nextNode);
+    				
     				if (dtm.getNodeType(nextNode) == DTM.COMMENT_NODE) {
     					xObj2 = new XMLNodeCursorImpl(nextNode, xctxt);
     					resultSeq.add(xObj2);
@@ -140,14 +147,17 @@ public class XPathExprFunctionCallSuffix extends Expression {
     			else if (!isXPathLhsExprMutated && ("text()".equals(xpathRhsStr) || "node()".equals(xpathRhsStr))) {    				
     				XPathBuiltInNodeKindExpr xpathTextAndNodeExpr = new XPathBuiltInNodeKindExpr();    		      		  
     				xpathTextAndNodeExpr.setNodeStr(xpathRhsStr);    		  
+    				
     				if (xpathLhsStr.length() > 0) {
     					xpathTextAndNodeExpr.setXpathPrefixStr(xpathLhsStr);
     				}
     				
     				XObject xObj = xpathTextAndNodeExpr.execute(xctxt);
+    				
     				if (xObj instanceof ResultSequence) {
     				   ResultSequence rSeqTemp1 = (ResultSequence)xObj;
     				   int rSeqLength = rSeqTemp1.size();
+    				   
     				   for (int idx2 = 0; idx2 < rSeqLength; idx2++) {
     					  resultSeq.add(rSeqTemp1.item(idx2));  
     				   }
@@ -177,12 +187,13 @@ public class XPathExprFunctionCallSuffix extends Expression {
 	
 	@Override
 	public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-		// no op
+		// No op
 	}
 
 	@Override
 	public boolean deepEquals(Expression expr) {
-		// no op
+		// No op
+		
 		return false;
 	}
 

@@ -76,7 +76,7 @@ public class StringUtil {
         
         boolean result = true;
         
-        // Sufficiently random character strings, that're unlikely 
+        // Character string values, that're unlikely 
         // to occur within an XPath expression.        
         String lDelimStr = new String(new int[] { 2 }, 0, 1);
         String rDelimStr = new String(new int[] { 3 }, 0, 1);
@@ -93,6 +93,7 @@ public class StringUtil {
         
         for (int idx = 0; idx < strLen; idx++) {
             char ch = strValue.charAt(idx);
+            
             if (ch == lDelimChar) {
                charStack.push(ch); 
             }
@@ -100,6 +101,7 @@ public class StringUtil {
                if (charStack.isEmpty() || (charStack.pop() != lDelimChar)) {
                   // Unbalanced comment string
                   result = false;
+                  
                   break;
                }   
             }
@@ -133,10 +135,13 @@ public class StringUtil {
     	str1 = str1.replaceAll(":\\)", "\u0003");
 
     	StringBuilder strBuilder = new StringBuilder();
+    	
     	int level = 0;
     	int strLength = str1.length();
+    	
     	for (int idx = 0; idx < strLength; idx++) {
     		char chr = str1.charAt(idx);
+    		
     		if (chr == '\u0002') {
     			level++;  
     		}

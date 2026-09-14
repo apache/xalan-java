@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 test cases to test, value comparison operators 
+ * XSL 3 test cases, to test XPath 3.1 value comparison operators 
  * eq, ne, lt, le, gt, ge.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
