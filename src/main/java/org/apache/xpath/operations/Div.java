@@ -393,7 +393,45 @@ public class Div extends XPathArithmeticUtil
 	 else if (right instanceof XNumber) {
 		 typeName2 = "double";
 		 typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
-	 }	 	  
+	 }
+	 
+	 if ((lNodeStr != null) && (rNodeStr != null)) {
+		 try {
+			 Double dbl1 = Double.valueOf(lNodeStr); 
+			 Double dbl2 = Double.valueOf(rNodeStr);
+
+			 left = new XSDouble(dbl1);
+			 right = new XSDouble(dbl2);
+
+			 typeName1 = "double";
+			 typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
+			 typeName2 = "double";
+			 typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			 
+			 XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    		 XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    		 
+    		 result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_DIV, elemTemplateElement);
+    		 
+    		 return result;
+		 }
+		 catch (NumberFormatException ex) {
+			 // No op 
+		 }
+	 }
+
+	 if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl) 
+			                                 && (lNodeStr == null) && (rNodeStr == null)) {
+		 left = new XSDouble(0);
+		 right = new XSDouble(0);
+
+		 typeName1 = "double";
+		 typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
+		 typeName2 = "double";
+		 typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	 }
 
 	 java.lang.String typeName1Actual = typeName1;
 	 java.lang.String typeName2Actual = typeName2;

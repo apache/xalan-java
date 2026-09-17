@@ -1,6 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:38:19Z" fail="1" name="for" pass="2" run="3" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-17T16:51:57Z" fail="1" name="for" pass="3" run="4" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="for-001"/>
    <testResult status="pass" testName="for-002"/>
-   <testResult status="fail" testName="for-003"/>
-   <testResult reason="Xalan configured" status="skipped" testName="for-004"/>
+   <testResult status="pass" testName="for-003"/>
+   <testResult status="fail" testName="for-004">
+      <outResult>
+         <errTrace>org.xml.sax.SAXException: Line# : 10, Column# : 101 XPST0003: Expected ,, but found: null
+java.lang.Exception: Line# : 10, Column# : 101 XPST0003: Expected ,, but found: null</errTrace>
+      </outResult>
+   </testResult>
 </testrun>

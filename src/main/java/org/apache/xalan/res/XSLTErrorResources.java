@@ -1337,7 +1337,7 @@ public class XSLTErrorResources extends ListResourceBundle
       "{0} has an illegal attribute: {1}"},
 
     { WG_COULD_NOT_RESOLVE_PREFIX,
-      "Could not resolve namespace prefix: {0}. The node will be ignored."},
+      "XTDE0860 : Could not resolve namespace prefix: {0}. The node will be ignored."},
 
     { WG_STYLESHEET_REQUIRES_VERSION_ATTRIB,
       "xsl:stylesheet requires a 'version' attribute!"},

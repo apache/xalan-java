@@ -355,7 +355,7 @@ public class ElemElement extends ElemUse
             nodeNamespace = "";
           else if (null == nodeNamespace)
           {
-            transformer.getMsgMgr().warn(
+            transformer.getMsgMgr().error(
               this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
               new Object[]{ prefix });
 
@@ -365,7 +365,7 @@ public class ElemElement extends ElemUse
         }
         catch (Exception ex)
         {
-          transformer.getMsgMgr().warn(
+          transformer.getMsgMgr().error(
             this, XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
             new Object[]{ prefix });
 

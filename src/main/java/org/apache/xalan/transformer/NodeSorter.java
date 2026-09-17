@@ -307,7 +307,7 @@ public class NodeSorter
 
 			  if (tempN1.equals(tempN2))
 			  {
-				  //java defaults to upper case is greater
+				  // java defaults to upper case, as greater
 				  result = result == 0 ? 0 : -result;
 			  }
 		  }

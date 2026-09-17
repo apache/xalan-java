@@ -37,11 +37,6 @@ public class XslForTests extends W3CXslTransformTestsUtil {
     	m_resultSubFolderName = "expr";
     	
     	m_testResultFileName = "_for-test-set_result.xml";
-    	
-    	// Xalan-J has bug with following, W3C XSLT 3.0 test case.
-    	// Skipping this XSL test cases for now.
-    	
-    	m_skipped_tests_list.add("for-004");
     }
 
     @AfterClass

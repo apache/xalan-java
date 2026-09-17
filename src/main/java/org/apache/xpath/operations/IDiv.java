@@ -375,7 +375,8 @@ public class IDiv extends XPathArithmeticUtil
 		  }
 	  }
 	  
-	  // Validating an XPath 3.1 operator 'idiv' operands compatibility for integer division	  
+	  // Validating an XPath 3.1 operator 'idiv' operands compatibility for integer division
+	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                   (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {

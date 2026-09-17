@@ -341,7 +341,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);
 
 							xctxt = new XPathContext(true);							
 							

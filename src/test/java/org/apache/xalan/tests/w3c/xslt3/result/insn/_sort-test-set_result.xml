@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-25T16:46:43Z" fail="10" name="sort" pass="71" run="81" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-17T16:51:35Z" fail="11" name="sort" pass="70" run="81" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="sort-003"/>
    <testResult status="pass" testName="sort-001"/>
    <testResult status="pass" testName="sort-002"/>
    <testResult status="pass" testName="sort-003"/>
    <testResult status="pass" testName="sort-004"/>
    <testResult status="pass" testName="sort-005"/>
-   <testResult status="pass" testName="sort-006"/>
+   <testResult status="fail" testName="sort-006"/>
    <testResult status="pass" testName="sort-007"/>
    <testResult status="pass" testName="sort-008"/>
    <testResult status="pass" testName="sort-009"/>

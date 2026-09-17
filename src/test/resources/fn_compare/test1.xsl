@@ -4,14 +4,13 @@
                 
    <!-- Author: mukulg@apache.org -->
       
-   <!-- Test for the XPath 3.1 fn:compare() function. This stylesheet 
-        test case, borrows fn:compare function examples from XPath 3.1 
-        F&O spec.
+   <!-- An XSL 3 stylesheet test case, to test XPath 3.1 function 
+        fn:compare. This stylesheet test case, borrows fn:compare 
+        function examples from XPath 3.1 F&O spec.  
         
-        Whereever within fn:compare function calls, if the third argument
-        (for the collation to be used) is not present, then XalanJ uses
-        the collation 'unicode codepoint collation' as its default 
-        collation.  
+        When calling function fn:compare, if the third argument
+        is not supplied, then Xalan-J uses the collation 
+        'unicode codepoint collation'.   
    -->                            
 
    <xsl:output method="xml" indent="yes"/>

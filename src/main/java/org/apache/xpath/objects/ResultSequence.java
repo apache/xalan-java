@@ -91,6 +91,7 @@ public class ResultSequence extends XObject
     	XObject result = null;
     	
     	XObject xObj = m_list.get(idx);
+    	
     	if (xObj instanceof XMLNodeCursorImpl) {
     		result = xObj.getFresh(); 
     	}

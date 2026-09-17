@@ -35,7 +35,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of an XPath 3.1 fn:distinct-values function.
+ * Implementation of an XPath 3.1 function fn:distinct-values.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -68,10 +68,7 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
 
 	   if (m_arg0 == null) {
-		   throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
-																							   + "calling distinct-values() function is wrong. Expected "
-																							   + "number of arguments for distinct-values() function is one "
-																							   + "or two.", srcLocator);  
+		   throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'distinct-values', may have one or two arguments.", srcLocator);  
 	   }
 
 	   XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
@@ -106,44 +103,42 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 
 			   if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
 				   XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntyped, true, collationUri, 
-						                                                xpathCollationSupport, xctxt);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntyped, true, collationUri, xpathCollationSupport, xctxt);
 			   }
 			   else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
 				   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, 
-						                                                collationUri, xpathCollationSupport, xctxt);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport, xctxt);
 			   }
 			   else {
 				   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, 
-						                                                collationUri, xpathCollationSupport, xctxt);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport, xctxt);
 			   }
 		   }
 	   }
 	   else if (arg0Obj instanceof ResultSequence) {
 		   ResultSequence inpResultSeq = (ResultSequence)arg0Obj;
 		   int size1 = inpResultSeq.size();
+		   
 		   for (int idx = 0; idx < size1; idx++) {
 			   XObject xObj = inpResultSeq.item(idx);
+			   
 			   if (xObj instanceof XSAnyType) {
 				   XSAnyType xsAnyType = (XSAnyType)xObj;
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, true, 
-						                                                collationUri, xpathCollationSupport, xctxt);
+				   
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, true, collationUri, xpathCollationSupport, xctxt);
 			   }
 			   else {
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xObj, true, 
-						                                                collationUri, xpathCollationSupport, xctxt);
+				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xObj, true, collationUri, xpathCollationSupport, xctxt);
 			   }
 		   }
 	   }
 	   else {
 		   // We're assuming here that, an input value is an 
-		   // xdm singleton item.            
+		   // xdm singleton item.
+		   
 		   if (arg0Obj instanceof XSAnyType) {
 			   XSAnyType xsAnyType = (XSAnyType)arg0Obj;
-			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, false, 
-					                                                collationUri, xpathCollationSupport, xctxt);
+			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, false, collationUri, xpathCollationSupport, xctxt);
 		   }
 		   else {
 			   String seqItemStrValue = arg0Obj.str();

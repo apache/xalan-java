@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:02Z" fail="8" name="fn-dateTime" pass="44" run="52" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-17T16:55:04Z" fail="2" name="fn-dateTime" pass="50" run="52" statusUnknown="0">
    <testResult status="pass" testName="fn-dateTime-1"/>
    <testResult status="pass" testName="fn-dateTime-2"/>
    <testResult status="pass" testName="fn-dateTime-3"/>
@@ -26,15 +26,15 @@
    <testResult status="pass" testName="fn-dateTime-25"/>
    <testResult status="pass" testName="fn-dateTime-26"/>
    <testResult status="pass" testName="fn-dateTime-27"/>
-   <testResult status="fail" testName="fn-dateTime-28"/>
-   <testResult status="fail" testName="fn-dateTime-29"/>
-   <testResult status="fail" testName="fn-dateTime-30"/>
+   <testResult status="pass" testName="fn-dateTime-28"/>
+   <testResult status="pass" testName="fn-dateTime-29"/>
+   <testResult status="pass" testName="fn-dateTime-30"/>
    <testResult status="pass" testName="forg0008-1"/>
    <testResult status="pass" testName="K-DateTimeFunc-1"/>
    <testResult status="pass" testName="K-DateTimeFunc-2"/>
    <testResult status="pass" testName="K-DateTimeFunc-3"/>
-   <testResult status="fail" testName="K-DateTimeFunc-4"/>
-   <testResult status="fail" testName="K-DateTimeFunc-5"/>
+   <testResult status="pass" testName="K-DateTimeFunc-4"/>
+   <testResult status="pass" testName="K-DateTimeFunc-5"/>
    <testResult status="pass" testName="K-DateTimeFunc-6"/>
    <testResult status="pass" testName="K-DateTimeFunc-7"/>
    <testResult status="pass" testName="K-DateTimeFunc-8"/>
@@ -48,7 +48,7 @@
    <testResult status="pass" testName="K-DateTimeFunc-16"/>
    <testResult status="pass" testName="K-DateTimeFunc-17"/>
    <testResult status="pass" testName="K-DateTimeFunc-18"/>
-   <testResult status="fail" testName="K2-DateTimeFunc-1"/>
+   <testResult status="pass" testName="K2-DateTimeFunc-1"/>
    <testResult status="fail" testName="cbcl-dateTime-001"/>
    <testResult status="fail" testName="cbcl-dateTime-002"/>
 </testrun>

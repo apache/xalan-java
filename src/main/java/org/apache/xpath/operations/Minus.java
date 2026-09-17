@@ -543,6 +543,37 @@ public class Minus extends XPathArithmeticUtil
 		  typeName2 = "double";
 		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
+	  
+	  if ((lNodeStr != null) && (rNodeStr != null)) {
+		  try {
+			  Double dbl1 = Double.valueOf(lNodeStr); 
+			  Double dbl2 = Double.valueOf(rNodeStr);
+
+			  left = new XSDouble(dbl1);
+			  right = new XSDouble(dbl2);
+
+			  typeName1 = "double";
+			  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
+			  typeName2 = "double";
+			  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		  }
+		  catch (NumberFormatException ex) {
+			  // No op 
+		  }
+	  }
+
+	  if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl) 
+			                                  && (lNodeStr == null) && (rNodeStr == null)) {
+		  left = new XSDouble(0);
+		  right = new XSDouble(0);
+
+		  typeName1 = "double";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
+		  typeName2 = "double";
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
+	  }
 
 	  java.lang.String typeName1Actual = typeName1;
 	  java.lang.String typeName2Actual = typeName2;
@@ -557,7 +588,8 @@ public class Minus extends XPathArithmeticUtil
 		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 	  }
 	  
-	  // Validating an XPath 3.1 operator '-' operands compatibility for subtraction	  
+	  // Validating an XPath 3.1 operator '-' operands compatibility for subtraction	
+	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                    (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {

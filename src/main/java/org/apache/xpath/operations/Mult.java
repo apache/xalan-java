@@ -302,6 +302,8 @@ public class Mult extends XPathArithmeticUtil
 	  }
 	  
 	  if (left instanceof XMLNodeCursorImpl) {
+		  left = left.getFresh();
+		  
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
 		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
 		  
@@ -422,6 +424,8 @@ public class Mult extends XPathArithmeticUtil
 	  java.lang.String typeNs2 = null;
 	  
 	  if (right instanceof XMLNodeCursorImpl) {
+		  right = right.getFresh();
+		  
 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
 		  int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
 		  
@@ -518,6 +522,37 @@ public class Mult extends XPathArithmeticUtil
 		  
 		  typeName2 = "boolean";
 		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	  }
+	  
+	  if ((lNodeStr != null) && (rNodeStr != null)) {
+		 try {
+			Double dbl1 = Double.valueOf(lNodeStr); 
+			Double dbl2 = Double.valueOf(rNodeStr);
+			
+			left = new XSDouble(dbl1);
+			right = new XSDouble(dbl2);
+			
+			typeName1 = "double";
+			typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+			  
+			typeName2 = "double";
+			typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+		 }
+		 catch (NumberFormatException ex) {
+			// No op 
+		 }
+	  }
+	  
+	  if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl) 
+			                                  && (lNodeStr == null) && (rNodeStr == null)) {
+		  left = new XSDouble(0);
+		  right = new XSDouble(0);
+
+		  typeName1 = "double";
+		  typeNs1 = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
+		  typeName2 = "double";
+		  typeNs2 = XMLConstants.W3C_XML_SCHEMA_NS_URI; 
 	  }
 	  
 	  if (((right instanceof XSString) || (right instanceof XString)) && 
@@ -631,11 +666,11 @@ public class Mult extends XPathArithmeticUtil
 		  }
 	  }
 	  
-	  // Validating an XPath 3.1 operator '*' operands compatibility for multiplication	  
+	  // Validating an XPath 3.1 operator '*' operands compatibility for multiplication
+	  
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
-		  if (isXsBuiltInTypeNumeric(typeName1) && !(isXsBuiltInTypeNumeric(typeName2) || 
-				                                     "yearMonthDuration".equals(typeName2) || 
-				                                     "dayTimeDuration".equals(typeName2))) {
+		  if (isXsBuiltInTypeNumeric(typeName1) && !(isXsBuiltInTypeNumeric(typeName2) || "yearMonthDuration".equals(typeName2) || 
+				                                                                                                               "dayTimeDuration".equals(typeName2))) {
 			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '*' cannot multiply schema "
 					                                                                                                + "type " + typeName1 + " value with " + typeName2 + ".");
 		  }
@@ -784,6 +819,8 @@ public class Mult extends XPathArithmeticUtil
     	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MULT, elemTemplateElement);                    
       }
       else if ((left instanceof XNumber) && (right instanceof XMLNodeCursorImpl)) {
+    	  right = right.getFresh();
+    	  
           double lDouble = ((XNumber)left).num();
           
           XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
@@ -800,6 +837,8 @@ public class Mult extends XPathArithmeticUtil
           }
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XNumber)) {
+    	  left = left.getFresh();
+    	  
           double rDouble = ((XNumber)right).num();
           
           XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
@@ -816,6 +855,8 @@ public class Mult extends XPathArithmeticUtil
           }
       }
       else if ((left instanceof XSNumericType) && (right instanceof XMLNodeCursorImpl)) {
+    	  right = right.getFresh();
+    	  
     	  XMLNodeCursorImpl rNodeSet = (XMLNodeCursorImpl)right;
           
     	  if (rNodeSet.getLength() > 1) {
@@ -846,6 +887,8 @@ public class Mult extends XPathArithmeticUtil
           }
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XSNumericType)) {
+    	  left = left.getFresh();
+    	  
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           
     	  if (lNodeSet.getLength() > 1) {
@@ -875,6 +918,9 @@ public class Mult extends XPathArithmeticUtil
           }
       }
       else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
+    	  left = left.getFresh();
+    	  right = right.getFresh();
+    	  
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           
     	  if (lNodeSet.getLength() > 1) {
@@ -1180,6 +1226,8 @@ public class Mult extends XPathArithmeticUtil
     	  }
       }
       else if (left instanceof XMLNodeCursorImpl) {
+    	  left = left.getFresh();
+    	  
     	  XMLNodeCursorImpl lNodeSet = (XMLNodeCursorImpl)left;
           
     	  if (lNodeSet.getLength() > 1) {

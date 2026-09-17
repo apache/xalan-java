@@ -645,7 +645,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		String expErrCodeName = null;
 		
-		elemTestResult.setAttribute("testName", testCaseName);
+		elemTestResult.setAttribute("testName", testCaseName);		
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);

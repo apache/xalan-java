@@ -15,8 +15,8 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 /**
- * This class provides, collation support for Xalan-J 
- * XSL 3 implementation.
+ * A class definition, that provides support for XPath 3.1 
+ * collation implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *
@@ -36,31 +36,57 @@ public class XPathCollationSupport {
     // Case insensitive collation, uri. This is synonym for the uri http://www.w3.org/xslts/collation/caseblind.  
     public static final String CASE_BLIND_COLLATION_URI2 = "http://www.w3.org/2010/09/qt-fots-catalog/collation/caseblind";
     
-    private final String UCA_KEYWORD_FALLBACK = "fallback";
+    private static final String UCA_KEYWORD_FALLBACK = "fallback";
     
-    private final String UCA_FALLBACK_YES = "yes";    
-    private final String UCA_FALLBACK_NO = "no";
+    private static final String UCA_FALLBACK_YES = "yes";    
+    private static final String UCA_FALLBACK_NO = "no";
     
-    private final String UCA_KEYWORD_LANG = "lang";
+    private static final String UCA_KEYWORD_LANG = "lang";
     
-    private final String UCA_KEYWORD_STRENGTH = "strength";
+    private static final String UCA_KEYWORD_STRENGTH = "strength";
     
-    private final String UCA_STRENGTH_PRIMARY = "primary";
-    private final String UCA_STRENGTH_SECONDARY = "secondary";
-    private final String UCA_STRENGTH_TERTIARY = "tertiary";
-    private final String UCA_STRENGTH_IDENTICAL = "identical";
+    private static final String UCA_STRENGTH_PRIMARY = "primary";
+    private static final String UCA_STRENGTH_SECONDARY = "secondary";
+    private static final String UCA_STRENGTH_TERTIARY = "tertiary";
+    private static final String UCA_STRENGTH_IDENTICAL = "identical";
     
-    private final String DEFAULT_UCA_FALLBACK_VALUE = UCA_FALLBACK_YES;
+    private static final String UCA_KEYWORD_MAX_VARIABLE = "maxVariable";
     
-    private final Locale DEFAULT_UCA_LOCALE = Locale.getDefault();     
+    private static final String UCA_MAX_VARIABLE_SPACE = "space";
+    private static final String UCA_MAX_VARIABLE_PUNCT = "punct";
     
-    private final String DEFAULT_UCA_STRENGTH_VALUE = UCA_STRENGTH_TERTIARY;
+    private static final String PUNC_MARKS_EN_LANG = ".?!,;:-()[]{}'\"'";
     
-    private final String UCA_QUERY_STRING_PREFIX = "?";
+    private static final String UCA_KEYWORD_ALTERNATE = "alternate";
     
-    private final String UCA_QUERY_STRING_PARTS_DELIM = ";";
+    private static final String UCA_ALTERNATE_NON_IGNORABLE = "non-ignorable";
+    private static final String UCA_ALTERNATE_SHIFTED = "shifted";
+    private static final String UCA_ALTERNATE_BLANKED = "blanked";
     
-    private final String UCA_QUERY_STRING_PART_SUB_DELIM = "=";
+    private static final String UCA_KEYWORD_NUMERIC = "numeric";
+    
+    private static final String UCA_NUMERIC_YES = "yes";
+    private static final String UCA_NUMERIC_NO = "no";
+    
+    private static final String UCA_FALLBACK_DEFAULT_VALUE = UCA_FALLBACK_YES;
+    
+    private static final Locale UCA_LOCALE_DEFAULT_VALUE = Locale.getDefault();     
+    
+    private static final String UCA_STRENGTH_DEFAULT_VALUE = UCA_STRENGTH_TERTIARY;
+    
+    private static final String UCA_MAX_VARIABLE_DEFAULT_VALUE = UCA_MAX_VARIABLE_PUNCT;
+    
+    private static final String UCA_ALTERNATE_DEFAULT_VALUE = UCA_ALTERNATE_NON_IGNORABLE;
+    
+    private static final String UCA_NUMERIC_DEFAULT_VALUE = UCA_NUMERIC_NO;
+    
+    private static final String UCA_QUERY_STRING_PREFIX = "?";
+    
+    private static final String UCA_QUERY_STRING_PARTS_DELIM = ";";
+    
+    private static final String UCA_QUERY_STRING_PART_SUB_DELIM = "="; 
+    
+    private static final String EN_LANG = "en";
     
     private List<UCAParameter> m_ucaParamSupportedList = new ArrayList<UCAParameter>();
     
@@ -110,15 +136,94 @@ public class XPathCollationSupport {
           try {
              Collator strCmpCollator = getUCACollatorFromCollationUri(collationUri);
              
+             int idx = UNICODE_COLLATION_ALGORITHM_URI.length();              
+             String uriAndQueryStrDelim = collationUri.substring(idx, idx + 1);
+
+             Map<String, String> queryStrMap = null;
+
+             if (UCA_QUERY_STRING_PREFIX.equals(uriAndQueryStrDelim)) {
+            	 String uriQueryStr = collationUri.substring(collationUri.indexOf(UCA_QUERY_STRING_PREFIX) + 1);
+            	 queryStrMap = getUCAQueryStrComponents(uriQueryStr);
+             }
+             
              if (strCmpCollator != null) {
-                result = strCmpCollator.compare(str1, str2);                
+                if (queryStrMap != null) {
+                   String queryStrLangCode = queryStrMap.get(UCA_KEYWORD_LANG);
+            	   String queryStrMaxVariable = queryStrMap.get(UCA_KEYWORD_MAX_VARIABLE);
+                   String queryStrAlternate = queryStrMap.get(UCA_KEYWORD_ALTERNATE);
+                   
+                   String queryStrNumeric = queryStrMap.get(UCA_KEYWORD_NUMERIC);
+                   
+                   if (queryStrMaxVariable == null) {
+                	  queryStrMaxVariable = UCA_MAX_VARIABLE_DEFAULT_VALUE;   
+                   }
+                   
+                   if (queryStrAlternate == null) {
+                	  queryStrAlternate = UCA_ALTERNATE_DEFAULT_VALUE;   
+                   }
+                   
+                   if (queryStrNumeric == null) {
+                	  queryStrNumeric = UCA_NUMERIC_DEFAULT_VALUE;
+                   }
+                   
+                   int mapSize1 = queryStrMap.size();
+                   
+                   if (mapSize1 == 2) {
+                	   if (EN_LANG.equals(queryStrLangCode) && UCA_ALTERNATE_BLANKED.equals(queryStrAlternate)) {
+                		   /**
+                		    * The collation uri's query string is like, ?lang=en;alternate=blanked
+                		    * Therefore, whitespace characters and punctuation marks are 
+                		    * considered insignificant, for comparison.
+                		    */
+
+                		   int size1 = PUNC_MARKS_EN_LANG.length();
+
+                		   for (int idx2 = 0; idx2 < size1; idx2++) {
+                			   char c1 = PUNC_MARKS_EN_LANG.charAt(idx2);
+
+                			   str1 = str1.replaceAll("\\s", "");
+                			   str2 = str2.replaceAll("\\s", "");
+
+                			   str1 = str1.replace(c1 + "", "");
+                			   str2 = str2.replace(c1 + "", "");
+                		   }                	  
+                	   }
+                	   else if (EN_LANG.equals(queryStrLangCode) && (queryStrNumeric != null)) {
+                		   if (UCA_NUMERIC_YES.equals(queryStrNumeric)) {
+                			  result = compareStringNumeric(str1, str2, strCmpCollator);
+                			  
+                			  return result;
+                		   }
+                		   else if (UCA_NUMERIC_NO.equals(queryStrNumeric)) {
+                			  result = strCmpCollator.compare(str1, str2);
+           					
+           					  return result;
+                		   }
+                	   }
+                   }
+                   else if (mapSize1 == 1) {
+                	   if (EN_LANG.equals(queryStrLangCode)) {
+                		   result = strCmpCollator.compare(str1, str2);
+
+                		   return result; 
+                	   }
+                   }
+                   else if (mapSize1 == 1) {
+                	   if (UCA_NUMERIC_YES.equals(queryStrNumeric)) {
+                		   result = compareStringNumeric(str1, str2, strCmpCollator);
+
+                		   return result; 
+                	   }
+                   }
+                }
+            	
+            	result = strCmpCollator.compare(str1, str2);                
              }
              else if (UCA_FALLBACK_YES.equals(m_queryFallbackStr)) {                    
                 result = compareStringsUsingCollation(str1, str2, m_defaultCollation);
              }
              else {
-                throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + 
-                                                                                                                   "' is not supported.");  
+                throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + "' is not supported.");  
              }
           }
           catch (javax.xml.transform.TransformerException ex) {
@@ -143,15 +248,19 @@ public class XPathCollationSupport {
              if (idx1 == str1Len) {
                 if (idx2 == str2Len) {
                    result = 0;
+                   
                    break;
-                } else {
+                } 
+                else {
                    result = -1;
+                   
                    break;
                 }
              }
              
              if (idx2 == str2Len) {
                 result = 1;
+                
                 break;
              }
              
@@ -170,13 +279,15 @@ public class XPathCollationSupport {
              }
              
              int codepointDiff = codepoint1 - codepoint2;             
+             
              if (codepointDiff != 0) {
                 if (codepointDiff < 0) {
                    result = -1;
                 }
                 else {
                    result = 1; 
-                }                
+                }  
+                
                 break;
              }
           }          
@@ -191,8 +302,8 @@ public class XPathCollationSupport {
        
        return result;
     }
-    
-    /**
+
+	/**
      * Method definition, to get an integer array having codepoints of
      * all the characters for the supplied string.
      * 
@@ -230,8 +341,8 @@ public class XPathCollationSupport {
               result = getDefaultUCACollator();
            }
            else {
-              int ucaUriPrefixLength = UNICODE_COLLATION_ALGORITHM_URI.length();              
-              String uriAndQueryStrDelim = collationUri.substring(ucaUriPrefixLength, ucaUriPrefixLength + 1);
+              int idx = UNICODE_COLLATION_ALGORITHM_URI.length();              
+              String uriAndQueryStrDelim = collationUri.substring(idx, idx + 1);
               
               if (UCA_QUERY_STRING_PREFIX.equals(uriAndQueryStrDelim)) {
                  String uriQueryStr = collationUri.substring(collationUri.indexOf(UCA_QUERY_STRING_PREFIX) + 1);
@@ -242,18 +353,18 @@ public class XPathCollationSupport {
                  String queryStrStrengthValue = queryStrMap.get(UCA_KEYWORD_STRENGTH);
                     
                  if (queryStrFallbackValue == null) {
-                    m_queryFallbackStr = DEFAULT_UCA_FALLBACK_VALUE;  
+                    m_queryFallbackStr = UCA_FALLBACK_DEFAULT_VALUE;  
                  }
                  else {
                     m_queryFallbackStr = queryStrFallbackValue;  
                  }
                     
                  if (queryStrLangCode == null) {
-                    queryStrLangCode = DEFAULT_UCA_LOCALE.getCountry(); 
+                    queryStrLangCode = UCA_LOCALE_DEFAULT_VALUE.getCountry(); 
                  }
                     
                  if (queryStrStrengthValue == null) {
-                    queryStrStrengthValue = DEFAULT_UCA_STRENGTH_VALUE;  
+                    queryStrStrengthValue = UCA_STRENGTH_DEFAULT_VALUE;  
                  }
                     
                  result = Collator.getInstance(new Locale(queryStrLangCode));
@@ -261,25 +372,29 @@ public class XPathCollationSupport {
                  switch (queryStrStrengthValue) {
                     case UCA_STRENGTH_PRIMARY :
                        result.setStrength(Collator.PRIMARY);
+                       
                        break;
                     case UCA_STRENGTH_SECONDARY :
                        result.setStrength(Collator.SECONDARY);
+                       
                        break;
                     case UCA_STRENGTH_TERTIARY :
                        result.setStrength(Collator.TERTIARY);
+                       
                        break;
                     case UCA_STRENGTH_IDENTICAL :
                        result.setStrength(Collator.IDENTICAL);
+                       
                        break;
                     default:
-                       // no op    
+                       // No op    
                  }
               }
               else {
                  throw new TransformerException("FOCH0002 : The first character if present after collation uri '" + 
-                                                                        UNICODE_COLLATION_ALGORITHM_URI + "' must be "
-                                                                        + "'" + UCA_QUERY_STRING_PREFIX + "', to denote the "
-                                                                        + "start of query string within the collation uri.");   
+                                                                                                          UNICODE_COLLATION_ALGORITHM_URI + "' must be "
+                                                                                                          + "'" + UCA_QUERY_STRING_PREFIX + "', to denote the "
+                                                                                                          + "start of query string within the collation uri.");   
               }
            }
        }
@@ -367,6 +482,7 @@ public class XPathCollationSupport {
     	   
           int arr1FirstCodepoint = codePointArr1[0];
           int arr2FirstCodepoint = codePointArr2[0];
+          
           if (arr1FirstCodepoint < arr2FirstCodepoint) {
              result = -1;  
           }
@@ -437,20 +553,24 @@ public class XPathCollationSupport {
      */
     private Collator getDefaultUCACollator() {
         
-        Collator collatorResult = Collator.getInstance(DEFAULT_UCA_LOCALE);
+        Collator collatorResult = Collator.getInstance(UCA_LOCALE_DEFAULT_VALUE);
         
-        switch (DEFAULT_UCA_STRENGTH_VALUE) {
+        switch (UCA_STRENGTH_DEFAULT_VALUE) {
             case UCA_STRENGTH_PRIMARY :
                collatorResult.setStrength(Collator.PRIMARY);
+               
                break;
             case UCA_STRENGTH_SECONDARY :
                collatorResult.setStrength(Collator.SECONDARY); 
+               
                break;
             case UCA_STRENGTH_TERTIARY :   
                collatorResult.setStrength(Collator.TERTIARY);
+               
                break;
             case UCA_STRENGTH_IDENTICAL :
                collatorResult.setStrength(Collator.IDENTICAL);
+               
                break;
             default :
                // No op
@@ -478,19 +598,20 @@ public class XPathCollationSupport {
           int delimIdx = queryStrPart.indexOf(UCA_QUERY_STRING_PART_SUB_DELIM);
           String keyword = queryStrPart.substring(0, delimIdx);
           String value = queryStrPart.substring(delimIdx + 1);
+          
           if (!mapResult1.containsKey(keyword)) {
              if (isUCAKeywordAndValueOk(keyword, value)) {
                 mapResult1.put(keyword, value);
              }
              else {
-                throw new TransformerException("FOCH0002 : The keyword '"+keyword+"' and corresponding value '" + 
-                                                                                      value + "', provided within the "
-                                                                                      + "requested collation uri is not supported.");  
+                throw new TransformerException("FOCH0004 : The keyword '" + keyword + "' and corresponding value '" + 
+                                                                                                          value + "', provided within the "
+                                                                                                          + "requested collation uri is not supported.");  
              }
           }
           else {
              throw new TransformerException("FOCH0002 : The keyword '" + keyword + "' occurs more than once, within "
-                                                                                        + "the specified collation uri."); 
+                                                                                                            + "the specified collation uri."); 
           }
        }
        
@@ -514,10 +635,13 @@ public class XPathCollationSupport {
        
        for (int idx = 0; idx < size1; idx++) {
           UCAParameter ucaParameter = m_ucaParamSupportedList.get(idx);
+          
           if ((ucaParameter.getKeywordName()).equals(keyword)) {
              List<String> paramValues = ucaParameter.getParamValues();
+             
              if (paramValues.contains(value)) {
                 result = true;
+                
                 break;
              }
           }
@@ -536,11 +660,13 @@ public class XPathCollationSupport {
         
     	fallbackList.add(UCA_FALLBACK_YES);
         fallbackList.add(UCA_FALLBACK_NO);
+        
         UCAParameter ucaFallbackParam = new UCAParameter(UCA_KEYWORD_FALLBACK, fallbackList);
         
         String[] isoLanguageCodes = Locale.getISOLanguages();
         
         List<String> isoLanguageList = Arrays.asList(isoLanguageCodes);
+        
         UCAParameter ucaLanguageParam = new UCAParameter(UCA_KEYWORD_LANG, isoLanguageList);
         
         List<String> collationStrengthList = new ArrayList<String>();
@@ -552,9 +678,34 @@ public class XPathCollationSupport {
         
         UCAParameter ucaCollationStrengthParam = new UCAParameter(UCA_KEYWORD_STRENGTH, collationStrengthList);
         
+        List<String> maxVariableList = new ArrayList<String>();
+        
+        maxVariableList.add(UCA_MAX_VARIABLE_SPACE);
+        maxVariableList.add(UCA_MAX_VARIABLE_PUNCT);
+        
+        UCAParameter ucaMaxVariableParam = new UCAParameter(UCA_KEYWORD_MAX_VARIABLE, maxVariableList);
+        
+        List<String> alternateList = new ArrayList<String>();
+        
+        alternateList.add(UCA_ALTERNATE_NON_IGNORABLE);
+        alternateList.add(UCA_ALTERNATE_SHIFTED);
+        alternateList.add(UCA_ALTERNATE_BLANKED);
+        
+        UCAParameter ucaAlternateParam = new UCAParameter(UCA_KEYWORD_ALTERNATE, alternateList);
+        
+        List<String> numericList = new ArrayList<String>();
+        
+        numericList.add(UCA_NUMERIC_YES);
+        numericList.add(UCA_NUMERIC_NO);
+        
+        UCAParameter ucaNumericParam = new UCAParameter(UCA_KEYWORD_NUMERIC, numericList);
+        
         m_ucaParamSupportedList.add(ucaFallbackParam);
         m_ucaParamSupportedList.add(ucaLanguageParam);
         m_ucaParamSupportedList.add(ucaCollationStrengthParam);
+        m_ucaParamSupportedList.add(ucaMaxVariableParam);
+        m_ucaParamSupportedList.add(ucaAlternateParam);
+        m_ucaParamSupportedList.add(ucaNumericParam);
     }
     
     /**
@@ -594,5 +745,119 @@ public class XPathCollationSupport {
         }
         
     }
+    
+    /**
+     * Method definition, to get first index value for
+     * numeric character within the supplied string value.
+     * 
+     * @param str1                       The supplied string value
+     * @return                           An integer value, greater than
+     *                                   -1 if a numeric character is found
+     *                                   within the supplied string value,
+     *                                   otherwise an integer value -1.
+     */
+    private int indexOfNumericCharacter(String str1) {
+		
+    	int result = -1;
+    	
+    	int size1 = str1.length();
+    	
+    	if (size1 > 0) {
+    	   for (int idx = 0; idx < size1; idx++) {
+    		 char chr1 = str1.charAt(idx);
+    		 
+    		 try {
+    			new Double(chr1 + "");    			
+    			result = idx;
+    			
+    			break;
+    		 }
+    		 catch (NumberFormatException ex) {
+    			// No op
+    		 }
+    	   }
+    	}
+		
+		return result;
+	}
+    
+    /**
+     * Method definition, to compare two string values, as if
+     * the supplied string value's all the characters are numeric.
+     * 
+     * @param str1                        The first supplied string value
+     * @param str2                        The second supplied string value
+     * @param strCmpCollator              A non-null java.text.Collator object
+     *                                    instance.     
+     * @return                            Integer value -1, 0, 1, for string comparison
+     *                                    results as less than, equal or greater than.
+     */
+	private int compareStringNumeric(String str1, String str2, Collator strCmpCollator) {
+		
+		int result = 0;
+
+		boolean isStrValueNumeric = true;
+
+		try {
+			Double dbl1 = Double.valueOf(str1);
+			Double dbl2 = Double.valueOf(str2);
+			
+			// Both the supplied string values are
+			// numeric.
+
+			if (dbl1 < dbl2) {
+				result = -1; 
+			}
+			else if (dbl1 > dbl2) {
+				result = 1;
+			}
+
+			return result;
+		}
+		catch (NumberFormatException ex) {
+			isStrValueNumeric = false; 
+		}
+
+		if (!isStrValueNumeric) {
+			int idx1 = indexOfNumericCharacter(str1); 
+			int idx2 = indexOfNumericCharacter(str2);
+
+			if ((idx1 != -1) && (idx1 == idx2)) {
+				/**
+				 * Both string values have non-null equal length non-numeric 
+				 * prefix, and numeric suffix that've to be compared 
+				 * numerically. The result of numeric suffix comparison 
+				 * is the result of string comparison by this method. For e.g, 
+				 * the supplied string values are of type abc12, abc123. 
+				 */
+				
+				String str1_p = str1.substring(idx1);  
+				String str1_q = str2.substring(idx2);
+
+				try {
+					Double dbl1 = Double.valueOf(str1_p);
+					Double dbl2 = Double.valueOf(str1_q);
+
+					if (dbl1 < dbl2) {
+						result = -1; 
+					}
+					else if (dbl1 > dbl2) {
+						result = 1;
+					}
+
+					return result;
+				}
+				catch (NumberFormatException ex) {
+					// No op
+				}
+
+				result = strCmpCollator.compare(str1, str2);
+
+				return result;
+			}
+		}
+
+		return result;
+	}
 
 }

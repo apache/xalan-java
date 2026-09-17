@@ -23,6 +23,7 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDate;
@@ -67,14 +68,38 @@ public class FuncDateTime extends Function2Args
 	  
 	  XObject arg1Val = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	  
+	  if (arg0Val instanceof ResultSequence) {
+		 ResultSequence rSeq1 = (ResultSequence)arg0Val;
+		 
+		 if (rSeq1.size() == 0) {
+		    result = new ResultSequence();
+		    
+		    return result;
+		 }
+		 else if (rSeq1.size() == 1) {
+			arg0Val = rSeq1.item(0);  
+		 }
+	  }
+	  
+	  if ((arg1Val instanceof ResultSequence) && (((ResultSequence)arg1Val).size() == 0)) {
+		  ResultSequence rSeq2 = (ResultSequence)arg1Val;
+
+		  if (rSeq2.size() == 0) {
+			  result = new ResultSequence();
+
+			  return result;
+		  }
+		  else if (rSeq2.size() == 1) {
+			  arg1Val = rSeq2.item(0);  
+		  }
+	  }
+	  
 	  if (!(arg0Val instanceof XSDate)) {
-		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first argument of fn:dateTime() is xs:date, "
-		 		                                                                  + "whereas the supplied argument is not conformant.", srcLocator);  
+		 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'dateTime' first argument is XML schema type 'date'.", srcLocator);  
 	  }	  
 	  
 	  if (!(arg1Val instanceof XSTime)) {
-		 throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the second argument of fn:dateTime() is xs:time, "
-                                                                                  + "whereas the supplied argument is not conformant.", srcLocator); 
+		 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'dateTime' first argument is XML schema type 'time'.", srcLocator); 
 	  }
 	  
 	  XSDate dateVal = (XSDate)arg0Val;
@@ -98,27 +123,32 @@ public class FuncDateTime extends Function2Args
 		 resultTimeZone = timeZone1;		  
 	  }
 	  else {
-		 throw new javax.xml.transform.TransformerException("FORG0008 : The two arguments to fn:dateTime have inconsistent timezones.", srcLocator); 
+		 throw new javax.xml.transform.TransformerException("FORG0008 : An XPath 3.1 function 'dateTime' is called with "
+		 		                                                                                           + "XML schema type 'date' and 'time' arguments, "
+		 		                                                                                           + "that have different timezones.", srcLocator); 
 	  }
 	  
-	  Calendar cal = Calendar.getInstance();
-	  cal.set(dateVal.year(), dateVal.month() - 1, dateVal.day());
-	  cal.set(Calendar.HOUR_OF_DAY, timeVal.hour());
-	  cal.set(Calendar.MINUTE, timeVal.minute());
+	  Calendar calendar = Calendar.getInstance();
+	  
+	  calendar.set(dateVal.year(), dateVal.month() - 1, dateVal.day());
+	  calendar.set(Calendar.HOUR_OF_DAY, timeVal.hour());
+	  calendar.set(Calendar.MINUTE, timeVal.minute());
 	  
 	  double secsValue = timeVal.second();
 	  int secs = (int)secsValue;
 	  int deltaMilliSecs = 0;
+	  
 	  if (secsValue > secs) {
 	     deltaMilliSecs = (int)((secsValue - secs) * 1000);
 	  }
 	  
-	  cal.set(Calendar.SECOND, secs);
-	  cal.set(Calendar.MILLISECOND, deltaMilliSecs);
+	  calendar.set(Calendar.SECOND, secs);
+	  calendar.set(Calendar.MILLISECOND, deltaMilliSecs);
 	  
-	  result = new XSDateTime(cal, resultTimeZone);
+	  result = new XSDateTime(calendar, resultTimeZone);
 	  
 	  return result;
+	  
   }
   
 }
