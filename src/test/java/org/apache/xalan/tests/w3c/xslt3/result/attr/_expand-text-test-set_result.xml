@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:38:50Z" fail="2" name="expand-text" pass="57" run="59" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-19T10:42:50Z" fail="1" name="expand-text" pass="58" run="59" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="cvt-001"/>
    <testResult status="pass" testName="cvt-002"/>
    <testResult status="pass" testName="cvt-003"/>
@@ -58,7 +58,7 @@
    <testResult status="pass" testName="cvt-039c"/>
    <testResult status="pass" testName="cvt-040a"/>
    <testResult status="pass" testName="cvt-040b"/>
-   <testResult status="fail" testName="cvt-040c"/>
+   <testResult status="pass" testName="cvt-040c"/>
    <testResult status="pass" testName="cvt-041"/>
    <testResult status="pass" testName="cvt-042"/>
    <testResult status="pass" testName="cvt-043"/>

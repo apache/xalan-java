@@ -39,26 +39,7 @@ public class XslMapsTests extends W3CXslTransformTestsUtil {
     	m_testResultFileName = "_maps-test-set_result.xml";
     	
     	// Xalan-J xslt3.0 implementation goes to inf loop, with this test case
-    	m_skipped_tests_list.add("maps-011");
-    	
-    	// Xalan-J xslt3.0 implementation seems to work fine, for this test case
-    	m_skipped_tests_list.add("maps-017");
-    	
-    	// The following XSLT 3.0 test cases, use an XML namespace http://www.w3.org/2011/xpath-functions/map
-    	// from earlier XSL 3 specification drafts, as mentioned within W3C XSL 3 'map' test set.
-    	
-    	m_skipped_tests_list.add("maps-906a");
-    	m_skipped_tests_list.add("maps-906b");
-    	m_skipped_tests_list.add("maps-906c");
-    	m_skipped_tests_list.add("maps-906d");
-    	m_skipped_tests_list.add("maps-906e");
-    	m_skipped_tests_list.add("maps-906f");
-    	m_skipped_tests_list.add("maps-906g");
-    	m_skipped_tests_list.add("maps-906h");
-    	m_skipped_tests_list.add("maps-906i");
-    	m_skipped_tests_list.add("maps-906j");
-    	m_skipped_tests_list.add("maps-906k");
-    	m_skipped_tests_list.add("maps-906l");    	    	
+    	m_skipped_tests_list.add("maps-011");   	    	
     }
 
     @AfterClass

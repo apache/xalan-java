@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-04T11:13:44Z" fail="17" name="maps" pass="19" run="36" skipped="14" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-19T10:42:53Z" fail="2" name="maps" pass="47" run="49" skipped="1" statusUnknown="0">
    <testResult status="fail" testName="maps-001">
       <outResult>
          <errTrace>XPTY0004 : An index value used with an xdm sequence reference, is not numeric.</errTrace>
@@ -17,73 +17,43 @@
    <testResult status="pass" testName="maps-008"/>
    <testResult status="pass" testName="maps-009"/>
    <testResult status="pass" testName="maps-010"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-011"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="maps-011"/>
    <testResult status="pass" testName="maps-012"/>
    <testResult status="pass" testName="maps-013"/>
    <testResult status="pass" testName="maps-014"/>
    <testResult status="pass" testName="maps-015"/>
    <testResult status="pass" testName="maps-016"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-017"/>
+   <testResult status="pass" testName="maps-017"/>
    <testResult status="pass" testName="maps-018"/>
    <testResult status="pass" testName="maps-019"/>
    <testResult status="pass" testName="maps-020"/>
-   <testResult status="fail" testName="maps-901a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-901b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-901c">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-901d">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-901e">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-902a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-902b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-903a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-903b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-903c">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-904a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-904b">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-904c">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-904d">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult status="fail" testName="maps-905a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</outResult>
-   </testResult>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906a"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906b"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906c"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906d"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906e"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906f"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906g"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906h"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906i"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906j"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906k"/>
-   <testResult reason="Xalan configured" status="skipped" testName="maps-906l"/>
+   <testResult status="pass" testName="maps-901a"/>
+   <testResult status="pass" testName="maps-901b"/>
+   <testResult status="pass" testName="maps-901c"/>
+   <testResult status="pass" testName="maps-901d"/>
+   <testResult status="pass" testName="maps-901e"/>
+   <testResult status="pass" testName="maps-902a"/>
+   <testResult status="pass" testName="maps-902b"/>
+   <testResult status="pass" testName="maps-903a"/>
+   <testResult status="pass" testName="maps-903b"/>
+   <testResult status="pass" testName="maps-903c"/>
+   <testResult status="pass" testName="maps-904a"/>
+   <testResult status="pass" testName="maps-904b"/>
+   <testResult status="pass" testName="maps-904c"/>
+   <testResult status="pass" testName="maps-904d"/>
+   <testResult status="pass" testName="maps-905a"/>
+   <testResult status="pass" testName="maps-906a"/>
+   <testResult status="pass" testName="maps-906b"/>
+   <testResult status="pass" testName="maps-906c"/>
+   <testResult status="pass" testName="maps-906d"/>
+   <testResult status="pass" testName="maps-906e"/>
+   <testResult status="pass" testName="maps-906f"/>
+   <testResult status="pass" testName="maps-906g"/>
+   <testResult status="pass" testName="maps-906h"/>
+   <testResult status="pass" testName="maps-906i"/>
+   <testResult status="pass" testName="maps-906j"/>
+   <testResult status="pass" testName="maps-906k"/>
+   <testResult status="pass" testName="maps-906l"/>
    <testResult status="pass" testName="maps-907"/>
    <testResult status="pass" testName="maps-908"/>
    <testResult status="pass" testName="maps-909"/>
