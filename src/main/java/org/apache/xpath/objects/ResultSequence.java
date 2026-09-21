@@ -88,6 +88,7 @@ public class ResultSequence extends XObject
      * Get an item stored at a particular index.
      */
     public XObject item(int idx) {
+    	
     	XObject result = null;
     	
     	XObject xObj = m_list.get(idx);

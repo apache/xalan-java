@@ -144,7 +144,7 @@ public class XslTransformData {
      * An XML namespace mapping hashtable, used for XPath expression
      * evaluation.
      */
-    public static Hashtable m_ns_hashtable = null;
+    public static Hashtable m_ns_hashtable = null;    
     
     /**
 	 * Method definition, to reset the class field values specified 

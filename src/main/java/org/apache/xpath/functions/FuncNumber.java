@@ -69,12 +69,12 @@ public class FuncNumber extends FunctionDef1Arg
 		if (m_arg0 instanceof NodeTest) {
 			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
 				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
-																																+ "supplied type is a function type, which cannot be atomized.", srcLocator); 
+																																                                     + "supplied type is a function type, which cannot be atomized.", srcLocator); 
 			}
 		}
 		else if (m_arg0 instanceof XPathInlineFunction) {
 			throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
-																																+ "supplied type is a function type, which cannot be atomized.", srcLocator); 
+																																                                     + "supplied type is a function type, which cannot be atomized.", srcLocator); 
 		}
 
 		if (m_arg0 != null) {     	  
@@ -122,12 +122,16 @@ public class FuncNumber extends FunctionDef1Arg
 				}
 			}
 			else if (xObj0 instanceof XMLNodeCursorImpl) {    		    		
+				String str1 = ((XMLNodeCursorImpl)xObj0).str();
+
 				try {
-					result = new XNumber(getArg0AsNumber(xctxt));
+					Double dbl = Double.valueOf(str1);
+					
+					result = new XNumber(dbl);
 				}
-				catch (TransformerException ex) {
-					result = new XSDouble(Double.NaN); 
-				}
+				catch (NumberFormatException ex) {
+					result = new XSDouble(Double.NaN);
+				}				
 			}
 			else if ((xObj0 instanceof XSString) || (xObj0 instanceof XString)) {
 				try {
@@ -152,8 +156,8 @@ public class FuncNumber extends FunctionDef1Arg
 			}
 			else {
 				throw new TransformerException("XPDY0002 : An XPath 3.1 function 'number' is called without "
-																									+ "an argument, and XPath context "
-																									+ "item is absent.", srcLocator);
+																									       + "an argument, and XPath context "
+																									       + "item is absent.", srcLocator);
 			}
 		}
 

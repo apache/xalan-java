@@ -601,6 +601,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   if ("for-each-group-028".equals(xslTestCaseName)) {
     				   // These W3C XSLT 3.0 test suite, test cases fail when running together 
     				   // with other test cases from test suite, but pass independently.
+    				   
     				   try {
     					   Node nodeExpected = (expectedResultElem.getFirstChild()).getNextSibling();
     					   String expectedNodeKindName = nodeExpected.getNodeName();
@@ -704,7 +705,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		
 		String expErrCodeName = null;
 		
-		elemTestResult.setAttribute(TEST_NAME, xslTestCaseName);
+		elemTestResult.setAttribute(TEST_NAME, xslTestCaseName);				
     	
     	try {
     		m_xslTransformerFactory.setErrorListener(xslTransformErrHandler);
@@ -885,15 +886,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			xmlInpSrc = source; 
     		}    		    		
     		
-    		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));
-    		    		    		
-    		if (m_xslTransformTestSetFilePath.contains("type/namespace/")) {
-    		   boolean result1 = handleXslNamespaceTestExclusion(xslTestCaseName, resultStrWriter, elemTestResult);
-    		   
-    		   if (result1) {
-    			  return;  
-    		   }
-    		}
+    		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));    		    		    
     		
     		if (m_xslTransformTestSetFilePath.contains("type/maps/")) {
      		   boolean result1 = handleXslMapsTestExclusion(xslTestCaseName, resultStrWriter, elemTestResult);
@@ -902,6 +895,22 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      			  return;  
      		   }
      		}
+    		
+    		if (m_xslTransformTestSetFilePath.contains("type/namespace/")) {
+     		   boolean result1 = handleXslNamespaceTestExclusion(xslTestCaseName, resultStrWriter, elemTestResult);
+     		   
+     		   if (result1) {
+     			  return;  
+     		   }
+     		}
+    		
+    		if (m_xslTransformTestSetFilePath.contains("misc/whitespace/")) {
+    			boolean result1 = handleXslWhitespaceTest1(xslTestCaseName, resultStrWriter, elemTestResult);
+      		   
+      		    if (result1) {
+      			   return;  
+      		    }
+    		}
     		
     		boolean isXslMessageTest = false;
     		String xslMessageResultPrefixStr = null;
@@ -928,11 +937,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   			    			    			    			    			
     		if (SERIALIZATION_MATCHES.equals(expectedNodeKindName)) { 
     			String alsoCorrectResultStr = null;
-    			// This needs to have an improved test case implementation
     			
     			if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && 
-    					                                                            ("doe-0405".equals(xslTestCaseName) || "doe-0406".equals(xslTestCaseName) 
-    							                                                                                     || "doe-0407".equals(xslTestCaseName))) {
+    					                                                                   ("doe-0405".equals(xslTestCaseName) || "doe-0406".equals(xslTestCaseName) 
+    							                                                                                               || "doe-0407".equals(xslTestCaseName))) {
     				alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out xmlns=\"http://www.w3.org/1999/xhtml\">&lt;p&gt;&amp;nbsp;&lt;/p&gt;</out>";
     			}
 
@@ -1112,7 +1120,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
     					String xmlHtmlStr1 = null;
     					
-    					if ("true".equals(ignorePrefixesStr)) {
+    					if (TRUE.equals(ignorePrefixesStr)) {
     						Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
     						
     						StringWriter strWriter = new StringWriter();
@@ -1137,7 +1145,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     					String xmlHtmlStr2 = null;
     					
-    					if ("true".equals(ignorePrefixesStr)) {
+    					if (TRUE.equals(ignorePrefixesStr)) {
     						Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
     						
     						StringWriter strWriter = new StringWriter();
@@ -1186,8 +1194,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 
     				if (nodeListLength1 > 0) {
     					String alsoCorrectResultStr = null;
-    					
-    					// This needs to have an improved test case implementation    					
+    					   					
     					if (m_xslTransformTestSetFilePath.contains("attr/disable-output-escaping/") && "doe-0201".equals(xslTestCaseName)) {
     						alsoCorrectResultStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><out><expandtext><count>3</count><test1/></expandtext>\r\n"
 																		    								+ "    \r\n"
@@ -1231,9 +1238,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					boolean isTestCasePass = false;
 
     					org.xml.sax.InputSource inpSrc1 = new org.xml.sax.InputSource(new StringReader(resultStrWriter.toString())); 
+    					
     					Document document1 = m_xmlDocumentBuilder.parse(inpSrc1);
+    					
     					org.xml.sax.InputSource inpSrc2 = new org.xml.sax.InputSource(new StringReader(expectedResultStr)); 
+    					
     					Document document2 = m_xmlDocumentBuilder.parse(inpSrc2);
+    					
     					String string1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document1);
     					String string2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(document2);
 
@@ -1514,7 +1525,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	TransformerFactory xslTransformerFactory = TransformerFactory.newInstance();
             	String xmlHtmlStr1 = null;
             	
-            	if ("true".equals(ignorePrefixesStr)) {
+            	if (TRUE.equals(ignorePrefixesStr)) {
             		Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
             		
             		StringWriter strWriter = new StringWriter();
@@ -1539,7 +1550,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             	
             	String xmlHtmlStr2 = null;
             	
-            	if ("true".equals(ignorePrefixesStr)) {
+            	if (TRUE.equals(ignorePrefixesStr)) {
             		Transformer transformer2 = xslTransformerFactory.newTransformer(new StreamSource(XSL_TRANSFORM_NORMALIZE_NS_FILE_PATH));
             		
             		StringWriter strWriter = new StringWriter();
@@ -1597,7 +1608,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
             			elemTestResult.setAttribute(STATUS, FAIL);
             		}
             	}
-            	else if (isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {            		
+            	else if (isTwoXmlHtmlStrEqual(xmlHtmlStr1, xmlHtmlStr2)) {           		
             		elemTestResult.setAttribute(STATUS, PASS);
             	}
             	else {            		            		
@@ -1745,7 +1756,6 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * An W3C XSL test case implementation, when expected output is available as 
      * one or more XPath expression strings that need to verify test case's actual
      * output. 
-     * @param trfWarningList 
      */
 	private void testCaseExpectedAssertXPathList(Element elemTestResult, Node nodeExpected, 
 			                                                             StringWriter resultStrWriter, List<String> trfWarningList)
@@ -2621,8 +2631,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	}
 	
 	/**
-	 * Method definition, to handle Xalan-J deviant test case results
-	 * for few W3C XSLT 3.0 maps test cases.
+	 * Method definition, to handle Xalan-J XSL 3 deviant test case 
+	 * results, for few W3C XSLT 3.0 'maps' test cases.
 	 * 
 	 * @param xslTestCaseName                       String value for XSL test case name
 	 * @param resultStrWriter                       java.io.StringWriter object instance,
@@ -2657,7 +2667,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			/**
 			 * The following W3C XSLT 3.0 test cases, use an XML namespace
 			 * http://www.w3.org/2011/xpath-functions/map from previous XSL 3
-			 * specification drafts, as mentioned within W3C XSL 3 'map' test set.
+			 * specification drafts, as mentioned within W3C XSLT 3.0 'maps' 
+			 * test set.
 			 */
 			
 			String[] strArray1 = new String[] { "maps-906a", "maps-906b", "maps-906c", "maps-906d", "maps-906e", "maps-906f", "maps-906g",
@@ -2672,9 +2683,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 			}
 			else {
 			   /**
-			    * The following W3C XSLT 3.0 test cases, use XSL syntax that has been
-			    * valid within XSL 3 previous specification drafts, but not valid within
-			    * XSLT 3.0 specification, as mentioned within W3C XSL 3 'map' test set.
+			    * The following W3C XSLT 3.0 test cases, use XSL language syntax
+			    * that has been valid within XSL 3 previous specification drafts, 
+			    * but not valid within XSLT 3.0 specification, as mentioned within 
+			    * W3C XSLT 3.0 'maps' test set.
 			    */
 				
 			   String[] strArray2 = new String[] { "maps-901a", "maps-901b", "maps-901c", "maps-901d", "maps-901e", "maps-902a", "maps-902b",
@@ -2695,8 +2707,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 	}
 	
 	/**
-	 * Method definition, to handle Xalan-J deviant test case results
-	 * for few W3C XSLT 3.0 namespace test cases.
+	 * Method definition, to handle Xalan-J XSL 3 deviant test case 
+	 * results, for few W3C XSLT 3.0 namespace test cases.
 	 * 
 	 * @param xslTestCaseName                       String value for XSL test case name
 	 * @param resultStrWriter                       java.io.StringWriter object instance,
@@ -2740,6 +2752,80 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 		   }
 		   
 		   result = true;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Method definition, to handle Xalan-J XSL 3 test case results, 
+	 * for few W3C XSLT 3.0 whitespace test cases.
+	 * 
+	 * @param xslTestCaseName                       String value for XSL test case name
+	 * @param resultStrWriter                       java.io.StringWriter object instance,
+	 *                                              having XSL transformation result string 
+	 *                                              value.
+	 * @param elemTestResult                        Xalan-J XSL 3 current test suite result node
+	 * @return                                      Boolean value true or false.
+	 */
+	private boolean handleXslWhitespaceTest1(String xslTestCaseName, StringWriter resultStrWriter, Element elemTestResult) {
+        
+		boolean result = false;
+		
+		String str1 = resultStrWriter.toString();
+		
+		int size1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>".length();
+		
+		if ("whitespace-019".equals(xslTestCaseName)) {
+			// This XSL test case expected result has property,
+			// well-formed="no".
+			
+			String textResultStr = (str1.substring(size1)).trim(); 
+
+			boolean isTestCasePass = "x".equals(textResultStr);
+
+			if (isTestCasePass) {			   
+				elemTestResult.setAttribute(STATUS, PASS);
+			}
+			else {
+				elemTestResult.setAttribute(STATUS, FAIL); 
+			}
+
+			result = true;
+		}		
+		else if ("whitespace-022".equals(xslTestCaseName)) {
+		   // This XSL test case expected result has property,
+		   // well-formed="no".
+			
+		   String textResultStr = (str1.substring(size1)).trim();
+			
+		   boolean isTestCasePass = "test".equals(textResultStr);
+		   
+		   if (isTestCasePass) {			   
+			  elemTestResult.setAttribute(STATUS, PASS);
+		   }
+		   else {
+			  elemTestResult.setAttribute(STATUS, FAIL); 
+		   }
+		   
+		   result = true;
+		}
+		else if ("whitespace-023".equals(xslTestCaseName)) {
+			// This XSL test case expected result has property,
+			// well-formed="no".
+			
+			String textResultStr = (str1.substring(size1)).trim();
+			
+			boolean isTestCasePass = "a".equals(textResultStr);
+
+			if (isTestCasePass) {
+				elemTestResult.setAttribute(STATUS, PASS);
+			}
+			else {
+				elemTestResult.setAttribute(STATUS, FAIL); 
+			}
+
+			result = true;
 		}
 		
 		return result;

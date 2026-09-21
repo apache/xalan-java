@@ -855,9 +855,15 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
 	}
 	
 	/**
-     * Method definition, to check whether two XML or HTML
-     * string values represent equal document content.
-     */
+	 * Method definition, to check whether two XML, HTML
+     * string values represent equal markup document content.
+     * 
+	 * @param str1                            The actual XML, HTML document 
+	 *                                        result string value.
+	 * @param str2                            The expected XML, HTML document 
+	 *                                        string value.
+	 * @return
+	 */
     protected boolean isTwoXmlHtmlStrEqual(String str1, String str2) {
         
     	boolean result = true;
@@ -888,12 +894,12 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
         			  }
         			  
         			  String strTrim2 = (strArr2[idx2]).trim();
-        			  
+
         			  if (!strTrim1.equals(strTrim2)) {
         				  result = false;
-        				  
+
         				  break;
-        			  }
+        			  }         			  
         		  }
         	   }
         	   

@@ -510,7 +510,7 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  boolean result = false;
 
 	  if (this instanceof XNumber) {
-         XObject xObj = XslTransformEvaluationHelper.getXdmNumericValueFromXNumber((XNumber)this);
+         XObject xObj = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)this);
          
          if (xObj instanceof XSDouble) {
         	Double dbl = ((XSDouble)xObj).doubleValue();

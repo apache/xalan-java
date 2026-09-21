@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-19T10:42:52Z" fail="10" name="whitespace" pass="18" run="28" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-21T16:54:10Z" fail="7" name="whitespace" pass="21" run="28" skipped="0" statusUnknown="0">
    <testResult status="fail" testName="whitespace-001"/>
    <testResult status="pass" testName="whitespace-002"/>
    <testResult status="fail" testName="whitespace-003"/>
@@ -17,17 +17,11 @@
    <testResult status="pass" testName="whitespace-016"/>
    <testResult status="pass" testName="whitespace-017"/>
    <testResult status="pass" testName="whitespace-018"/>
-   <testResult status="fail" testName="whitespace-019">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="whitespace-019"/>
    <testResult status="pass" testName="whitespace-020"/>
    <testResult status="pass" testName="whitespace-021"/>
-   <testResult status="fail" testName="whitespace-022">
-      <outResult/>
-   </testResult>
-   <testResult status="fail" testName="whitespace-023">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="whitespace-022"/>
+   <testResult status="pass" testName="whitespace-023"/>
    <testResult status="pass" testName="whitespace-024"/>
    <testResult status="pass" testName="whitespace-025"/>
    <testResult status="pass" testName="whitespace-026"/>

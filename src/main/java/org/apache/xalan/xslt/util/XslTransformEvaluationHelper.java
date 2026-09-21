@@ -1230,14 +1230,16 @@ public class XslTransformEvaluationHelper {
 	}
 	
 	/**
-	 * Method definition, to get an xdm numeric value,
-	 * from the supplied XNumber object instance. 
+	 * Method definition, to get the supplied XNumber object's
+	 * normalized value, which could be with type xs:decimal,
+	 * xs:double, xs:integer, or XNumber itself. 
 	 * 
 	 * @param xNumber                   The supplied XNumber object 
 	 *                                  instance. 
-	 * @return                          An xdm numeric value
+	 * @return                          The supplied XNumber object 
+	 *                                  instance's normalized value.
 	 */
-	public static XObject getXdmNumericValueFromXNumber(XNumber xNumber) {
+	public static XObject getXNumberNormalizedValue(XNumber xNumber) {
 
 		XObject result = null;
 

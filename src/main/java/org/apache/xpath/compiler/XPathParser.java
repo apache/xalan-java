@@ -365,6 +365,7 @@ public class XPathParser
   private boolean m_op_group_parse = false;
   
   private String m_func_name = null;
+  private String m_func_namespace = null;
   
   static List<String> m_unary_lookup_list = new ArrayList<String>();
   
@@ -5058,12 +5059,31 @@ public class XPathParser
                                 
         if (!m_token.contains(":") && m_token.contains("#") && xslFunctionService.isFuncArityWellFormed(m_token)) {
            error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "+", "second" });	
-        }                
+        }
         
-        insertOp(addPos, 2, OpCodes.OP_PLUS);
+        boolean isArithmeticPlus = true;
+        
+        if (tokenIs('-')) {
+           // An arithmetic '+' followed by '-', results with 
+           // arithmetic '-'.
+        	                      
+           insertOp(addPos, 2, OpCodes.OP_MINUS);
+           
+           nextToken();
+           
+           isArithmeticPlus = false;
+        }
+        else {
+           insertOp(addPos, 2, OpCodes.OP_PLUS);
+        }
         
         if (tokenIs('(')) {
-            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_PLUS);
+        	if (isArithmeticPlus) {
+               addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_PLUS);
+        	}
+        	else {
+        	   addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_MINUS);
+        	}
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -5083,10 +5103,29 @@ public class XPathParser
            error(XPATHErrorResources.ER_CANNOT_APPLY_FUNC, new Object[]{ "-", "second" });	
         }
         
-        insertOp(addPos, 2, OpCodes.OP_MINUS);
+        boolean isArithmeticPlus = false;
+        
+        if (tokenIs('-')) {
+           // An arithmetic '-' followed by '-', results with 
+           // arithmetic '+'.
+        	
+           insertOp(addPos, 2, OpCodes.OP_PLUS);
+           
+           nextToken();
+           
+           isArithmeticPlus = true;
+        }
+        else {
+           insertOp(addPos, 2, OpCodes.OP_MINUS);
+        }
         
         if (tokenIs('(')) {
-            addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_MINUS);
+        	if (!isArithmeticPlus) {
+               addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_MINUS);
+        	}
+        	else {
+        	   addPos = xpathParseRhsSequenceOperand(addPos, OpCodes.OP_PLUS);
+        	}
         }
         else {
         	int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
@@ -6084,7 +6123,8 @@ public class XPathParser
         	}
         	
         	m_func_name = null;
-        }
+        	m_func_namespace = null;
+        }                
     }
     else
     {
@@ -7084,7 +7124,7 @@ public class XPathParser
     }
     else if ((m_tokenChar == '\'') || (m_tokenChar == '"') || isStringNumericLiteral(m_token)) {
        OrExpr();
-    }     
+    }    
     else {       
        TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
        
@@ -7231,13 +7271,15 @@ public class XPathParser
 
 			  int funcTok = getFunctionToken(m_token, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
 
-			  if (-1 == funcTok)
+			  if (funcTok == -1)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
+						  											 new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
 			  }
 			  
-			  m_func_name = m_token; 
+			  m_func_name = m_token;
+			  
+			  m_func_namespace = XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI; 
 
 			  switch (funcTok)
 			  {
@@ -7263,11 +7305,15 @@ public class XPathParser
 
 			  int funcTok = getFunctionToken(m_token, XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
 
-			  if (-1 == funcTok)
+			  if (funcTok == -1)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
-			  }         
+						  											 new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }
+			  
+			  m_func_name = m_token;
+			  
+			  m_func_namespace = XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI;
 
 			  switch (funcTok)
 			  {
@@ -7293,11 +7339,15 @@ public class XPathParser
 
 			  int funcTok = getFunctionToken(m_token, XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
 
-			  if (-1 == funcTok)
+			  if (funcTok == -1)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
-			  }         
+						                                             new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }
+			  
+              m_func_name = m_token;
+			  
+			  m_func_namespace = XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI;
 
 			  switch (funcTok)
 			  {
@@ -7323,11 +7373,15 @@ public class XPathParser
 
 			  int funcTok = getFunctionToken(m_token, XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
 
-			  if (-1 == funcTok)
+			  if (funcTok == -1)
 			  {
 				  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-						  new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
-			  }         
+						                                             new Object[] {"{" + XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
+			  }
+			  
+              m_func_name = m_token;
+			  
+			  m_func_namespace = XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI;
 
 			  switch (funcTok)
 			  {
@@ -7351,11 +7405,15 @@ public class XPathParser
 			  // ns0:func(..) and Xalan-J extension functions.
 			  
 			  appendOp(4, OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION);
+			  
+			  m_func_namespace = m_token;
 
 			  m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH + 1, m_queueMark - 1);
 
 			  nextToken();
 			  consumeExpected(':');
+			  
+			  m_func_name = m_token;
 
 			  m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH + 2, m_queueMark - 1);
 
@@ -7366,13 +7424,15 @@ public class XPathParser
 	  {
 		  int funcTok = getFunctionToken(m_token, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
 
-		  if (-1 == funcTok)
+		  if (funcTok == -1)
 		  {
 			  error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-					  new Object[]{"{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
+					                                             new Object[]{"{" + XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
 		  }
 		  
-		  m_func_name = m_token; 
+		  m_func_name = m_token;
+		  
+		  m_func_namespace = XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI;
 
 		  switch (funcTok)
 		  {		  

@@ -102,6 +102,7 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
 
 	   for (int idx=0; idx < codePointsArr.length; idx++) {
 		   long codepointVal = codePointsArr[idx]; 
+		   
 		   rSeq.add(new XSInteger(BigInteger.valueOf(codepointVal))); 
 	   }
 

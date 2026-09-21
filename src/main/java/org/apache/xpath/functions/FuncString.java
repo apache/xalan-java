@@ -26,12 +26,16 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 
@@ -102,7 +106,19 @@ public class FuncString extends FunctionDef1Arg
 		   throw new javax.xml.transform.TransformerException("XPDY0002 : An XPath 3.1 function 'string' is called "
 		   		                                                                           + "without an argument, and an "
 		   		                                                                           + "XPath context item is absent.", srcLocator);
-		}		
+		}
+		
+		if (m_arg0 == null) {
+		   XObject xObj = xctxt.getXPath3ContextItem();
+		   
+		   if (xObj != null) {
+			  String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+			  
+              result = new XSString(str1);
+			  
+			  return result;
+		   }
+		}
 						
 		if (xObj0 instanceof XSQName) {
 		   XSQName xsQName = (XSQName)xObj0;
@@ -128,6 +144,70 @@ public class FuncString extends FunctionDef1Arg
 		   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'string' is called "
                                                                                             + "with an argument whose cardinality is "
                                                                                             + "greater than one.", srcLocator);
+		}
+				
+		if (xObj0 instanceof XNumber) {
+		   XNumber xNumber = (XNumber)xObj0;
+		   
+		   XObject xObj = XslTransformEvaluationHelper.getXNumberNormalizedValue(xNumber);
+		   
+		   String str1 = null;
+		   
+		   if (!((xObj instanceof XSDecimal) || (xObj instanceof XSDouble) || (xObj instanceof XSInteger))) {
+			  double dbl = xNumber.num();
+			  
+			  str1 = dbl + "";
+		   }
+		   else {
+			  str1 = XslTransformEvaluationHelper.getStrVal(xObj);  
+		   }
+		   
+		   if (str1.endsWith(".0")) {
+			  str1 = str1.substring(0, str1.length() - 2); 
+		   }
+		   
+		   if (str1.contains("E-")) {
+			  int idx = str1.indexOf("E-");
+			  String str2 = str1.substring(idx + 2);
+			  int int1 = Integer.valueOf(str2);
+			  
+			  double dbl = Double.valueOf(str1);
+			  
+			  if (int1 < 7) {
+				 str1 = String.format("%." + int1 + "f", dbl);
+			  }
+		   }		   
+		   
+		   result = new XSString(str1);
+		   
+		   return result;
+		}
+		else if (xObj0 instanceof XSDouble) {			
+			XSDouble xsDouble = (XSDouble)xObj0;
+
+			double dbl = xsDouble.doubleValue();
+			
+			String str1 = dbl + "";
+			
+			if (str1.endsWith(".0")) {
+				str1 = str1.substring(0, str1.length() - 2); 
+			}
+			
+			if (str1.contains("E-")) {
+				int idx = str1.indexOf("E-");
+				String str2 = str1.substring(idx + 2);
+				int int1 = Integer.valueOf(str2);
+
+				dbl = Double.valueOf(str1);
+
+				if (int1 < 7) {
+				   str1 = String.format("%." + int1 + "f", dbl);
+				}
+			}			
+
+			result = new XSString(str1);
+
+			return result;
 		}
 
 		XMLString xmlStr1 = getArg0AsString(xctxt);

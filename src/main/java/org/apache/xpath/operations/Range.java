@@ -115,11 +115,11 @@ public class Range extends XPathOperator
     	}
 
     	if (xObj0 instanceof XNumber) {
-    		xObj0 = XslTransformEvaluationHelper.getXdmNumericValueFromXNumber((XNumber)xObj0);
+    		xObj0 = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)xObj0);
     	}
 
     	if (xObj1 instanceof XNumber) {
-    		xObj1 = XslTransformEvaluationHelper.getXdmNumericValueFromXNumber((XNumber)xObj1);
+    		xObj1 = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)xObj1);
     	}
     	
     	BigInteger lBigInt = null;
