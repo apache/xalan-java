@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-17T16:55:04Z" fail="2" name="fn-dateTime" pass="50" run="52" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-22T10:38:48Z" fail="1" name="fn-dateTime" pass="51" run="52" statusUnknown="0">
    <testResult status="pass" testName="fn-dateTime-1"/>
    <testResult status="pass" testName="fn-dateTime-2"/>
    <testResult status="pass" testName="fn-dateTime-3"/>
@@ -49,6 +49,6 @@
    <testResult status="pass" testName="K-DateTimeFunc-17"/>
    <testResult status="pass" testName="K-DateTimeFunc-18"/>
    <testResult status="pass" testName="K2-DateTimeFunc-1"/>
-   <testResult status="fail" testName="cbcl-dateTime-001"/>
+   <testResult status="pass" testName="cbcl-dateTime-001"/>
    <testResult status="fail" testName="cbcl-dateTime-002"/>
 </testrun>

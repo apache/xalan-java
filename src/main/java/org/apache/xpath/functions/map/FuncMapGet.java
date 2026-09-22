@@ -114,6 +114,7 @@ public class FuncMapGet extends Function2Args {
 	       }
 	       
 	       int nextNode = iter1.nextNode();
+	       
 	       if (nextNode == DTM.NULL) {
 	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its second "
 																													   + "argument as an empty "
@@ -155,14 +156,22 @@ public class FuncMapGet extends Function2Args {
 	    
 	    if (arg1Obj instanceof XSDouble) {
 	    	XSDouble xsDouble1 = (XSDouble)arg1Obj;
+	    	
 	    	if (xsDouble1.nan()) {
 	    	   Set<Map.Entry<XObject,XObject>> entrySet1 = normalizedMap1.entrySet();
 	    	   Iterator<Map.Entry<XObject,XObject>> iter1 = entrySet1.iterator();
+	    	   
 	    	   while (iter1.hasNext()) {
 	    		  Entry<XObject,XObject> entry1 = iter1.next();
 	    		  XObject key1 = entry1.getKey();
 	    		  XObject value1 = entry1.getValue();
+	    		  
 	    		  if ((key1 instanceof XSDouble) && ((XSDouble)key1).nan()) {
+	    			  result = value1;
+
+	    			  return result;
+	    		  }
+	    		  else if ((key1 instanceof XSFloat) && ((XSFloat)key1).nan()) {
 	    			  result = value1;
 
 	    			  return result;
@@ -172,14 +181,22 @@ public class FuncMapGet extends Function2Args {
 	    }
 	    else if (arg1Obj instanceof XSFloat) {
 	    	XSFloat xsFloat1 = (XSFloat)arg1Obj;
+	    	
 	    	if (xsFloat1.nan()) {
 	    	   Set<Map.Entry<XObject,XObject>> entrySet1 = normalizedMap1.entrySet();
 	    	   Iterator<Map.Entry<XObject,XObject>> iter1 = entrySet1.iterator();
+	    	   
 	    	   while (iter1.hasNext()) {
 	    		  Entry<XObject,XObject> entry1 = iter1.next();
 	    		  XObject key1 = entry1.getKey();
 	    		  XObject value1 = entry1.getValue();
+	    		  
 	    		  if ((key1 instanceof XSFloat) && ((XSFloat)key1).nan()) {
+	    			  result = value1;
+
+	    			  return result;
+	    		  }
+	    		  else if ((key1 instanceof XSDouble) && ((XSDouble)key1).nan()) {
 	    			  result = value1;
 
 	    			  return result;
@@ -193,13 +210,16 @@ public class FuncMapGet extends Function2Args {
 
 	    	Set<Map.Entry<XObject,XObject>> entrySet1 = normalizedMap1.entrySet();
 	    	Iterator<Map.Entry<XObject,XObject>> iter1 = entrySet1.iterator();
+	    	
 	    	while (iter1.hasNext()) {
 	    		Entry<XObject,XObject> entry1 = iter1.next();
 	    		XObject key1 = entry1.getKey();
 	    		XObject value1 = entry1.getValue();
+	    		
 	    		if ((key1 instanceof XSDayTimeDuration) || (key1 instanceof XSYearMonthDuration) 
                                                         || (key1 instanceof XSDuration)) {	    				    			
 	    			XSDuration xsDurationObj2 = (XSDuration)key1;
+	    			
 	    			if (xsDurationObj2.equals(xsDurationObj1)) {
 	    				result = value1;
 

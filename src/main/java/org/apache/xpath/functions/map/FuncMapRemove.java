@@ -91,6 +91,7 @@ public class FuncMapRemove extends Function2Args {
 	    	    
 	    XObject arg1Obj = null;
 	    ResultSequence inpSeq1 = null;
+	    
 	    if (m_arg1 instanceof Variable) {
 	    	arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	    	
@@ -106,15 +107,20 @@ public class FuncMapRemove extends Function2Args {
 	    
 	    Map<XObject, XObject> nativeMapArg0 = arg0Map.getNativeMap();
 	    
-	    Set<XObject> keysInMap = nativeMapArg0.keySet();
-	    Iterator<XObject> iter = keysInMap.iterator();	    
+	    Set<XObject> mapKeySet1 = nativeMapArg0.keySet();
+	    Iterator<XObject> iter = mapKeySet1.iterator();	    
+	    
 	    String xpathDefaultCollation = xctxt.getDefaultCollation();
+	    
 	    XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+	    
 	    while (iter.hasNext()) {
-	    	XObject key = iter.next();
-	    	if (!XslTransformEvaluationHelper.contains(inpSeq1, key, xpathDefaultCollation, xpathCollationSupport, xctxt)) {
-	    	   XObject xObj = nativeMapArg0.get(key);
-	    	   nativeResultMap.put(key, xObj);
+	    	XObject mapKey1 = iter.next();
+	    	
+	    	if (!XslTransformEvaluationHelper.contains(inpSeq1, mapKey1, xpathDefaultCollation, xpathCollationSupport, xctxt)) {
+	    	   XObject xObj = nativeMapArg0.get(mapKey1);
+	    	   
+	    	   nativeResultMap.put(mapKey1, xObj);
 	    	}
 	    }
 	    

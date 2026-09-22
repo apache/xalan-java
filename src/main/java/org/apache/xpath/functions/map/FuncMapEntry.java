@@ -68,6 +68,7 @@ public class FuncMapEntry extends Function2Args {
 	    }
 	    
 	    XPathMap resultMap = new XPathMap();
+	    
 	    resultMap.put(resultMapEntryKey, resultMapEntryVal);
 	    
 	    result = resultMap;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-14T10:22:46Z" fail="28" name="fn-sum" pass="189" run="217" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-22T10:38:16Z" fail="25" name="fn-sum" pass="192" run="217" statusUnknown="0">
    <testResult status="pass" testName="fn-sumint1args-1"/>
    <testResult status="pass" testName="fn-sumint1args-2"/>
    <testResult status="pass" testName="fn-sumint1args-3"/>
@@ -176,14 +176,14 @@
    <testResult status="pass" testName="K-SeqSUMFunc-10"/>
    <testResult status="fail" testName="K-SeqSUMFunc-11"/>
    <testResult status="fail" testName="K-SeqSUMFunc-12"/>
-   <testResult status="fail" testName="K-SeqSUMFunc-15"/>
-   <testResult status="fail" testName="K-SeqSUMFunc-16"/>
+   <testResult status="pass" testName="K-SeqSUMFunc-15"/>
+   <testResult status="pass" testName="K-SeqSUMFunc-16"/>
    <testResult status="fail" testName="K-SeqSUMFunc-17"/>
    <testResult status="pass" testName="K-SeqSUMFunc-18"/>
    <testResult status="fail" testName="K-SeqSUMFunc-19"/>
    <testResult status="pass" testName="K-SeqSUMFunc-20"/>
    <testResult status="pass" testName="K-SeqSUMFunc-21"/>
-   <testResult status="fail" testName="K-SeqSUMFunc-22"/>
+   <testResult status="pass" testName="K-SeqSUMFunc-22"/>
    <testResult status="fail" testName="K-SeqSUMFunc-23"/>
    <testResult status="fail" testName="K-SeqSUMFunc-24"/>
    <testResult status="fail" testName="K-SeqSUMFunc-25"/>

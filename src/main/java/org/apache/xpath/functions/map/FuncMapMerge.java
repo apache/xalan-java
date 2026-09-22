@@ -107,16 +107,19 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	// For this case, we merge the maps with default value of options, i.e "use-first"
 	    	ResultSequence rSeq = null;
 	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();
+	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
+	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -126,11 +129,13 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
+	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -138,19 +143,22 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    }
 	    
 	    if (m_arg1 == null || OPTION_USE_FIRST.equals(getOptionsStrVal(m_arg1, xctxt)) || 
-	    		            OPTION_USE_ANY.equals(getOptionsStrVal(m_arg1, xctxt))) {
+	    		              OPTION_USE_ANY.equals(getOptionsStrVal(m_arg1, xctxt))) {
 	    	ResultSequence rSeq = null;	    	
 	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();
+	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}	    		
+	    		}
+	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -160,11 +168,13 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}	    		
+	    		}	
+	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -173,16 +183,19 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    else if (OPTION_USE_LAST.equals(getOptionsStrVal(m_arg1, xctxt))) {
 	    	ResultSequence rSeq = null;	    	
 	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();	    	
+	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = 0; idx < size1; idx++) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}	    		
+	    		}
+	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -192,11 +205,13 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = 0; idx < size1; idx++) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}	    		
+	    		}
+	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -214,6 +229,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = 0; idx < size1; idx++) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
@@ -225,6 +241,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    		rSeq = (ResultSequence)xObj;
 	    		
 	    		int size1 = rSeq.size();
+	    		
 	    		for (int idx = 0; idx < size1; idx++) {
 	    			XPathMap map = (XPathMap)(rSeq.item(idx));
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
@@ -234,13 +251,16 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	
 	    	Iterator<XObject> iter = distinctMapKeys.iterator();	    	
 	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();	    		    
+	    	
 	    	while (iter.hasNext()) {
 	    	   XObject key = iter.next();
 	    	   ResultSequence concatinatedValues = new ResultSequence();
 	    	   int size1 = rSeq.size();
+	    	   
 	    	   for (int idx = 0; idx < size1; idx++) {
 	    		  XPathMap map = (XPathMap)(rSeq.item(idx));
 	    		  XObject mapEntryValue = map.get(key);
+	    		  
 	    		  if (mapEntryValue != null) {
 	    		     concatinatedValues.add(mapEntryValue);
 	    		  }
@@ -248,6 +268,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	   
 	    	   nativeResultMap.put(key, concatinatedValues);	    	   
 	    	}
+	    	
 	    	XPathMap resultMap = new XPathMap();
 	    	resultMap.setNativeMap(nativeResultMap);
 	    	result = resultMap;
@@ -319,8 +340,10 @@ public class FuncMapMerge extends FunctionMultiArgs {
 		if (xObj instanceof ResultSequence) {
 			ResultSequence rSeq = (ResultSequence)xObj;
 			int size1 = rSeq.size();
+			
 			for (int idx = 0; idx < size1; idx++) {
 				XObject obj1 = rSeq.item(idx);
+				
 				if (!(obj1 instanceof XPathMap)) {
 					throw new TransformerException("FOAP0001 : Within map:merge function's first argument sequence, "
 																									+ "an xdm item at position " + (idx + 1) + " is "
@@ -363,6 +386,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 		}
 		else {
 			XObject mapEntryValue = optionsMap.get(new XSString(DUPLICATES_KEY_NAME));
+			
 			if (mapEntryValue == null) {
 				throw new TransformerException("FOAP0001 : The map:merge function's 2nd argument if present, should be "
 						                                     + "a map having only 1 entry with key named '" + DUPLICATES_KEY_NAME + 
@@ -371,8 +395,10 @@ public class FuncMapMerge extends FunctionMultiArgs {
 			else {
 				boolean isOptionsValueOk = false;
 				String mapEntryStrVal = XslTransformEvaluationHelper.getStrVal(mapEntryValue);
+				
 				for (int idx = 0; idx < OPTIONS_ARR.length; idx++) {
 					String allowedVal = OPTIONS_ARR[idx];
+					
 					if (allowedVal.equals(mapEntryStrVal)) {
 						isOptionsValueOk = true;
 						break;

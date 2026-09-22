@@ -704,16 +704,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										try {
 											// Configuring, XPath parse evaluation timeout
 											
-											long xpathExprEvalTimeOut = 100;
-											
-											if (m_xslTransformTestSetFilePath.contains("matches.xml") || 
-																			           m_xslTransformTestSetFilePath.contains("tokenize.xml") || 
-																					   m_xslTransformTestSetFilePath.contains("replace.xml")) {
-												// XPath parse timeout configuration for, functions fn:matches, fn:tokenize, fn:replace
-												// which use regex.											
-												
-												xpathExprEvalTimeOut = 15;
-											}
+											long xpathExprEvalTimeOut = 15;
 
 											xpathObj = future1.get(xpathExprEvalTimeOut, TimeUnit.SECONDS);
 										} 
