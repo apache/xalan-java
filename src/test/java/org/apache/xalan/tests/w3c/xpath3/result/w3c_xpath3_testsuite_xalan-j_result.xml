@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-09-22T10:39:21Z" desc="W3C XPath 3.1 test suite results" fail="886" pass="8566" run="9456" skipped="19" success="90.59%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-09-25T15:59:46Z" desc="W3C XPath 3.1 test suite results" fail="918" pass="8584" run="9502" skipped="20" success="90.34%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -15,7 +15,7 @@
     <fn-adjust-date-to-timezone fail="2" pass="39" run="41" success="95.12%"/>
     <fn-adjust-dateTime-to-timezone fail="2" pass="46" run="48" success="95.83%"/>
     <fn-adjust-time-to-timezone fail="2" pass="40" run="42" success="95.24%"/>
-    <fn-analyze-string fail="6" pass="16" run="26" skipped="4" success="61.54%"/>
+    <fn-analyze-string fail="10" pass="16" run="26" skipped="4" success="61.54%"/>
     <fn-avg fail="16" pass="215" run="231" success="93.07%"/>
     <fn-boolean fail="7" pass="131" run="138" success="94.93%"/>
     <fn-ceiling fail="1" pass="86" run="87" success="98.85%"/>
@@ -68,14 +68,16 @@
     <fn-translate fail="3" pass="41" run="44" success="93.18%"/>
     <fn-true fail="1" pass="24" run="25" success="96.0%"/>
     <fn-upper-case fail="0" pass="29" run="29" success="100.0%"/>
-    <fn-zero-or-one fail="0" pass="49" run="49" success="100.0%"/>
+    <fn-zero-or-one fail="1" pass="48" run="49" success="97.96%"/>
   </fn>
   <map>
     <map-contains fail="1" pass="25" run="26" success="96.15%"/>
-    <map-for-each fail="0" pass="16" run="16" success="100.0%"/>
-    <map-get fail="2" pass="30" run="32" success="93.75%"/>
-    <map-keys fail="0" pass="14" run="14" success="100.0%"/>
-    <map-remove fail="7" pass="11" run="18" success="61.11%"/>
+    <map-for-each fail="2" pass="14" run="16" success="87.5%"/>
+    <map-get fail="3" pass="28" run="31" success="90.32%"/>
+    <map-keys fail="1" pass="13" run="14" success="92.86%"/>
+    <map-merge fail="14" pass="16" run="30" skipped="1" success="53.33%"/>
+    <map-put fail="8" pass="9" run="17" success="52.94%"/>
+    <map-remove fail="8" pass="10" run="18" success="55.56%"/>
     <map-size fail="2" pass="13" run="15" success="86.67%"/>
   </map>
   <math>
@@ -175,7 +177,7 @@
     <prod-AxisStep.following fail="1" pass="20" run="21" success="95.24%"/>
     <prod-AxisStep.preceding-sibling fail="1" pass="17" run="18" success="94.44%"/>
     <prod-AxisStep.preceding fail="1" pass="16" run="17" success="94.12%"/>
-    <prod-AxisStep fail="26" pass="210" run="236" success="88.98%"/>
+    <prod-AxisStep fail="28" pass="208" run="236" success="88.14%"/>
     <prod-CastableExpr fail="148" pass="700" run="848" success="82.55%"/>
     <prod-ForClause fail="16" pass="59" run="75" success="78.67%"/>
     <prod-GeneralComp.eq fail="19" pass="100" run="119" success="84.03%"/>
@@ -187,7 +189,7 @@
     <prod-IfExpr fail="4" pass="23" run="27" success="85.19%"/>
     <prod-InlineFunctionExpr fail="5" pass="23" run="28" success="82.14%"/>
     <prod-InstanceofExpr fail="54" pass="219" run="273" success="80.22%"/>
-    <prod-LetClause fail="5" pass="18" run="23" success="78.26%"/>
+    <prod-LetClause fail="3" pass="20" run="23" success="86.96%"/>
     <prod-Literal fail="19" pass="95" run="114" success="83.33%"/>
     <prod-OrExpr fail="16" pass="313" run="329" success="95.14%"/>
     <prod-QuantifiedExpr fail="17" pass="144" run="161" success="89.44%"/>

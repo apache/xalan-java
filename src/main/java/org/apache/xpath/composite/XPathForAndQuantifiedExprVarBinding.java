@@ -30,24 +30,24 @@ package org.apache.xpath.composite;
  */
 public class XPathForAndQuantifiedExprVarBinding {
     
-    private String fVarName = null;
+    private String m_varName = null;
     
-    private String fXPathExprStr = null;
+    private String m_xPathExprStr = null;
 
     public String getVarName() {
-        return fVarName;
+        return m_varName;
     }
 
     public void setVarName(String varName) {
-        this.fVarName = varName;
+        this.m_varName = varName;
     }
 
     public String getXPathExprStr() {
-        return fXPathExprStr;
+        return m_xPathExprStr;
     }
 
     public void setXPathExprStr(String xpathExprStr) {
-        this.fXPathExprStr = xpathExprStr;
+        this.m_xPathExprStr = xpathExprStr;
     }
 
 }

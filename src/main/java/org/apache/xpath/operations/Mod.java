@@ -501,15 +501,19 @@ public class Mod extends XPathArithmeticUtil
 		  return result;
 	  }
 	  
-	  Expression leftOperandExpr = getLeftOperand();	  
-	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
-		 left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
-	  }
-	  
-      Expression rightOperandExpr = getRightOperand();	  
-	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
-		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
-	  }
+	  if (!((left instanceof XSNumericType) && (right instanceof XSNumericType))) {
+		  Expression leftOperandExpr = getLeftOperand();	  
+
+		  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
+			  left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
+		  }
+
+		  Expression rightOperandExpr = getRightOperand();	  
+
+		  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+			  right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
+		  }
+      }
 	  
 	  if (left instanceof XSDouble) {
 		  if (right instanceof XSNumericType) {

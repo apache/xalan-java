@@ -23,21 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 function array:size.
+ * for XPath 3.1 function array:get.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FunctionArraySizeTests extends W3CXPath3TestsUtil { 
+public class XPath3FnArrayGetTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/size.xml";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/get.xml";
     	
         m_resultSubFolderName = "array";
     	
-    	m_testResultFileName = "size_result.xml";
+    	m_testResultFileName = "get_result.xml";
     }
 
     @AfterClass
@@ -49,7 +49,7 @@ public class XPath3FunctionArraySizeTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFunctionArraySizeTests() {
+    public void runXslFunctionArrayGetTests() {
     	runXPathTestSetAndProduceResult();
     }
 

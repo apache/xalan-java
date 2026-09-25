@@ -27,34 +27,34 @@ package org.apache.xpath.composite;
  */
 public class XPathSequenceTypeMapTest {
 
-    private boolean fIsAnyMapTest;
+    private boolean m_isAnyMapTest;
 
-    private XPathSequenceType keySequenceTypeData;
+    private XPathSequenceType m_keySequenceTypeData;
     
-    private XPathSequenceType valueSequenceTypeData;
+    private XPathSequenceType m_valueSequenceTypeData;
 
 	public boolean isAnyMapTest() {
-		return fIsAnyMapTest;
+		return m_isAnyMapTest;
 	}
 	
 	public void setIsAnyMapTest(boolean isAnyMapTest) {
-		this.fIsAnyMapTest = isAnyMapTest;
+		this.m_isAnyMapTest = isAnyMapTest;
 	}
 
 	public XPathSequenceType getKeySequenceTypeData() {
-		return keySequenceTypeData;
+		return m_keySequenceTypeData;
 	}
 
 	public void setKeySequenceTypeData(XPathSequenceType keySequenceTypeData) {
-		this.keySequenceTypeData = keySequenceTypeData;
+		this.m_keySequenceTypeData = keySequenceTypeData;
 	}
 
 	public XPathSequenceType getValueSequenceTypeData() {
-		return valueSequenceTypeData;
+		return m_valueSequenceTypeData;
 	}
 
 	public void setValueSequenceTypeData(XPathSequenceType valueSequenceTypeData) {
-		this.valueSequenceTypeData = valueSequenceTypeData;
+		this.m_valueSequenceTypeData = valueSequenceTypeData;
 	}
 
 }

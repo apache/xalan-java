@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xpath3.array;
+package org.apache.xalan.tests.w3c.xpath3.map;
 
 import org.apache.xalan.tests.w3c.xpath3.W3CXPath3TestsUtil;
 import org.junit.AfterClass;
@@ -23,21 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 function array:head.
+ * for XPath 3.1 function map:put.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FunctionArrayHeadTests extends W3CXPath3TestsUtil { 
+public class XPath3FnMapPutTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/head.xml";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "map/put.xml";
     	
-        m_resultSubFolderName = "array";
+        m_resultSubFolderName = "map";
     	
-    	m_testResultFileName = "head_result.xml";
+    	m_testResultFileName = "put_result.xml";
     }
 
     @AfterClass
@@ -49,7 +49,7 @@ public class XPath3FunctionArrayHeadTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFunctionArrayHeadTests() {
+    public void runXslFnMapPutTests() {
     	runXPathTestSetAndProduceResult();
     }
 

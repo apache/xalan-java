@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:39:03Z" fail="15" name="param" pass="15" run="30" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-25T15:34:54Z" fail="14" name="param" pass="16" run="30" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="param-0101"/>
    <testResult status="pass" testName="param-0102"/>
    <testResult status="pass" testName="param-0103"/>
    <testResult status="pass" testName="param-0104"/>
    <testResult status="pass" testName="param-0105"/>
    <testResult status="pass" testName="param-0106"/>
-   <testResult status="fail" testName="param-0107"/>
+   <testResult status="pass" testName="param-0107"/>
    <testResult status="pass" testName="param-0108"/>
    <testResult status="pass" testName="param-0109"/>
    <testResult status="fail" testName="param-0110">
@@ -33,11 +33,16 @@
    <testResult status="pass" testName="param-0119"/>
    <testResult status="pass" testName="param-0120"/>
    <testResult status="pass" testName="param-0201"/>
-   <testResult reason="Xalan configured" status="skipped" testName="param-0301"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="param-0301"/>
    <testResult status="fail" testName="param-0401"/>
    <testResult status="fail" testName="param-0402"/>
    <testResult status="fail" testName="param-0403"/>
-   <testResult status="fail" testName="param-0501"/>
+   <testResult status="fail" testName="param-0501">
+      <outResult>
+         <errTrace>org.apache.xalan.templates.ElemParam cannot be cast to org.apache.xalan.processor.StylesheetHandler</errTrace>
+         <errTrace>XTDE0700 : No value supplied for the required parameter $quant. A value is required for the parameter because the default value is not a valid instance of the required type.</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="fail" testName="param-0601"/>
    <testResult status="fail" testName="param-0602"/>
    <testResult status="fail" testName="param-0701">

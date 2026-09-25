@@ -1009,7 +1009,7 @@ public class XSLTErrorResources extends ListResourceBundle
         "Characters are not allowed at this point in the document"},
 
     { ER_ATTR_NOT_ALLOWED,
-        "\"{0}\" attribute is not allowed on the {1} element"},
+        "XTSE0090 : \"{0}\" attribute is not allowed on the {1} element"},
     
     { ER_XPATH_COMMENT_SYNTAX1,
         "XPST0003 : An XPath 3.1 comment syntax error, within XPath expression string ''{0}''. "
@@ -1114,10 +1114,10 @@ public class XSLTErrorResources extends ListResourceBundle
      "Programmer''s assertion in RedundentExprEliminator: {0}"},
 
     { ER_NOT_ALLOWED_IN_POSITION,
-     "XTSE0010 : An XML element {0} is not allowed in this position in the stylesheet."},
+     "XTSE0010 : An XSL stylesheet does not allow, an XML element {0} at this position within the stylesheet."},
     
     { ER_XSL_FORK,
-      "XTSE0010 : [{1}, {2}] An XML element {0} is not allowed in this position in the stylesheet."},
+      "XTSE0010 : [{1}, {2}] An XSL stylesheet does not allow, an XML element {0} at this position within the stylesheet."},
 
     { ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION,
      "XTSE0010 : Non-whitespace text is not allowed in this position in the stylesheet."},

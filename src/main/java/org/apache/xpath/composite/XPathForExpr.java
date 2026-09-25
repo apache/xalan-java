@@ -45,7 +45,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * An implementation of XPath 3.1 'for' expression.
+ * Class definition, to implement an XPath 3.1 expression 'for'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,9 +55,14 @@ public class XPathForExpr extends Expression {
     
     private static final long serialVersionUID = -7289739978026057248L;
 
-    private List<XPathForAndQuantifiedExprVarBinding> m_forExprVarBindingList = new 
-                                                    ArrayList<XPathForAndQuantifiedExprVarBinding>();
+    /**
+     * An XPath 3.1 'for' expression's variable binding list.
+     */
+    private List<XPathForAndQuantifiedExprVarBinding> m_forExprVarBindingList = new ArrayList<XPathForAndQuantifiedExprVarBinding>();
     
+    /**
+     * An XPath 3.1 'for' expression's 'return' clause, XPath expression string.
+     */
     private String m_returnExprXPathStr = null;
     
     /**
@@ -80,7 +85,7 @@ public class XPathForExpr extends Expression {
 
     	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
-    	List<QName> varsAdded = new ArrayList<QName>();
+    	List<QName> xpathForVarNameList = new ArrayList<QName>();
 
     	try {
     		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
@@ -93,12 +98,16 @@ public class XPathForExpr extends Expression {
     		XPath returnExprXPath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
     		int size1 = m_forExprVarBindingList.size();
+    		
     		for (int idx = 0; idx < size1; idx++) {
     			XPathForAndQuantifiedExprVarBinding varBinding = (XPathForAndQuantifiedExprVarBinding)(m_forExprVarBindingList.get(idx));
+    			
     			String varName = varBinding.getVarName();
     			QName qName = new QName(varName);
+    			
     			m_xpathVarList.add(qName);
-    			varsAdded.add(qName);
+    			
+    			xpathForVarNameList.add(qName);
     		}
     		
     		if (m_vars != null) {
@@ -117,9 +126,10 @@ public class XPathForExpr extends Expression {
     		XslTransformEvaluationHelper.expandResultSequence(resultSeq, result);
         }
         finally {
-        	int size1 = varsAdded.size();
+        	int size1 = xpathForVarNameList.size();
+        	
         	for (int idx = 0; idx < size1; idx++) {
-        	   QName qName = varsAdded.get(idx);
+        	   QName qName = xpathForVarNameList.get(idx);
         	   m_xpathVarList.remove(qName);
         	}
         }
@@ -168,11 +178,14 @@ public class XPathForExpr extends Expression {
            
            int indexPeriod = varBindingXPathStr.indexOf('.');
            int size1 = varBindingXPathStr.length();
+           
            if (indexPeriod > 0) {
         	   String str1 = varBindingXPathStr.substring(0, indexPeriod + 1);
+        	   
         	   if (size1 > (indexPeriod + 1)) {
         		   String str2 = varBindingXPathStr.substring(indexPeriod + 1);
         		   int idx$ = str2.indexOf('$');
+        		   
         		   if (idx$ > 0) {
         			   String str3 = str2.substring(0, idx$);
         			   String str4 = str2.substring(idx$);
@@ -186,6 +199,7 @@ public class XPathForExpr extends Expression {
                                                                                                  XPath.SELECT, null, xctxt.getFunctionTable());                      
            QName varQName = new QName(varName);
            m_xpathVarList.add(varQName);
+           
            if (m_vars != null) {               
               varBindingXPath.fixupVariables(m_vars, m_globals_size);
            }
@@ -199,11 +213,12 @@ public class XPathForExpr extends Expression {
         		   LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;          
 
         		   DTMCursorIterator dtmIter = null;                     
+        		   
         		   try {
         			   dtmIter = locPathIterator.asIterator(xctxt, contextNode);
         		   }
         		   catch (Exception ex) {
-        			   // no op
+        			   // No op
         		   }
 
         		   if (dtmIter != null) {
@@ -211,7 +226,8 @@ public class XPathForExpr extends Expression {
         			   XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
 
         			   if (func != null) {            		   
-        				   int nextNode;
+        				   int nextNode = DTM.NULL;
+        				   
         				   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         				   {
         					   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
@@ -224,7 +240,8 @@ public class XPathForExpr extends Expression {
         				   }
         			   }
         			   else if (dfc != null) {            		   
-        				   int nextNode;
+        				   int nextNode = DTM.NULL;
+        				   
         				   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         				   {
         					   XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
@@ -237,7 +254,8 @@ public class XPathForExpr extends Expression {
         				   }
         			   }
         			   else {
-        				   int nextNode;
+        				   int nextNode = DTM.NULL;
+        				   
         				   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         				   {
         					   XMLNodeCursorImpl singletonXPathNode = new XMLNodeCursorImpl(nextNode, xctxt);            			   
@@ -252,7 +270,8 @@ public class XPathForExpr extends Expression {
         				   XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xsObj;
         				   dtmIter = nodeSet.iterRaw();
 
-        				   int nextNode;                              
+        				   int nextNode = DTM.NULL;                              
+        				   
         				   while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
         					   XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
         					   resultSeq2.add(node);
@@ -261,6 +280,7 @@ public class XPathForExpr extends Expression {
         			   else if (xsObj instanceof ResultSequence) {
         				   ResultSequence rSeq = (ResultSequence)xsObj;
         				   int rSeqSize = rSeq.size();
+        				   
         				   for (int idx = 0; idx < rSeqSize; idx++) {
         					   resultSeq2.add(rSeq.item(idx)); 
         				   }
@@ -277,7 +297,8 @@ public class XPathForExpr extends Expression {
         			   XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xsObj;
         			   DTMCursorIterator dtmIter = nodeSet.iterRaw();
 
-        			   int nextNode;                          
+        			   int nextNode = DTM.NULL;                          
+        			   
         			   while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
         				   XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
         				   resultSeq2.add(node);
@@ -286,6 +307,7 @@ public class XPathForExpr extends Expression {
         		   else if (xsObj instanceof ResultSequence) {
         			   ResultSequence rSeq = (ResultSequence)xsObj;
         			   int rSeqSize = rSeq.size();
+        			   
         			   for (int idx = 0; idx < rSeqSize; idx++) {
         				   resultSeq2.add(rSeq.item(idx)); 
         			   }
@@ -314,6 +336,7 @@ public class XPathForExpr extends Expression {
             */
            
            int rSeqSize = resultSeq2.size();           
+           
            for (int idx = 0; idx < rSeqSize; idx++) {
                XObject xdmItem = resultSeq2.item(idx);
                              
@@ -324,10 +347,15 @@ public class XPathForExpr extends Expression {
                // Append xdm items of sequence 'rSeq', to the final 
                // sequence object 'resultSeq'.
                int rSeqSize2 = rSeq.size();
+               
                for (int idx1 = 0; idx1 < rSeqSize2; idx1++) {
                   XObject xObj = rSeq.item(idx1);
                   result.add(xObj);    
                }
+           }
+           
+           if (rSeqSize > 0) {
+        	   forExprVarBindingMap.remove(new QName(varName));  
            }
            
            listIter.previous();
@@ -351,10 +379,11 @@ public class XPathForExpr extends Expression {
                
                DTMCursorIterator dtmIter = xNodeSet.iterRaw();               
                
-               int nextNodeDtmHandle;
+               int nextNode = DTM.NULL;
                
-               while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
-                  XMLNodeCursorImpl nodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, xctxt);
+               while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {       
+                  XMLNodeCursorImpl nodeSetItem = new XMLNodeCursorImpl(nextNode, xctxt);
+                  
                   if (nodeSetItem.isTransformedAtomicValue()) {
                 	  String strValue = nodeSetItem.str();
                 	  returnExprResultSet.add(new XSString(strValue));
@@ -368,6 +397,7 @@ public class XPathForExpr extends Expression {
             else if (retExprResultVal instanceof ResultSequence) {
                 ResultSequence rSeq = (ResultSequence)retExprResultVal;
                 int rSeqSize = rSeq.size();
+                
                 for (int idx = 0; idx < rSeqSize; idx++) {
                     returnExprResultSet.add(rSeq.item(idx)); 
                 } 
@@ -388,7 +418,7 @@ public class XPathForExpr extends Expression {
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
+       // No op
     }
     
     @Override

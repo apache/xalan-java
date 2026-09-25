@@ -1621,10 +1621,10 @@ public class XPathParser
 	  
 	  if ((m_isXPathExprBeginParse || m_isSequenceOperand) && isLiteralSequenceOrArrayBegin()) {
     	  /**
-		   * We consider XPath parse for sequence and array, in similar 
-    	   * way. These are lexically different only by virtue of sequence/array 
-    	   * expression's left-most and right-most delimiter characters.
-		   */
+		   * We consider XPath parse for sequence and array, in similar way. 
+		   * These are syntactically different only by virtue of sequence/array 
+    	   * expression's left most and right most delimiter characters.
+		   */		  		  
     	  
     	  boolean isSequenceConstructor = false;    	  
     	  
@@ -2596,7 +2596,7 @@ public class XPathParser
       }
   }
 
-  /**
+ /**
    * Method definition, for XPath parse for literal array comparison, 
    * with another xdm value using XPath general comparison operators.
    * 
@@ -5913,17 +5913,21 @@ public class XPathParser
        nextToken();
        consumeExpected('?');
        
-       StringBuffer argListNormalizedStrBuff = new StringBuffer();
+       StringBuffer strBuff = new StringBuffer();
        
        while (m_token != null) {
-    	  argListNormalizedStrBuff.append(m_token);
+    	  strBuff.append(m_token);
+    	  
     	  nextToken();
        }
        
-       argList.add(argListNormalizedStrBuff.toString());          
+       String str1 = strBuff.toString();        
+       argList.add(str1);
+       
        nextToken();
        
        XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
+       
        xpathDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
        xpathDynamicFunctionCall.setIsFromUnaryLookupEvaluation(true);
        xpathDynamicFunctionCall.setArgList(argList);
@@ -6382,7 +6386,7 @@ public class XPathParser
     	}
     	else {
     	   // An XPath function argument literal sequence, has 
-    	   // at least one xdm item.
+    	   // at least one xdm item.    		
     		
     	   TokenQueuePosition prevTokenQueuePos1 = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
     		
@@ -9877,17 +9881,23 @@ public class XPathParser
  	  
  	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
  		  // sequence type MapTest with variety AnyMapTest
+ 		  
  		  sequenceTypeMapTest = new XPathSequenceTypeMapTest();
  		  sequenceTypeMapTest.setIsAnyMapTest(true);
+ 		  
  		  nextToken();
+ 		  
  		  consumeExpected('(');
  	      consumeExpected('*');
  	      consumeExpected(')');
+ 	      
  	      xpathSequenceTypeExpr.setSequenceTypeMapTest(sequenceTypeMapTest);
  	  }
  	  else {
  		  // sequence type MapTest with variety TypedMapTest
+ 		  
  		  sequenceTypeMapTest = new XPathSequenceTypeMapTest();
+ 		  
  		  nextToken();
  		  consumeExpected('(');
  		  
@@ -9898,7 +9908,9 @@ public class XPathParser
  			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
  			    consumeExpected(':'); 			    
+ 			    
  			    populateSequenceTypeData(keySequenceTypeData); 			 
+ 			    
  			    nextToken();
  		     }
  		  }
@@ -9909,37 +9921,80 @@ public class XPathParser
  			  if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
  				  consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
  				  consumeExpected(':');
+ 				  
  				  populateSequenceTypeData(valueSequenceTypeData);    	             	         
- 				  nextToken();     	         
+ 				  
+ 				  nextToken();
+ 				  
+ 				  if (tokenIs('?')) {
+ 					 valueSequenceTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE); 					 
+ 					 consumeExpected('?');
+ 				  }
+ 				  else if (tokenIs('*')) {
+ 					 valueSequenceTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY); 					 
+ 					 consumeExpected('*');
+				  }
+ 				  else if (tokenIs('+')) {
+ 					 valueSequenceTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY); 					 
+ 					 consumeExpected('+');
+				  }
+ 				  
  				  consumeExpected(')');
  			  }
  			  else if (tokenIs("map")) {
  				  XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
+ 				  
  				  parseXdmMapSequenceType(xpathSequenceTypeExpr2, true);
+ 				  
  				  XPathSequenceTypeMapTest seqTypeMapTest2 = xpathSequenceTypeExpr2.getSequenceTypeMapTest();
+ 				  
  				  valueSequenceTypeData.setSequenceTypeMapTest(seqTypeMapTest2);
  			  }
  			  else if (tokenIs("array")) {
  				  XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();  
+ 				  
  				  parseXdmArraySequenceType(xpathSequenceTypeExpr2, true);
+ 				  
  				  XPathSequenceTypeArrayTest seqTypeArrayTest2 = xpathSequenceTypeExpr2.getSequenceTypeArrayTest();
+ 				  
  				  valueSequenceTypeData.setSequenceTypeArrayTest(seqTypeArrayTest2);
  			  }
  			  else if (tokenIs("item")) {
  				  nextToken();
+ 				  
  				  XPathSequenceTypeKindTest sequenceTypeKindTest = new XPathSequenceTypeKindTest();
+ 				  
  				  sequenceTypeKindTest.setKindVal(XPathSequenceTypeSupport.ITEM_KIND); 				   				   				  
+ 				  
  				  valueSequenceTypeData.setSequenceTypeKindTest(sequenceTypeKindTest);
+ 				  
  				  consumeExpected('(');
 				  consumeExpected(')');
+				  
+				  if (tokenIs('?')) {
+					  valueSequenceTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE); 					 
+					  consumeExpected('?');
+				  }
+				  else if (tokenIs('*')) {
+					  valueSequenceTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY); 					 
+					  consumeExpected('*');
+				  }
+				  else if (tokenIs('+')) {
+					  valueSequenceTypeData.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY); 					 
+					  consumeExpected('+');
+				  }
  			  }
  			  else if (tokenIs("element")) {
 				  nextToken();
+				  
 				  XPathSequenceTypeKindTest sequenceTypeKindTest = new XPathSequenceTypeKindTest();
+				  
 				  sequenceTypeKindTest.setKindVal(XPathSequenceTypeSupport.ELEMENT_KIND); 				   				   				  
+				  
 				  valueSequenceTypeData.setSequenceTypeKindTest(sequenceTypeKindTest);
+				  
 				  consumeExpected('(');
-				  consumeExpected(')');
+				  consumeExpected(')');				 
 			  }
  			  else {
  				  break;
@@ -12473,4 +12528,5 @@ public class XPathParser
     		  }
     	  }        	  
       }
+      
 }

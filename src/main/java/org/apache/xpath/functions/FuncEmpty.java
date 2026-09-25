@@ -79,7 +79,8 @@ public class FuncEmpty extends FunctionOneArg {
         if (arg0Obj instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;
            DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
-    	   if (dtmCursorIter.nextNode() == DTM.NULL) {
+    	   
+           if (dtmCursorIter.nextNode() == DTM.NULL) {
     		   result = XBoolean.S_TRUE;  
     	   }
     	   else {
@@ -88,6 +89,7 @@ public class FuncEmpty extends FunctionOneArg {
         }
         else if (arg0Obj instanceof ResultSequence) {
            ResultSequence resultSeq = (ResultSequence)arg0Obj;
+           
            if (resultSeq.size() == 0) {
               result = XBoolean.S_TRUE; 
            }
@@ -95,6 +97,7 @@ public class FuncEmpty extends FunctionOneArg {
         	   XObject xObj = resultSeq.item(0);
         	   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
         	   DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iterRaw();
+        	   
         	   if (dtmCursorIter.nextNode() == DTM.NULL) {
         		   result = XBoolean.S_TRUE;  
         	   }
@@ -108,6 +111,7 @@ public class FuncEmpty extends FunctionOneArg {
         }
         else {
            String strVal1 = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+           
            if (strVal1 == null) {
         	  result = XBoolean.S_TRUE; 
            }

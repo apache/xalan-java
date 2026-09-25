@@ -1174,7 +1174,7 @@ public class XSLTSchema extends XSLTElementDef
 				null /*alias */, null /* elements */,
 				new XSLTAttributeDef[] { asAttrOpt, useAttrOpt, useWhenAttrOpt },
 				new ProcessorTemplateElem(),
-				ElemContextItem.class /* class object */, 20, true);
+				ElemContextItem.class /* class object */, 19, true);
 
 		int i = 0;
 

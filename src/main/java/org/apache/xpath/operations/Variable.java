@@ -147,12 +147,12 @@ public class Variable extends Expression implements PathComponent
   {
 	  m_fixUpWasCalled = true;
 
-	  for (int i = vars.size()-1; i >= 0; i--) 
+	  for (int i = (vars.size() - 1); i >= 0; i--) 
 	  {
 		  QName qn = (QName)vars.elementAt(i);
+		  
 		  if (qn.equals(m_qname))
 		  {
-
 			  if (i < globalsSize)
 			  {
 				  m_isGlobal = true;
@@ -168,23 +168,28 @@ public class Variable extends Expression implements PathComponent
 	  }
 	  
 	  ExpressionNode exprOwnerNode = getExpressionOwner();
-	  boolean isVariableRefInXslCatch = false;
+	  
+	  boolean isVariableRefWithinXslCatch = false;
+	  
 	  if (exprOwnerNode instanceof ElemCatch) {
-		  isVariableRefInXslCatch = true; 
+		  isVariableRefWithinXslCatch = true; 
 	  }
 	  else {
 		  while (exprOwnerNode != null) {
 			  exprOwnerNode = exprOwnerNode.exprGetParent();
+			  
 			  if (exprOwnerNode instanceof ElemCatch) {
-				  isVariableRefInXslCatch = true;
+				  isVariableRefWithinXslCatch = true;
+				  
 				  break;
 			  }
 		  }
 	  }
 	  
-	  if (isVariableRefInXslCatch) {
+	  if (isVariableRefWithinXslCatch) {
 		  java.lang.String varLocalName = m_qname.getLocalName();
 		  java.lang.String nsUri = m_qname.getNamespaceURI();
+		  
 		  if ((Constants.XSL_ERROR_NAMESACE).equals(nsUri)) {
 			 if (Constants.XSL_ERROR_CODE.equals(varLocalName) || Constants.XSL_ERROR_DESCRIPTION.equals(varLocalName) || 
 					                                              Constants.XSL_ERROR_LINE_NUMBER.equals(varLocalName) || 
@@ -264,6 +269,7 @@ public class Variable extends Expression implements PathComponent
         
         ExpressionNode expressionNode = this.getExpressionOwner();
 		ExpressionNode stylesheetRootNode = null;
+		
 		while (expressionNode != null) {
 			stylesheetRootNode = expressionNode;
 			expressionNode = expressionNode.exprGetParent();                     
@@ -286,6 +292,7 @@ public class Variable extends Expression implements PathComponent
 		}
 
 		TransformerImpl transformerImpl = null; 
+		
 		if (stylesheetRoot != null) {
 		    transformerImpl = stylesheetRoot.getTransformerImpl();  
 		}
@@ -293,6 +300,7 @@ public class Variable extends Expression implements PathComponent
 		if ((transformerImpl != null) && isVariableRefDescendantOfXslIterate()) {
 			ElemTemplateElement elemTemplateElem = (ElemTemplateElement)(this.getExpressionOwner());
 			ElemVariable elemVariable = getNearestPrecedingVarIter(elemTemplateElem, m_qname);
+			
 			if (elemVariable != null) {
 			    result = elemVariable.getValue(transformerImpl, sourceNode);
 			    
@@ -337,6 +345,7 @@ public class Variable extends Expression implements PathComponent
            
            ElemVariable elemVariable = this.getElemVariable();           
            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)(getExpressionOwner());                      
+           
            if ((elemVariable == null) && (elemTemplateElement instanceof ElemIterateOnCompletion)) {
         	   throw new javax.xml.transform.TransformerException("XPST0008 : Variable $" + m_qname.toString() + " accessed before it is bound.", srcLocator); 
            }
@@ -347,6 +356,7 @@ public class Variable extends Expression implements PathComponent
                 * available.           	   
                 */
         	   ElemCatch elemCatch = null;
+        	   
         	   while (elemTemplateElement != null) {
         		   if (elemTemplateElement instanceof ElemCatch) {
         			   elemCatch = (ElemCatch)elemTemplateElement;
@@ -369,6 +379,7 @@ public class Variable extends Expression implements PathComponent
         catch (javax.xml.transform.TransformerException ex) {
            java.lang.String exceptionMesg = ex.getMessage();
            QName errValueQname = new QName(Constants.XSL_ERROR_NAMESACE, Constants.XSL_ERROR_VALUE);
+           
            if (m_qname.equals(errValueQname)) {
         	  result = new ResultSequence();  
            }
@@ -482,12 +493,15 @@ public class Variable extends Expression implements PathComponent
   public int getAnalysisBits()
   {
   	org.apache.xalan.templates.ElemVariable vvar = getElemVariable();
+  	
   	if (null != vvar)
   	{
   		XPath xpath = vvar.getSelect();
+  		
   		if (null != xpath)
   		{
 	  		Expression expr = xpath.getExpression();
+	  		
 	  		if (null != expr && expr instanceof PathComponent)
 	  		{
 	  			return ((PathComponent)expr).getAnalysisBits();
@@ -533,6 +547,7 @@ public class Variable extends Expression implements PathComponent
   public boolean isPsuedoVarRef()
   {
   	java.lang.String ns = m_qname.getNamespaceURI();
+  	
   	if ((null != ns) && ns.equals(PSUEDOVARNAMESPACE))
   	{
   		if (m_qname.getLocalName().startsWith("#"))
@@ -578,6 +593,7 @@ public class Variable extends Expression implements PathComponent
 
 	  if (!(elemTemplateElem instanceof ElemIterate)) {
 		  ElemTemplateElement elemTemplateElem2 = elemTemplateElem.getPreviousSiblingElem();
+		  
 		  if (elemTemplateElem2 == null) {
 			  elemTemplateElem2 = elemTemplateElem.getParentElem(); 
 		  }
@@ -585,6 +601,7 @@ public class Variable extends Expression implements PathComponent
 		  while ((elemTemplateElem2 != null) && !(elemTemplateElem2 instanceof ElemIterate)) {
 			  if ((elemTemplateElem2 instanceof ElemVariable) && !(elemTemplateElem2 instanceof ElemParam)) {
 				  ElemVariable elemVariable = (ElemVariable)elemTemplateElem2;
+				  
 				  if ((elemVariable.getName()).equals(qName)) {
 					  result = elemVariable;
 
@@ -618,6 +635,7 @@ public class Variable extends Expression implements PathComponent
 
 	  ElemTemplateElement elemTemplateElem = (ElemTemplateElement)(this.getExpressionOwner());
 	  elemTemplateElem = elemTemplateElem.getParentElem();
+	  
 	  while (elemTemplateElem != null) {
 		  if (elemTemplateElem instanceof ElemIterate) {
 			  result = true;
@@ -651,10 +669,12 @@ public class Variable extends Expression implements PathComponent
 	  
 	  if (!(xslExprOwnerElem instanceof ElemCatch)) {		  
 		  elemTemplateElement = xslExprOwnerElem.getPreviousSiblingElem();
+		  
 		  while (elemTemplateElement != null) {
 			  if (elemTemplateElement instanceof ElemVariable) {
 				  ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
 				  QName varName1 = elemVariable.getName();
+				  
 				  if (varName1.equals(this.m_qname)) {
 					  return true; 
 				  }
@@ -687,10 +707,12 @@ public class Variable extends Expression implements PathComponent
 
 	  ElemTemplateElement xslTryElem = elemTemplateElement;
 	  elemTemplateElement = elemTemplateElement.getPreviousSiblingElem();
+	  
 	  while (elemTemplateElement != null) {
 		  if (elemTemplateElement instanceof ElemVariable) {
 			  ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
 			  QName varName1 = elemVariable.getName();
+			  
 			  if (varName1.equals(this.m_qname)) {
 				  return true; 
 			  }
@@ -700,6 +722,7 @@ public class Variable extends Expression implements PathComponent
 	  }
 	  
 	  ElemTemplateElement xslParentElem = xslTryElem.getParentElem();
+	  
 	  if (xslParentElem != null) {
 	     result = isXslVariableDeclAvailableXslTry(xslParentElem);
 	  }

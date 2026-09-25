@@ -463,44 +463,6 @@ public class XPathArithmeticUtil extends XPathOperator {
 
 		return result;
 	}
-	
-	/**
-     * Method definition, to construct XML namespace PrefixResolver
-     * object for XPath expression evaluation. 
-     * 
-     * @return                      PrefixResolver object instance
-     */
-    protected PrefixResolver getXMLNsPrefixResolver() {
-    	
-    	PrefixResolver result = null;
-    	
-        System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
-    	
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-    	docBuilderFactory.setNamespaceAware(true);
-    	DocumentBuilder docBuilder = null; 
-    	
-    	try {
-    	   docBuilder = docBuilderFactory.newDocumentBuilder();
-    	}
-    	catch (Exception ex) {
-    	   // no op
-    	}
-    	
-    	Document document = docBuilder.newDocument();
-    	Element elem = document.createElement("elem1");
-    	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:fn", "http://www.w3.org/2005/xpath-functions");
-    	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:math", "http://www.w3.org/2005/xpath-functions/math");
-    	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:map", "http://www.w3.org/2005/xpath-functions/map");
-    	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:array", "http://www.w3.org/2005/xpath-functions/array");
-    	elem.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xs", "http://www.w3.org/2001/XMLSchema");
-    	
-    	document.appendChild(elem);
-    	
-    	result = new PrefixResolverDefault(elem);
-    	
-    	return result;
-    }
     
     /**
      * Method definition, to get an xdm sequence type run-time, object 

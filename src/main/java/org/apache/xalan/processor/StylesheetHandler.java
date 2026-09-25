@@ -422,13 +422,15 @@ public class StylesheetHandler extends DefaultHandler
     if ((elemProcessor != null) && (elemProcessor instanceof ProcessorImportSchema)) {
        processorImportSchema = (ProcessorImportSchema)elemProcessor; 
     }
+    
+    double xslStylesheetVersion = getElemVersion();
 
     if (elemProcessor == null
                     && !(currentProcessor instanceof ProcessorStylesheetDoc)
                     && ((null == getStylesheet()
                         || Double.valueOf(getStylesheet().getVersion()).doubleValue() > Constants.XSLTVERSUPPORTED) 
                         || (!uri.equals(Constants.S_XSLNAMESPACEURL) && currentProcessor instanceof ProcessorStylesheetElement)
-                        || getElemVersion() > Constants.XSLTVERSUPPORTED)) {
+                        || xslStylesheetVersion > Constants.XSLTVERSUPPORTED)) {
        elemProcessor = def.getProcessorForUnknown(uri, localName);
     }
 

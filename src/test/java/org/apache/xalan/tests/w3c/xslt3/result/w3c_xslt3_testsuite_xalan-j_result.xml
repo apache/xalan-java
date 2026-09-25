@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-09-22T10:43:44Z" desc="W3C XSLT 3.0 test suite results" fail="857" pass="3971" run="4831" skipped="612" success="82.2%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-09-25T15:36:38Z" desc="W3C XSLT 3.0 test suite results" fail="855" pass="3973" run="4831" skipped="612" success="82.24%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
@@ -17,8 +17,8 @@
     <context-item fail="3" pass="28" run="31" skipped="0" success="90.32%"/>
     <function fail="11" pass="76" run="87" skipped="23" success="87.36%"/>
     <global-context-item fail="4" pass="10" run="14" skipped="0" success="71.43%"/>
-    <package fail="30" pass="24" run="54" skipped="18" success="44.44%"/>
-    <param fail="15" pass="15" run="30" skipped="1" success="50.0%"/>
+    <package fail="29" pass="25" run="54" skipped="18" success="46.3%"/>
+    <param fail="14" pass="16" run="30" skipped="1" success="53.33%"/>
     <strip-space fail="8" pass="18" run="26" skipped="4" success="69.23%"/>
     <template fail="0" pass="6" run="6" skipped="0" success="100.0%"/>
     <variable fail="14" pass="89" run="103" skipped="5" success="86.41%"/>

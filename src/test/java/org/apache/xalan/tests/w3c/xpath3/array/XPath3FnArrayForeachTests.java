@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xpath3.fn;
+package org.apache.xalan.tests.w3c.xpath3.array;
 
 import org.apache.xalan.tests.w3c.xpath3.W3CXPath3TestsUtil;
 import org.junit.AfterClass;
@@ -23,26 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for various XPath 3.1 functions.
+ * for XPath 3.1 function array:for-each.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FnFunction2Tests extends W3CXPath3TestsUtil {
+public class XPath3FnArrayForeachTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/for-each.xml";
     	
-    	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "fn/";
+        m_resultSubFolderName = "array";
     	
-        m_test_set_fileArr = new String[] { "dateTime.xml", "day-from-date.xml", "day-from-dateTime.xml", "days-from-duration.xml", 
-        		                            "default-collation.xml", "ends-with.xml", "exists.xml" };
-        
-        m_resultSubFolderName = "fn";
-        
-        m_test_set_result_fileArr = new String[] { "dateTime_result.xml", "day-from-date_result.xml", "day-from-dateTime_result.xml", "days-from-duration_result.xml", 
-        		                                   "default-collation_result.xml", "ends-with_result.xml", "exists_result.xml" };
+    	m_testResultFileName = "for-each_result.xml";
     }
 
     @AfterClass
@@ -54,8 +49,8 @@ public class XPath3FnFunction2Tests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFnTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslFunctionArrayForeachTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

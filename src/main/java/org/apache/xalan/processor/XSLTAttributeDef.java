@@ -1535,24 +1535,14 @@ public class XSLTAttributeDef
 	    try
 	    {
 	      AVT avt = new AVT(handler, uri, name, rawName, value, owner);
-	
-		  // If an AVT wasn't used, validate the value
-		 // if (avt.getSimpleString() != null) {
-			   // TODO: syntax check URL value.
-			    // return SystemIDResolver.getAbsoluteURI(value, 
-			    //                                         handler.getBaseIdentifier());
-		  //}	
+		
 	      return avt;
 	    }
 	    catch (TransformerException te)
 	    {
 	      throw new org.xml.sax.SAXException(te);
 	    }  		
-     } else {
-    // TODO: syntax check URL value.
-    // return SystemIDResolver.getAbsoluteURI(value, 
-    //                                         handler.getBaseIdentifier());
-     	
+     } else {       	
 	    return value;
     }
   }

@@ -18,6 +18,8 @@
 package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
@@ -29,6 +31,9 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.Constants;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -46,11 +51,16 @@ import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
@@ -663,6 +673,46 @@ public class XPathOperator extends Expression implements ExpressionOwner
   	  }
 
   	  return result;
+  }
+  
+  /**
+   * Method definition, to construct XML namespace PrefixResolver
+   * object for XPath expression evaluation. 
+   * 
+   * @return                      PrefixResolver object instance
+   */
+  protected PrefixResolver getXMLNsPrefixResolver() {
+  	
+	  PrefixResolver result = null;
+
+	  System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+
+	  DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+	  docBuilderFactory.setNamespaceAware(true);
+	  DocumentBuilder docBuilder = null; 
+
+	  try {
+		  docBuilder = docBuilderFactory.newDocumentBuilder();
+	  }
+	  catch (Exception ex) {
+		  // No op
+	  }
+
+	  Document document = docBuilder.newDocument();
+	  
+	  Element elem1 = document.createElement("elem1");
+	  
+	  elem1.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:fn", "http://www.w3.org/2005/xpath-functions");
+	  elem1.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:math", "http://www.w3.org/2005/xpath-functions/math");
+	  elem1.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:map", "http://www.w3.org/2005/xpath-functions/map");
+	  elem1.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:array", "http://www.w3.org/2005/xpath-functions/array");
+	  elem1.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xs", "http://www.w3.org/2001/XMLSchema");
+
+	  document.appendChild(elem1);
+
+	  result = new PrefixResolverDefault(elem1);
+
+	  return result;
   }
   
   /**

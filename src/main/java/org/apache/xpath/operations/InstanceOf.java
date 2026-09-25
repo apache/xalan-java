@@ -50,11 +50,13 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
+import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
 import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
@@ -122,7 +124,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * An implementation of XPath 3.1 'instance of' operator.
+ * Class definition, to implement XPath 3.1 operator 'instance of'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -132,6 +134,11 @@ public class InstanceOf extends XPathOperator
 {
 
    private static final long serialVersionUID = -5941900193967481806L;
+   
+   /**
+    * An XSL StylesheetRoot object instance.
+    */
+   private StylesheetRoot m_stylesheetRoot = null;
 
    /**
     * Apply an XPath operator to its two operands, and return the result.
@@ -147,12 +154,60 @@ public class InstanceOf extends XPathOperator
     * @throws javax.xml.transform.TransformerException
     */
   public XObject operate(XObject left, XObject right) 
-                                                 throws javax.xml.transform.TransformerException
+                                                     throws javax.xml.transform.TransformerException
   {            
             
       XObject result = null;
       
-      XPathContext xctxt = null;
+      XPathContext xctxt = null;            
+      
+      boolean isRawXPathCtxt = false;
+	  
+      if (XslTransformData.m_stylesheetRoot != null) {
+    	  m_stylesheetRoot = XslTransformData.m_stylesheetRoot; 
+    	  
+    	  TransformerImpl transformerImpl = m_stylesheetRoot.getTransformerImpl();
+    	  
+    	  if (transformerImpl != null) {
+    	     xctxt = transformerImpl.getXPathContext();
+    	  }
+    	  else {
+    		 xctxt = new XPathContext();
+      		 
+      		 isRawXPathCtxt = true; 
+    	  }
+      }
+      else {
+    	  m_stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+    	  
+    	  if (m_stylesheetRoot != null) {
+    		  TransformerImpl transformerImpl = m_stylesheetRoot.getTransformerImpl();
+
+    		  if (transformerImpl != null) {
+    			  xctxt = transformerImpl.getXPathContext();
+    		  }
+    		  else {
+    			  xctxt = new XPathContext();
+
+    			  isRawXPathCtxt = true; 
+    		  }
+     	  }
+     	  else {
+     		 xctxt = new XPathContext();
+     		 
+     		 isRawXPathCtxt = true;
+     	  }  
+      }
+      
+      List<XMLNSDecl> nsPrefixTable = null;	  
+		 
+      if (m_stylesheetRoot != null) {
+    	  nsPrefixTable = m_stylesheetRoot.getPrefixTable();
+      }
+      else {
+    	  PrefixResolverDefault xmlNsPrefixResolver = (PrefixResolverDefault)(getXMLNsPrefixResolver());
+    	  nsPrefixTable = xmlNsPrefixResolver.getPrefixTable();
+      }
       
       if (left.getCastAsType() != null) {
     	 XPathSequenceType xpathSeqTypeData1 = left.getCastAsType();    	 
@@ -173,14 +228,82 @@ public class InstanceOf extends XPathOperator
     	 }
       }
       
-      StylesheetRoot stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);
-      if (stylesheetRoot != null) {
- 		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-  	     xctxt = transformerImpl.getXPathContext();
-  	  }
-  	  else {
-  		 xctxt = new XPathContext();
-  	  }
+      if (left instanceof XPathMap) {
+    	 /**
+    	  * XSL transform, XPath sequence type function test to, XPath 
+    	  * sequence type map test, if XPath sequence type function test 
+    	  * complies to the required form.
+    	  * 
+    	  * For e.g, an xdm map instance, may be equivalently valid with 
+    	  * both of following XPath sequence type expressions:
+    	  * 
+    	  * map(xs:string, xs:integer*)
+    	  * 
+    	  * function(xs:string) as item()*
+    	  */
+    	  
+    	 XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+    	 
+    	 XPathSequenceTypeFunctionTest xpathSeqTypeFuncTest = xpathSeqTypeData.getSequenceTypeFunctionTest();
+    	 
+    	 if (xpathSeqTypeFuncTest != null) {
+    		List<java.lang.String> list1 = xpathSeqTypeFuncTest.getTypedFunctionTestParamSpecList();
+    		java.lang.String funcReturnTypeStr = xpathSeqTypeFuncTest.getTypedFunctionTestReturnType();
+    		
+    		if (list1.size() == 1) {    		   
+    		   java.lang.String xpathExprStr = list1.get(0);    		   
+    		   
+    		   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, nsPrefixTable);
+    		   
+    		   XPath xpathObj = null;
+    		   XObject xObj = null;
+    		   
+    		   if (isRawXPathCtxt) {
+    		      xpathObj = new XPath(xpathExprStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);
+    		      
+    		      xObj = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
+    		   }
+    		   else {
+    			  xpathObj = new XPath(xpathExprStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+    			  
+    			  xObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+    		   }    		       		   
+    		   
+    		   XPathSequenceType xpathSeqTypeData1 = (XPathSequenceType)xObj;
+    		   
+    		   XPathSequenceTypeMapTest sequenceTypeMapTest = new XPathSequenceTypeMapTest(); 
+    		   
+    		   sequenceTypeMapTest.setKeySequenceTypeData(xpathSeqTypeData1);
+    		   
+    		   funcReturnTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcReturnTypeStr, nsPrefixTable);
+    		   
+    		   if (isRawXPathCtxt) {
+     		      xpathObj = new XPath(funcReturnTypeStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);
+     		      
+     		      xObj = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
+     		   }
+     		   else {
+     			  xpathObj = new XPath(funcReturnTypeStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+     			  
+     			  xObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+     		   } 
+    		   
+    		   XPathSequenceType xpathSeqTypeData2 = (XPathSequenceType)xObj;
+    		   
+    		   sequenceTypeMapTest.setValueSequenceTypeData(xpathSeqTypeData2);
+    		   
+    		   xpathSeqTypeData = new XPathSequenceType();
+    		   xpathSeqTypeData.setSequenceTypeMapTest(sequenceTypeMapTest);
+    		   
+    		   right = xpathSeqTypeData; 
+    		}
+    		else {
+    		   result = XBoolean.S_FALSE;
+    		   
+    		   return result;
+    		}
+    	 }
+      }
 	  	  
 	  PrefixResolver xmlNsPrefixResolver = xctxt.getNamespaceContext();
 	  
@@ -222,18 +345,22 @@ public class InstanceOf extends XPathOperator
     		  XNumber xNumber = (XNumber)left;
     		      		      		      		      		  
     		  XSInteger xsInteger = xNumber.getXsInteger();
+    		  
     		  if (xsInteger != null) {
     			 return XBoolean.S_TRUE; 
     		  }
     		  
     		  XSDouble xsDouble = xNumber.getXsDouble();
+    		  
     		  if (xsDouble != null) {
     			 return XBoolean.S_FALSE; 
     		  }
     		  
     		  XSDecimal xsDecimal = xNumber.getXsDecimal();
+    		  
     		  if (xsDecimal != null) {
     			  double dbl = xsDecimal.doubleValue();
+    			  
     			  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
     				  return XBoolean.S_TRUE; 
     			  }
@@ -243,6 +370,7 @@ public class InstanceOf extends XPathOperator
     		  }
     		  
     		  double dbl = xNumber.num();
+    		  
     		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
     			  return XBoolean.S_TRUE; 
     		  }
@@ -259,6 +387,7 @@ public class InstanceOf extends XPathOperator
     	  else if (left instanceof XSDecimal) {
     		  XSDecimal xsDecimal = (XSDecimal)left;
     		  double dbl = xsDecimal.doubleValue();
+    		  
     		  if ((dbl == (int)dbl) || (dbl == (long)dbl)) {
     			  return XBoolean.S_TRUE; 
     		  }
@@ -285,12 +414,16 @@ public class InstanceOf extends XPathOperator
     	  ElemFunctionItem elemFunctionItem = (ElemFunctionItem)left;
     	  ElemFunction elemFunction = elemFunctionItem.getElemFunction();
     	  ElemTemplateElement elemTemplateElement = elemFunction.getFirstChildElem();
+    	  
     	  int paramCount = 0;
+    	  
     	  while (elemTemplateElement != null) {
     		 if (elemTemplateElement instanceof ElemParam) {
     			paramCount++; 
+    			
     			ElemParam elemParam = (ElemParam)elemTemplateElement;
     			java.lang.String paramAsStr = elemParam.getAs();
+    			
     			xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + "$a" + paramCount + " as " + paramAsStr + ",";
     		 }
     		 
@@ -307,6 +440,7 @@ public class InstanceOf extends XPathOperator
     	  }
     	  
     	  java.lang.String funcReturnTypeAsStr = elemFunction.getAs();
+    	  
     	  if (funcReturnTypeAsStr != null) {
     		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " as " + funcReturnTypeAsStr; 
     	  }
@@ -331,6 +465,7 @@ public class InstanceOf extends XPathOperator
       
       if (left instanceof XSQName) {
     	 java.lang.String localPart = ((XSQName)left).getLocalPart();
+    	 
     	 if ((Constants.ANONYMOUS_FUNCTION).equals(localPart)) {
     		 left = new ResultSequence(); 
     	 }
@@ -338,6 +473,7 @@ public class InstanceOf extends XPathOperator
       
       if (left instanceof ResultSequence) {
     	 int rSeqLength = ((ResultSequence)left).size();    	 
+    	 
     	 if (rSeqLength == 0) {
     		 if ((seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
     				                                                                 (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
@@ -387,11 +523,13 @@ public class InstanceOf extends XPathOperator
     		Node node = dtm.getNode(nodeHandle);
     		java.lang.String xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
     		xmlStr = xmlStr.trim();
+    		
     		if ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".equals(xmlStr)) {
     			// XPath 'instance of' operator's lhs is an empty sequence    			
     			boolean isSequenceCardinalityOk = false;    			
+    			
     			if ((seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-    				                                                                  (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    				                                                                                       (seqTypeOccurenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
     				isSequenceCardinalityOk = true; 
     			}
     			else if (xsBuiltInSeqType == XPathSequenceTypeSupport.EMPTY_SEQUENCE) {
@@ -417,8 +555,10 @@ public class InstanceOf extends XPathOperator
     	 if (!isInstanceOfResult) {
     		 if ((left instanceof XMLNodeCursorImpl) && (xsBuiltInSeqType == XPathSequenceTypeSupport.XS_QNAME)) {
     			 java.lang.String str1 = ((XMLNodeCursorImpl)left).str();
+    			 
     			 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\{.{1,}\\}.{1,}");
     			 java.util.regex.Matcher matcher = pattern.matcher(str1);
+    			 
     			 if (matcher.matches()) {
     				 isInstanceOfResult = true; 
     			 }    			 
@@ -513,6 +653,7 @@ public class InstanceOf extends XPathOperator
           }
           else {
              double doubleVal = ((XNumber)xdmValue).num();
+             
              if ((doubleVal == (int)doubleVal) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER)) {
             	 isInstanceOf = true; 
              }
@@ -701,14 +842,19 @@ public class InstanceOf extends XPathOperator
     		  // instruction, to group a sequence of atomic values.
     		  
     		  DTMCursorIterator iter = xmlNodeCursorImpl.getContainedIter();    	  
-    		  int node = iter.nextNode();
-    		  DTM dtm = iter.getDTM(node);
-    		  short nodeType = dtm.getNodeType(node);
+    		  
+    		  int nextNode = iter.nextNode();
+    		  
+    		  DTM dtm = iter.getDTM(nextNode);
+    		  
+    		  short nodeType = dtm.getNodeType(nextNode);
+    		  
     		  if (nodeType == DTM.TEXT_NODE) {
-    			  Node nodeObj = dtm.getNode(node);
+    			  Node nodeObj = dtm.getNode(nextNode);
     			  java.lang.String nodeStrValue = nodeObj.getNodeValue();
     			  Double dblValue = null;
     			  XObject xObj = null;
+    			 
     			  try {
     				  dblValue = Double.valueOf(nodeStrValue);
     			  }
@@ -724,6 +870,7 @@ public class InstanceOf extends XPathOperator
     			  }
 
     			  XObject result = XPathSequenceTypeSupport.castXdmValueToAnotherType(xObj, seqTypeData, true);
+    			  
     			  if (result != null) {
     				  isInstanceOf = true; 
     			  }
@@ -748,15 +895,18 @@ public class InstanceOf extends XPathOperator
     	  java.lang.String nsUri = xmlAttribute.getNamespaceUri();
     	  QName attrQName = new QName(nsUri, localName);
     	  XPathSequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+    	  
     	  if (seqTypeKindTest != null) {
     		  if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NODE_KIND) || (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     			  isInstanceOf = true; 
     		  }
     		  else if (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) {
     			  java.lang.String expectedLocalName = seqTypeKindTest.getNodeLocalName();    		 
+    			  
     			  if ((expectedLocalName != null) && !"".equals(expectedLocalName)) {
     				  java.lang.String expectedNsUri = seqTypeKindTest.getNodeNsUri();
     				  QName expectedQName = new QName(expectedNsUri, expectedLocalName);
+    				  
     				  if (attrQName.equals(expectedQName)) {
     					  isInstanceOf = true;
     				  }
@@ -771,6 +921,7 @@ public class InstanceOf extends XPathOperator
     	  if (xdmValue instanceof ResultSequence) {
     		 ResultSequence rSeq = (ResultSequence)xdmValue;
     		 int rSeqSize = rSeq.size();
+    		 
     		 if ((rSeqSize == 0) && ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
     				                 (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
     			isInstanceOf = true; 
@@ -894,13 +1045,16 @@ public class InstanceOf extends XPathOperator
 			  }
 			  else if (nodeType == DTM.ELEMENT_NODE) {
 				  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());				  
+				  
 				  if (seqTypeKindTest != null) {					  
 					  XPathSequenceTypeKindTest seqTypeKindTest2 = xmlNodeCursorImpl.getSeqTypeKindTest();
+					  
 					  if ((nodeSetLen == 1) && (seqTypeKindTest2 != null) && seqTypeKindTest2.equal(seqTypeKindTest)) {
 						 return true; 
 					  }
 					  
 					  java.lang.String elemNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
+					  
 					  if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
 							  																XPathSequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
 						  elemNodeKindTestNodeName = nodeName;  
@@ -910,8 +1064,10 @@ public class InstanceOf extends XPathOperator
 							                                                       && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
 							                                                    		                                       seqTypeKindTest.getNodeNsUri()))) {
 						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
+						  
 						  if (xsTypeDefn != null) {
 							  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
+							  
 							  if (XPathSequenceTypeSupport.isXdmElemNodeValidWithSchemaType(node, m_xctxt, xsTypeDefn)) {
 								  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
 							  }
@@ -937,8 +1093,10 @@ public class InstanceOf extends XPathOperator
 							  							  
 							  NodeList childNodes = node1.getChildNodes();
 							  boolean isComplexContent = false;
+							  
 							  for (int idx = 0; idx < childNodes.getLength(); idx++) {
 								  Node childNode = childNodes.item(idx);
+								  
 								  if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 									  isComplexContent = true;
 									  
@@ -948,9 +1106,11 @@ public class InstanceOf extends XPathOperator
 							  
 							  if (!isComplexContent) {
 								  NamedNodeMap attrNodes = node1.getAttributes();							  
+								  
 								  for (int idx = 0; idx < attrNodes.getLength(); idx++) {
 									  Node attrNode = attrNodes.item(idx);
 									  java.lang.String nodeNameStr = attrNode.getNodeName();									
+									  
 									  if (!"xmlns".equals(nodeNameStr)) {
 										  isComplexContent = true;
 										  
@@ -972,13 +1132,16 @@ public class InstanceOf extends XPathOperator
 							  
 							  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)m_xctxt.getNamespaceContext();
 							  List<XMLNSDecl> prefixTable = null;
+							  
 							  if (elemTemplateElement != null) {
 								  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
 							  }
+							  
 							  java.lang.String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getPrefixFromNsUri(XMLConstants.
 									                                                                                   W3C_XML_SCHEMA_NS_URI, prefixTable);
 				              
 							  java.lang.String xpathConstructorFuncExprStr = null;
+							  
 							  if (xmlSchemaNsPrefix != null) {
 								  xpathConstructorFuncExprStr = xmlSchemaNsPrefix + ":" + dataTypeLocalName + "('" + node.str() + "')";
 								  xpathConstructorFuncExprStr += " instance of " + xmlSchemaNsPrefix + ":" + dataTypeLocalName;
@@ -991,6 +1154,7 @@ public class InstanceOf extends XPathOperator
 							  XPath xpath = new XPath(xpathConstructorFuncExprStr, m_xctxt.getSAXLocator(), m_xctxt.getNamespaceContext(), 
                                       																 XPath.SELECT, null);
 							  XObject xObj = null;
+							  
 							  try {
 							     xObj = xpath.executeInstanceOf(m_xctxt, DTM.NULL, null);
 							     isInstanceOf = ((xObj.bool() == true) ? true : false);
@@ -1000,6 +1164,7 @@ public class InstanceOf extends XPathOperator
 								  
 								  break;
 							  }
+							  
 							  if (isInstanceOf) {
 								 nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 							  }
@@ -1014,10 +1179,11 @@ public class InstanceOf extends XPathOperator
 					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
                               																	&& (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
                               																				seqTypeKindTest.getNodeNsUri()))) {
-						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
-						  XSModel xsModel = stylesheetRoot.getXsModel();
+						  XSModel xsModel = m_stylesheetRoot.getXsModel();
+						  
 						  if (xsModel != null) {
 							  XSElementDeclaration elemDecl = xsModel.getElementDeclaration(elemNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
+							  
 							  if (elemDecl != null) {
 								 nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 							  }
@@ -1053,6 +1219,7 @@ public class InstanceOf extends XPathOperator
 					  int childNode = DTM.NULL;
 					  int childNode2 = DTM.NULL;
 					  childNode = dtm2.getFirstChild(nodeHandle);
+					  
 					  if (childNode != DTM.NULL) {
 						  childNode2 = dtm2.getFirstChild(childNode);
 					  }
@@ -1063,6 +1230,7 @@ public class InstanceOf extends XPathOperator
 					  
 					  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("b_[0-9]{5}");
 					  java.util.regex.Matcher matcher = pattern.matcher(nodeName2);
+					  
 					  try {
 						  if ((childNode != DTM.NULL) && (childNode2 == DTM.NULL) && matcher.matches()) {
 							  if ((xsBuiltInSeqType == XPathSequenceTypeSupport.XS_ANY_URI) && ((new AnyURIDV()).getActualValue(strValue, null) != null)) {						  
@@ -1085,8 +1253,9 @@ public class InstanceOf extends XPathOperator
 			  else if (nodeType == DTM.ATTRIBUTE_NODE) {				  
 				  if (seqTypeKindTest != null) {
 					  java.lang.String attrNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
+					  
 					  if (attrNodeKindTestNodeName == null || "".equals(attrNodeKindTestNodeName) || 
-							  XPathSequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
+							                                                                     XPathSequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
 						  attrNodeKindTestNodeName = nodeName;  
 					  }
 
@@ -1098,6 +1267,7 @@ public class InstanceOf extends XPathOperator
 							  if (xsTypeDefn instanceof XSSimpleType) {
 								  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefn;
 								  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, dtmIter.getDTMManager());
+								  
 								  try {
 								      xsSimpleTypeDecl.validate(node.str(), null, null);
 								      nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
@@ -1122,6 +1292,7 @@ public class InstanceOf extends XPathOperator
 							  XPath xpath = new XPath(xpathConstructorFuncExprStr, m_xctxt.getSAXLocator(), m_xctxt.getNamespaceContext(), 
                                       																 XPath.SELECT, null);
 							  XObject xObj = null;
+							  
 							  try {
 							     xObj = xpath.executeInstanceOf(m_xctxt, DTM.NULL, null);
 							     isInstanceOf = ((xObj.bool() == true) ? true : false);
@@ -1131,6 +1302,7 @@ public class InstanceOf extends XPathOperator
 								  
 								  break;
 							  }
+							  
 							  if (isInstanceOf) {
 								  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 							  }
@@ -1145,10 +1317,11 @@ public class InstanceOf extends XPathOperator
 					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
 																								  && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
 																										  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
-						  StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
-						  XSModel xsModel = stylesheetRoot.getXsModel();
+						  XSModel xsModel = m_stylesheetRoot.getXsModel();
+						  
 						  if (xsModel != null) {
 							  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
+							  
 							  if (attrDecl != null) {
 								 nodeSetSequenceTypeResultList.add(Boolean.valueOf(true)); 
 							  }
@@ -1159,6 +1332,7 @@ public class InstanceOf extends XPathOperator
                                   * produce 'instance of' result as false, instead of emitting an XPath
                                   * dynamic error.
                                   */
+								  
 								 isInstanceOf = false;
 								 
 								 break; 
@@ -1173,7 +1347,7 @@ public class InstanceOf extends XPathOperator
 						  }
 					  }
 					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.NODE_KIND) || 
-							  (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
+							                                                                       (seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
 						  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));   
 					  }   
 				  }
@@ -1237,6 +1411,7 @@ public class InstanceOf extends XPathOperator
 	  }
 
 	  XPathSequenceType sequenceTypeDataNew = new XPathSequenceType();          
+	  
 	  if (seqTypeData.getSequenceTypeKindTest() != null) {
 		  sequenceTypeDataNew.setSequenceTypeKindTest(seqTypeData.getSequenceTypeKindTest()); 
 	  }
@@ -1248,6 +1423,7 @@ public class InstanceOf extends XPathOperator
 
 	  for (int idx = 0; idx < resultSeq.size(); idx++) {
 		  XObject seqItem = (XObject)(resultSeq.item(idx));
+		  
 		  if (!isInstanceOf(seqItem, sequenceTypeDataNew)) {
 			  isInstanceOfOnSeqItem = false;
 			  

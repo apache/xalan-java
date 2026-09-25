@@ -105,7 +105,7 @@ public class Constants
     
   /**
    * The minimum version of XSLT supported by this processor.
-   */
+   */    
   public static final double XSLTVERSUPPORTED = 1.0;
   
   public static final String XML_VALIDATION_FEATURE = "http://xml.org/sax/features/validation";

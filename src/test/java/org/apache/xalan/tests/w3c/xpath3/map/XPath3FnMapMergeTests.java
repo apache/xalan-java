@@ -23,27 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 maps.
+ * for XPath 3.1 function map:merge.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3MapTests extends W3CXPath3TestsUtil {
+public class XPath3FnMapMergeTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {    	    	                
-        
-        m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "map/";
+    public static void setUpBeforeClass() throws Exception {    	    	
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "map/merge.xml";
     	
-        m_test_set_fileArr = new String[] { "contains.xml", "get.xml", "keys.xml", "remove.xml", "for-each.xml",
-        		                            "remove.xml", "size.xml" };
-        
         m_resultSubFolderName = "map";
-        
-        m_test_set_result_fileArr = new String[] { "contains_result.xml", "get_result.xml", "keys_result.xml", 
-                                                   "remove_result.xml", "for-each_result.xml", "remove_result.xml",
-                                                   "size_result.xml" };
+    	
+    	m_testResultFileName = "merge_result.xml";
     }
 
     @AfterClass
@@ -55,8 +49,8 @@ public class XPath3MapTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslMapTests() {
-    	runXPathTestSetCollectionAndProduceResult();		
+    public void runXslFnMapMergeTests() {
+    	runXPathTestSetAndProduceResult();
     }
 
 }

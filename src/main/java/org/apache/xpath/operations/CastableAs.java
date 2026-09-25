@@ -40,8 +40,7 @@ import xml.xpath31.processor.types.XSToken;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Class definition, to implement XPath 3.1 operator 
- * 'castable as'.
+ * Class definition, to implement XPath 3.1 operator 'castable as'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -148,9 +147,11 @@ public class CastableAs extends XPathOperator
          }
          else {
         	XSTypeDefinition typeDefn = seqTypedData.getXsTypeDefinition();
+        	
         	if ((typeDefn != null) && (typeDefn instanceof XSSimpleType)) {
         	    XSSimpleTypeDecl simpleTypeDecl = (XSSimpleTypeDecl)typeDefn;        	    
         	    java.lang.String inpStrValue = XslTransformEvaluationHelper.getStrVal(left);
+        	    
         	    try {
 					simpleTypeDecl.validate(inpStrValue, null, null);
 					

@@ -44,7 +44,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An XPath 3.1 'let' expression implementation.
+ * Class definition, to implement an XPath 3.1 expression 'let'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,15 +55,12 @@ public class XPathLetExpr extends Expression {
     private static final long serialVersionUID = 3063682088023616108L;
 
     /**
-     * Class field, used to represent XPath 3.1 'let' expression's 
-     * variable bindings.
+     * An XPath 3.1 'let' expression's variable binding list.
      */
-    private List<XPathLetExprVarBinding> m_letExprVarBindingList = 
-                                                   new ArrayList<XPathLetExprVarBinding>();
+    private List<XPathLetExprVarBinding> m_letExprVarBindingList = new ArrayList<XPathLetExprVarBinding>();
     
     /**
-     * Class field, used to represent XPath 3.1 'let' 
-     * expression's return clause XPath expression string.
+     * An XPath 3.1 'let' expression's 'return' clause, XPath expression string.
      */
     private String m_returnExprXPathStr = null;
     
@@ -106,6 +103,7 @@ public class XPathLetExpr extends Expression {
     		   }
 
     		   XPath letExprVarBindingXPath = new XPath(varResultXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		   
     		   if (m_vars != null) {
     			   letExprVarBindingXPath.fixupVariables(m_vars, m_globals_size);
     		   }
@@ -115,11 +113,14 @@ public class XPathLetExpr extends Expression {
     		   Expression expr = letExprVarBindingXPath.getExpression();
 
     		   XPathNamedFunctionReference xpathNamedFuncRef = null;
+    		   
     		   if (expr instanceof XPathSequenceConstructor) {
     			   XObject xObj = ((XPathSequenceConstructor)expr).execute(xctxt);
+    			   
     			   if ((xObj instanceof ResultSequence) && ((ResultSequence)xObj).size() == 1) {
     				   ResultSequence rSeq = (ResultSequence)xObj;
     				   XObject xObj2 = rSeq.item(0);
+    				   
     				   if (xObj2 instanceof XPathNamedFunctionReference) {
     					   xpathNamedFuncRef = (XPathNamedFunctionReference)xObj2;  
     				   }
@@ -140,9 +141,11 @@ public class XPathLetExpr extends Expression {
     			   String funcLocalName = xpathNamedFuncRef.getFuncName();
     			   int concatArity = 0;
     			   short funcArity = 0;
+    			   
     			   if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
     				   concatArity = xpathNamedFuncRef.getConcatArity();
     				   FuncConcat funcConcat = new FuncConcat();
+    				   
     				   if ((concatArity < funcConcat.getMinArity()) || (concatArity > funcConcat.getMaxArity())) {
     					   throw new TransformerException("XPTY0004 : XPath function fn:concat's arity can be between " + 
 																				    							    funcConcat.getMinArity() + " and " 
@@ -175,6 +178,7 @@ public class XPathLetExpr extends Expression {
     				   Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
     				   function.setLocalName(funcLocalName);
     				   function.setNamespace(funcNamespace);        		  
+    				   
     				   if (function instanceof FuncConcat) {        		     
     					   FuncConcat funcConcat = (FuncConcat)function;
     					   funcConcat.setRuntimeArgCount(concatArity);
@@ -240,8 +244,9 @@ public class XPathLetExpr extends Expression {
        }
        finally {
     	   int qNameListSize = qNameVarList.size();
+    	   
     	   for (int idx = 0; idx < qNameListSize; idx++) {
-    		  QName qName = qNameVarList.get(idx);
+    		  QName qName = qNameVarList.get(idx);    		  
     		  m_xpathVarList.remove(qName);
     		  xpathVarMap.remove(qName);
     	   }
@@ -258,12 +263,11 @@ public class XPathLetExpr extends Expression {
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
+       // No op
     }
 
     @Override
-    public boolean deepEquals(Expression expr) {
-       // no op    	
+    public boolean deepEquals(Expression expr) {   	
        return false;
     }
 

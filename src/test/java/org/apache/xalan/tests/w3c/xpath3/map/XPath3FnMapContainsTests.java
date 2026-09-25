@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.tests.w3c.xpath3.array;
+package org.apache.xalan.tests.w3c.xpath3.map;
 
 import org.apache.xalan.tests.w3c.xpath3.W3CXPath3TestsUtil;
 import org.junit.AfterClass;
@@ -23,21 +23,21 @@ import org.junit.Test;
 
 /**
  * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
- * for XPath 3.1 function array:fold-right.
+ * for XPath 3.1 function map:contains.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPath3FunctionArrayFoldRightTests extends W3CXPath3TestsUtil { 
+public class XPath3FnMapContainsTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	
-    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "array/fold-right.xml";
+    	m_xslTransformTestSetFilePath = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "map/contains.xml";
     	
-        m_resultSubFolderName = "array";
+        m_resultSubFolderName = "map";
     	
-    	m_testResultFileName = "fold-right_result.xml";
+    	m_testResultFileName = "contains_result.xml";
     }
 
     @AfterClass
@@ -49,7 +49,7 @@ public class XPath3FunctionArrayFoldRightTests extends W3CXPath3TestsUtil {
     }
 
     @Test
-    public void runXslFunctionArrayFoldRightTests() {
+    public void runXslFnMapContainsTests() {
     	runXPathTestSetAndProduceResult();
     }
 

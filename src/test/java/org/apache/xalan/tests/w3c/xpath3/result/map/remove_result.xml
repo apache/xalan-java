@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-22T10:38:39Z" fail="7" name="map-remove" pass="11" run="18" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-25T15:59:34Z" fail="8" name="map-remove" pass="10" run="18" statusUnknown="0">
    <testResult status="pass" testName="map-remove-001"/>
    <testResult status="pass" testName="map-remove-002"/>
    <testResult status="pass" testName="map-remove-003"/>
@@ -9,7 +9,7 @@
    <testResult status="pass" testName="map-remove-009"/>
    <testResult status="pass" testName="map-remove-010"/>
    <testResult status="pass" testName="map-remove-011"/>
-   <testResult status="pass" testName="map-remove-012"/>
+   <testResult status="fail" testName="map-remove-012"/>
    <testResult status="fail" testName="map-remove-013"/>
    <testResult status="fail" testName="map-remove-014"/>
    <testResult status="fail" testName="map-remove-015"/>

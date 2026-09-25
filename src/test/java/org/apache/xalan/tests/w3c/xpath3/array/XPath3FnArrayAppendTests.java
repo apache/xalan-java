@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XPath3FunctionArrayAppendTests extends W3CXPath3TestsUtil { 
+public class XPath3FnArrayAppendTests extends W3CXPath3TestsUtil { 
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {    	    	

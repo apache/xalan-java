@@ -84,21 +84,19 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	    
 	    if ((m_arg0 == null) && (m_arg1 == null)) {
-	       throw new javax.xml.transform.TransformerException("FOAP0001 : The function call, map:merge requires either "
+	       throw new javax.xml.transform.TransformerException("FOAP0001 : An XPath 3.1 function call map 'merge' requires either "
 	       		                                                             + "one argument (specifying maps to be merged) or two arguments "
 	       		                                                             + "(the 2nd argument is an options map).", srcLocator);
 	    }
-	    
-	    validateFnArg0Type(m_arg0, xctxt);
 	    
 	    if (m_arg1 != null) {
 	       validateFnArg1Type(m_arg1, xctxt);
 	    }
 	    
 	    if ((m_arg1 != null) && OPTION_REJECT.equals(getOptionsStrVal(m_arg1, xctxt)) && isMapMergeToBeRejected(m_arg0, xctxt)) {
-	        throw new javax.xml.transform.TransformerException("FOJS0003 : Maps could not be merged, because one or more duplicate "
-	        		                                                               + "keys were found within maps to be merged, and an map merge "
-	        		                                                               + "option 'reject' was used.", srcLocator);
+	        throw new javax.xml.transform.TransformerException("FOJS0003 : xdm maps could not be merged, because one or more duplicate "
+	        		                                                                                                        + "keys were found within maps to be merged, and an map merge "
+	        		                                                                                                        + "option 'reject' has been used.", srcLocator);
 	    }
 	    else {
 	    	// map:merge, function call was invoked with an option "reject", but the maps to be 
@@ -110,35 +108,71 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
-	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    		for (int idx = (size1 - 1); idx >= 0; idx--) {	    			
+	    			XObject xObj2 = rSeq.item(idx);
+	    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+	    			   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+	    			   		                                                                                  + "with an argument, which is not "
+	    			   		                                                                                  + "an xdm map.", srcLocator); 
+	    			}
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
+	    			
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
 	    		
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    		XPathMap xdmResultMap = new XPathMap();
+	    		xdmResultMap.setNativeMap(nativeResultMap);
+	    		
+	    		result = xdmResultMap;
 	    	}
 	    	else {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    		   rSeq = new ResultSequence();
+	    		   rSeq.add(xObj);
+	    		}
+	    		else {
+	    		   rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx);
+	    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+		    		   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+		    			   		                                                                             + "with an argument, which is not "
+		    			   		                                                                             + "an xdm map.", srcLocator); 
+		    		}
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
+	    			
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
 	    		
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    		XPathMap xdmResultMap = new XPathMap();
+	    		xdmResultMap.setNativeMap(nativeResultMap);
+	    		
+	    		result = xdmResultMap;
 	    	}
 	    }
 	    
@@ -149,35 +183,70 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx);	    				    			
+	    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+		    		   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+		    			   		                                                                              + "with an argument, which is not "
+		    			   		                                                                              + "an xdm map.", srcLocator); 
+		    		}
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
 	    		
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    		XPathMap xdmResultMap = new XPathMap();
+	    		
+	    		xdmResultMap.setNativeMap(nativeResultMap);
+	    		
+	    		result = xdmResultMap;
 	    	}
 	    	else {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = (size1 - 1); idx >= 0; idx--) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx); 	    			
+	    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+			    	   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+			    			   		                                                                          + "with an argument, which is not "
+			    			   		                                                                          + "an xdm map.", srcLocator); 
+			        }
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}	
 	    		
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    		XPathMap xdmResultMap = new XPathMap();
+	    		xdmResultMap.setNativeMap(nativeResultMap);
+	    		
+	    		result = xdmResultMap;
 	    	}
 	    }
 	    else if (OPTION_USE_LAST.equals(getOptionsStrVal(m_arg1, xctxt))) {
@@ -186,35 +255,69 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = 0; idx < size1; idx++) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx);	    			
+	    				    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+				       throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+				    			   		                                                                      + "with an argument, which is not "
+				    			   		                                                                      + "an xdm map.", srcLocator); 
+				    }
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
 	    		
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    		XPathMap xdmResultMap = new XPathMap();
+	    		xdmResultMap.setNativeMap(nativeResultMap);
+	    		
+	    		result = xdmResultMap;
 	    	}
 	    	else {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = 0; idx < size1; idx++) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx);
+	    				    				    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+					   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+					    			   		                                                                  + "with an argument, which is not "
+					    			   		                                                                  + "an xdm map.", srcLocator); 
+					}
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
 	    		}
 	    		
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    		XPathMap xdmResultMap = new XPathMap();
+	    		xdmResultMap.setNativeMap(nativeResultMap);
+	    		
+	    		result = xdmResultMap;
 	    	}
 	    }	    
 	    else if (OPTION_COMBINE.equals(getOptionsStrVal(m_arg1, xctxt))) {
@@ -226,52 +329,86 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	
 	    	if (m_arg0 instanceof Variable) {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = 0; idx < size1; idx++) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx);
+	    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+					   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+					    			   		                                                                  + "with an argument, which is not "
+					    			   		                                                                  + "an xdm map.", srcLocator); 
+					}
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    				    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 	    			distinctMapKeys.addAll(nativeMap.keySet());    	 
 	    		}	    		
 	    	}
 	    	else {
 	    		XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-	    		rSeq = (ResultSequence)xObj;
+	    		
+	    		if (xObj instanceof XPathMap) {
+	    			rSeq = new ResultSequence();
+	    			rSeq.add(xObj);
+	    		}
+	    		else {
+	    			rSeq = (ResultSequence)xObj;
+	    		}
 	    		
 	    		int size1 = rSeq.size();
 	    		
 	    		for (int idx = 0; idx < size1; idx++) {
-	    			XPathMap map = (XPathMap)(rSeq.item(idx));
-	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			XObject xObj2 = rSeq.item(idx);
+	    			
+	    			if (!(xObj2 instanceof XPathMap)) {
+					   throw new TransformerException("XPTY0004 : An XPath 3.1 function map 'merge' is called "
+					    			   		                                                                  + "with an argument, which is not "
+					    			   		                                                                  + "an xdm map.", srcLocator); 
+					}
+	    			
+	    			XPathMap xdmMap1 = (XPathMap)xObj2;
+	    			
+	    			Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 	    			distinctMapKeys.addAll(nativeMap.keySet());	        	 
 	    		}	    			    		
 	    	}
 	    	
-	    	Iterator<XObject> iter = distinctMapKeys.iterator();	    	
+	    	Iterator<XObject> iter1 = distinctMapKeys.iterator();	    	
 	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();	    		    
 	    	
-	    	while (iter.hasNext()) {
-	    	   XObject key = iter.next();
-	    	   ResultSequence concatinatedValues = new ResultSequence();
+	    	while (iter1.hasNext()) {
+	    	   XObject key = iter1.next();
+	    	   ResultSequence rSeq2 = new ResultSequence();
 	    	   int size1 = rSeq.size();
 	    	   
 	    	   for (int idx = 0; idx < size1; idx++) {
-	    		  XPathMap map = (XPathMap)(rSeq.item(idx));
-	    		  XObject mapEntryValue = map.get(key);
+	    		  XPathMap xdmMap1 = (XPathMap)(rSeq.item(idx));
+	    		  
+	    		  XObject mapEntryValue = xdmMap1.get(key);
 	    		  
 	    		  if (mapEntryValue != null) {
-	    		     concatinatedValues.add(mapEntryValue);
+	    		     rSeq2.add(mapEntryValue);
 	    		  }
 	    	   }
 	    	   
-	    	   nativeResultMap.put(key, concatinatedValues);	    	   
+	    	   nativeResultMap.put(key, rSeq2);	    	   
 	    	}
 	    	
-	    	XPathMap resultMap = new XPathMap();
-	    	resultMap.setNativeMap(nativeResultMap);
-	    	result = resultMap;
+	    	XPathMap xdmResultMap = new XPathMap();
+	    	xdmResultMap.setNativeMap(nativeResultMap);
+	    	
+	    	result = xdmResultMap;
 	    }
 	    
 	    return result;
@@ -297,8 +434,8 @@ public class FuncMapMerge extends FunctionMultiArgs {
 		int size1 = rSeq.size();
 		
 		for (int idx = 0; idx < size1; idx++) {
-		   XPathMap map = (XPathMap)(rSeq.item(idx));
-		   Map<XObject, XObject> nativeMap = map.getNativeMap();
+		   XPathMap xdmMap1 = (XPathMap)(rSeq.item(idx));
+		   Map<XObject, XObject> nativeMap = xdmMap1.getNativeMap();
 		   Set<XObject> keysSet = nativeMap.keySet();
 		   totalMapKeys += keysSet.size();
 		   mergeOfKeysSet.addAll(keysSet);
@@ -327,35 +464,6 @@ public class FuncMapMerge extends FunctionMultiArgs {
 
 		return result; 
 	}
-
-	/**
-     * Validate the expected type for map:merge function's, first argument.
-	 */
-	private void validateFnArg0Type(Expression xpathExpr1, XPathContext xctxt) throws TransformerException {
-		
-		SourceLocator srcLocator = xctxt.getSAXLocator();
-		
-		XObject xObj = getFunctionArgEffectiveValue(xpathExpr1, xctxt);
-
-		if (xObj instanceof ResultSequence) {
-			ResultSequence rSeq = (ResultSequence)xObj;
-			int size1 = rSeq.size();
-			
-			for (int idx = 0; idx < size1; idx++) {
-				XObject obj1 = rSeq.item(idx);
-				
-				if (!(obj1 instanceof XPathMap)) {
-					throw new TransformerException("FOAP0001 : Within map:merge function's first argument sequence, "
-																									+ "an xdm item at position " + (idx + 1) + " is "
-																									+ "not a map.", srcLocator); 
-				}
-			}
-		}
-		else if (!(xObj instanceof XPathMap)) {
-			throw new TransformerException("FOAP0001 : The map:merge function's first argument should be a "
-																									 + "sequence of one or more maps.", srcLocator);   
-		}
-	}
 	
 	/**
      * Validate the expected type of map:merge function's, second argument.
@@ -375,22 +483,22 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	 * This method does, validation of map:merge function's options map, and is 
 	 * used by the method 'validateTypeOfSecondArg'. 
 	 */
-	private void validateOptionsMap(XObject obj, SourceLocator srcLocator) throws TransformerException {
+	private void validateOptionsMap(XObject xobj, SourceLocator srcLocator) throws TransformerException {
 		
-		XPathMap optionsMap = (XPathMap)obj;
+		XPathMap optionsMap = (XPathMap)xobj;
 		
 		if (optionsMap.size() != 1) {
-			throw new TransformerException("FOAP0001 : The map:merge function's 2nd argument if present, should be "
-					                                     + "a map having only 1 entry with key named '" + DUPLICATES_KEY_NAME + 
-					                                       "'.", srcLocator);  
+			throw new TransformerException("FOAP0001 : An XPath 3.1 function map 'merge' second argument if present, should be "
+					                                                                                       + "an xdm map having only one entry with key named '" + DUPLICATES_KEY_NAME + 
+					                                                                                        "'.", srcLocator);  
 		}
 		else {
 			XObject mapEntryValue = optionsMap.get(new XSString(DUPLICATES_KEY_NAME));
 			
 			if (mapEntryValue == null) {
-				throw new TransformerException("FOAP0001 : The map:merge function's 2nd argument if present, should be "
-						                                     + "a map having only 1 entry with key named '" + DUPLICATES_KEY_NAME + 
-						                                       "'.", srcLocator); 
+				throw new TransformerException("FOAP0001 : An XPath 3.1 function map 'merge' second argument if present, should be "
+																					                           + "an xdm map having only one entry with key named '" + DUPLICATES_KEY_NAME + 
+																					                           "'.", srcLocator); 
 			}
 			else {
 				boolean isOptionsValueOk = false;
@@ -401,15 +509,16 @@ public class FuncMapMerge extends FunctionMultiArgs {
 					
 					if (allowedVal.equals(mapEntryStrVal)) {
 						isOptionsValueOk = true;
+						
 						break;
 					}
 				}
 
 				if (!isOptionsValueOk) {
-					throw new TransformerException("FOJS0005 : The allowed values of the map:merge duplicate resolution "
-							                                     + "options are : ['reject', 'use-first', 'use-last', 'use-any', "
-							                                     + "'combine']. An invalid options value '" + mapEntryStrVal + 
-							                                     "' was provided.", srcLocator);
+					throw new TransformerException("FOJS0005 : An XPath 3.1 function map 'merge' duplicate resolution "
+																	                                      + "options that are specified are : ['reject', 'use-first', 'use-last', 'use-any', "
+																	                                      + "'combine']. An invalid options value '" + mapEntryStrVal + 
+																	                                      "' has been provided.", srcLocator);
 				}
 			}
 		}

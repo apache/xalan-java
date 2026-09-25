@@ -62,9 +62,9 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * This class implements an XPath 3.1 dynamic function call, and
- * xdm map & array information lookup using function call syntax and unary 
- * lookup syntax respectively.
+ * Class definition, to implement an XPath 3.1 dynamic function call, 
+ * and xdm map & array information lookup using function call syntax 
+ * and unary lookup syntax, respectively.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -162,6 +162,7 @@ public class XPathDynamicFunctionCall extends Expression {
               functionRef = globalInlineFunctionVarMap.get(new QName(m_funcRefVarName));
               
               String errMesg = ex.getMessage();
+              
               if (errMesg.startsWith("XPST0008")) {
             	 throw ex; 
               }
@@ -201,6 +202,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	    }
     	    else {
     	       Object funcRefObj1 = functionRef.object();
+    	       
     	       if (funcRefObj1 instanceof Function) {
     	    	  evalResult = getDfcResultFromXPathBuiltInFunction((Function)funcRefObj1, xctxt, srcLocator, contextNode, prefixTable);
     	       }
@@ -266,12 +268,14 @@ public class XPathDynamicFunctionCall extends Expression {
     	String argValStr = XslTransformEvaluationHelper.getStrVal(indexVal);     				  
 
     	Integer intVal = null;     				  
+    	
     	try {
     		intVal = Integer.valueOf(argValStr);
+    		
     		if (!(intVal > 0 && (intVal <= xpathArr.size()))) {
 	    			throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, "
-							    					                                                           + "needs to have one numeric argument with value greater or equal to one "
-							    					                                                           + "specifying an index value for an array.", srcLocator); 
+							    					                                                                         + "needs to have one numeric argument with value greater or equal to one "
+							    					                                                                         + "specifying an index value for an array.", srcLocator); 
     		}
     	}
     	catch (NumberFormatException ex) {
@@ -310,6 +314,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	}
 
     	XPath argXPath = new XPath(xpathKeyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	
     	if (m_vars != null) {
     		argXPath.fixupVariables(m_vars, m_globals_size);
     	}
@@ -318,6 +323,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	
     	if ((argValue instanceof XString) || (argValue instanceof XNumber) || (argValue instanceof XBoolean) || (argValue instanceof XBooleanStatic)) {
     		evalResult = xpathMap.get(argValue);     					 
+    		
     		if (evalResult == null) {
     			throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm map doesn't have an entry with key name '" + 
 																									    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
@@ -326,6 +332,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	}
     	else if (argValue instanceof XSAnyAtomicType) {
     		evalResult = xpathMap.get(argValue);     					 
+    		
     		if (evalResult == null) {
     			throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm map doesn't have an entry with key name '" + 
 																									    					XslTransformEvaluationHelper.getStrVal(argValue) + "'.",  
@@ -335,7 +342,9 @@ public class XPathDynamicFunctionCall extends Expression {
     	else if (argValue instanceof ResultSequence) {
     		ResultSequence argSeq = (ResultSequence)argValue;
     		ResultSequence evalResultSeq = new ResultSequence();
+    		
     		int argSeqLength = argSeq.size();
+    		
     		for (int idx = 0; idx < argSeqLength; idx++) {
     			XObject argSeqItem = argSeq.item(idx);
     			evalResultSeq.add(xpathMap.get(argSeqItem));
@@ -350,8 +359,10 @@ public class XPathDynamicFunctionCall extends Expression {
     		else {
     			ResultSequence argSeq = XslTransformEvaluationHelper.getResultSequenceFromXObject(argValue, xctxt);
         	    ResultSequence evalResultSeq = new ResultSequence();
+        	    
         	    int argSeqLength = argSeq.size();
-        		for (int idx = 0; idx < argSeqLength; idx++) {
+        		
+        	    for (int idx = 0; idx < argSeqLength; idx++) {
         			XObject argSeqItem = argSeq.item(idx);
         			String strValue = XslTransformEvaluationHelper.getStrVal(argSeqItem);
         			evalResultSeq.add(xpathMap.get(new XSString(strValue)));
@@ -382,8 +393,10 @@ public class XPathDynamicFunctionCall extends Expression {
 		
 		if ((functionRef instanceof ResultSequence) && (((ResultSequence)functionRef).size() == 1)) {
 			XObject xObj = (((ResultSequence)functionRef)).item(0);
+			
 			if (xObj instanceof XSString) {
 			   XSString xsString = (XSString)xObj;
+			   
 			   if ((Expression.XS_SIMPLE_TYPE_NAME).equals(xsString.stringValue()) && (xsString.getXsTypeDefinition() != null)) {
 				   result = true; 
 			   }
@@ -462,8 +475,10 @@ public class XPathDynamicFunctionCall extends Expression {
 
 		if (m_xpathChainedArgListArr != null) {
 			int arrSize = m_xpathChainedArgListArr.length;
+			
 			for (int idx = 0; idx < arrSize; idx++) {
 				String argXPathStr = m_xpathChainedArgListArr[idx];     				 
+				
 				if (idx == 0) {
 					result = getXPathMapEntryValueByKey(xpathMap, argXPathStr, prefixTable, xctxt);
 				}
@@ -476,6 +491,7 @@ public class XPathDynamicFunctionCall extends Expression {
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					
 					if (m_vars != null) {
 						argXPath.fixupVariables(m_vars, m_globals_size);
 					}
@@ -495,13 +511,19 @@ public class XPathDynamicFunctionCall extends Expression {
 				}
 				else {
 					String argXPathStr = m_argList.get(0);
+					
 					if ("*".equals(argXPathStr)) {
 						// This is xdm map's wild-card key specifier. To return 
 						// all the map entry values as typed sequence.     				  
+						
 						Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+						
 						ResultSequence rSeq = new ResultSequence();
+						
 						Set<XObject> keySet = nativeMap.keySet();
+						
 						Iterator<XObject> iter = keySet.iterator();
+						
 						while (iter.hasNext()) {
 							XObject xObj = iter.next();
 							rSeq.add(nativeMap.get(xObj));
@@ -514,7 +536,7 @@ public class XPathDynamicFunctionCall extends Expression {
 						result = xpathMap.get(contextItem);
 					}
 					else {
-						boolean isRngNextFuncCall = false;
+						boolean isFnRandomNumGeneratorNextFuncCall = false;
 
 						Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 
@@ -522,30 +544,95 @@ public class XPathDynamicFunctionCall extends Expression {
 							XObject xObj1 = nativeMap.get(new XString(Constants.ELEMNAME_NUMBER_STRING)); 
 							XObject xObj2 = nativeMap.get(new XString(Constants.FN_XALAN_RNG_NEXT));
 							XObject xObj3 = nativeMap.get(new XString(Constants.FN_XALAN_RNG_PERMUTE_STR));
+							
 							if ((xObj1 != null) && (xObj2 != null) && (xObj3 != null)) {
 								// An XPath expression is function call fn:random-number-generator's 
 								// 'next' key. 
-								isRngNextFuncCall = true;
+								
+								isFnRandomNumGeneratorNextFuncCall = true;
 							}
 						}
 
-						if (!isRngNextFuncCall) {
-							result = getXPathMapEntryValueByKey(xpathMap, argXPathStr, prefixTable, xctxt);
+						if (!isFnRandomNumGeneratorNextFuncCall) {							
+							String[] xpathExprPartArray = argXPathStr.split("\\s+"); 
+							
+							if (xpathExprPartArray.length == 1) {
+							    result = getXPathMapEntryValueByKey(xpathMap, argXPathStr, prefixTable, xctxt);
+							}
+							else if (xpathExprPartArray.length == 3) {
+							    // Evaluate, an XPath 3.1 map information lookup expression, like $map?5 eq 2
+								
+								result = getXPathMapEntryValueByKey(xpathMap, xpathExprPartArray[0], prefixTable, xctxt);
+
+                                String str1 = null;
+								
+								if ((result instanceof XSString) || (result instanceof XString)) {
+								   str1 = "'" + XslTransformEvaluationHelper.getStrVal(result) + "'"; 
+								}
+								else {
+								   str1 = XslTransformEvaluationHelper.getStrVal(result); 
+								}
+
+								String xpathExprStr = str1 + " " + xpathExprPartArray[1] + " " + xpathExprPartArray[2];
+
+								XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+								if (m_vars != null) {
+									xpathObj.fixupVariables(m_vars, m_globals_size);
+								}
+
+								result = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());  
+							}
+							else {
+								// Evaluate, an XPath 3.1 map information lookup expression, like $map?(3.0) eq 'abc'
+								
+								StringBuffer strBuff = new StringBuffer();
+								
+								for (int idx = 0; idx < xpathExprPartArray.length - 2; idx++) {
+								   strBuff.append(xpathExprPartArray[idx] + " ");
+								}
+								
+								String xpathExprStr = (strBuff.toString()).trim();
+								
+								result = getXPathMapEntryValueByKey(xpathMap, xpathExprStr, prefixTable, xctxt);
+								
+								String str1 = null;
+								
+								if ((result instanceof XSString) || (result instanceof XString)) {
+								   str1 = "'" + XslTransformEvaluationHelper.getStrVal(result) + "'"; 
+								}
+								else {
+								   str1 = XslTransformEvaluationHelper.getStrVal(result); 
+								}
+								
+								xpathExprStr = str1 + " " + xpathExprPartArray[xpathExprPartArray.length - 2] + " " 
+								                                                                              + xpathExprPartArray[xpathExprPartArray.length - 1];
+								
+								XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+								if (m_vars != null) {
+									xpathObj.fixupVariables(m_vars, m_globals_size);
+								}
+
+								result = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+							}
 
 							if ((result instanceof XPathMap) && (m_trailingArgList != null)) {
 								if (m_trailingArgList.size() == 1) {
 									argXPathStr = m_trailingArgList.get(0); 
+									
 									result = getXPathMapEntryValueByKey((XPathMap)result, argXPathStr, prefixTable, xctxt);
 								}
 								else {
 									// Return an empty sequence
+									
 									result = new ResultSequence(); 
 								}
 							}
 							else if ((result instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
 								result = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)result, m_trailingArgList, null, 
-																																		xctxt, prefixTable, m_vars, m_globals_size, 
-																																		m_xpathVarList, m_funcRefVarName);
+																																		  xctxt, prefixTable, m_vars, m_globals_size, 
+																																		  m_xpathVarList, m_funcRefVarName);
 							}
 						}
 						else {
@@ -591,19 +678,23 @@ public class XPathDynamicFunctionCall extends Expression {
 
 		if (m_xpathChainedArgListArr != null) {
 			int arrSize = m_xpathChainedArgListArr.length;
+			
 			for (int idx = 0; idx < arrSize; idx++) {
 				String argXPathStr = m_xpathChainedArgListArr[idx];     				 
+				
 				if (idx == 0) {
 					if (prefixTable != null) {
 						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					
 					if (m_vars != null) {
 						argXPath.fixupVariables(m_vars, m_globals_size);
 					}
 
 					XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());      					 
+					
 					result = getXPathArrayResultByIndex(xpathArr, argValue, xctxt);
 				}
 				else if (result instanceof XPathMap) {
@@ -615,6 +706,7 @@ public class XPathDynamicFunctionCall extends Expression {
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					
 					if (m_vars != null) {
 						argXPath.fixupVariables(m_vars, m_globals_size);
 					}
@@ -634,14 +726,18 @@ public class XPathDynamicFunctionCall extends Expression {
 				}
 				else {
 					String argXPathStr = m_argList.get(0);
+					
 					if ("*".equals(argXPathStr)) {
 						// This is xdm array's wild-card key specifier. To return 
 						// all the array values as typed sequence. 
+						
 						ResultSequence rSeq = new ResultSequence();
 						int arrSize = xpathArr.size();
+						
 						for (int idx = 0; idx < arrSize; idx++) {
 							rSeq.add(xpathArr.get(idx));
-						}    				 
+						} 
+						
 						result = rSeq;
 					}
 					else if (".".equals(argXPathStr)) {
@@ -654,15 +750,19 @@ public class XPathDynamicFunctionCall extends Expression {
 						}
 
 						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						
 						if (m_vars != null) {
 							argXPath.fixupVariables(m_vars, m_globals_size);
 						}
 
 						XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());	                  
+						
 						if (argValue instanceof ResultSequence) {
 							ResultSequence rSeqArg = (ResultSequence)argValue;
 							ResultSequence rSeqAnswer = new ResultSequence();
+							
 							int arrSize = rSeqArg.size();
+							
 							for (int idx = 0; idx < arrSize; idx++) {
 								XObject oneArgValue = rSeqArg.item(idx);
 								String strVal = XslTransformEvaluationHelper.getStrVal(oneArgValue);
@@ -710,14 +810,18 @@ public class XPathDynamicFunctionCall extends Expression {
 		XObject result = null;
 
 		ResultSequence argSequence = new ResultSequence();
+		
 		int argListSize = m_argList.size();
+		
 		for (int idx = 0; idx < argListSize; idx++) {
 			String argXPathStr = m_argList.get(idx);
+			
 			if (prefixTable != null) {
 				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 			}
 
 			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			
 			if (m_vars != null) {
 				argXPath.fixupVariables(m_vars, m_globals_size);
 			}
@@ -728,6 +832,7 @@ public class XPathDynamicFunctionCall extends Expression {
 
 		ExpressionNode expressionNode = getExpressionOwner();
 		ExpressionNode stylesheetRootNode = null;
+		
 		while (expressionNode != null) {
 			stylesheetRootNode = expressionNode;
 			expressionNode = expressionNode.exprGetParent();                     
@@ -768,18 +873,24 @@ public class XPathDynamicFunctionCall extends Expression {
 		XObject result = null;
 		
 		ElemFunction elemFunction = functionRef.getXslStylesheetFunction();
+		
 		if (elemFunction != null) {
 			// Evaluating XSL stylesheet function call (i.e, xsl:function 
 			// call evaluation).
+			
 			ResultSequence argSequence = new ResultSequence();
+			
 			int argListSize = m_argList.size();
+			
 			for (int idx = 0; idx < argListSize; idx++) {
 				String argXPathStr = m_argList.get(idx);
+				
 				if (prefixTable != null) {
 					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 				}
 
 				XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				
 				if (m_vars != null) {
 					argXPath.fixupVariables(m_vars, m_globals_size);
 				}
@@ -790,6 +901,7 @@ public class XPathDynamicFunctionCall extends Expression {
 
 			ExpressionNode expressionNode = getExpressionOwner();
 			ExpressionNode stylesheetRootNode = null;
+			
 			while (expressionNode != null) {
 				stylesheetRootNode = expressionNode;
 				expressionNode = expressionNode.exprGetParent();                     
@@ -803,14 +915,15 @@ public class XPathDynamicFunctionCall extends Expression {
 		}
 		else {
 			ResultSequence argSeq = null;
+			
 			if ((m_argList == null) && (m_ArrowOpArgObj != null)) {
 			   argSeq = new ResultSequence();
 			   argSeq.add(m_ArrowOpArgObj);
 			}
 			
 		    result = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)functionRef, m_argList, 
-		    		                                                               argSeq, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
-																				   xctxt);
+											    		                                                                argSeq, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+																													    xctxt);
 		}
 		
 		return result;
@@ -840,6 +953,7 @@ public class XPathDynamicFunctionCall extends Expression {
 		String requiredArityStr = "";
 		String expandedFuncName = null;
 		boolean isRuntimeArityOk = false;
+		
 		if (funcObj instanceof FuncConcat) {
 			FuncConcat funcConcat = (FuncConcat)funcObj;
 			int concatRunTimeArityValue = m_argList.size();
@@ -847,14 +961,17 @@ public class XPathDynamicFunctionCall extends Expression {
 			int minArity = funcConcat.getMinArity();
 			int maxArity = funcConcat.getMaxArity();
 			requiredArityStr = (minArity + " .. " + maxArity); 
+			
 			if ((concatRunTimeArityValue >= minArity) && (concatRunTimeArityValue <= maxArity)) {
 				isRuntimeArityOk = true; 
 			}
 		}
 		else {
 			short runTimeArityValue = 0;
+			
 			if (m_argList != null) {
 				runTimeArityValue = (short)(m_argList.size());
+				
 				if (m_ArrowOpArgObj != null) {
 					runTimeArityValue++;
 				}
@@ -868,8 +985,10 @@ public class XPathDynamicFunctionCall extends Expression {
 			List<Short> arityList = Arrays.asList(funcDefinedArity);
 			int listSize1 = arityList.size();
 			StringBuffer strBuff = new StringBuffer();
+			
 			for (int idx = 0; idx < listSize1; idx++) {
 				String str1 = String.valueOf(arityList.get(idx));
+				
 				if (idx < (listSize1 - 1)) {
 					strBuff.append(str1 + ",");
 				}
@@ -886,6 +1005,7 @@ public class XPathDynamicFunctionCall extends Expression {
 		}
 
 		int argListSize = 0;		
+		
 		if (m_argList != null) {
 		   argListSize = m_argList.size();
 		}
@@ -897,11 +1017,13 @@ public class XPathDynamicFunctionCall extends Expression {
 					
 					for (int idx = 0; idx < argListSize; idx++) {
 						String argXPathStr = m_argList.get(idx);
+						
 						if (prefixTable != null) {
 							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 						}
 
 						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						
 						if (m_vars != null) {
 							argXPath.fixupVariables(m_vars, m_globals_size);
 						}
@@ -913,11 +1035,13 @@ public class XPathDynamicFunctionCall extends Expression {
 				else {
 					for (int idx = 0; idx < argListSize; idx++) {
 						String argXPathStr = m_argList.get(idx);
+						
 						if (prefixTable != null) {
 							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 						}
 
 						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+						
 						if (m_vars != null) {
 							argXPath.fixupVariables(m_vars, m_globals_size);
 						}
@@ -977,13 +1101,16 @@ public class XPathDynamicFunctionCall extends Expression {
 
 		if (argListSize == funcArity) {    	    		  
 			ResultSequence argSequence = new ResultSequence();
+			
 			for (int idx = 0; idx < argListSize; idx++) {
 				String argXPathStr = m_argList.get(idx);
+				
 				if (prefixTable != null) {
 					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 				}
 
 				XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				
 				if (m_vars != null) {
 					argXPath.fixupVariables(m_vars, m_globals_size);
 				}
@@ -1032,22 +1159,27 @@ public class XPathDynamicFunctionCall extends Expression {
 		XObject xObj = (((ResultSequence)functionRef)).item(0);
 		XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xObj.getXsTypeDefinition());
 		int argCount = m_argList.size();
+		
 		if (argCount == 1) {
 			String argXPathStr = m_argList.get(0);
+			
 			if (prefixTable != null) {
 				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
 			}
 
 			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			
 			if (m_vars != null) {
 				argXPath.fixupVariables(m_vars, m_globals_size);
 			}
 
 			XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 			String argStrValue = XslTransformEvaluationHelper.getStrVal(argValue);
+			
 			try {
 				// Validate, whether an XML Schema constructor function call argument,
 				// is a valid instance of the relevant XML Schema simple type.
+				
 				xsSimpleTypeDecl.validate(argStrValue, null, null);
 				
 				result = argValue; 

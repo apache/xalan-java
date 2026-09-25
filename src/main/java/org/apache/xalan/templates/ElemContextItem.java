@@ -79,6 +79,10 @@ public class ElemContextItem extends ElemTemplateElement {
 	public void setUse(String use) 
 	{
 		m_useAttr = use;
+		
+		if (m_useAttr != null) {
+		   m_useAttr = m_useAttr.trim();
+		}
 	}
 
 	/**
@@ -189,14 +193,25 @@ public class ElemContextItem extends ElemTemplateElement {
         else if (prevSiblingNode != null) {
         	String prevSiblingNodeName = prevSiblingNode.getNodeName();
         	
-        	throw new TransformerException("XTSE0010 : An XSL instruction context-item can only occur as first "
-						                                                                             + "child element of XSL template instruction. An element '" + 
-						        			                                                         prevSiblingNodeName + "' occured as previous sibling to XSL context-item "
-						        			                                                         + "instruction.", srcLocator);
+        	boolean isAllowableWhitespace = false;
+        	
+        	if (prevSiblingNode instanceof ElemTextLiteral) {
+        	    ElemTextLiteral elemTextLiteral = (ElemTextLiteral)prevSiblingNode;
+        	    String str1 = (elemTextLiteral.getNodeValue()).trim();
+        	    
+        	    isAllowableWhitespace = "".equals(str1);
+        	}
+        	
+        	if (!isAllowableWhitespace) {
+        	    throw new TransformerException("XTSE0010 : An XSL instruction context-item can only occur as first "
+						                                                                                          + "child element of XSL template instruction. An element '" + 
+						        			                                                                      prevSiblingNodeName + "' occured as previous sibling to XSL context-item "
+						        			                                                                      + "instruction.", srcLocator);
+        	}
         }
         else {
         	throw new TransformerException("XTSE0010 : An XSL instruction context-item can only occur as first "
-        			                                                                                 + "child element of XSL template instruction.", srcLocator);
+        			                                                                                          + "child element of XSL template instruction.", srcLocator);
         }
         
         if (m_useAttr == null) {

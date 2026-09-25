@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.functions.map;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
@@ -64,6 +65,7 @@ public class FuncMapPut extends Function3Args {
 	    
 	    if (xObj0 instanceof ResultSequence) {
 	    	ResultSequence rSeq = (ResultSequence)xObj0;
+	    	
 	    	if ((rSeq.size() == 0) || (rSeq.size() > 1)) {
 	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function map 'put' cannot have its first "
 	    			                                                                                   + "argument as an empty sequence, or "
@@ -81,18 +83,25 @@ public class FuncMapPut extends Function3Args {
 	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function map 'put' first argument is not an xdm map.", srcLocator);
 	    }
 	    
-	    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+	    HashMap<XObject, XObject> nativeMap = (HashMap<XObject, XObject>)(xpathMap.getNativeMap());
 	    
-	    XObject mapEntryKey = getFunctionArgEffectiveValue(m_arg1, xctxt);
+	    nativeMap = (HashMap<XObject, XObject>)(nativeMap.clone());
 	    
-	    XObject mapEntryValue = getFunctionArgEffectiveValue(m_arg2, xctxt);
+	    // An xdm value, that is the map's new entry key	    
+	    XObject mapEntryKey1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 	    
-	    nativeMap.put(mapEntryKey, mapEntryValue);
+	    // An xdm value, that is the map's new entry value	    
+	    XObject mapEntryValue1 = getFunctionArgEffectiveValue(m_arg2, xctxt);
 	    
-	    XPathMap xpathMapResult = new XPathMap();
-	    xpathMapResult.setNativeMap(nativeMap);
+	    // Update the supplied xdm map by adding a new, map entry.
+	    // Any existing map entry with the same key value, is replaced.	    
+	    nativeMap.put(mapEntryKey1, mapEntryValue1);
 	    
-	    result = xpathMapResult; 
+	    XPathMap xpathMap2 = new XPathMap();
+	    
+	    xpathMap2.setNativeMap(nativeMap);
+	    
+	    result = xpathMap2; 
 	    	    
 	    return result;
 	}
