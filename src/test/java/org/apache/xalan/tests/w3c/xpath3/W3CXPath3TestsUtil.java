@@ -347,11 +347,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);
-							
-							if ("fn-subsequence-mix-args-018".equals(testCaseNameStr)) {
-							   int ii = 0;	
-							}
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);														
 
 							xctxt = getXPathContext();
 
