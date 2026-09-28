@@ -20,7 +20,6 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -71,22 +70,20 @@ public class FuncSubsequence extends FunctionMultiArgs {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        Expression arg0 = m_arg0;        
-        Expression arg1 = m_arg1;        
-        Expression arg2 = null;
-        
         try {
-            XObject xObject0 = arg0.execute(xctxt);
+            XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
             
-            ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
-                                                                                          xObject0, xctxt);
+            ResultSequence rSeqArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(xObj0, xctxt);
             
-            XObject arg1Obj = arg1.execute(xctxt);
+            XObject xObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+            
             boolean isStartingLocNegInf = false;
             boolean isStartingLocNan = false;
-            if (arg1Obj instanceof XSDouble) {
-                XSDouble xsDouble = (XSDouble)arg1Obj;
+            
+            if (xObjArg1 instanceof XSDouble) {
+                XSDouble xsDouble = (XSDouble)xObjArg1;
                 Double dbl = Double.valueOf(xsDouble.doubleValue());
+                
                 if (dbl.doubleValue() == Double.NEGATIVE_INFINITY) {
                    isStartingLocNegInf = true;
                 }
@@ -97,13 +94,16 @@ public class FuncSubsequence extends FunctionMultiArgs {
             
             boolean isLengthInf = false;
             boolean isLengthNan = false;
-            XObject arg2Obj = null;
+            
+            XObject xObjArg2 = null;
+            
             if (numOfArgs == 3) {
-            	arg2 = m_arg2;
-            	arg2Obj = arg2.execute(xctxt);
-            	if (arg2Obj instanceof XSDouble) {
-             	   XSDouble xsDouble = (XSDouble)arg2Obj;
+            	xObjArg2 = getFunctionArgEffectiveValue(m_arg2, xctxt);
+            	
+            	if (xObjArg2 instanceof XSDouble) {
+             	   XSDouble xsDouble = (XSDouble)xObjArg2;
              	   Double dbl = Double.valueOf(xsDouble.doubleValue());
+             	   
              	   if (dbl.doubleValue() == Double.POSITIVE_INFINITY) {
              		   isLengthInf = true;
              	   }
@@ -125,23 +125,24 @@ public class FuncSubsequence extends FunctionMultiArgs {
                 return result;
             }
             
-            int startingLoc = getIntFromXObject(arg1Obj);
+            int startingLoc = getIntFromXObject(xObjArg1);
             
-            int rSeqLength = rsArg0.size();
+            int rSeqLength = rSeqArg0.size();
             
             // This function call requires either two arguments, or three arguments
             if (numOfArgs == 2) {
             	for (int idx = (startingLoc - 1); idx < rSeqLength; idx++) {
             		if ((idx >= 0) && (idx < rSeqLength)) {
-            			result.add(rsArg0.item(idx)); 
+            			result.add(rSeqArg0.item(idx)); 
             		}
             	}
             }
             else {
             	// The function call has three arguments                                                                                       	            	
             	int rIndex;
+            	
             	if (!isLengthInf) {
-            		int lengthVal = getIntFromXObject(arg2Obj); 
+            		int lengthVal = getIntFromXObject(xObjArg2); 
             		rIndex = ((startingLoc - 1) + lengthVal);
             	}
             	else {            		           		            		
@@ -150,7 +151,7 @@ public class FuncSubsequence extends FunctionMultiArgs {
 
             	for (int idx = (startingLoc - 1); idx < rIndex; idx++) {
             		if ((idx >= 0) && (idx < rSeqLength)) {
-            			result.add(rsArg0.item(idx));
+            			result.add(rSeqArg0.item(idx));
             		}
             	}
             }
@@ -170,14 +171,7 @@ public class FuncSubsequence extends FunctionMultiArgs {
      * @throws WrongNumberArgsException
      */
     public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-    {
-       /*if (!(argNum > 1 && argNum <= 3)) {
-          reportWrongNumberArgs();
-       }
-       else {
-          numOfArgs = argNum;   
-       }*/
-       
+    {              
        numOfArgs = argNum;
     }
     
@@ -218,6 +212,7 @@ public class FuncSubsequence extends FunctionMultiArgs {
        }
        else if (xObject instanceof XMLNodeCursorImpl) {
     	  String strVal = ((XMLNodeCursorImpl)xObject).str();
+    	  
     	  try {
     	     dblVal = (Double.valueOf(strVal)).doubleValue();
     	  }

@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -24,6 +25,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Attr;
@@ -33,7 +35,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSAnyURI;
 
 /**
- * Implementation of XPath 3.1 function fn:namespace-uri-for-prefix.
+ * An implementation of XPath 3.1 function, fn:namespace-uri-for-prefix.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -64,74 +66,105 @@ public class FuncNamespaceUriForPrefix extends Function2Args {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();	  
 
-		XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 		
-		String nsPrefixStr = XslTransformEvaluationHelper.getStrVal(arg0Value);
+		String nsPrefixStr = XslTransformEvaluationHelper.getStrVal(xObj0);
 
-		XObject arg1Value = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		
-		if (arg1Value instanceof XMLNodeCursorImpl) {
-			XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)arg1Value;
-			if (nodeSet.getLength() == 1) {
-				DTMCursorIterator dtmIter = nodeSet.iterRaw();
-				int nodeHandle = dtmIter.nextNode();
-				DTMManager dtmMgr = nodeSet.getDTMManager();
-				DTM dtm = dtmMgr.getDTM(nodeHandle);
-				Node node = dtm.getNode(nodeHandle);
+		if (xObj1 instanceof ResultSequence) {
+		   ResultSequence rSeq = (ResultSequence)xObj1;
+		   int size1 = rSeq.size();
+		   
+		   if (size1 == 1) {
+			  xObj1 = rSeq.item(0);  
+		   }
+		   else {
+			  throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'namespace-uri-for-prefix' second argument, "
+																																		      + "should be an xdm element node.", srcLocator); 
+		   }
+		}
+		
+		if (xObj1 instanceof XMLNodeCursorImpl) {
+			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj1;
+			
+			if (xmlNodeCursorImpl.getLength() == 1) {
+				DTMCursorIterator iter1 = xmlNodeCursorImpl.iterRaw();
+				int nextNode = iter1.nextNode();
+				
+				DTMManager dtmMgr1 = xmlNodeCursorImpl.getDTMManager();
+				
+				DTM dtm = dtmMgr1.getDTM(nextNode);
+				Node node = dtm.getNode(nextNode);
+				
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					result = getNamespaceUriForPrefix(nsPrefixStr, node);	 
+					result = getNamespaceUriForPrefix(nsPrefixStr, node);
+					
+					if (result == null) {
+					   result = new ResultSequence();
+					}
 				}
 				else {
-					throw new javax.xml.transform.TransformerException("FOAP0001: The second argument within function call "
-																										+ "fn:namespace-uri-for-prefix, needs "
-																										+ "to be an element node.", srcLocator); 
+					throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'namespace-uri-for-prefix' second argument, "
+																																			        + "should be an xdm element node.", srcLocator); 
 				}
 			}
 			else {
-				throw new javax.xml.transform.TransformerException("FOAP0001: The second argument within function call "
-																										+ "fn:namespace-uri-for-prefix, needs "
-																										+ "to be an element nodeset of size one.", srcLocator); 
+				throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'namespace-uri-for-prefix' second argument, "
+					     																														+ "should be an xdm element node.", srcLocator); 
 			}
 		}
 		else {
-			throw new javax.xml.transform.TransformerException("FOAP0001: The second argument within function call "
-																										+ "fn:namespace-uri-for-prefix, is not "
-																										+ "a node.", srcLocator);  
+			throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'namespace-uri-for-prefix' second argument, "
+				     																									                    + "is not an xdm element node.", srcLocator);  
 		}
 
 		return result;
 	}
 
 	/**
-	 * Get namespace uri for prefix, searching within this function's 'node' argument 
-	 * and 'node' argument's ancestor nodes.
+	 * Method definition, to get namespace uri for prefix, looking 
+	 * within the supplied 'node' argument and 'node' argument's ancestor 
+	 * nodes.  
+	 * 
+	 * @param nsPrefixStr                   The supplied XML namespace prefix 
+	 *                                      string.
+	 * @param node                          An XML document node, from where to
+	 *                                      start looking for an XML namespace uri
+	 *                                      information for the supplied namespace
+	 *                                      prefix.
+	 * @return                              An xdm value with type xs:anyURI
 	 */
 	private XSAnyURI getNamespaceUriForPrefix(String nsPrefixStr, Node node) {
-		XSAnyURI xsAnyUri = null;
+		
+		XSAnyURI result = null;
 
 		NamedNodeMap elemAttributes = node.getAttributes();
 		int attrListSize = elemAttributes.getLength();
+		
 		for (int idx = 0; idx < attrListSize; idx++) {
 			Attr attr = (Attr)elemAttributes.item(idx);
 			String attrName = attr.getName();
-			if ("xmlns".equals(attrName) && ((nsPrefixStr == null) || ("".equals(nsPrefixStr)))) {
-				xsAnyUri = new XSAnyURI(attr.getValue());  
+									
+			if ((XMLConstants.XMLNS_ATTRIBUTE).equals(attrName) && ((nsPrefixStr == null) || ("".equals(nsPrefixStr)))) {
+				result = new XSAnyURI(attr.getValue());  
 			}
-			else if (attrName.startsWith("xmlns:")) {
+			else if (attrName.startsWith(XMLConstants.XMLNS_ATTRIBUTE + ":")) {
 				String nsPrefixOfAttr = attrName.substring(6);
+				
 				if (nsPrefixStr.equals(nsPrefixOfAttr)) {
-					xsAnyUri = new XSAnyURI(attr.getValue()); 
+					result = new XSAnyURI(attr.getValue()); 
 				}
 			}
 		}
 
-		if (xsAnyUri != null) {
-			return xsAnyUri;  
+		if (result != null) {
+			return result;  
 		}
 		else {
-			xsAnyUri = getNamespaceUriForPrefix(nsPrefixStr, node.getParentNode()); 
+			result = getNamespaceUriForPrefix(nsPrefixStr, node.getParentNode()); 
 		}
 
-		return xsAnyUri;
+		return result;
 	}
 }

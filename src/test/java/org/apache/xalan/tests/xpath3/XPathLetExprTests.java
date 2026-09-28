@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 test cases, for the "let" expression.
+ * XPath 3.1 test cases for XPath "let" expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -31,9 +31,9 @@ import org.junit.Test;
  */
 public class XPathLetExprTests extends XslTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "let_expr/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_let_expr/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "let_expr/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xpath_let_expr/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -159,6 +159,36 @@ public class XPathLetExprTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslLetExprTest12() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslLetExprTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslLetExprTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

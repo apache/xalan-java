@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -28,6 +30,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -41,7 +45,12 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Node;
+
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Class definition, to implement an XPath 3.1 expression 'let'.
@@ -60,7 +69,8 @@ public class XPathLetExpr extends Expression {
     private List<XPathLetExprVarBinding> m_letExprVarBindingList = new ArrayList<XPathLetExprVarBinding>();
     
     /**
-     * An XPath 3.1 'let' expression's 'return' clause, XPath expression string.
+     * An XPath 3.1 'let' expression's 'return' clause, 
+     * XPath expression string.
      */
     private String m_returnExprXPathStr = null;
     
@@ -139,21 +149,26 @@ public class XPathLetExpr extends Expression {
     		   if (xpathNamedFuncRef != null) {
     			   String funcNamespace = xpathNamedFuncRef.getFuncNamespace();
     			   String funcLocalName = xpathNamedFuncRef.getFuncName();
-    			   int concatArity = 0;
+    			       			   
     			   short funcArity = 0;
+    			   int fnConcatArity = 0;
     			   
-    			   if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
-    				   concatArity = xpathNamedFuncRef.getConcatArity();
-    				   FuncConcat funcConcat = new FuncConcat();
-    				   
-    				   if ((concatArity < funcConcat.getMinArity()) || (concatArity > funcConcat.getMaxArity())) {
-    					   throw new TransformerException("XPTY0004 : XPath function fn:concat's arity can be between " + 
-																				    							    funcConcat.getMinArity() + " and " 
-																				    							    + funcConcat.getMaxArity() + ".", srcLocator); 
-    				   }
+    			   if (!((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName))) {
+    				   funcArity = xpathNamedFuncRef.getArity();
     			   }
     			   else {
-    				   funcArity = xpathNamedFuncRef.getArity();
+    				   // An XPathNamedFunctionReference object instance is referring 
+    				   // to, XPath function fn:concat.
+    				   
+                       fnConcatArity = xpathNamedFuncRef.getConcatArity();
+    				   
+    				   FuncConcat funcConcat = new FuncConcat();
+    				   
+    				   if ((fnConcatArity < funcConcat.getMinArity()) || (fnConcatArity > funcConcat.getMaxArity())) {
+    					   throw new TransformerException("XPTY0004 : An XPath function 'concat' Xalan-J arity limit is between " + 
+																				    							                  funcConcat.getMinArity() + " and " 
+																				    							                  + funcConcat.getMaxArity() + ".", srcLocator); 
+    				   }
     			   } 
 
     			   FunctionTable funcTable = xctxt.getFunctionTable();
@@ -175,13 +190,15 @@ public class XPathLetExpr extends Expression {
 
     			   if (funcIdObj != null) {
     				   String funcIdStr = funcIdObj.toString();
+    				   
     				   Function function = funcTable.getFunction(Integer.valueOf(funcIdStr));
+    				   
     				   function.setLocalName(funcLocalName);
     				   function.setNamespace(funcNamespace);        		  
     				   
     				   if (function instanceof FuncConcat) {        		     
     					   FuncConcat funcConcat = (FuncConcat)function;
-    					   funcConcat.setRuntimeArgCount(concatArity);
+    					   funcConcat.setRuntimeArgCount(fnConcatArity);
     				   }
     				   else {
     					   function.setArity(new Short[] { funcArity });
@@ -202,8 +219,8 @@ public class XPathLetExpr extends Expression {
     			   else {
     				   String funcQualifiedName = "{" + funcNamespace + "}" + funcLocalName;
     				   
-    				   throw new TransformerException("FODC0005 : Function definition for named function reference " + 
-    						   																					     funcQualifiedName + " doesn't exist.", srcLocator);
+    				   throw new TransformerException("FODC0005 : An XSL function definition for named function reference " + 
+    						   																					            funcQualifiedName + " doesn't exist.", srcLocator);
     			   }
     		   }
     		   else if (varBindingEvalResult == null) {
@@ -211,7 +228,7 @@ public class XPathLetExpr extends Expression {
     		   }
 
     		   if (varBindingEvalResult == null) {
-    			   throw new TransformerException("FODC0005 : XPath 'let' expression's variable could not be bound to a non-null XDM value.", srcLocator); 
+    			   throw new TransformerException("FODC0005 : An XPath 3.1 'let' expression variable binding value doesn't exist.", srcLocator); 
     		   }
 
     		   QName qNameVar = new QName(varName);
@@ -234,6 +251,55 @@ public class XPathLetExpr extends Expression {
     	   }
 
     	   evalResult = returnExprXpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	   
+    	   if (evalResult instanceof XMLNodeCursorImpl) {
+    		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
+    		   DTMCursorIterator iter1 = xmlNodeCursorImpl.iter();
+    		   
+    		   int nextNode = DTM.NULL;
+    		   
+    		   // XPath expressions like, (1 to 5)[. mod 2 eq 0] were converted
+    		   // to a nodeset having shall nodes with name like b_12345. 
+    		   
+    		   Pattern pattern = Pattern.compile("b_[0-9]{5}");
+			   Matcher matcher = null;
+			   
+			   ResultSequence rSeq = new ResultSequence(); 
+    		   
+    		   while ((nextNode = iter1.nextNode()) != DTM.NULL) {
+    			   DTM dtm = xctxt.getDTM(nextNode);    			  
+    			   String nodeName = dtm.getNodeName(nextNode);    			  
+
+    			   matcher = pattern.matcher(nodeName);
+
+    			   if (matcher.matches()) {
+    				   Node node = dtm.getNode(nextNode);
+    				   String str1 = node.getTextContent();
+
+    				   try {
+    					   double dbl = Double.valueOf(str1);    					
+    					   int int1 = (int)dbl;
+
+    					   if (int1 == dbl) {
+    						   rSeq.add(new XSInteger(str1));
+    					   }
+    					   else {
+    						   rSeq.add(new XSDouble(str1));
+    					   }
+    				   }
+    				   catch (NumberFormatException ex) {
+    					   // No op 
+    				   }
+    			   }    			  
+    		   }
+    		   
+    		   if (rSeq.size() != 0) {    			  
+    			  evalResult = rSeq;
+    		   }
+    		   else {
+    			  evalResult = returnExprXpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    		   }
+    	   }
 
     	   if (evalResult == null) {
     		   evalResult = new ResultSequence();   

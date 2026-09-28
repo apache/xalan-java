@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:23Z" fail="12" name="sequence" pass="72" run="84" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-28T12:14:05Z" fail="11" name="sequence" pass="73" run="84" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -13,19 +13,19 @@
    <testResult status="pass" testName="sequence-0112"/>
    <testResult status="pass" testName="sequence-0113"/>
    <testResult status="pass" testName="sequence-0114"/>
-   <testResult reason="Xalan configured" status="skipped" testName="sequence-0115"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="sequence-0115"/>
    <testResult status="pass" testName="sequence-0116"/>
    <testResult status="pass" testName="sequence-0117"/>
    <testResult status="pass" testName="sequence-0118"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="sequence-0119"/>
-   <testResult reason="Xalan configured" status="skipped" testName="sequence-0120"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="sequence-0120"/>
    <testResult status="pass" testName="sequence-0121"/>
    <testResult status="pass" testName="sequence-0122"/>
    <testResult status="pass" testName="sequence-0123"/>
    <testResult status="pass" testName="sequence-0124"/>
    <testResult status="fail" testName="sequence-0125"/>
    <testResult status="pass" testName="sequence-0126"/>
-   <testResult reason="Xalan configured" status="skipped" testName="sequence-0127"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="sequence-0127"/>
    <testResult status="pass" testName="sequence-0128"/>
    <testResult status="pass" testName="sequence-0129"/>
    <testResult status="pass" testName="sequence-0130"/>
@@ -77,7 +77,7 @@ java.lang.Exception: Line# : 9, Column# : 83 XPST0003: Expected ), but found: ,<
    <testResult status="pass" testName="sequence-1004"/>
    <testResult status="pass" testName="sequence-1005"/>
    <testResult status="pass" testName="sequence-1101"/>
-   <testResult status="fail" testName="sequence-1201"/>
+   <testResult status="pass" testName="sequence-1201"/>
    <testResult status="pass" testName="sequence-1202"/>
    <testResult status="pass" testName="sequence-1203"/>
    <testResult status="pass" testName="sequence-1204"/>

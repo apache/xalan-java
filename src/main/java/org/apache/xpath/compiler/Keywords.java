@@ -853,6 +853,8 @@ public class Keywords
   
   public static final String Q_MARK = "?";
   
+  public static final String SIMPLE_MAP_OP = "!";
+  
   public static final String NUMBER = "number";
   
   public static final String PERMUTE = "permute";

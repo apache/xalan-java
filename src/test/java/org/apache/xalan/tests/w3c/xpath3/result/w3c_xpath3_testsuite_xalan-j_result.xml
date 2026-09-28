@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-09-25T15:59:46Z" desc="W3C XPath 3.1 test suite results" fail="918" pass="8584" run="9502" skipped="20" success="90.34%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-09-28T12:12:50Z" desc="W3C XPath 3.1 test suite results" fail="925" pass="8682" run="9607" skipped="20" success="90.37%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -59,6 +59,7 @@
     <fn-string-length fail="0" pass="32" run="32" success="100.0%"/>
     <fn-string-to-codepoints fail="1" pass="43" run="44" success="97.73%"/>
     <fn-string fail="2" pass="68" run="70" success="97.14%"/>
+    <fn-subsequence fail="16" pass="89" run="105" success="84.76%"/>
     <fn-substring-after fail="3" pass="35" run="38" success="92.11%"/>
     <fn-substring-before fail="1" pass="36" run="37" success="97.3%"/>
     <fn-substring fail="6" pass="42" run="48" success="87.5%"/>
@@ -169,7 +170,7 @@
     <op-yearMonthDuration-less-than fail="0" pass="28" run="28" success="100.0%"/>
   </op>
   <prod>
-    <prod-ArrowPostfix fail="19" pass="23" run="42" success="54.76%"/>
+    <prod-ArrowPostfix fail="11" pass="31" run="42" success="73.81%"/>
     <prod-AxisStep.abbr fail="2" pass="19" run="21" success="90.48%"/>
     <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
     <prod-AxisStep.ancestor fail="1" pass="20" run="21" success="95.24%"/>
@@ -179,7 +180,7 @@
     <prod-AxisStep.preceding fail="1" pass="16" run="17" success="94.12%"/>
     <prod-AxisStep fail="28" pass="208" run="236" success="88.14%"/>
     <prod-CastableExpr fail="148" pass="700" run="848" success="82.55%"/>
-    <prod-ForClause fail="16" pass="59" run="75" success="78.67%"/>
+    <prod-ForClause fail="15" pass="60" run="75" success="80.0%"/>
     <prod-GeneralComp.eq fail="19" pass="100" run="119" success="84.03%"/>
     <prod-GeneralComp.ge fail="8" pass="50" run="58" success="86.21%"/>
     <prod-GeneralComp.gt fail="12" pass="55" run="67" success="82.09%"/>

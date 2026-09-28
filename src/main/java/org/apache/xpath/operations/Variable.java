@@ -341,6 +341,10 @@ public class Variable extends Expression implements PathComponent
            } 
            else {  
               result = xctxt.getVarStack().getVariableOrParam(xctxt, m_qname);
+              
+              if (result instanceof XMLNodeCursorImpl) {
+            	 result = result.getFresh();
+              }
            }
            
            ElemVariable elemVariable = this.getElemVariable();           

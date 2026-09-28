@@ -150,16 +150,18 @@ public class ResultSequence extends XObject
     	   XObject xObj = m_list.get(0);
     	   
     	   if ((xObj instanceof XNumber) || (xObj instanceof XSNumericType)) {
-    		  throw new TransformerException("FORG0006 : An xdm sequence with size greater than one, "
-    		  		                                                                               + "where sequence first item is "
-    		  		                                                                               + "numeric, is not defined."); 
+    		  throw new TransformerException("FORG0006 : An xdm sequence with size greater than one, whose first "
+    		  		                                                                                + "item is numeric, the sequence effective "
+    		  		                                                                                + "boolean value is not defined."); 
     	   }
     	   else {
     		  result = true; 
     	   }
     	}
-    	else {
-    	   result = (size1 > 0);
+    	else if (size1 == 1) {
+    	   XObject xObj = m_list.get(0);
+    	   
+    	   result = xObj.bool();
     	}
     	
     	return result;
@@ -174,13 +176,17 @@ public class ResultSequence extends XObject
      * values of the xdm items within this sequence.
      */
     public String str() {        
+    	
     	String result = null;
         
         StringBuffer strBuff = new StringBuffer();
+        
         int rsSize = m_list.size();
+        
         for (int idx = 0; idx < rsSize; idx++) {
            XObject xObj = item(idx);
            String itemStrValue = XslTransformEvaluationHelper.getStrVal(xObj);
+           
            if (idx < (rsSize - 1)) {        	           	   
               strBuff.append(itemStrValue + " ");
            }

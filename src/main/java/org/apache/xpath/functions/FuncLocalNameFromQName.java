@@ -28,7 +28,7 @@ import org.apache.xpath.types.XSNCName;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of XPath 3.1 function fn:local-name-from-QName.
+ * An implementation of XPath 3.1 function, fn:local-name-from-QName.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -60,10 +60,28 @@ public class FuncLocalNameFromQName extends FunctionDef1Arg {
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
 		XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		
+		if (arg0Value instanceof ResultSequence) {
+			ResultSequence rSeq = (ResultSequence)arg0Value;
+
+			if (rSeq.size() == 0) {
+				result = new ResultSequence();
+
+				return result;
+			}
+			else if (rSeq.size() == 1) {
+				arg0Value = rSeq.item(0); 
+			}
+			else {
+			    throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'local-name-from-QName' first argument, "
+		                                                                                                                                    + "cannot be a sequence with size greater than one.", srcLocator); 
+			}
+		}
 
 		if (arg0Value instanceof XSQName) {		  
 			XSQName xsQname = (XSQName)arg0Value;
 			String localPart = xsQname.getLocalPart();	      
+			
 			if (!(Constants.ANONYMOUS_FUNCTION).equals(localPart)) {
 				result = new XSNCName(localPart);
 			}
@@ -72,9 +90,8 @@ public class FuncLocalNameFromQName extends FunctionDef1Arg {
 			}
 		}
 		else {
-			throw new javax.xml.transform.TransformerException("FOAP0001: The first argument within fn:local-name-from-QName "
-																										+ "function call is not of type "
-																										+ "xs:QName", srcLocator);  
+			throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'local-name-from-QName' first argument, "
+                                                                                                                                        + "is not with an XML schema type 'QName'.", srcLocator);  
 		}
 
 		return result;

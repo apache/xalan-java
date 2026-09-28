@@ -31,7 +31,7 @@ public class XPathMap extends XObject {
    private static final long serialVersionUID = -6876597720235822722L;
 	
    // The underlying native map object, to store items of an XPath map 
-   private Map<XObject, XObject> fMap = new HashMap<XObject, XObject>();
+   private Map<XObject, XObject> m_map = new HashMap<XObject, XObject>();
     
    /*
     * Class constructor.
@@ -47,35 +47,35 @@ public class XPathMap extends XObject {
     * For a given key value, get corresponding map entry value.
     */
    public XObject get(XObject key) {
-	  return fMap.get(key);  
+	  return m_map.get(key);  
    }
    
    /**
     * Add an key, value entry to map.
     */
    public void put(XObject key, XObject value) {
-	  fMap.put(key, value);  
+	  m_map.put(key, value);  
    }
    
    /**
     * Get native contents of this map object.
     */
    public Map<XObject, XObject> getNativeMap() {
-       return fMap;   
+       return m_map;   
    }
    
    /**
     * Set a new native map object, as content of this XPath map.
     */
    public void setNativeMap(Map<XObject, XObject> mapObj) {
-      fMap = mapObj;
+      m_map = mapObj;
    }
    
    /**
     * Get number of entries in this map.
     */
    public int size() {
-       return fMap.size();   
+       return m_map.size();   
    }
    
    /**
@@ -85,7 +85,7 @@ public class XPathMap extends XObject {
     * is greater than 0.
     */
    public boolean bool() {
-       return (fMap.size() > 0);       
+       return (m_map.size() > 0);       
    }
 
 }

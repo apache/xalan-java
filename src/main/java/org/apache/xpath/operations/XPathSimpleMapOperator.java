@@ -26,8 +26,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Class definition, implementing an XPath 3.1 simple 
- * map operator, '!'.
+ * Class definition, to implement an XPath 3.1 simple map operator, '!'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -61,6 +60,7 @@ public class XPathSimpleMapOperator extends XPathOperator
        
        if (m_left instanceof SelfIteratorNoPredicate) {
     	   XObject contextItem = xctxt.getXPath3ContextItem();
+    	   
     	   if (contextItem != null) {
     		   xObj0 = contextItem;  
     	   }
@@ -74,16 +74,18 @@ public class XPathSimpleMapOperator extends XPathOperator
        
        if (xObj0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xObj0;
-           DTMCursorIterator dtmIter = xsObjNodeSet.iterRaw();
+           DTMCursorIterator dtmIter = xsObjNodeSet.iter();
+                                 
+           ResultSequence resultSeq = new ResultSequence();
            
-           int nextNode = DTM.NULL;           
-           ResultSequence resultSeq = new ResultSequence();            
+           int nextNode = DTM.NULL;
            
            while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
               xctxt.pushCurrentNode(nextNode);
               
               try {
-            	  XObject xsObj = m_right.execute(xctxt, nextNode);                          	  
+            	  XObject xsObj = m_right.execute(xctxt, nextNode);
+            	  
             	  resultSeq.add(xsObj);
               }
               finally {
@@ -95,7 +97,9 @@ public class XPathSimpleMapOperator extends XPathOperator
        }
        else if (xObj0 instanceof ResultSequence) {
            ResultSequence inpSeq = (ResultSequence)xObj0;
+           
            ResultSequence resultSeq = new ResultSequence();
+           
            int size1 = inpSeq.size();
            
            for (int idx = 0; idx < size1; idx++) {
@@ -111,6 +115,7 @@ public class XPathSimpleMapOperator extends XPathOperator
 
         	   try {
         		   XObject xsObj = m_right.execute(xctxt, sourceNode);        		   
+        		   
         		   resultSeq.add(xsObj);
         	   }
         	   finally {
@@ -132,8 +137,9 @@ public class XPathSimpleMapOperator extends XPathOperator
     	   xctxt.setXPath3ContextSize(1);
 
     	   try {
-    		   XObject xsObj = m_right.execute(xctxt, sourceNode);
-    		   result = xsObj;
+    		   XObject xObj = m_right.execute(xctxt, sourceNode);
+    		   
+    		   result = xObj;
     	   }
     	   finally {
     		   xctxt.setXPath3ContextItem(prevCtxtItem);

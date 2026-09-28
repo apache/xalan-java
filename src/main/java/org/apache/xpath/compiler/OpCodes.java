@@ -748,7 +748,7 @@ public class OpCodes
 	   * 
 	   * @xsl.usage advanced
 	   */
-	  public static final int OP_SIMPLE_MAP_OPERATOR = 118;
+	  public static final int OP_SIMPLE_MAP = 118;
 
 	  public static final int OP_SEQUENCE_TYPE_EXPR = 119;
 

@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function fn:in-scope-prefixes.
+ * An implementation of XPath 3.1 function, fn:in-scope-prefixes.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -80,13 +80,12 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 		
 		if (m_arg0 == null) {
 			throw new javax.xml.transform.TransformerException("XPST0017: An XPath 3.1 function 'in-scope-prefixes' "
-					                                                                          + "requires an xdm element node as "
-					                                                                          + "argument. No function argument has been provided.", 
-					                                                                                                     srcLocator);
+										                                                                            + "requires an xdm element node as "
+										                                                                            + "argument. No function argument has been provided.", srcLocator);
 		}		
 		else if (m_arg1 != null) {
 			throw new javax.xml.transform.TransformerException("XPST0017: An XPath 3.1 function 'in-scope-prefixes' "
-                                                                                              + "cannot have more than one argument.", srcLocator);
+                                                                                                                    + "cannot have more than one argument.", srcLocator);
 		}
 
 		XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
@@ -94,10 +93,12 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 		if (xObj0 instanceof XMLNodeCursorImpl) {
 			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj0;
 			DTMCursorIterator dtmIter = xmlNodeCursorImpl.iter();
-			int nodeHandle = dtmIter.nextNode();
-			DTM dtm = xctxt.getDTM(nodeHandle);
 			
-			if ((dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) && (nodeHandle != DTM.NULL)) {
+			int nextNode = dtmIter.nextNode();
+			
+			DTM dtm = xctxt.getDTM(nextNode);
+			
+			if ((dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) && (nextNode != DTM.NULL)) {
 				Map<String, String> map1 = new HashMap<String, String>();
 				
 				map1.put(Constants.S_XMLNAMESPACEURI, XMLConstants.XML_NS_PREFIX);
@@ -108,8 +109,8 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 								
 				XSString arg0XsPathStr = (XSString)(funcPath.execute(xctxt));				
 				
-				String localName = dtm.getLocalName(nodeHandle);
-				String namespace = dtm.getNamespaceURI(nodeHandle);
+				String localName = dtm.getLocalName(nextNode);
+				String namespace = dtm.getNamespaceURI(nextNode);
 				
 				String xmlSystemId = XslTransformData.m_xmlSystemId;
 				System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
@@ -123,10 +124,13 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 					Document document = dBuilder.parse(xmlSystemId);
 					NodeList nodeList = document.getElementsByTagNameNS(namespace, localName);
 					int size1 = nodeList.getLength();
+					
 					Node node2 = null;
+					
 					for (int idx = 0; idx < size1; idx++) {
 					   node2 = nodeList.item(idx);
 					   String str1 = getFnPathStrElemNode((Element)node2);
+					   
 					   if (str1.equals(arg0XsPathStr.stringValue())) {
 						  break;  
 					   }
@@ -139,9 +143,11 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 						Iterator<String> iter1 = keySet1.iterator();
 
 						ResultSequence rSeq = new ResultSequence();
+						
 						while (iter1.hasNext()) {
 							String nsUri = iter1.next();
 							String prefix = map1.get(nsUri); 
+							
 							rSeq.add(new XSString(prefix)); 
 						}
 
@@ -149,17 +155,17 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 					}
 				}
 				catch (Exception ex) {
-					// no op
+					// No op
 				}
 			}
 			else {
 				throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'in-scope-prefixes' "
-																											+ "argument is not an element node.", srcLocator);	 
+																											            + "argument is not an xdm element node.", srcLocator);	 
 			}
 		}
 		else {
 			throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'in-scope-prefixes' "
-																											+ "argument is not an element node.", srcLocator); 
+																											        + "argument is not an xdm element node.", srcLocator); 
 		}
 		
 		int size1 = result.size();		
@@ -167,14 +173,17 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 		ResultSequence rSeq2 = new ResultSequence();
 		
 		boolean isEmptyStrAdded = false;
+		
 		for (int idx = 0; idx < size1; idx++) {
 			String str1 = ((XSString)result.item(idx)).stringValue();
+			
 			if (!"".equals(str1)) {
-				XSNCName xsNcName = new XSNCName(str1);
+				XSNCName xsNcName = new XSNCName(str1);				
 				rSeq2.add(xsNcName);
 			}
 			else if (!isEmptyStrAdded) {
 				rSeq2.add(new XSString(str1));
+				
 				isEmptyStrAdded = true;
 			}
 		}
@@ -200,28 +209,37 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 		NamedNodeMap namedNodeMap = elemNode.getAttributes();
 		
 		int attrCount = namedNodeMap.getLength();
+		
 		boolean isXmlNsUndecl = false;
+		
 		for (int idx = 0; idx < attrCount; idx++) {
 			Node attrNode = namedNodeMap.item(idx);
+			
 			String attrName = attrNode.getNodeName();
 			String attrValue = attrNode.getNodeValue();
+			
 			if (!"".equals(attrValue)) {
 			   Set<Entry<String,String>> entrySet = map1.entrySet();
 			   Iterator<Entry<String,String>> iter = entrySet.iterator();
+			   
 			   while (iter.hasNext()) {
 				  Entry<String,String> entry = iter.next();
+				  
 				  String key = entry.getKey();
 				  String value = entry.getValue();
+				  
 				  if (attrName.contains(":")) {
 					  String prefixStr = attrName.substring(6);
+					  
 					  if (value.equals(prefixStr) && "".equals(key)) {
 						  /**
-						   * Implementing, XML 1.1 namespace undeclaration.
-						   * An XML namespace declaration xmlns:prefix="",
-						   * undeclares previously declared XML namespace
-						   * with xmlns:prefix="..." within the same XML document
-						   * with the same XML namespace prefix.
+						   * Implementing, XML 1.1 namespace undeclaration
+						   * 
+						   * An XML namespace declaration xmlns:prefix="", undeclares 
+						   * previously declared XML namespace with xmlns:prefix="..." 
+						   * within the same XML document with the same XML namespace prefix.
 						   */
+						  
 						  map1.remove(attrValue);
 						  map1.remove(key);
 						  
@@ -273,6 +291,7 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 			String localName = null;
 			String nsUri = null;
 			String name = null;			
+			
 			if (node instanceof Document) {
 				name = "#document"; 
 			}
@@ -288,7 +307,9 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 				if (prevSibling.getNodeType() == Node.ELEMENT_NODE) {
 					String nsUri2 = prevSibling.getNamespaceURI();
 					String localName2 = prevSibling.getLocalName();
+					
 					boolean nsEqual = false;
+					
 					if ((nsUri == null) && (nsUri2 == null)) {
 						nsEqual = true;  
 					}
@@ -309,6 +330,7 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 			}
 			else if ("".equals(result)) {
 				String nsQualName = localName;
+				
 				if (nsUri != null) {
 					nsQualName = "Q{" + nsUri + "}" + nsQualName;  
 				}
@@ -325,6 +347,7 @@ public class FuncInScopePrefixes extends FunctionMultiArgs {
 			}
 			else {
 				String nsQualName = localName;
+				
 				if (nsUri != null) {
 					nsQualName = "Q{" + nsUri + "}" + nsQualName;  
 				}

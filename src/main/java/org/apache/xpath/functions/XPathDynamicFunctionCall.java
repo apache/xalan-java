@@ -875,29 +875,31 @@ public class XPathDynamicFunctionCall extends Expression {
 		ElemFunction elemFunction = functionRef.getXslStylesheetFunction();
 		
 		if (elemFunction != null) {
-			// Evaluating XSL stylesheet function call (i.e, xsl:function 
-			// call evaluation).
+			// Evaluate XSL stylesheet function call
 			
 			ResultSequence argSequence = new ResultSequence();
 			
-			int argListSize = m_argList.size();
-			
-			for (int idx = 0; idx < argListSize; idx++) {
-				String argXPathStr = m_argList.get(idx);
-				
-				if (prefixTable != null) {
-					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-				}
+			if (m_argList != null) {
+				int argListSize = m_argList.size();
 
-				XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-				
-				if (m_vars != null) {
-					argXPath.fixupVariables(m_vars, m_globals_size);
-				}
+				for (int idx = 0; idx < argListSize; idx++) {
+					String argXPathStr = m_argList.get(idx);
 
-				XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-				argSequence.add(argValue);
-			}
+					if (prefixTable != null) {
+						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+					}
+
+					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+					if (m_vars != null) {
+						argXPath.fixupVariables(m_vars, m_globals_size);
+					}
+
+					XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+					argSequence.add(argValue);
+				}
+		    }
 
 			ExpressionNode expressionNode = getExpressionOwner();
 			ExpressionNode stylesheetRootNode = null;

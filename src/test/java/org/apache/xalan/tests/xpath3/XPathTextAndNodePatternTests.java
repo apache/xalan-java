@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XPathTextAndNodePattern extends XslTransformTestsUtil {        
+public class XPathTextAndNodePatternTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_node_tests/";
     

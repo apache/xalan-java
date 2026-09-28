@@ -1715,6 +1715,71 @@ public class XPathParser
              
              return;             
           }
+          else if (isSequenceConstructor) {
+        	 StringBuffer strBuff = new StringBuffer();        	 
+        	 String str1 = null;        	 
+        	 
+        	 strBuff.append("(");
+        	 
+        	 boolean isXpathExprOk = false;
+        	 
+        	 while (m_token != null) {
+        		strBuff.append(m_token + " ");
+        		str1 = (strBuff.toString()).trim();
+        		
+        		if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+        			consumeExpected(')');
+        			
+        			isXpathExprOk = true;
+        			
+        			break;
+        		}
+        		
+        		nextToken();
+        	 }
+        	 
+        	 if (isXpathExprOk && tokenIs(Keywords.SIMPLE_MAP_OP) && !(lookahead('=', 1) || lookahead('(', 1))) {
+        		 // An XPath 3.1 parse for simple map operator, '!'
+        		
+        		 consumeExpected('!');
+
+        		 strBuff = new StringBuffer();
+        		 String str2 = null;
+
+        		 while (m_token != null) {
+        			 strBuff.append(m_token + " ");        		   
+        			 nextToken();
+        		 }
+
+        		 str2 = (strBuff.toString()).trim();
+        		 
+        		 int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
+
+        		 appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+        		 List<String> seqConstructorXPathParts = new ArrayList<String>();
+        		 seqConstructorXPathParts.add(str1);
+
+        		 XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+        		 xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);
+
+        		 m_xpathSequenceConstructor = xPathSeqConstructor; 
+        		 
+        		 m_xpathSequenceConstructor.setXPathOp(Keywords.SIMPLE_MAP_OP);
+        		 
+        		 if (str2.length() > 0) {
+        			m_xpathSequenceConstructor.setXPathSuffixStr(str2); 
+        		 }
+
+        		 m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+        				                                     m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);        		 
+        		 
+        		 return;
+        	 }
+        	 else {
+        		 restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
+        	 }
+          }
           
           if (m_token == null) {
         	 return; 
@@ -3053,12 +3118,12 @@ public class XPathParser
       else if (tokenIs("some")) {
          String prevTokenStr = getTokenRelative(-2);
          
-         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.SOME);
+         m_quantifiedExpr = xpathQuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.SOME);
       }
       else if (tokenIs("every")) {
          String prevTokenStr = getTokenRelative(-2);
          
-         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.EVERY);
+         m_quantifiedExpr = xpathQuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.EVERY);
       }
       else if (tokenIs("if")) {         
          m_ifExpr = IfExpr();
@@ -3506,20 +3571,20 @@ public class XPathParser
       
       List<XPathLetExprVarBinding> letExprVarBindingList = new ArrayList<XPathLetExprVarBinding>();
       
-      while (!tokenIs("return") && m_token != null) {
-          String bindingVarName = null;
+      while (m_token != null) {
+          String varBindingName = null;
           
           if ((letExprVarBindingList.size() > 0) && tokenIs(',') && lookahead('$', 1)) {
               nextToken();
               nextToken();              
-              bindingVarName = m_token;              
+              varBindingName = m_token;              
               nextToken();              
               consumeExpected(':');
               consumeExpected('=');
           }
           else if (tokenIs('$')) {
               nextToken();
-              bindingVarName = m_token;              
+              varBindingName = m_token;              
               nextToken();
               consumeExpected(':');              
               consumeExpected('=');
@@ -3530,8 +3595,112 @@ public class XPathParser
           boolean isXPathExprOk = false;
           
           TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
-                              
-          if (tokenIs("function")) {
+                           
+          if (tokenIs('(')) {
+        	  StringBuffer strBuff = new StringBuffer();
+        	  String str1 = null;
+
+        	  while (m_token != null) {
+        		  strBuff.append(m_token + " ");
+        		  str1 = (strBuff.toString()).trim();
+
+        		  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+        			  consumeExpected(')');
+        			  
+        			  if (!tokenIs('[')) {        				  
+        				  while (m_token != null) {
+        					  strBuff.append(m_token + " ");
+        					  str1 = (strBuff.toString()).trim();
+
+        					  if (tokenIs("return")) {
+        						  str1 = str1.substring(0, str1.length() - 6);
+        						  str1 = str1.trim();
+
+        						  isXPathExprOk = true;
+
+        						  varBindingXPathStr = str1;
+
+        						  break; 
+        					  }
+        					  else if (tokenIs(',')) { 
+        						  str1 = str1.substring(0, str1.length() - 1);
+        						  str1 = str1.trim();
+
+        						  isXPathExprOk = true;
+
+        						  varBindingXPathStr = str1;
+
+        						  break;
+        					  }
+
+        					  nextToken();
+        				  }
+        			  }
+        			  else {        				         				  
+        				 while (m_token != null) {
+        					strBuff.append(m_token + " ");
+        	        		str1 = (strBuff.toString()).trim();
+        	        		
+        	        		if (tokenIs(']') && StringUtil.isStrHasBalancedParentheses(str1, '[', ']')) {        	        			
+        	        		   consumeExpected(']');
+        	        		   
+        	        		   if (!(tokenIs(',') || tokenIs("return"))) {        	        			  
+        	        			  while (m_token != null) {
+        	        				 strBuff.append(m_token + " ");
+        	        	        	 str1 = (strBuff.toString()).trim();
+        	        	        	         	        	        	 
+        	        	        	 if (tokenIs("return")) {
+        	        	        		str1 = str1.substring(0, str1.length() - 6);
+         	        	        	    str1 = str1.trim();
+         	        	        	    
+         	        	        	    isXPathExprOk = true;
+
+         	          				    varBindingXPathStr = str1;
+         	          				  
+         	          				    break; 
+        	        	        	 }
+        	        	        	 else if (tokenIs(',')) { 
+         	        	        	    str1 = str1.substring(0, str1.length() - 1);
+         	        	        	    str1 = str1.trim();
+         	        	        	    
+         	        	        	    isXPathExprOk = true;
+
+         	          				    varBindingXPathStr = str1;
+         	          				  
+         	          				    break;
+         	        	        	 }
+        	        	        		
+        	        				 nextToken();
+        	        			  }
+        	        		   }
+        	        		   else {
+        	        			   isXPathExprOk = true;
+        	        			   
+        	        			   varBindingXPathStr = str1; 
+        	        			   
+        	        			   break;
+        	        		   }
+        	        		   
+        	        		   break;
+        	        		}
+        	        		
+        	        		if (isXPathExprOk) {
+        	        			break;  
+        	        		}
+        	        		
+        	        		nextToken();
+        				 }
+        			  }        			  
+        		  }        		  
+        		          		  
+        		  if (isXPathExprOk) {
+        			 break;  
+        		  }
+        		  
+        		  nextToken();
+        	  }
+          }
+          else if (tokenIs("function")) {
         	  StringBuffer strBuff = new StringBuffer();
         	  String str1 = null; 
         	          	          	          	  
@@ -3547,8 +3716,7 @@ public class XPathParser
         			  int idx = str1.indexOf(" : ");
         	    		
         			  if (idx != -1) {
-        				  // Checking, whether substring " : " is within 
-        				  // string literal.
+        				  // The substring " : " is within string literal
 
         				  String prefixStr = str1.substring(0, idx);
         				  String suffixStr = str1.substring(idx + 3);
@@ -3566,24 +3734,29 @@ public class XPathParser
         		  }
 
         		  nextToken();
-        	  }        	          	  
+        	  }
           }
           
           if (isXPathExprOk) {        		 
         	  XPathLetExprVarBinding letExprVarBinding = new XPathLetExprVarBinding();
+        	  
+        	  varBindingXPathStr = varBindingXPathStr.replace(" : ", ":");
+        	  
+        	  if (varBindingXPathStr.startsWith("(") && varBindingXPathStr.endsWith(")")) {
+        		 varBindingXPathStr = (varBindingXPathStr.substring(1, varBindingXPathStr.length() - 1)).trim();  
+        	  }
               
-        	  letExprVarBinding.setVarName(bindingVarName);
+        	  letExprVarBinding.setVarName(varBindingName);
               letExprVarBinding.setXPathExprStr(varBindingXPathStr);
 
-              letExprVarBindingList.add(letExprVarBinding);  
+              letExprVarBindingList.add(letExprVarBinding);
      	  } 
           else {
         	  restoreTokenQueueXPathParsePos(prevTokenQueuePos);
         	  
               List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
               
-              while (!((tokenIs('$') && lookahead(':', 2) && lookahead('=', 3)) || 
-                                                                               tokenIs("return")) && m_token != null) {
+              while (!((tokenIs('$') && lookahead(':', 2) && lookahead('=', 3)) || tokenIs("return")) && m_token != null) {
                   bindingXPathExprStrPartsList.add(m_token);
                   nextToken();
               }
@@ -3595,9 +3768,11 @@ public class XPathParser
               }
               
               varBindingXPathStr = getXPathStrFromComponentParts(bindingXPathExprStrPartsList);
+              
+              varBindingXPathStr = varBindingXPathStr.replace(" : ", ":");
 
               XPathLetExprVarBinding letExprVarBinding = new XPathLetExprVarBinding();
-              letExprVarBinding.setVarName(bindingVarName);
+              letExprVarBinding.setVarName(varBindingName);
               letExprVarBinding.setXPathExprStr(varBindingXPathStr);
 
               letExprVarBindingList.add(letExprVarBinding);
@@ -3641,8 +3816,8 @@ public class XPathParser
       return letExpr;
   }
   
-  protected XPathQuantifiedExpr QuantifiedExpr(String prevTokenStrBeforeQuantifier, int quantifierExprType) 
-                                                              throws javax.xml.transform.TransformerException
+  protected XPathQuantifiedExpr xpathQuantifiedExpr(String prevTokenStrBeforeQuantifier, int quantifierExprType) 
+                                                                                                               throws javax.xml.transform.TransformerException
   {
       int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
       
@@ -4505,7 +4680,7 @@ public class XPathParser
             
            nextToken();
            
-           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_SIMPLE_MAP_OPERATOR);
+           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_SIMPLE_MAP);
 
            int opPlusLeftHandLen = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
 
@@ -4847,7 +5022,22 @@ public class XPathParser
         	  // XPath parse for dynamic function call, and map &
         	  // array information lookup using function call syntax.
 
-        	  xpathParseDfcSyntax(opPos);              
+        	  xpathParseDynamicFuncCall(opPos);
+        	  
+        	  StringBuffer strBuff = new StringBuffer();
+        	  String str2 = null;
+
+        	  while (m_token != null) {        	  
+        		  strBuff.append(m_token); 
+
+        		  nextToken();
+        	  }
+
+        	  str2 = strBuff.toString();
+
+        	  if (str2.length() > 0) {
+        		  m_arrowOpRemainingXPathExprStr = str2; 
+        	  }
           }
           else if ((m_tokenChar == '(') && (lookahead('$', 1)) && (lookahead(')', 3))) {
         	  // XPath parse for dynamic function call, and map &
@@ -4856,20 +5046,97 @@ public class XPathParser
         	  // An XPath dynamic function call like, ($funcName)(..),
         	  // which is equivalent to $funcName(..)
 
-        	  xpathParseDfcSyntax(opPos);              
+        	  xpathParseDynamicFuncCall(opPos);
+        	  
+        	  StringBuffer strBuff = new StringBuffer();
+        	  String str2 = null;
+
+        	  while (m_token != null) {        	  
+        		  strBuff.append(m_token); 
+
+        		  nextToken();
+        	  }
+
+        	  str2 = (strBuff.toString()).trim();
+
+        	  if (str2.length() > 0) {
+        		  m_arrowOpRemainingXPathExprStr = str2; 
+        	  }
+          }
+          else if (tokenIs('(')) {
+        	  StringBuffer strBuff = new StringBuffer();
+        	  String str1 = null;
+        	  
+        	  boolean isXPathExprOk = false;
+        	  
+        	  while (m_token != null) {
+        		 strBuff.append(m_token + " ");
+        		 str1 = (strBuff.toString()).trim();
+        		 
+        		 if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+        			 isXPathExprOk = true;
+        			 
+        			 consumeExpected(')');
+        			 
+        			 str1 = (str1.substring(1, str1.length() - 1)).trim();
+        			 
+        			 break;
+        		 }
+        		 
+        		 nextToken();
+        	  }
+        	  
+        	  if (isXPathExprOk) {        		  
+        		  appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+            	  List<String> seqConstructorXPathParts = new ArrayList<String>();
+            	  seqConstructorXPathParts.add(str1);
+
+            	  XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+            	  xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);
+            	  
+            	  m_xpathSequenceConstructor = xPathSeqConstructor;             	              	  
+        		  
+        		  strBuff = new StringBuffer();
+        		  String str2 = null;
+
+        		  while (m_token != null) {        	  
+        			  strBuff.append(m_token); 
+
+        			  nextToken();
+        		  }
+
+        		  str2 = strBuff.toString();
+
+        		  if (str2.length() > 0) {
+        			  m_arrowOpRemainingXPathExprStr = str2; 
+        		  } 
+        		  
+        		  m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+							                                  m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+        	  }
+        	  else {
+        		 // to do 
+        	  }        	          	  
           }
           else {
         	  FunctionCall();
-          }
-          
-          if (m_token != null) {
-        	 m_arrowOpRemainingXPathExprStr = "";  
-          }
-          
-          while (m_token != null) {
-        	 m_arrowOpRemainingXPathExprStr += m_token;
-        	 nextToken();
-          }
+
+        	  StringBuffer strBuff = new StringBuffer();
+        	  String str2 = null;
+
+        	  while (m_token != null) {        	  
+        		  strBuff.append(m_token); 
+
+        		  nextToken();
+        	  }
+
+        	  str2 = strBuff.toString();
+
+        	  if (str2.length() > 0) {
+        		  m_arrowOpRemainingXPathExprStr = str2; 
+        	  } 
+          }                    
       }
       else if (tokenIs("lt"))
       {
@@ -5890,7 +6157,7 @@ public class XPathParser
        // XPath parse for dynamic function call, and map &
        // array information lookup using function call syntax.
                      
-       xpathParseDfcSyntax(opPos);
+       xpathParseDynamicFuncCall(opPos);
        
        matchFound = true;
     }
@@ -6384,9 +6651,56 @@ public class XPathParser
 
 	        return;
     	}
-    	else {
-    	   // An XPath function argument literal sequence, has 
-    	   // at least one xdm item.    		
+    	
+    	boolean isFnArgResolved = false;
+    	
+    	StringBuffer strBuff2 = new StringBuffer();
+    	String str2 = null;
+    	
+    	if ((Keywords.FUNC_SUBSEQUENCE).equals(m_func_name)) {    	
+    		while (m_token != null) {
+    			strBuff2.append(m_token + " ");
+    			str2 = (strBuff2.toString()).trim(); 
+
+    			if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+    				isFnArgResolved = true;
+
+    				consumeExpected(')');
+
+    				break;
+    			}
+
+    			nextToken();
+    		}
+    	}
+    	
+    	if (isFnArgResolved) {
+    		insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    		List<String> seqConstructorXPathParts = new ArrayList<String>();
+    		
+    		str2 = str2.replace(" : ", ":");
+    		
+    		seqConstructorXPathParts.add(str2);
+
+    		List<XPathSequenceConstructor> seqConsList = m_xpathSequenceConsFuncArgs.getSeqFuncArgList();
+    		XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+    		xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
+
+    		seqConsList.add(xPathSeqConstructor);
+
+    		List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
+    		funcArgUsedSeq.add(Boolean.valueOf(false));
+
+    		m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH, 
+    				                                    m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+
+    		m_isFunctionArgumentParse = false;
+    		
+    		return;
+    	}    	
+    	else { 
+    	   restoreTokenQueueXPathParsePos(prevTokenQueuePos);
     		
     	   TokenQueuePosition prevTokenQueuePos1 = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
     		
@@ -11719,7 +12033,7 @@ public class XPathParser
      *                                  to index within XPath compile op map.
      * @throws TransformerException
      */
-    private void xpathParseDfcSyntax(int opPos) throws TransformerException {
+    private void xpathParseDynamicFuncCall(int opPos) throws TransformerException {
     	
     	appendOp(2, OpCodes.XPath3OpCodes.OP_DYNAMIC_FUNCTION_CALL);
     	    	
@@ -12080,8 +12394,9 @@ public class XPathParser
     		}
     		else {
     			// Resume XPath parse, using the same token queue
-    			m_queueMark = 0;
-    			nextToken();       		  
+    			
+    			m_queueMark = 0;    			
+    			nextToken();       		      			
     			ExprSingle();
     		}
     	}

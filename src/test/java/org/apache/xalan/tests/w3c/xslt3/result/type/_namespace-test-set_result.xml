@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-18T16:38:25Z" fail="61" name="namespace" pass="160" run="221" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-28T12:13:55Z" fail="60" name="namespace" pass="161" run="221" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="namespace-0101"/>
    <testResult status="pass" testName="namespace-0201"/>
    <testResult status="pass" testName="namespace-0202"/>
@@ -20,7 +20,7 @@
    <testResult status="pass" testName="namespace-0906"/>
    <testResult status="pass" testName="namespace-0907"/>
    <testResult status="fail" testName="namespace-0908"/>
-   <testResult reason="Xalan configured" status="skipped" testName="namespace-0909"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="namespace-0909"/>
    <testResult status="fail" testName="namespace-0910"/>
    <testResult status="pass" testName="namespace-0911"/>
    <testResult status="fail" testName="namespace-0912"/>
@@ -82,7 +82,7 @@
       <outResult/>
    </testResult>
    <testResult status="pass" testName="namespace-2611"/>
-   <testResult status="fail" testName="namespace-2612"/>
+   <testResult status="pass" testName="namespace-2612"/>
    <testResult status="fail" testName="namespace-2614"/>
    <testResult status="fail" testName="namespace-2615"/>
    <testResult status="fail" testName="namespace-2616"/>
@@ -103,7 +103,7 @@
    </testResult>
    <testResult status="fail" testName="namespace-2623">
       <outResult>
-         <errTrace>XTSE0010 : An XML element yyy is not allowed in this position in the stylesheet.</errTrace>
+         <errTrace>XTSE0010 : An XSL stylesheet does not allow, an XML element yyy at this position within the stylesheet.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="namespace-2624"/>
@@ -252,7 +252,7 @@
    <testResult status="pass" testName="namespace-3311"/>
    <testResult status="pass" testName="namespace-3312"/>
    <testResult status="pass" testName="namespace-3313"/>
-   <testResult reason="Xalan configured" status="skipped" testName="namespace-3314"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="namespace-3314"/>
    <testResult status="pass" testName="namespace-3315"/>
    <testResult status="pass" testName="namespace-3401"/>
    <testResult status="fail" testName="namespace-3501"/>

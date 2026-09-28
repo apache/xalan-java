@@ -27,7 +27,7 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * An implementation of, XPath 3.1 function fn:namespace-uri-from-QName.
+ * An implementation of XPath 3.1 function, fn:namespace-uri-from-QName.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  * 
@@ -60,20 +60,37 @@ public class FuncNamespaceUriFromQName extends FunctionDef1Arg {
 
 		XObject arg0Value = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
+		if (arg0Value instanceof ResultSequence) {
+		   ResultSequence rSeq = (ResultSequence)arg0Value;
+		   
+		   if (rSeq.size() == 0) {
+			  result = new ResultSequence();
+			  
+			  return result;
+		   }
+		   else if (rSeq.size() == 1) {
+			  arg0Value = rSeq.item(0); 
+		   }
+		   else {
+			  throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'namespace-uri-from-QName' first argument, "
+                                                                                                                                             + "cannot be a sequence with size greater than one.", srcLocator); 
+		   }
+		}
+		
 		if (arg0Value instanceof XSQName) {
 			XSQName xsQName = (XSQName)arg0Value;
 			String nsUri = xsQName.getNamespaceUri();
+			
 			if (nsUri != null) {
 				result = new XSAnyURI(nsUri);
 			}
 			else {
-				result = new ResultSequence(); 
+				result = new XSAnyURI(""); 
 			}
 		}
 		else {
-			throw new javax.xml.transform.TransformerException("FOAP0001: The first argument within fn:namespace-uri-from-QName "
-																											+ "function call is not of type "
-																											+ "xs:QName", srcLocator);  
+			throw new javax.xml.transform.TransformerException("XPTY0004: An XPath 3.1 function 'namespace-uri-from-QName' first argument, "
+					                                                                                                                       + "is not with an XML schema type 'QName'.", srcLocator);  
 		}
 
 		return result;

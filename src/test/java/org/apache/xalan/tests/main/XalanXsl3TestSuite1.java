@@ -57,7 +57,7 @@ import org.apache.xalan.tests.xpath3.XPathValueComparisonTests;
 import org.apache.xalan.tests.xpath3.XsConstructorFunctionTests;
 import org.apache.xalan.tests.xpath3.XsDateTimeArithmeticTests;
 import org.apache.xalan.tests.xpath3.XsDateTimeTests;
-import org.apache.xalan.tests.xpath3.XsDurationSubtypes;
+import org.apache.xalan.tests.xpath3.XsDurationSubtypeTests;
 import org.apache.xalan.tests.xpath3.XsTimeWithArithmeticTests;
 import org.apache.xalan.tests.xslt3.XalanJiraIssueTests;
 import org.apache.xalan.tests.xslt3.XmlDotComXslHigherOrderFunctionTests;
@@ -96,7 +96,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathValueComparisonTests.class, XPathInlineFunctionExprTests.class, 
                 FnForEachTests.class, XsConstructorFunctionTests.class,
                 FnAbsTests.class, XPathStringTests.class, XsDateTimeArithmeticTests.class,
-                XsTimeWithArithmeticTests.class, XsDurationSubtypes.class,
+                XsTimeWithArithmeticTests.class, XsDurationSubtypeTests.class,
                 FnDeepEqualTests.class, XslImportSchemaTests.class, FnDateTimeTests.class,
                 XmlDotComXslHigherOrderFunctionTests.class, FnDefaultCollation.class,
                 FnBaseUriTests.class, FnDocumentUriTests.class, FnResolveQNameTests.class,

@@ -2247,26 +2247,54 @@ public class XObject extends Expression implements Serializable, Cloneable
 		  
 		  return result;
 	  }
-	  else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {
-		  double lDbl = 0;
-     	  if (this instanceof XSDouble) {
-     		 lDbl = ((XSDouble)this).doubleValue();  
-     	  }
-     	  else {
-     		 String lStr = ((XSNumericType)this).stringValue();
-     		 lDbl = (new XSDouble(lStr)).doubleValue();
-     	  }
-     	  
-     	  double rDbl = 0;
-     	  if (obj2 instanceof XSDouble) {
-     		 rDbl = ((XSDouble)obj2).doubleValue();  
-     	  }
-     	  else {
-     		 String rStr = ((XSNumericType)obj2).stringValue();
-     		 rDbl = (new XSDouble(rStr)).doubleValue();
-     	  }
-     	  
-     	  return (isEqTest) ? (lDbl == rDbl) : (lDbl != rDbl);
+	  else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {		  		  
+		  boolean isArg0Nan = false;
+		  boolean isArg1Nan = false;
+
+		  if (this instanceof XSDouble) {
+			  XSDouble xsDouble1 = (XSDouble)this;
+			  isArg0Nan = xsDouble1.nan(); 
+		  }
+		  else if (this instanceof XSFloat) {
+			  XSFloat xsFloat1 = (XSFloat)this;
+			  isArg0Nan = xsFloat1.nan();	 
+		  }
+
+		  if (obj2 instanceof XSDouble) {
+			  XSDouble xsDouble2 = (XSDouble)obj2;
+			  isArg1Nan = xsDouble2.nan(); 
+		  }
+		  else if (obj2 instanceof XSFloat) {
+			  XSFloat xsFloat2 = (XSFloat)obj2;
+			  isArg1Nan = xsFloat2.nan();	 
+		  }
+
+		  if (isArg0Nan && isArg1Nan) {
+			  return true; 
+		  }
+		  else {
+			  double lDbl = 0;
+
+			  if (this instanceof XSDouble) {
+				  lDbl = ((XSDouble)this).doubleValue();  
+			  }
+			  else {
+				  String lStr = ((XSNumericType)this).stringValue();
+				  lDbl = (new XSDouble(lStr)).doubleValue();
+			  }
+
+			  double rDbl = 0;
+
+			  if (obj2 instanceof XSDouble) {
+				  rDbl = ((XSDouble)obj2).doubleValue();  
+			  }
+			  else {
+				  String rStr = ((XSNumericType)obj2).stringValue();
+				  rDbl = (new XSDouble(rStr)).doubleValue();
+			  }
+
+			  return (isEqTest) ? (lDbl == rDbl) : (lDbl != rDbl); 
+		  }
 	  }
 	  else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
 		  String lStr = ((XSNumericType)this).stringValue();

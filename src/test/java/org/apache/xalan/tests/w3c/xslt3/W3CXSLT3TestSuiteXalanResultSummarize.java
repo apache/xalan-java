@@ -38,8 +38,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Class implementation to produce W3C XSLT 3.0 test suite's summarized 
- * XML result document for Xalan-J XSLT 3.0 development implementation.
+ * Class definition, to produce W3C XSLT 3.0 test suite summarized 
+ * XML result document, for Xalan-J XSLT 3.0 development implementation.
  * 
  * Following are sequence of steps to use this class:
  * 

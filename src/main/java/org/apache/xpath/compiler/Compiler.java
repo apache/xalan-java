@@ -253,7 +253,7 @@ public class Compiler extends XPathOpMap
       expr = nodeComparisonPrecede(opPos); break;
     case OpCodes.XPath3OpCodes.OP_NC_FOLLOWS :
       expr = nodeComparisonFollows(opPos); break;
-    case OpCodes.XPath3OpCodes.OP_SIMPLE_MAP_OPERATOR :
+    case OpCodes.XPath3OpCodes.OP_SIMPLE_MAP :
       expr = simpleMapOperator(opPos); break;
     case OpCodes.XPath3OpCodes.OP_SEQUENCE_TYPE_EXPR :
       expr = sequenceTypeExpr(opPos); break;

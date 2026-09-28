@@ -36,6 +36,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -50,6 +51,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Class definition, to implement XPath 3.1 'literal sequence', 
@@ -87,6 +89,13 @@ public class XPathSequenceConstructor extends Expression {
     private String m_xpathSuffixStr = null;
     
     /**
+     * An XPath 3.1 literal sequence constructor, may be following by an
+     * XPath operator with, subsequence XPath operand. For e.g,
+     * ('a b c', 'd a')!tokenize(.,' ') => distinct-values() 
+     */
+    private String m_xpath_op = null;
+    
+    /**
      * This class field is used during, XPath.fixupVariables(..) action 
      * as performed within object of this class.  
      */    
@@ -117,13 +126,18 @@ public class XPathSequenceConstructor extends Expression {
          */
         
         ResultSequence resultSeq = new ResultSequence();
-        
-        int seqCstrPartsSize = m_sequenceConstructorXPathParts.size();
+                
+        /**
+         * Count of the, XPath 3.1 sequence constructor, XPath expression parts.
+         * The computed xdm sequence as, returned by this method, may contain
+         * number of xdm items equal or more than this integer value.
+         */
+        int xpathSeqConsPartCount = m_sequenceConstructorXPathParts.size();
         
         boolean isSourceKind1 = false;
         boolean isSourceKind2 = false;
         
-        for (int idx = 0; idx < seqCstrPartsSize; idx++) {
+        for (int idx = 0; idx < xpathSeqConsPartCount; idx++) {
            String xpathExprStr = m_sequenceConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
@@ -137,21 +151,24 @@ public class XPathSequenceConstructor extends Expression {
               xpathObj.fixupVariables(m_vars, m_globals_size);
            }
            
-           boolean isCurrentNodeLocallyPushed = false;
+           boolean isXpathCtxtActive = false;
            
            try {
         	   if (currentNode == DTM.NULL) {
         		   String[] strArr1 = xpathExprStr.split("/");
+        		   
         		   if ((strArr1.length > 0) && strArr1[0].startsWith("$")) {
         			   String varName = (strArr1[0]).substring(1);
         			   varName = varName.trim();
+        			   
         			   Map<QName, XObject> map1 = xctxt.getXPathVarMap();
         			   XObject xObj = map1.get(new QName(varName));
+        			   
         			   if (xObj instanceof XMLNodeCursorImpl) {
         				   currentNode = ((XMLNodeCursorImpl)xObj).asNode(xctxt);            			  
         				   xctxt.pushCurrentNode(currentNode);
 
-        				   isCurrentNodeLocallyPushed = true;
+        				   isXpathCtxtActive = true;
         			   }
         		   }
         	   }
@@ -163,6 +180,7 @@ public class XPathSequenceConstructor extends Expression {
         		   LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;                              
 
         		   DTMCursorIterator dtmIter = null;                     
+        		   
         		   try {
         			   dtmIter = locPathIterator.asIterator(xctxt, currentNode);
         		   }
@@ -170,9 +188,11 @@ public class XPathSequenceConstructor extends Expression {
         			   // No op
         		   }
 
-        		   if (dtmIter != null) {        			   
-        			   int nextNode;
+        		   if (dtmIter != null) {        			           			   
         			   boolean isEmptyNodeSet = true;
+        			   
+        			   int nextNode = DTM.NULL;
+        			   
         			   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         			   {
         				   isEmptyNodeSet = false;
@@ -189,11 +209,13 @@ public class XPathSequenceConstructor extends Expression {
     					   }
 
     					   XPath xpathObj2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    					   
     					   if (m_vars != null) {
     						   xpathObj2.fixupVariables(m_vars, m_globals_size);
     					   }
 
     					   Expression xpathExpr2 = xpathObj2.getExpression();        				      					   
+    					   
     					   if (xpathExpr2 instanceof XPathNamedFunctionReference) {
     						  resultSeq.add((XPathNamedFunctionReference)xpathExpr2); 
     					   }
@@ -201,8 +223,7 @@ public class XPathSequenceConstructor extends Expression {
         		   }
         		   else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && xpathExprStr.endsWith("]")) {
         			   String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
-        			   String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
-        					   xpathExprStr.indexOf(']'));
+        			   String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, xpathExprStr.indexOf(']'));
 
         			   // Evaluate the, variable reference XPath expression
         			   if (prefixTable != null) {
@@ -211,6 +232,7 @@ public class XPathSequenceConstructor extends Expression {
         			   }
 
         			   XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        			   
         			   if (m_vars != null) {
         				   varXPathObj.fixupVariables(m_vars, m_globals_size);
         			   }
@@ -225,6 +247,7 @@ public class XPathSequenceConstructor extends Expression {
         			   }
 
         			   XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        			   
         			   if (m_vars != null) {
         				   xpathIndexObj.fixupVariables(m_vars, m_globals_size);
         			   }
@@ -236,6 +259,7 @@ public class XPathSequenceConstructor extends Expression {
 
         				   if (seqIndexEvalResult instanceof XNumber) {
         					   double dValIndex = ((XNumber)seqIndexEvalResult).num();
+        					   
         					   if (dValIndex == (int)dValIndex) {
         						   XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
         						   resultSeq.add(evalResult);
@@ -247,6 +271,7 @@ public class XPathSequenceConstructor extends Expression {
         				   else if (seqIndexEvalResult instanceof XSNumericType) {
         					   String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
         					   double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+        					   
         					   if (dValIndex == (int)dValIndex) {
         						   XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
         						   resultSeq.add(evalResult);
@@ -264,6 +289,7 @@ public class XPathSequenceConstructor extends Expression {
         	   else if (xpathExpr instanceof XSL3ConstructorOrExtensionFunction) {
         		   XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunction = (XSL3ConstructorOrExtensionFunction)xpathExpr;        	           	   
         		   XObject funcEvalResult = xsl3ConstructorOrExtensionFunction.execute(xctxt);        	           	           	          	   
+        		   
         		   resultSeq.add(funcEvalResult);
         	   }
         	   else if (xpathExpr instanceof XPathNamedFunctionReference) {
@@ -282,16 +308,17 @@ public class XPathSequenceConstructor extends Expression {
         			   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xPathExprPartResult;
         			   DTMCursorIterator sourceNodes = xNodeSet.iter();
 
-        			   int nextNodeDtmHandle;
+        			   int nextNode = DTM.NULL;
 
-        			   while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-        				   XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
+        			   while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+        				   XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, dtmMgr);        				   
         				   resultSeq.add(xNodeSetItem);
         			   }               
         		   }
         		   else if (xPathExprPartResult instanceof ResultSequence) {
         			   ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
         			   int rSeqLength = inpResultSeq.size();
+        			   
         			   for (int idx1 = 0; idx1 < rSeqLength; idx1++) {
         				   XObject xObj = inpResultSeq.item(idx1);
         				   resultSeq.add(xObj);                 
@@ -300,12 +327,13 @@ public class XPathSequenceConstructor extends Expression {
         		   else {
         			   // We're assuming here that, an input value is an xdm sequence 
         			   // with cardinality one.
+        			   
         			   resultSeq.add(xPathExprPartResult);               
         		   }
         	   }
            }
            finally {
-        	  if (isCurrentNodeLocallyPushed) {
+        	  if (isXpathCtxtActive) {
         		 xctxt.popCurrentNode(); 
         	  }
            }
@@ -382,7 +410,9 @@ public class XPathSequenceConstructor extends Expression {
         	if (evalResult instanceof XMLNodeCursorImpl) {
         		XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
         		DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+        		
         		int nextNode = DTM.NULL;        	           	   
+        		
         		while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
         			try {
         				xctxt.pushCurrentNode(nextNode);
@@ -401,10 +431,13 @@ public class XPathSequenceConstructor extends Expression {
         	else if (evalResult instanceof ResultSequence) {
         		ResultSequence rSeq = (ResultSequence)evalResult;
         		int size1 = rSeq.size();
+        		
         		for (int idx = 0; idx < size1; idx++) {
         			XObject xObj = rSeq.item(idx);
+        			
         			if (xObj instanceof XMLNodeCursorImpl) {
         				int nextNode = ((XMLNodeCursorImpl)xObj).asNode(xctxt);
+        				
         				try {
         					xctxt.pushCurrentNode(nextNode);
         					XObject xObj2 = xpathSuffixObj.execute(xctxt, nextNode, xctxt.getNamespaceContext());
@@ -433,6 +466,90 @@ public class XPathSequenceConstructor extends Expression {
         	}
         	
         	return result;
+        }
+        else if ((Keywords.SIMPLE_MAP_OP).equals(m_xpath_op) && (m_xpathSuffixStr != null)) {        	        	
+        	XPath xpathObj = new XPath(m_xpathSuffixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	
+        	if (m_vars != null) {
+        	   xpathObj.fixupVariables(m_vars, m_globals_size);
+            }
+        	        	      	        	
+        	XObject prevCtxtItem = xctxt.getXPath3ContextItem();
+        	int prevCtxtPos = xctxt.getXPath3ContextPosition();
+        	int prevCtxtSize = xctxt.getXPath3ContextSize();
+        	        	        	
+        	boolean isXdmSeqNumeric = true;
+        	
+        	int size1 = resultSeq.size();
+        	
+        	for (int idx = 0; idx < size1; idx++) {
+        	   XObject xObj = resultSeq.item(idx);
+        	   
+        	   if (!((xObj instanceof XNumber) || (xObj instanceof XSNumericType))) {
+        		  isXdmSeqNumeric = false;
+        		  
+        		  break;
+        	   }
+        	}
+
+        	if (!isXdmSeqNumeric) {
+        		xctxt.setXPath3ContextItem(new XSString(resultSeq.str()));
+        		xctxt.setXPath3ContextPosition(1);
+    			xctxt.setXPath3ContextSize(1);
+
+        		try {
+        			XObject xObj1 = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+
+        			if (!(xObj1 instanceof ResultSequence)) {        			
+        				result = xObj1;
+
+        				return result;
+        			}
+        			else {
+        				ResultSequence resultSeq1 = new ResultSequence();
+
+        				ResultSequence rSeq2 = (ResultSequence)xObj1;
+        				int size2 = rSeq2.size();
+
+        				for (int idx2 = 0; idx2 < size2; idx2++) {
+        					resultSeq1.add(rSeq2.item(idx2)); 
+        				}
+
+        				result = resultSeq1;
+
+        				return result;
+        			}
+        		}
+        		finally {
+        			xctxt.setXPath3ContextItem(prevCtxtItem);        			
+        			xctxt.setXPath3ContextPosition(prevCtxtPos);
+        			xctxt.setXPath3ContextSize(prevCtxtSize);
+        		}
+        	}
+        	else {
+        		ResultSequence resultSeq1 = new ResultSequence();
+
+        		for (int idx = 0; idx < size1; idx++) {
+        			XObject xObj = resultSeq.item(idx);
+
+        			xctxt.setXPath3ContextItem(xObj);
+        			xctxt.setXPath3ContextPosition(idx + 1);
+        			xctxt.setXPath3ContextSize(size1);
+
+        			try {
+        				XObject xObj1 = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+
+        				resultSeq1.add(xObj1);
+        			}
+        			finally {
+        				xctxt.setXPath3ContextItem(prevCtxtItem);        			
+        				xctxt.setXPath3ContextPosition(prevCtxtPos);
+        				xctxt.setXPath3ContextSize(prevCtxtSize); 
+        			}
+        		}
+
+        		return resultSeq1;
+        	}
         }
         else if (m_xpathSuffixStr != null) {
         	if (prefixTable != null) {
@@ -481,7 +598,6 @@ public class XPathSequenceConstructor extends Expression {
         		  
         		  if (!isSuffixPredicate) {        		  
         			  XMLNodeCursorImpl newNodeSet = (XMLNodeCursorImpl)evalResult;
-
         			  DTMCursorIterator iter2 = newNodeSet.iterRaw();
 
         			  int nextNode = DTM.NULL;
@@ -529,20 +645,25 @@ public class XPathSequenceConstructor extends Expression {
         if (result instanceof ResultSequence) {
         	ResultSequence rSeq = (ResultSequence)result;
         	int rSeqLength = rSeq.size();
+        	
         	for (int idx = 0; idx < rSeqLength; idx++) {
         		XObject xdmItem = rSeq.item(idx);
+        		
         		if (xdmItem instanceof XMLNodeCursorImpl) {
         			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xdmItem;
         			int nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+        			
         			DTM dtm = xctxt.getDTM(nodeHandle);
         			boolean flg1 = false;
+        			
         			if (dtm.getNodeType(nodeHandle) == DTM.ELEMENT_NODE) {
         				Node node = dtm.getNode(nodeHandle);
         				String nodeName = node.getNodeName();
+        				
         				try {
         					if (nodeName.startsWith("b_")) {
-        						Integer int1 = Integer.valueOf(nodeName.substring(2));
         						Element elemNode = (Element)node;
+        						
         						xdmItem = new XString(elemNode.getTextContent());
         					}
         					else {
@@ -584,14 +705,19 @@ public class XPathSequenceConstructor extends Expression {
 		XObject result = null;
 		
 		List<Integer> intList = new ArrayList<Integer>();
+		
 		for (int idx = 0; idx < resultSeq.size(); idx++) {
 			XObject xObj = resultSeq.item(idx);
+			
 			xctxt.setXPath3ContextItem(xObj);
 			xctxt.setXPath3ContextPosition(idx + 1);
 			xctxt.setXPath3ContextSize(resultSeq.size());
+			
 			XObject seqEvalResult = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			
 			if (seqEvalResult instanceof XNumber) {
 		 	   double dbl1 = ((XNumber)seqEvalResult).num();
+		 	   
 		 	   if (dbl1 == (int)dbl1) {
 		 		  intList.add((int)dbl1); 
 		 	   }                 	   
@@ -599,7 +725,9 @@ public class XPathSequenceConstructor extends Expression {
 			else if (seqEvalResult instanceof XSNumericType) {
 			   XSNumericType xsNumericType = (XSNumericType)seqEvalResult;
 		 	   String strValue = xsNumericType.stringValue();
+		 	   
 		 	   double dbl1 = Double.valueOf(strValue);
+		 	   
 		 	   if (dbl1 == (int)dbl1) {
 		 		  intList.add((int)dbl1); 
 		 	   } 
@@ -609,10 +737,13 @@ public class XPathSequenceConstructor extends Expression {
 		if ((resultSeq.size() > 0) && (intList.size() == resultSeq.size())) {
 			Integer intValue = intList.get(0);
 			boolean allValSame = true;
+			
 			for (int idx = 1; idx < intList.size(); idx++) {
 				int iVal = intList.get(idx);
+				
 				if (iVal != intValue) {
 				   allValSame = false;
+				   
 				   break;
 				}
 			}
@@ -638,11 +769,15 @@ public class XPathSequenceConstructor extends Expression {
 		
 		for (int idx = 0; idx < resultSeq.size(); idx++) {
 			XObject xObj = resultSeq.item(idx);
+			
 			xctxt.setXPath3ContextItem(xObj);
 			xctxt.setXPath3ContextPosition(idx + 1);
 			xctxt.setXPath3ContextSize(resultSeq.size());
+			
 			XObject seqEvalResult = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+			
 			boolean boolValue = false;
+			
 			if (seqEvalResult instanceof XBooleanStatic) {
 				boolValue = ((XBooleanStatic)seqEvalResult).bool();
 			}
@@ -713,6 +848,14 @@ public class XPathSequenceConstructor extends Expression {
 
 	public void setXPathSuffixStr(String xpathSuffixStr) {
 		m_xpathSuffixStr = xpathSuffixStr; 		
+	}
+
+	public String getXPathOp() {
+		return m_xpath_op;
+	}
+
+	public void setXPathOp(String xpathOp) {
+		this.m_xpath_op = xpathOp;
 	}		
 
 }
