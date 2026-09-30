@@ -81,10 +81,14 @@ public class FuncMapGet extends Function2Args {
 	    
 	    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt); 
 	           
-	    if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
-	    	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its first "
-	    																											+ "argument as an empty "
-	    																											+ "sequence.", srcLocator);  
+	    if (xObj0 instanceof ResultSequence) {
+	    	int size1 = ((ResultSequence)xObj0).size();
+	    	
+	    	if (size1 != 1) {	    	
+	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its first "
+	    																											              + "argument as an empty "
+	    																											              + "sequence, or a sequence with size greater than one.", srcLocator);
+	    	}
 	    }
 	    
 	    XPathMap xpathMap = null;
@@ -124,15 +128,23 @@ public class FuncMapGet extends Function2Args {
 	    
         XObject arg1Obj = getFunctionArgEffectiveValue(m_arg1, xctxt);
         
-        if ((arg1Obj instanceof ResultSequence) && (((ResultSequence)arg1Obj).size() == 0)) {
-        	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its second "
-																													+ "argument as an empty "
-																													+ "sequence.", srcLocator);
+        if (arg1Obj instanceof ResultSequence) {
+        	int size1 = ((ResultSequence)arg1Obj).size(); 
+        			
+        	if (size1 != 1) {
+        	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its second "
+																													              + "argument as an empty "
+																													              + "sequence, or sequence with size greater than one.", srcLocator);
+        	}
         }
-        else if ((arg1Obj instanceof XMLNodeCursorImpl) && (((XMLNodeCursorImpl)arg1Obj).getLength() == 0)) {
-        	throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its second "
-																													+ "argument as an empty "
-																													+ "sequence.", srcLocator);
+        else if (arg1Obj instanceof XMLNodeCursorImpl) {
+        	int size1 = ((XMLNodeCursorImpl)arg1Obj).getLength();
+        			
+        	if (size1 != 1) {
+         	   throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 map function 'get' cannot have its second "
+ 																													              + "argument as an empty "
+ 																													              + "sequence, or sequence with size greater than one.", srcLocator);
+         	}
         }
 	    	    
 	    if (arg1Obj instanceof XString) {

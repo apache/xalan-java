@@ -1141,30 +1141,51 @@ public class XSL3FunctionService {
     	}
     	else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
     		// Evaluate an XPath schema type constructor function call reference    		
+    		
     		XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
+    		
     		funcObj.setArity(new Short[] { (short)funcArity });
 
-    		int argCount = argList.size();
-    		
-    		for (int idx = 0; idx < argCount; idx++) {
-    			String argXPathStr = argList.get(idx);
-    			
-    			if (prefixTable != null) {
-    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
-    			}
+    		if (argList != null) {
+    			int argCount = argList.size();
 
-    			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-    			
-    			if (varVecor != null) {
-    				argXPath.fixupVariables(varVecor, varGlobalsSize);
-    			}
+    			for (int idx = 0; idx < argCount; idx++) {
+    				String argXPathStr = argList.get(idx);
 
-    			try {
-    				funcObj.setArg(argXPath.getExpression(), idx);
-    			} 
-    			catch (WrongNumberArgsException ex) {							
-    				String funcName = "{" + funcNamespace + "}" + funcLocalName; 
-    				throw new TransformerException("FODC0005 : Wrong number of arguments, provided during function call for " + funcName + ".", srcLocator);
+    				if (prefixTable != null) {
+    					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    				}
+
+    				XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    				if (varVecor != null) {
+    					argXPath.fixupVariables(varVecor, varGlobalsSize);
+    				}
+
+    				try {
+    					funcObj.setArg(argXPath.getExpression(), idx);
+    				} 
+    				catch (WrongNumberArgsException ex) {							
+    					String funcName = "{" + funcNamespace + "}" + funcLocalName; 
+    					
+    					throw new TransformerException("FODC0005 : Wrong number of arguments, provided during function call for " + funcName + ".", srcLocator);
+    				}
+    			}
+    		}
+    		else {
+    			int argCount = argSeq.size();
+    			
+    			for (int idx = 0; idx < argCount; idx++) {
+    				XObject xObj = argSeq.item(idx);
+
+    				try {
+    					funcObj.setArg(xObj, idx);
+    				} 
+    				catch (WrongNumberArgsException ex) {							
+    					String funcName = "{" + funcNamespace + "}" + funcLocalName; 
+
+    					throw new TransformerException("FODC0005 : Wrong number of arguments, provided during function call for " + funcName + ".", srcLocator);
+    				}
     			}
     		}
 

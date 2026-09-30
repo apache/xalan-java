@@ -38,6 +38,8 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
+import org.apache.xpath.functions.XSL3FunctionService;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -66,7 +68,7 @@ public class XPathSequenceConstructor extends Expression {
     private static final long serialVersionUID = -5141131877741250613L;
     
     /**
-     * These are the main XPath expression strings for the sequence constructor.
+     * List containing, XPath expression strings for the sequence constructor.
      */
     private List<String> m_sequenceConstructorXPathParts = new ArrayList<String>();
     
@@ -76,7 +78,7 @@ public class XPathSequenceConstructor extends Expression {
      * 
      * For e.g, within an XPath expression, (a, b)[p] this is p.
      */
-    private String m_xpathPredicateExpr = null;
+    private String m_xpathPredicateStr = null;
     
     private String m_xpathPrefixStr = null;
     
@@ -107,6 +109,12 @@ public class XPathSequenceConstructor extends Expression {
      */
     private int m_globals_size;
     
+    private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
+    
+    // List used to check inf recursion error
+    // REVISIT
+    private static List<String> m_list_temp1 = new ArrayList<String>();
+    
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
@@ -120,9 +128,12 @@ public class XPathSequenceConstructor extends Expression {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);        
         
         /**
-         * We evaluate all the XPath expression parts within the list 'm_sequenceConstructorXPathParts', 
-         * and concatenate the sequences resulting from each of them, to get the final result 
-         * sequence that is returned by this method.
+         * XPath expression evaluation, within the list 'm_sequenceConstructorXPathParts', 
+         * and concatenating xdm sequences resulting from each of them, to get final result
+         * for an XPath sequence constructor evaluation,
+         * 
+         * This XPath evaluation result, is further processed by optional prefix, predicate,
+         * suffix information, if they're available. 
          */
         
         ResultSequence resultSeq = new ResultSequence();
@@ -145,7 +156,26 @@ public class XPathSequenceConstructor extends Expression {
                                                                                                      prefixTable);
            }
            
-           XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+           XPath xpathObj = null;
+           
+           try {
+              xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+           }
+           catch (TransformerException ex) {        	  
+        	  if (m_list_temp1.contains(xpathExprStr)) {
+        		 throw ex;  
+        	  }
+        	  
+        	  m_list_temp1.add(xpathExprStr);
+        	   
+        	  if (!xpathExprStr.startsWith("(") && !xpathExprStr.endsWith(")")) {        		         		 
+        	     xpathObj = new XPath("(" + xpathExprStr + ")", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	  }
+        	  
+        	  if (xpathObj == null) {
+        		 xpathObj = new XPath("(" + xpathExprStr + ")", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	  }
+           }
            
            if (m_vars != null) {
               xpathObj.fixupVariables(m_vars, m_globals_size);
@@ -339,12 +369,12 @@ public class XPathSequenceConstructor extends Expression {
            }
         }
         
-        if (m_xpathPredicateExpr != null) {
+        if (m_xpathPredicateStr != null) {
         	if (prefixTable != null) {
-        		m_xpathPredicateExpr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathPredicateExpr, prefixTable);
+        		m_xpathPredicateStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathPredicateStr, prefixTable);
         	}
 
-        	XPath xpathObj = new XPath(m_xpathPredicateExpr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	XPath xpathObj = new XPath(m_xpathPredicateStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         	
         	if (m_vars != null) {
         		xpathObj.fixupVariables(m_vars, m_globals_size);
@@ -480,6 +510,8 @@ public class XPathSequenceConstructor extends Expression {
         	        	        	
         	boolean isXdmSeqNumeric = true;
         	
+        	boolean isXdmSeqContainsFuncItem = false;
+        	
         	int size1 = resultSeq.size();
         	
         	for (int idx = 0; idx < size1; idx++) {
@@ -488,11 +520,79 @@ public class XPathSequenceConstructor extends Expression {
         	   if (!((xObj instanceof XNumber) || (xObj instanceof XSNumericType))) {
         		  isXdmSeqNumeric = false;
         		  
-        		  break;
+        		  if (xObj instanceof XPathNamedFunctionReference) {
+        			 isXdmSeqContainsFuncItem = true;  
+        		  }
         	   }
         	}
 
-        	if (!isXdmSeqNumeric) {
+        	if (isXdmSeqNumeric && !isXdmSeqContainsFuncItem) {
+        		ResultSequence resultSeq1 = new ResultSequence();
+
+        		for (int idx = 0; idx < size1; idx++) {
+        			XObject xObj = resultSeq.item(idx);
+
+        			xctxt.setXPath3ContextItem(xObj);
+        			xctxt.setXPath3ContextPosition(idx + 1);
+        			xctxt.setXPath3ContextSize(size1);
+
+        			try {
+        				XObject xObj1 = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+
+        				resultSeq1.add(xObj1);
+        			}
+        			finally {
+        				xctxt.setXPath3ContextItem(prevCtxtItem);        			
+        				xctxt.setXPath3ContextPosition(prevCtxtPos);
+        				xctxt.setXPath3ContextSize(prevCtxtSize); 
+        			}
+        		}
+
+        		return resultSeq1;
+        	}
+        	else if (isXdmSeqContainsFuncItem) {
+        		ResultSequence resultSeq1 = new ResultSequence();
+
+        		for (int idx = 0; idx < size1; idx++) {
+        			XObject xObj = resultSeq.item(idx);
+
+        			if (xObj instanceof XPathNamedFunctionReference) {
+        			   XObject xObj1 = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+        			   
+        			   ResultSequence argSeq1 = new ResultSequence();
+        			   
+        			   if (xObj1 instanceof ResultSequence) {
+        				  argSeq1 = (ResultSequence)xObj1;  
+        			   }
+        			   else {
+        			      argSeq1.add(xObj1);
+        			   }
+        			   
+        			   XObject evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)xObj, null, argSeq1, 
+        					                                                                              prefixTable, m_vars, m_globals_size, getExpressionOwner(), xctxt);
+        			   resultSeq1.add(evalResult);
+        			}
+        			else {
+        				xctxt.setXPath3ContextItem(xObj);
+        				xctxt.setXPath3ContextPosition(idx + 1);
+        				xctxt.setXPath3ContextSize(size1);
+
+        				try {
+        					XObject xObj1 = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
+
+        					resultSeq1.add(xObj1);
+        				}
+        				finally {
+        					xctxt.setXPath3ContextItem(prevCtxtItem);        			
+        					xctxt.setXPath3ContextPosition(prevCtxtPos);
+        					xctxt.setXPath3ContextSize(prevCtxtSize); 
+        				}
+        			}
+        		}
+        		
+        		return resultSeq1;
+        	}
+        	else {
         		xctxt.setXPath3ContextItem(new XSString(resultSeq.str()));
         		xctxt.setXPath3ContextPosition(1);
     			xctxt.setXPath3ContextSize(1);
@@ -525,31 +625,7 @@ public class XPathSequenceConstructor extends Expression {
         			xctxt.setXPath3ContextPosition(prevCtxtPos);
         			xctxt.setXPath3ContextSize(prevCtxtSize);
         		}
-        	}
-        	else {
-        		ResultSequence resultSeq1 = new ResultSequence();
-
-        		for (int idx = 0; idx < size1; idx++) {
-        			XObject xObj = resultSeq.item(idx);
-
-        			xctxt.setXPath3ContextItem(xObj);
-        			xctxt.setXPath3ContextPosition(idx + 1);
-        			xctxt.setXPath3ContextSize(size1);
-
-        			try {
-        				XObject xObj1 = xpathObj.execute(xctxt, currentNode, xctxt.getNamespaceContext());
-
-        				resultSeq1.add(xObj1);
-        			}
-        			finally {
-        				xctxt.setXPath3ContextItem(prevCtxtItem);        			
-        				xctxt.setXPath3ContextPosition(prevCtxtPos);
-        				xctxt.setXPath3ContextSize(prevCtxtSize); 
-        			}
-        		}
-
-        		return resultSeq1;
-        	}
+        	 }
         }
         else if (m_xpathSuffixStr != null) {
         	if (prefixTable != null) {
@@ -706,7 +782,9 @@ public class XPathSequenceConstructor extends Expression {
 		
 		List<Integer> intList = new ArrayList<Integer>();
 		
-		for (int idx = 0; idx < resultSeq.size(); idx++) {
+		int size1 = resultSeq.size();
+		
+		for (int idx = 0; idx < size1; idx++) {
 			XObject xObj = resultSeq.item(idx);
 			
 			xctxt.setXPath3ContextItem(xObj);
@@ -734,11 +812,13 @@ public class XPathSequenceConstructor extends Expression {
 			}
 		}
 		
-		if ((resultSeq.size() > 0) && (intList.size() == resultSeq.size())) {
+		int size2 = intList.size();
+		
+		if ((size1 > 0) && (size2 == size1)) {
 			Integer intValue = intList.get(0);
-			boolean allValSame = true;
-			
-			for (int idx = 1; idx < intList.size(); idx++) {
+			boolean allValSame = true;			
+						
+			for (int idx = 1; idx < size2; idx++) {
 				int iVal = intList.get(idx);
 				
 				if (iVal != intValue) {
@@ -748,8 +828,11 @@ public class XPathSequenceConstructor extends Expression {
 				}
 			}
 			
-			if (allValSame) {
+			if (allValSame && ((intValue >= 1) && (intValue <= size1))) {
 			    result = resultSeq.item(intValue - 1); 
+			}
+			else {
+				result = new ResultSequence();
 			}
 		}
 		
@@ -827,11 +910,11 @@ public class XPathSequenceConstructor extends Expression {
     }
 
     public String getPredicateExpr() {
-	    return m_xpathPredicateExpr;
+	    return m_xpathPredicateStr;
 	}
     
 	public void setPredicateExpr(String sequencePredicateExpr) {
-		this.m_xpathPredicateExpr = sequencePredicateExpr; 		
+		this.m_xpathPredicateStr = sequencePredicateExpr; 		
 	}
 	
 	public String getXPathPrefixStr() {

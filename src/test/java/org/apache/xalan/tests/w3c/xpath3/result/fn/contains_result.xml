@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-17T16:55:21Z" fail="3" name="fn-contains" pass="64" run="67" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:21:08Z" fail="1" name="fn-contains" pass="66" run="67" statusUnknown="0">
    <testResult status="pass" testName="fn-contains2args-1"/>
    <testResult status="pass" testName="fn-contains2args-2"/>
    <testResult status="pass" testName="fn-contains2args-3"/>
@@ -59,9 +59,9 @@
    <testResult status="pass" testName="K2-ContainsFunc-4"/>
    <testResult status="pass" testName="K2-ContainsFunc-5"/>
    <testResult status="pass" testName="K2-ContainsFunc-6"/>
-   <testResult status="fail" testName="cbcl-contains-001"/>
+   <testResult status="pass" testName="cbcl-contains-001"/>
    <testResult status="pass" testName="cbcl-contains-002"/>
-   <testResult status="fail" testName="cbcl-contains-003"/>
+   <testResult status="pass" testName="cbcl-contains-003"/>
    <testResult status="pass" testName="liam-contains-001"/>
    <testResult status="pass" testName="liam-contains-002"/>
    <testResult status="pass" testName="liam-contains-003"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:18Z" fail="11" name="fn-tokenize" pass="54" run="65" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:21:37Z" fail="10" name="fn-tokenize" pass="55" run="65" statusUnknown="0">
    <testResult status="pass" testName="fn-tokenize-1"/>
    <testResult status="pass" testName="fn-tokenize-2"/>
    <testResult status="pass" testName="fn-tokenize-3"/>
@@ -62,6 +62,6 @@
    <testResult status="pass" testName="K2-TokenizeFunc-5"/>
    <testResult status="pass" testName="K2-TokenizeFunc-6"/>
    <testResult status="pass" testName="K2-TokenizeFunc-7"/>
-   <testResult status="fail" testName="cbcl-fn-tokenize-001"/>
+   <testResult status="pass" testName="cbcl-fn-tokenize-001"/>
    <testResult status="pass" testName="cbcl-fn-tokenize-002"/>
 </testrun>

@@ -859,6 +859,32 @@ public class Keywords
   
   public static final String PERMUTE = "permute";
   
+  public static final String FOR = "for";
+  
+  public static final String LET = "let";
+  
+  public static final String SOME = "some";
+  
+  public static final String EVERY = "every";
+  
+  public static final String IF = "if";
+  
+  public static final String IS = "is";
+  
+  public static final String EQUAL = "=";
+  
+  public static final String VC_EQ = "eq";
+  
+  public static final String VC_NE = "ne";
+  
+  public static final String VC_LT = "lt";
+  
+  public static final String VC_GT = "gt";
+  
+  public static final String VC_LE = "le";
+  
+  public static final String VC_GE = "ge";
+  
 
   static {	  
 	  m_axisnames.put(FROM_ANCESTORS_STRING, new Integer(OpCodes.FROM_ANCESTORS));

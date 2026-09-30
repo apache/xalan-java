@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-28T12:12:43Z" fail="16" name="fn-subsequence" pass="89" run="105" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:21:38Z" fail="12" name="fn-subsequence" pass="93" run="105" statusUnknown="0">
    <testResult status="pass" testName="fn-subsequence-mix-args-001"/>
    <testResult status="pass" testName="fn-subsequence-mix-args-002"/>
    <testResult status="pass" testName="fn-subsequence-mix-args-003"/>
@@ -77,14 +77,14 @@
    <testResult status="pass" testName="K2-SeqSubsequenceFunc-7"/>
    <testResult status="pass" testName="K2-SeqSubsequenceFunc-8"/>
    <testResult status="pass" testName="K2-SeqSubsequenceFunc-9"/>
-   <testResult status="fail" testName="K2-SeqSubsequenceFunc-10"/>
+   <testResult status="pass" testName="K2-SeqSubsequenceFunc-10"/>
    <testResult status="pass" testName="cbcl-subsequence-001"/>
    <testResult status="pass" testName="cbcl-subsequence-002"/>
    <testResult status="pass" testName="cbcl-subsequence-003"/>
-   <testResult status="fail" testName="cbcl-subsequence-004"/>
+   <testResult status="pass" testName="cbcl-subsequence-004"/>
    <testResult status="pass" testName="cbcl-subsequence-005"/>
    <testResult status="pass" testName="cbcl-subsequence-006"/>
-   <testResult status="fail" testName="cbcl-subsequence-007"/>
+   <testResult status="pass" testName="cbcl-subsequence-007"/>
    <testResult status="fail" testName="cbcl-subsequence-008"/>
    <testResult status="pass" testName="cbcl-subsequence-009"/>
    <testResult status="pass" testName="cbcl-subsequence-010"/>
@@ -101,7 +101,7 @@
    <testResult status="fail" testName="cbcl-subsequence-021"/>
    <testResult status="fail" testName="cbcl-subsequence-022"/>
    <testResult status="fail" testName="cbcl-subsequence-023"/>
-   <testResult status="fail" testName="cbcl-subsequence-024"/>
+   <testResult status="pass" testName="cbcl-subsequence-024"/>
    <testResult status="pass" testName="cbcl-subsequence-026"/>
    <testResult status="pass" testName="cbcl-subsequence-027"/>
 </testrun>

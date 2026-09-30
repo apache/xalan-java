@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -255,24 +256,16 @@ public class XPathLetExpr extends Expression {
     	   if (evalResult instanceof XMLNodeCursorImpl) {
     		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
     		   DTMCursorIterator iter1 = xmlNodeCursorImpl.iter();
-    		   
-    		   int nextNode = DTM.NULL;
-    		   
-    		   // XPath expressions like, (1 to 5)[. mod 2 eq 0] were converted
-    		   // to a nodeset having shall nodes with name like b_12345. 
-    		   
-    		   Pattern pattern = Pattern.compile("b_[0-9]{5}");
-			   Matcher matcher = null;
+    		       		   			   
+			   ResultSequence rSeq = new ResultSequence();
 			   
-			   ResultSequence rSeq = new ResultSequence(); 
+			   int nextNode = DTM.NULL;
     		   
     		   while ((nextNode = iter1.nextNode()) != DTM.NULL) {
     			   DTM dtm = xctxt.getDTM(nextNode);    			  
     			   String nodeName = dtm.getNodeName(nextNode);    			  
 
-    			   matcher = pattern.matcher(nodeName);
-
-    			   if (matcher.matches()) {
+    			   if (StringUtil.isXdmNodeShallowSynthetic(nodeName)) {
     				   Node node = dtm.getNode(nextNode);
     				   String str1 = node.getTextContent();
 

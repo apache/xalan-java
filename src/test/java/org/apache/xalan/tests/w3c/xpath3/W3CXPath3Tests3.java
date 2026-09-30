@@ -17,6 +17,8 @@
 package org.apache.xalan.tests.w3c.xpath3;
 
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnSubsequenceTests;
+import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnTokenizeTests;
+import org.apache.xalan.tests.w3c.xpath3.map.XPath3FnMapGetTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -30,7 +32,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3FnSubsequenceTests.class })
+@SuiteClasses({ XPath3FnTokenizeTests.class, XPath3FnSubsequenceTests.class, XPath3FnMapGetTests.class })
 public class W3CXPath3Tests3 {
 
 }

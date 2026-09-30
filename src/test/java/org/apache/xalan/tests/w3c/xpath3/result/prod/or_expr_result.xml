@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:03Z" fail="16" name="prod-OrExpr" pass="313" run="329" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:52Z" fail="10" name="prod-OrExpr" pass="319" run="329" statusUnknown="0">
    <testResult status="pass" testName="op-logical-and-038"/>
    <testResult status="pass" testName="op-logical-and-039"/>
    <testResult status="pass" testName="op-logical-and-040"/>
@@ -301,9 +301,9 @@
    <testResult status="pass" testName="K-LogicExpr-19"/>
    <testResult status="pass" testName="K-LogicExpr-20"/>
    <testResult status="pass" testName="K-LogicExpr-21"/>
-   <testResult status="fail" testName="K-LogicExpr-22"/>
-   <testResult status="fail" testName="K-LogicExpr-23"/>
-   <testResult status="fail" testName="K-LogicExpr-24"/>
+   <testResult status="pass" testName="K-LogicExpr-22"/>
+   <testResult status="pass" testName="K-LogicExpr-23"/>
+   <testResult status="pass" testName="K-LogicExpr-24"/>
    <testResult status="fail" testName="K-LogicExpr-25"/>
    <testResult status="fail" testName="K-LogicExpr-26"/>
    <testResult status="pass" testName="K-LogicExpr-27"/>
@@ -318,9 +318,9 @@
    <testResult status="pass" testName="K-LogicExpr-36"/>
    <testResult status="pass" testName="K-LogicExpr-37"/>
    <testResult status="pass" testName="K-LogicExpr-38"/>
-   <testResult status="fail" testName="K-LogicExpr-39"/>
-   <testResult status="fail" testName="K-LogicExpr-40"/>
-   <testResult status="fail" testName="K-LogicExpr-41"/>
+   <testResult status="pass" testName="K-LogicExpr-39"/>
+   <testResult status="pass" testName="K-LogicExpr-40"/>
+   <testResult status="pass" testName="K-LogicExpr-41"/>
    <testResult status="fail" testName="K-LogicExpr-42"/>
    <testResult status="fail" testName="K-LogicExpr-43"/>
    <testResult status="pass" testName="K-LogicExpr-44"/>

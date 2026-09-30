@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-22T10:38:49Z" fail="12" name="fn-index-of" pass="41" run="53" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:52Z" fail="9" name="fn-index-of" pass="44" run="53" statusUnknown="0">
    <testResult status="pass" testName="fn-indexof-mix-args-001"/>
    <testResult status="pass" testName="fn-indexof-mix-args-002"/>
    <testResult status="pass" testName="fn-indexof-mix-args-003"/>
@@ -12,8 +12,8 @@
    <testResult status="pass" testName="fn-indexof-mix-args-011"/>
    <testResult status="pass" testName="fn-indexof-mix-args-012"/>
    <testResult status="fail" testName="fn-indexof-mix-args-013"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-014"/>
-   <testResult status="fail" testName="fn-indexof-mix-args-015"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-014"/>
+   <testResult status="pass" testName="fn-indexof-mix-args-015"/>
    <testResult status="pass" testName="fn-indexof-mix-args-016"/>
    <testResult status="fail" testName="fn-indexof-mix-args-017"/>
    <testResult status="fail" testName="fn-indexof-mix-args-018"/>
@@ -49,7 +49,7 @@
    <testResult status="pass" testName="cbcl-fn-indexof-1"/>
    <testResult status="fail" testName="cbcl-fn-indexof-2"/>
    <testResult status="fail" testName="cbcl-fn-indexof-3"/>
-   <testResult status="fail" testName="cbcl-fn-indexof-4"/>
+   <testResult status="pass" testName="cbcl-fn-indexof-4"/>
    <testResult status="fail" testName="cbcl-fn-indexof-5"/>
    <testResult status="fail" testName="cbcl-fn-indexof-006"/>
 </testrun>

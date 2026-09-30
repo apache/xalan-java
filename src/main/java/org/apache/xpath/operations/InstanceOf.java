@@ -37,6 +37,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
@@ -1214,11 +1215,13 @@ public class InstanceOf extends XPathOperator
 				  }
 				  else {					  
 					  int nodeHandle = xmlNodeCursorImpl.asNode(m_xctxt);
+					  
 					  DTM dtm2 = m_xctxt.getDTM(nodeHandle);
+					  
 					  java.lang.String nodeName2 = dtm2.getNodeName(nodeHandle);
-					  int childNode = DTM.NULL;
+					  
+					  int childNode = dtm2.getFirstChild(nodeHandle);
 					  int childNode2 = DTM.NULL;
-					  childNode = dtm2.getFirstChild(nodeHandle);
 					  
 					  if (childNode != DTM.NULL) {
 						  childNode2 = dtm2.getFirstChild(childNode);
@@ -1228,11 +1231,8 @@ public class InstanceOf extends XPathOperator
 					  
 					  int xsBuiltInSeqType = seqTypeData.getBuiltInSequenceType();
 					  
-					  java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("b_[0-9]{5}");
-					  java.util.regex.Matcher matcher = pattern.matcher(nodeName2);
-					  
 					  try {
-						  if ((childNode != DTM.NULL) && (childNode2 == DTM.NULL) && matcher.matches()) {
+						  if ((childNode != DTM.NULL) && (childNode2 == DTM.NULL) && StringUtil.isXdmNodeShallowSynthetic(nodeName2)) {
 							  if ((xsBuiltInSeqType == XPathSequenceTypeSupport.XS_ANY_URI) && ((new AnyURIDV()).getActualValue(strValue, null) != null)) {						  
 								  nodeSetSequenceTypeResultList.add(Boolean.valueOf(true));
 							  }

@@ -347,7 +347,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);														
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
 
 							xctxt = getXPathContext();
 
@@ -714,7 +714,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											xpathParseTimeOut = true;
 										}
 
-										if (xpathObj != null) {									   
+										if (xpathObj != null) {																						
 											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);	
 											
 											Expression expr1 = xpathObj.getExpression();

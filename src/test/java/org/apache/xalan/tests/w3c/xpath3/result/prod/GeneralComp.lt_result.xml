@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:07Z" fail="14" name="prod-GeneralComp.lt" pass="60" run="74" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:26Z" fail="12" name="prod-GeneralComp.lt" pass="62" run="74" statusUnknown="0">
    <testResult status="pass" testName="generalexpression199"/>
    <testResult status="pass" testName="generalexpression200"/>
    <testResult status="pass" testName="generalexpression201"/>
@@ -65,8 +65,8 @@
    <testResult status="fail" testName="K-GenCompLT-15"/>
    <testResult status="fail" testName="K-GenCompLT-16"/>
    <testResult status="fail" testName="K-GenCompLT-17"/>
-   <testResult status="fail" testName="K-GenCompLT-18"/>
-   <testResult status="fail" testName="K-GenCompLT-19"/>
+   <testResult status="pass" testName="K-GenCompLT-18"/>
+   <testResult status="pass" testName="K-GenCompLT-19"/>
    <testResult status="pass" testName="GenCompLT-9"/>
    <testResult status="fail" testName="GenCompLT-10"/>
    <testResult status="pass" testName="GenCompLT-11"/>

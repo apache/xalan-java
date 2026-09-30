@@ -23,10 +23,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * This class definition, specifies few utility methods for 
- * string information handling.
+ * Class definition, providing few utility methods for 
+ * string value handling.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -224,6 +226,39 @@ public class StringUtil {
     	}
 
     	return result; 	  
+    }
+    
+    /**
+     * Method definition, to do whitespace normalization, to the
+     * supplied XPath expression string, for XML namespace binding
+     * information. For e.g, this method transforms the string value
+     * http://www.w3.org/2001/XMLSchema : integer, to http://www.w3.org/2001/XMLSchema:integer 
+     * 
+     * @param xpathExprStr                 The supplied XPath expression string
+     * @return                             The normalized XPath expression string
+     */
+    public static String xmlNsSeparatorWhitespaceNormalization(String xpathExprStr) {
+       return xpathExprStr.replace(" : ", ":"); 	
+    }
+    
+    /**
+     * Method definition, to check whether the supplied xdm
+     * node name is from an xdm node constructed to wrap a 
+     * text node.
+     * 
+     * @param nodeName                  The supplied xdm node name
+     * @return                          Boolean value true or false
+     */
+    public static boolean isXdmNodeShallowSynthetic(String nodeName) {
+    	
+    	boolean result = false;
+    	
+    	Pattern pattern = Pattern.compile("b_[0-9]{5}");
+		Matcher matcher = pattern.matcher(nodeName);
+		
+		result = matcher.matches();
+    	
+    	return result;
     }
 
 }

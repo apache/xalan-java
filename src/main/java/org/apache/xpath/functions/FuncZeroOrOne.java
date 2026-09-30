@@ -64,22 +64,26 @@ public class FuncZeroOrOne extends FunctionDef1Arg {
 		   ResultSequence rSeq = (ResultSequence)arg0;
 		   
 		   int size = rSeq.size();
+		   
 		   if (size <= 1) {
 			  result = arg0; 
 		   }
 		   else {
-			  throw new TransformerException("FORG0003 : An XPath 3.1 function call 'zero-or-one' has an argument with more than one item.", srcLocator);  
+			  throw new TransformerException("FORG0003 : An XPath 3.1 function call 'zero-or-one' is supplied with an "
+			  		                                                                                                  + "xdm sequence, that contains more than one xdm item.", srcLocator);  
 		   }
 		}
 		else if (arg0 instanceof XMLNodeCursorImpl) {
 		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0;
 		   
 		   int size = xmlNodeCursorImpl.getLength();
+		   
 		   if (size <= 1) {
 			   result = arg0; 
 		   }
 		   else {
-			   throw new TransformerException("FORG0003 : An XPath 3.1 function call 'zero-or-one' has an argument with more than one item.", srcLocator);  
+			   throw new TransformerException("FORG0003 : An XPath 3.1 function call 'zero-or-one' is supplied with an "
+			   															                                               + "xdm sequence, that contains more than one xdm item.", srcLocator);  
 		   }
 		}
 		else {

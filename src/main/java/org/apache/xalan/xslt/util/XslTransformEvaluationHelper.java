@@ -171,6 +171,8 @@ public class XslTransformEvaluationHelper {
           replacedXPathExprStr = replacedXPathExprStr.replace(uri + ":", prefix + ":");
        }
        
+       replacedXPathExprStr = replacedXPathExprStr.replace(XMLConstants.XML_NS_URI + ":", "xml:");
+       
        return replacedXPathExprStr; 
     }
     

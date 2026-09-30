@@ -78,41 +78,66 @@ public class FuncContains extends XSL3StringCollationAwareFunction
 	   * instance of XPathInlineFunction object.
 	   */
 
-	  String arg0StrValue = null;	        
+	  String arg0StrValue = null;
+	  
 	  if ((m_arg0 != null) && !(m_arg0 instanceof FuncArgPlaceholder)) {
 		  if (m_arg0 instanceof Variable) {
-			  XObject obj1 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+			  XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
-			  arg0StrValue = XslTransformEvaluationHelper.getStrVal(obj1);
+			  arg0StrValue = XslTransformEvaluationHelper.getStrVal(xObj0);
 		  }
 		  else {
 			  arg0StrValue = getArgStringValue(xctxt, m_arg0);
-		  }
+		  }		  		  
 	  }
 
-	  String arg1StrValue = null;	        
+	  String arg1StrValue = null;
+	  
 	  if ((m_arg1 != null) && !(m_arg1 instanceof FuncArgPlaceholder)) {
 		  if (m_arg1 instanceof Variable) {
-			  XObject obj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+			  XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 
-			  Object object1 = obj1.object();
-			  if (!(object1 instanceof FuncArgPlaceholder)) {
-				  arg1StrValue = XslTransformEvaluationHelper.getStrVal(obj1);
+			  Object obj2 = xObj1.object();
+			  
+			  if (!(obj2 instanceof FuncArgPlaceholder)) {
+				  arg1StrValue = XslTransformEvaluationHelper.getStrVal(xObj1);
 			  }	    		
 		  }
 		  else {
 			  arg1StrValue = getArgStringValue(xctxt, m_arg1);
+		  }		  		 
+	  }
+	  
+	  if ((arg0StrValue != null) && (arg1StrValue != null)) {
+		  if ((arg0StrValue.length() == 0) && (arg1StrValue.length() == 0)) {
+			  result = new XSBoolean(true);
+
+			  return result;
 		  }
+	  }
+	  
+	  if ((arg0StrValue != null) && (arg0StrValue.length() == 0)) {
+		  result = new XSBoolean(false);
+
+		  return result;
+	  }
+
+	  if ((arg1StrValue != null) && (arg1StrValue.length() == 0)) {
+		  result = new XSBoolean(true);
+
+		  return result;
 	  }
 
 	  String collationUri = null;	        
+	  
 	  if ((m_arg2 != null) && !(m_arg2 instanceof FuncArgPlaceholder)) {
 		  if (m_arg2 instanceof Variable) {
-			  XObject obj1 = getFunctionArgEffectiveValue(m_arg2, xctxt);
+			  XObject xObj2 = getFunctionArgEffectiveValue(m_arg2, xctxt);
 
-			  Object object1 = obj1.object();
-			  if (!(object1 instanceof FuncArgPlaceholder)) {
-				  collationUri = XslTransformEvaluationHelper.getStrVal(obj1);
+			  Object obj2 = xObj2.object();
+			  
+			  if (!(obj2 instanceof FuncArgPlaceholder)) {
+				  collationUri = XslTransformEvaluationHelper.getStrVal(xObj2);
 			  }	    		
 		  }
 		  else {
@@ -136,13 +161,17 @@ public class FuncContains extends XSL3StringCollationAwareFunction
 			  result = new XSBoolean(false);
 
 			  int arg0StrLength = arg0StrValue.length();
+			  
 			  for (int idx = 0; idx < arg0StrLength; idx++) {
-				  int temp = idx;
-				  for (int idx2 = temp; idx2 < arg0StrLength; idx2++) {
-					  String tempStr = arg0StrValue.substring(temp, idx2 + 1);
+				  int temp1 = idx;
+				  
+				  for (int idx2 = temp1; idx2 < arg0StrLength; idx2++) {
+					  String tempStr = arg0StrValue.substring(temp1, idx2 + 1);
 					  int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(tempStr, arg1StrValue, collationUri);
+					  
 					  if (comparisonResult == 0) {
-						  result = new XSBoolean(true);        		 
+						  result = new XSBoolean(true);
+						  
 						  break;
 					  }
 				  }
@@ -241,14 +270,7 @@ public class FuncContains extends XSL3StringCollationAwareFunction
    * @throws WrongNumberArgsException
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-	  /*if (!(argNum > 1 && argNum <= 3)) {
-		  reportWrongNumberArgs();
-	  }
-	  else {
-		  numOfArgs = argNum;   
-	  }*/
-	  
+  {	  	  
 	  numOfArgs = argNum; 
   }
   
@@ -260,8 +282,8 @@ public class FuncContains extends XSL3StringCollationAwareFunction
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                                                   XPATHErrorResources.ER_TWO_OR_THREE, 
-                                                                   null));
+                                                                       XPATHErrorResources.ER_TWO_OR_THREE, 
+                                                                       null));
   }
   
 }

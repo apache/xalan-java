@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:01Z" fail="2" name="op-numeric-less-than" pass="152" run="154" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:49Z" fail="0" name="op-numeric-less-than" pass="154" run="154" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-less-thanint2args-1"/>
    <testResult status="pass" testName="op-numeric-less-thanint2args-2"/>
    <testResult status="pass" testName="op-numeric-less-thanint2args-3"/>
@@ -149,8 +149,8 @@
    <testResult status="pass" testName="K-NumericLT-18"/>
    <testResult status="pass" testName="K-NumericLT-19"/>
    <testResult status="pass" testName="K-NumericLT-20"/>
-   <testResult status="fail" testName="K-NumericLT-21"/>
-   <testResult status="fail" testName="K-NumericLT-22"/>
+   <testResult status="pass" testName="K-NumericLT-21"/>
+   <testResult status="pass" testName="K-NumericLT-22"/>
    <testResult status="pass" testName="K2-NumericLT-1"/>
    <testResult status="pass" testName="K2-NumericLT-2"/>
 </testrun>

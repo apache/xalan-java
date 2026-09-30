@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-28T12:14:05Z" fail="11" name="sequence" pass="73" run="84" skipped="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:25:23Z" fail="12" name="sequence" pass="72" run="84" skipped="8" statusUnknown="0">
    <testResult status="pass" testName="sequence-0101"/>
    <testResult status="pass" testName="sequence-0102"/>
    <testResult status="pass" testName="sequence-0103"/>
@@ -24,7 +24,7 @@
    <testResult status="pass" testName="sequence-0123"/>
    <testResult status="pass" testName="sequence-0124"/>
    <testResult status="fail" testName="sequence-0125"/>
-   <testResult status="pass" testName="sequence-0126"/>
+   <testResult status="fail" testName="sequence-0126"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="sequence-0127"/>
    <testResult status="pass" testName="sequence-0128"/>
    <testResult status="pass" testName="sequence-0129"/>

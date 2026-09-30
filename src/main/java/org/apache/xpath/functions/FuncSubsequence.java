@@ -17,6 +17,7 @@
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -75,13 +76,13 @@ public class FuncSubsequence extends FunctionMultiArgs {
             
             ResultSequence rSeqArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(xObj0, xctxt);
             
-            XObject xObjArg1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
+            XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
             
             boolean isStartingLocNegInf = false;
             boolean isStartingLocNan = false;
             
-            if (xObjArg1 instanceof XSDouble) {
-                XSDouble xsDouble = (XSDouble)xObjArg1;
+            if (xObj1 instanceof XSDouble) {
+                XSDouble xsDouble = (XSDouble)xObj1;
                 Double dbl = Double.valueOf(xsDouble.doubleValue());
                 
                 if (dbl.doubleValue() == Double.NEGATIVE_INFINITY) {
@@ -95,13 +96,13 @@ public class FuncSubsequence extends FunctionMultiArgs {
             boolean isLengthInf = false;
             boolean isLengthNan = false;
             
-            XObject xObjArg2 = null;
+            XObject xObj2 = null;
             
             if (numOfArgs == 3) {
-            	xObjArg2 = getFunctionArgEffectiveValue(m_arg2, xctxt);
+            	xObj2 = getFunctionArgEffectiveValue(m_arg2, xctxt);
             	
-            	if (xObjArg2 instanceof XSDouble) {
-             	   XSDouble xsDouble = (XSDouble)xObjArg2;
+            	if (xObj2 instanceof XSDouble) {
+             	   XSDouble xsDouble = (XSDouble)xObj2;
              	   Double dbl = Double.valueOf(xsDouble.doubleValue());
              	   
              	   if (dbl.doubleValue() == Double.POSITIVE_INFINITY) {
@@ -115,17 +116,17 @@ public class FuncSubsequence extends FunctionMultiArgs {
             
             if (isStartingLocNan || isLengthNan) {
                return result;
-            }
-            
-            if (isStartingLocNegInf && !isLengthInf) {
-                return result;
-            }
+            }                        
             
             if (isStartingLocNegInf && isLengthInf) {
                 return result;
             }
             
-            int startingLoc = getIntFromXObject(xObjArg1);
+            if (isStartingLocNegInf) {
+            	return rSeqArg0;
+            }
+            
+            int startingLoc = getIntFromXObject(xObj1);
             
             int rSeqLength = rSeqArg0.size();
             
@@ -142,7 +143,7 @@ public class FuncSubsequence extends FunctionMultiArgs {
             	int rIndex;
             	
             	if (!isLengthInf) {
-            		int lengthVal = getIntFromXObject(xObjArg2); 
+            		int lengthVal = getIntFromXObject(xObj2); 
             		rIndex = ((startingLoc - 1) + lengthVal);
             	}
             	else {            		           		            		
@@ -156,8 +157,8 @@ public class FuncSubsequence extends FunctionMultiArgs {
             	}
             }
         }
-        catch (javax.xml.transform.TransformerException ex) {
-           throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);  
+        catch (TransformerException ex) {
+           throw new TransformerException(ex.getMessage(), srcLocator);  
         }
         
         return result;
@@ -191,43 +192,39 @@ public class FuncSubsequence extends FunctionMultiArgs {
      * Method definition, to convert an XObject value which is function fn:subsequence's 
      * second or third argument to primitive integer. 
      * 
-     * @param xObject							The supplied XObject value
-     * @return                                  The result integer value
+     * @param xObj							The supplied XObject value
+     * @return                              The result integer value
      * @throws javax.xml.transform.TransformerException
      */
-    private int getIntFromXObject(XObject xObject) throws javax.xml.transform.TransformerException {
+    private int getIntFromXObject(XObject xObj) throws javax.xml.transform.TransformerException {
        
        int result = -1;
        
        double dblVal = 0.0;
        
-       if (xObject instanceof XNumber) {
-          dblVal = ((XNumber)xObject).num();
+       if (xObj instanceof XNumber) {
+          dblVal = ((XNumber)xObj).num();
           result = roundDoubleToInt(dblVal); 
        }
-       else if (xObject instanceof XSNumericType) {
-          String strVal = ((XSNumericType)xObject).stringValue();
+       else if (xObj instanceof XSNumericType) {
+          String strVal = ((XSNumericType)xObj).stringValue();
           dblVal = (Double.valueOf(strVal)).doubleValue();
           result = roundDoubleToInt(dblVal);
        }
-       else if (xObject instanceof XMLNodeCursorImpl) {
-    	  String strVal = ((XMLNodeCursorImpl)xObject).str();
+       else if (xObj instanceof XMLNodeCursorImpl) {
+    	  String strVal = ((XMLNodeCursorImpl)xObj).str();
     	  
     	  try {
     	     dblVal = (Double.valueOf(strVal)).doubleValue();
     	  }
     	  catch (NumberFormatException ex) {
-    		  throw new javax.xml.transform.TransformerException("FORG0006 : The second or third argument's value to "
-																				                      + "XPath function subsequence is not numeric or "
-																				                      + "cannot be cast to numeric."); 
+    		  throw new TransformerException("XPTY0004 : An XPath 3.1 function 'subsequence' second, or third argument is not a numeric value."); 
     	  }
     	  
           result = roundDoubleToInt(dblVal);
        }
        else {
-          throw new javax.xml.transform.TransformerException("FORG0006 : The second or third argument's value to "
-					                                                                                 + "XPath function subsequence is not numeric or "
-					                                                                                 + "cannot be cast to numeric."); 
+          throw new TransformerException("XPTY0004 : An XPath 3.1 function 'subsequence' second, or third argument is not a numeric value."); 
        }
        
        return result;
