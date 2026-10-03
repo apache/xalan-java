@@ -72,14 +72,16 @@ public class FuncContainsToken extends FunctionMultiArgs {
         List<String> arg0List = new ArrayList<String>();
         
         if (xObj0 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;
-           if (nodeSet.getLength() > 0) {
+           XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj0;
+           
+           if (xmlNodeCursorImpl.getLength() > 0) {
                DTMManager dtmMgr = (DTMManager)xctxt;                        
-               DTMCursorIterator sourceNodes = nodeSet.iter();
+               DTMCursorIterator sourceNodes = xmlNodeCursorImpl.iter();
                
-               int nextNodeDtmHandle;
-               while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                  XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);                  
+               int nextNode = DTM.NULL;
+               
+               while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+                  XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, dtmMgr);                  
                   String strVal = xNodeSetItem.str();
                   
                   arg0List.add(strVal);
@@ -91,9 +93,11 @@ public class FuncContainsToken extends FunctionMultiArgs {
         }
         else if (xObj0 instanceof ResultSequence) {
            ResultSequence resultSeq = (ResultSequence)xObj0;
+           
            if (resultSeq.size() > 0) {
         	  int size1 = resultSeq.size();        	   
-              for (int idx = 0; idx < size1; idx++) {
+              
+        	  for (int idx = 0; idx < size1; idx++) {
                  XObject xObj = resultSeq.item(idx);                  
                  String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
                  
@@ -115,6 +119,7 @@ public class FuncContainsToken extends FunctionMultiArgs {
         
         if (tokenStrVal.length() > 0) {
            String collationUri = null;
+           
            if (m_arg2 == null) {
               collationUri = xctxt.getDefaultCollation();  
            }
@@ -129,12 +134,16 @@ public class FuncContainsToken extends FunctionMultiArgs {
            boolean isTokenExists = false;
            
            int size1 = arg0List.size();
+           
            for (int idx1 = 0; idx1 < size1; idx1++) {
               String strVal = arg0List.get(idx1);
-              // Split this string at whitespace boundaries
+              
+              // Split the string at whitespace boundaries
               String[] strPartsArr = strVal.split("\\s+");
+              
               for (int idx2 = 0; idx2 < strPartsArr.length; idx2++) {
                  String strPart = strPartsArr[idx2];
+                 
                  if (xpathCollationSupport.compareStringsUsingCollation(strPart, tokenStrVal, collationUri) == 0) {
                 	isTokenExists = true;
                 	

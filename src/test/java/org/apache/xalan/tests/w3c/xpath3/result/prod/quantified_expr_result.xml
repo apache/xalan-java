@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-14T10:24:54Z" fail="17" name="prod-QuantifiedExpr" pass="144" run="161" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-03T11:39:44Z" fail="12" name="prod-QuantifiedExpr" pass="149" run="161" statusUnknown="0">
    <testResult status="pass" testName="quantExpr-1"/>
    <testResult status="pass" testName="quantExpr-2"/>
    <testResult status="pass" testName="quantExpr-3"/>
@@ -65,8 +65,8 @@
    <testResult status="pass" testName="K-QuantExprWithout-4"/>
    <testResult status="pass" testName="K-QuantExprWithout-5"/>
    <testResult status="pass" testName="K-QuantExprWithout-6"/>
-   <testResult status="fail" testName="K-QuantExprWithout-7"/>
-   <testResult status="fail" testName="K-QuantExprWithout-8"/>
+   <testResult status="pass" testName="K-QuantExprWithout-7"/>
+   <testResult status="pass" testName="K-QuantExprWithout-8"/>
    <testResult status="pass" testName="K-QuantExprWithout-9"/>
    <testResult status="pass" testName="K-QuantExprWithout-10"/>
    <testResult status="pass" testName="K-QuantExprWithout-11"/>
@@ -154,9 +154,9 @@
    <testResult status="pass" testName="K-QuantExprWithout-97"/>
    <testResult status="pass" testName="K-QuantExprWithout-98"/>
    <testResult status="pass" testName="K-QuantExprWithout-99"/>
-   <testResult status="fail" testName="K2-QuantExprWithout-1"/>
-   <testResult status="fail" testName="K2-QuantExprWithout-2"/>
-   <testResult status="fail" testName="K2-QuantExprWithout-4"/>
+   <testResult status="pass" testName="K2-QuantExprWithout-1"/>
+   <testResult status="pass" testName="K2-QuantExprWithout-2"/>
+   <testResult status="pass" testName="K2-QuantExprWithout-4"/>
    <testResult status="pass" testName="cbcl-every-001"/>
    <testResult status="pass" testName="cbcl-some-001"/>
    <testResult status="pass" testName="cbcl-every-002"/>

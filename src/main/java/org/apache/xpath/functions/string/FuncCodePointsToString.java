@@ -17,10 +17,11 @@
 package org.apache.xpath.functions.string;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
@@ -32,7 +33,7 @@ import org.apache.xpath.objects.XString;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the codepoints-to-string() function.
+ * Implementation of an XPath 3.1 function fn:codepoints-to-string.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -61,7 +62,78 @@ public class FuncCodePointsToString extends FunctionOneArg {
     {
         XObject result = null;
         
+        SourceLocator srcLocator = xctxt.getSAXLocator(); 
+        
         XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        
+        boolean isXml11Support = xctxt.isXML11Support();
+        
+        if (!isXml11Support) {
+        	if (xObj instanceof ResultSequence) {
+        		ResultSequence rSeq = (ResultSequence)xObj;
+
+        		int size1 = rSeq.size();
+        		
+        		/**
+        		 * The codepoint values 1 upto 31, refer to the control
+        		 * characters. The following code, checks for control 
+        		 * character validation for the supplied function argument.
+        		 * 
+        		 * XML 1.0 doesn't allow control characters within 
+        		 * string values.
+        		 */
+
+        		for (int idx = 0; idx < size1; idx++) {
+        			XObject xObj2 = rSeq.item(idx);
+
+        			if (xObj2 instanceof XNumber) {
+        				XNumber xNumber = (XNumber)xObj2;
+
+        				xObj2 = XslTransformEvaluationHelper.getXNumberNormalizedValue(xNumber);
+        			}
+
+        			int codePoint1 = 0;
+
+        			if (xObj2 instanceof XNumber) {
+        				double dbl = ((XNumber)xObj2).num();        		 
+
+        				codePoint1 = (int)dbl;
+
+        				if (codePoint1 == dbl) {
+                           if ((codePoint1 >= 1) && (codePoint1 <= 31)) {
+                        	  throw new TransformerException("FOCH0001 : An XPath 3.1 function 'codepoints-to-string' refers, to a codepoint "
+                        	  		                                                                                                         + "value " + codePoint1 + " "
+                        	  		                                                                                                         + "that is not allowed by XML 1.0.", srcLocator);
+                           }
+        				}
+        				else {
+        				   throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoints-to-string' refers, to a non-integer code point value.", srcLocator); 
+        				}
+        			}
+        			else if (xObj2 instanceof XSNumericType) {
+        				String str1 = XslTransformEvaluationHelper.getStrVal(xObj2);
+        				
+        				double dbl = Double.valueOf(str1);
+        				
+        				codePoint1 = (int)dbl;
+
+        				if (codePoint1 == dbl) {
+        					if ((codePoint1 >= 1) && (codePoint1 <= 31)) {
+        						throw new TransformerException("FOCH0001 : An XPath 3.1 function 'codepoints-to-string' refers, to a codepoint "
+																									        								+ "value " + codePoint1 + " "
+																									        								+ "that is not allowed by XML 1.0.", srcLocator);
+        					}
+        				}
+        				else {
+        					throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoints-to-string' refers, to a non-integer code point value.", srcLocator); 
+        				}
+        			}
+        			else {
+        				throw new TransformerException("XPTY0004 : An XPath 3.1 function 'codepoints-to-string' refers, to a non-numeric code point value.", srcLocator);
+        			}
+        		}
+        	}
+        }
         
         String resultStr = getStringFromXObject(xObj, xctxt);
         
@@ -70,133 +142,136 @@ public class FuncCodePointsToString extends FunctionOneArg {
         return result;
     }
     
-    /*
-     * Given an XObject object instance, convert that into a string, which is
-     * the result of function invocation fn:codepoints-to-string.
+    /**
+     * Method definition, to convert the supplied XObject object instance,
+     * to a string value, to be returned as function fn:codepoints-to-string's
+     * result.  
+     * 
+     * @param xObj                            The supplied XObject object
+     *                                        instance. 
+     * @param xctxt                           An XPath context object
+     * @return                                The string value
+     * @throws javax.xml.transform.TransformerException
      */
     private String getStringFromXObject(XObject xObj, XPathContext xctxt) 
-                                                                 throws javax.xml.transform.TransformerException {
+    		                                                            throws javax.xml.transform.TransformerException {
        
-       String resultStr = "";
+       String result = null;
+       
+       StringBuffer strBuff = new StringBuffer();
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
-       ResultSequence inpSeq = null;
+       ResultSequence rSeq = null;
        
        if (xObj instanceof ResultSequence) {
-           inpSeq = (ResultSequence)xObj;
+           rSeq = (ResultSequence)xObj;
            
-           int size1 = inpSeq.size();
+           int size1 = rSeq.size();
            
            for (int idx = 0; idx < size1; idx++) {
-              XObject inpSeqObj = inpSeq.item(idx);
-              if (inpSeqObj instanceof XNumber) {
-                 XNumber xNum = (XNumber)inpSeqObj;
+              XObject xobj0 = rSeq.item(idx);
+              
+              if (xobj0 instanceof XNumber) {
+                 XNumber xNum = (XNumber)xobj0;
                  double dblVal = xNum.num();
+                 
                  if (dblVal == (int)dblVal) {
-                    char[] charArr = Character.toChars((int)dblVal);
-                    resultStr = resultStr + String.valueOf(charArr);
+                    char[] charArr = Character.toChars((int)dblVal);                    
+                    strBuff.append(String.valueOf(charArr));
                  }
                  else {
-                    throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item " + dblVal + " "
-                                                                                                + "is not an xs:integer value, "
-                                                                                                + "or cannot be cast to xs:integer.", srcLocator);    
+                    throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-integer codepoint value.", srcLocator);    
                  }
               }
-              else if (inpSeqObj instanceof XSNumericType) {
-                 String itemStrVal = ((XSNumericType)inpSeqObj).stringValue();
-                 double dblVal = (Double.valueOf(itemStrVal)).doubleValue();
-                 if (dblVal == (int)dblVal) {
-                    char[] charArr = Character.toChars((int)dblVal);
-                    resultStr = resultStr + String.valueOf(charArr);  
+              else if (xobj0 instanceof XSNumericType) {
+                 String str1 = ((XSNumericType)xobj0).stringValue();
+                 double dbl = (Double.valueOf(str1)).doubleValue();
+                 
+                 if (dbl == (int)dbl) {
+                    char[] charArr = Character.toChars((int)dbl);
+                    strBuff.append(String.valueOf(charArr));
                  }
                  else {
-                    throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item " + dblVal + " "
-                                                                                                  + "is not an xs:integer value, "
-                                                                                                  + "or cannot be cast to xs:integer.", srcLocator);   
+                	throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-integer codepoint value.", srcLocator);   
                  }
               }
-              else if (inpSeqObj instanceof XMLNodeCursorImpl) {
-                 XMLNodeCursorImpl inpSeqItem = (XMLNodeCursorImpl)inpSeqObj;
-                 if (inpSeqItem.getLength() == 1) {
-                    String itemStrVal = inpSeqItem.str();
-                    double dblVal = (Double.valueOf(itemStrVal)).doubleValue();
+              else if (xobj0 instanceof XMLNodeCursorImpl) {
+                 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xobj0;
+                 
+                 if (xmlNodeCursorImpl.getLength() == 1) {
+                    String str1 = xmlNodeCursorImpl.str();
+                    double dblVal = (Double.valueOf(str1)).doubleValue();
+                    
                     if (dblVal == (int)dblVal) {
                        char[] charArr = Character.toChars((int)dblVal);
-                       resultStr = resultStr + String.valueOf(charArr); 
+                       strBuff.append(String.valueOf(charArr)); 
                     }
                     else {
-                       throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item " + dblVal + " "
-                                                                                                       + "is not an xs:integer value, "
-                                                                                                       + "or cannot be cast to xs:integer.", srcLocator);   
+                       throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-integer codepoint value.", srcLocator);   
                     }
                  }
                  else {
-                    throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item is a nodeset "
-                                                                                                       + "with size not equal to one.", srcLocator); 
+                	throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a sequence that has an xdm node with size not equal to one.", srcLocator); 
                  }
               }
               else {
-                 String itemStrVal = inpSeqObj.str();
+                 String itemStrVal = xobj0.str();
                  try {
                     double dblVal = (Double.valueOf(itemStrVal)).doubleValue();
+                    
                     if (dblVal == (int)dblVal) {
                        char[] charArr = Character.toChars((int)dblVal);
-                       resultStr = resultStr + String.valueOf(charArr); 
+                       strBuff.append(String.valueOf(charArr)); 
                     }
                     else {
-                       throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item " + dblVal + " "
-                                                                                                           + "is not an xs:integer value, "
-                                                                                                           + "or cannot be cast to xs:integer.", srcLocator);   
+                       throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-integer codepoint value.", srcLocator);   
                     }
                  }
                  catch (NumberFormatException ex) {
-                    throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item, cannot be "
-                                                                                                + "cast to numeric value.", srcLocator);
+                	throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-numeric codepoint value.", srcLocator);
                  }
               }
            }
         }
-        else if (xObj instanceof XMLNodeCursorImpl) {
-           DTMManager dtmMgr = (DTMManager)xctxt;
+        else if (xObj instanceof XMLNodeCursorImpl) {            
+           XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;           
+           DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
             
-           XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)xObj;           
-           DTMCursorIterator sourceNodes = xNodeSet.iter();
-            
-           int nextNodeDtmHandle;
+           int nextNode = DTM.NULL;
            
-           while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-               XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
+           while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+               XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, xctxt);
                String nodeStrValue = xNodeSetItem.str();
                
                double dblVal = (Double.valueOf(nodeStrValue)).doubleValue();
+               
                if (dblVal == (int)dblVal) {
                   char[] charArr = Character.toChars((int)dblVal);
-                  resultStr = resultStr + String.valueOf(charArr);  
+                  strBuff.append(String.valueOf(charArr));  
                }
                else {
-                  throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item " + dblVal + " "
-                                                                                               + "is not an xs:integer value, "
-                                                                                               + "or cannot be cast to xs:integer.", srcLocator);   
+            	  throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-integer codepoint value.", srcLocator);   
                }
            }
         }
         else {
-           String xdmItemStrVal = xObj.str();
+           String str1 = xObj.str();
            
-           double dblVal = (Double.valueOf(xdmItemStrVal)).doubleValue();
-           if (dblVal == (int)dblVal) {
-              char[] charArr = Character.toChars((int)dblVal);
-              resultStr = String.valueOf(charArr);  
+           double dbl = (Double.valueOf(str1)).doubleValue();
+           
+           if (dbl == (int)dbl) {
+              char[] charArr = Character.toChars((int)dbl);
+              strBuff.append(String.valueOf(charArr));
            }
            else {
-              throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence item " + dblVal + " "
-                                                                                                  + "is not an xs:integer value, "
-                                                                                                  + "or cannot be cast to xs:integer.", srcLocator);   
+        	  throw new TransformerException("FORG0006 : An XPath 3.1 function 'codepoints-to-string' is supplied, with a non-integer codepoint value.", srcLocator);   
            }
         }
        
-        return resultStr; 
+        result = strBuff.toString(); 
+       
+        return result; 
     }
 
 }

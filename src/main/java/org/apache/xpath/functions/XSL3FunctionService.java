@@ -985,8 +985,8 @@ public class XSL3FunctionService {
      * Method definition, to evaluate an XPath named function reference.
      * 
      * @param xpathNamedFuncRef                 An XPath compiled named function reference object
-     * @param argList                           List of argument XPath expressions for the function call
-     * @param argSeq                            List of compiled function argument object instances
+     * @param xpathArgStrList                   List of XPath argument string, for the function call
+     * @param argSeq                            List of compiled function argument, object instances
      * @param prefixTable                       An XML prefix table list object reference containing
      *                                          an XSL context namespace binding information.
      * @param varVecor                          Variable name declaration vector
@@ -997,7 +997,7 @@ public class XSL3FunctionService {
      * @throws TransformerException
      */
     public XObject evaluateXPathNamedFunctionReference(XPathNamedFunctionReference xpathNamedFuncRef, 
-    		                                           List<String> argList, ResultSequence argSeq, List<XMLNSDecl> prefixTable, 
+    		                                           List<String> xpathArgStrList, ResultSequence argSeq, List<XMLNSDecl> prefixTable, 
     		                                           Vector varVecor, int varGlobalsSize, ExpressionNode expressionNode, 
     		                                           XPathContext xctxt) throws TransformerException {
     	
@@ -1054,8 +1054,8 @@ public class XSL3FunctionService {
 
     		int argCount = 0;
     		
-    		if (argList != null) {
-    		   argCount = argList.size();
+    		if (xpathArgStrList != null) {
+    		   argCount = xpathArgStrList.size();
     		}
     		else if (argSeq != null) {
     		   argCount = argSeq.size();	
@@ -1063,8 +1063,8 @@ public class XSL3FunctionService {
     		
     		for (int idx = 0; idx < argCount; idx++) {
     			try {
-    				if (argList != null) {
-    					String argXPathStr = argList.get(idx);
+    				if (xpathArgStrList != null) {
+    					String argXPathStr = xpathArgStrList.get(idx);
     					
     					if (prefixTable != null) {
     						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
@@ -1097,10 +1097,10 @@ public class XSL3FunctionService {
     		ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
 
     		ResultSequence argSequence = new ResultSequence();
-    		int argCount = argList.size();
+    		int argCount = xpathArgStrList.size();
     		
     		for (int idx = 0; idx < argCount; idx++) {
-    			String argXPathStr = argList.get(idx);
+    			String argXPathStr = xpathArgStrList.get(idx);
     			
     			if (prefixTable != null) {
     				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
@@ -1146,11 +1146,11 @@ public class XSL3FunctionService {
     		
     		funcObj.setArity(new Short[] { (short)funcArity });
 
-    		if (argList != null) {
-    			int argCount = argList.size();
+    		if (xpathArgStrList != null) {
+    			int argCount = xpathArgStrList.size();
 
     			for (int idx = 0; idx < argCount; idx++) {
-    				String argXPathStr = argList.get(idx);
+    				String argXPathStr = xpathArgStrList.get(idx);
 
     				if (prefixTable != null) {
     					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
@@ -1447,7 +1447,7 @@ public class XSL3FunctionService {
      *                                              XPath expression evaluation.
      * @param xslDynFuncCallVarName                 If this method is called to evaluate an XPath dynamic 
      *                                              function call, this argument contains name of the variable
-     *                                              referring to an XPath function that will be called.
+     *                                              referring to an XPath function that needs to be called.
      * 
      * @return									    The result of evaluation of an XPath inline function expression.
      * @throws TransformerException

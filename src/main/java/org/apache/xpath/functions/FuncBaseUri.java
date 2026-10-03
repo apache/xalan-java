@@ -21,7 +21,6 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -63,80 +62,144 @@ public class FuncBaseUri extends FunctionDef1Arg
     	
     	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
-    	DTMManager dtmMgr = xctxt.getDTMManager();
+    	int sourceNode = xctxt.getContextNode();
     	
-    	String baseUriStr = null;
+    	String str1 = null;
     	
     	if (m_arg0 != null) {
     	   XObject argValue = getFunctionArgEffectiveValue(m_arg0, xctxt);
     	   
     	   if ((argValue != null) && (argValue.getType() == XObject.CLASS_NODESET)) {
-    		  XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)argValue;
-    		  if (nodeSet.getLength() == 1) {
-    			 baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
-    			 if (baseUriStr != null) {
-    			    result = new XSAnyURI(baseUriStr);
+    		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)argValue;
+    		  
+    		  if (xmlNodeCursorImpl.getLength() == 1) {
+    			 str1 = getXdmNodeBaseUri(xmlNodeCursorImpl, xctxt);
+    			 
+    			 if (str1 != null) {
+    			    result = new XSAnyURI(str1);
     			 }
     			 else {
     				result = new ResultSequence();  
     			 }
     		  }
     		  else {
-    			  throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find base uri of a node using "
-                                                                            + "function fn:base-uri, the context nodeset is not "
-                                                                            + "of size one", srcLocator);   
+    			  throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument cannot be an "
+    			  		                                                                                            + "xdm sequence with size other "
+    			  		                                                                                            + "than one.", srcLocator);   
     		  }
     	   }
-    	   else if ((argValue != null) && (argValue instanceof ResultSequence) && (((ResultSequence)argValue).size() == 0)) {
-    		  result = new ResultSequence(); 
+    	   else if ((argValue != null) && (argValue instanceof ResultSequence)) {
+    		  ResultSequence rSeq = (ResultSequence)argValue;
+    		  
+    		  int size1 = rSeq.size();
+    		  
+    		  if (size1 == 1) {
+    			 XObject xObj = rSeq.item(0);
+    			 
+    			 if (xObj.getType() == XObject.CLASS_NODESET) {
+    				 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+    				 
+    				 if (xmlNodeCursorImpl.getLength() == 1) {
+    					 str1 = getXdmNodeBaseUri(xmlNodeCursorImpl, xctxt);
+
+    					 if (str1 != null) {
+    						 result = new XSAnyURI(str1);
+    					 }
+    					 else {
+    						 result = new ResultSequence();  
+    					 }
+    				 }
+    				 else {
+    					 throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument cannot be an "
+																		    							                   + "xdm sequence with size other "
+																		    							                   + "than one.", srcLocator);   
+    				 } 
+    			 }
+    			 else {
+    				 throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument didn't evaluate to "
+                                                                                                                             + "an xdm node.", srcLocator);
+    			 }
+    		  }
+    		  else if (size1 > 1) {
+    			 throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument cannot be an "
+																									                + "xdm sequence with size other "
+																									                + "than one.", srcLocator); 
+    		  }
+    		  else {
+    			 result = new ResultSequence();
+    			 
+    			 return result;
+    		  }
     	   }
     	   else {
-    		  throw new javax.xml.transform.TransformerException("XPDY0002 : The fn:base-uri argument didn't evaluate to a node", 
-                                                                                                                              srcLocator);  
+    		  throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument didn't evaluate to "
+    		  		                                                                                                  + "an xdm node.", srcLocator);  
     	   }
     	}
-    	else {
-    	   int contextXdmNodeHandle = xctxt.getContextNode();
-      	   if (contextXdmNodeHandle != DTM.NULL) {    		   
-      		  XMLNodeCursorImpl nodeSet = new XMLNodeCursorImpl(contextXdmNodeHandle, dtmMgr);
-      		  if (nodeSet.getLength() == 1) {
-      			 baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
-      			 if (baseUriStr != null) {
-    			    result = new XSAnyURI(baseUriStr);
+    	else {    	       		
+    	   if (sourceNode != DTM.NULL) {    		   
+      		  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(sourceNode, xctxt);
+      		  
+      		  if (xmlNodeCursorImpl.getLength() == 1) {
+      			 str1 = getXdmNodeBaseUri(xmlNodeCursorImpl, xctxt);
+      			 
+      			 if (str1 != null) {
+    			    result = new XSAnyURI(str1);
     			 }
     			 else {
     				result = new ResultSequence();  
     			 }
       		  }
       		  else {
-      			 throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find base uri of a node using "
-                                                                           + "function fn:base-uri, the context nodeset is not "
-                                                                           + "of size one", srcLocator);   
+      			 throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument cannot be an "
+																											       + "xdm sequence with size other "
+																											       + "than one.", srcLocator);   
       		  }
       	   }
       	   else {
-      		  XObject contextItem = xctxt.getXPath3ContextItem();
-      		  if ((contextItem != null) && (contextItem.getType() == XObject.CLASS_NODESET)) {
-      			 XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)contextItem;
-      			 if (nodeSet.getLength() == 1) {
-      				baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
-      				if (baseUriStr != null) {
-        			   result = new XSAnyURI(baseUriStr);
-        			}
-        			else {
-        			   result = new ResultSequence();  
-        			}
-         		 }
-         		 else {
-         			throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find base uri of a node using "
-         					                                                  + "function fn:base-uri, the context nodeset is not "
-         					                                                  + "of size one", srcLocator);  
-         		 }
+      		  XObject xpathCtxtItem = xctxt.getXPath3ContextItem();
+      		  
+      		  if (xpathCtxtItem instanceof ResultSequence) {
+      			 ResultSequence rSeq = (ResultSequence)xpathCtxtItem;
+      			 
+      			 int size1 = rSeq.size();
+      			 
+      			 if (size1 == 1) {
+      			    xpathCtxtItem = rSeq.item(0);  
+      			 }
+      			 else {
+      				throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument cannot be an "
+																									                  + "xdm sequence with size other "
+																									                  + "than one.", srcLocator); 
+      			 }
+      		  }
+      		  
+      		  if (xpathCtxtItem != null) {
+      			  if (xpathCtxtItem.getType() == XObject.CLASS_NODESET) {
+      				  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xpathCtxtItem;
+
+      				  if (xmlNodeCursorImpl.getLength() == 1) {
+      					  str1 = getXdmNodeBaseUri(xmlNodeCursorImpl, xctxt);
+
+      					  if (str1 != null) {
+      						  result = new XSAnyURI(str1);
+      					  }
+      					  else {
+      						  result = new ResultSequence();  
+      					  }
+      				  }
+      				  else {
+      					  throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument cannot be an "
+																								      				        + "xdm sequence with size other "
+																								      					    + "than one.", srcLocator);  
+      				  }
+      			  }
+      			  else {
+      				  throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' argument didn't evaluate to an xdm node.", srcLocator);
+      			  }
       		  }
       		  else {
-      		     throw new javax.xml.transform.TransformerException("XPDY0002 : While calling fn:base-uri "
-                                                                                   + "function without an argument, a context node must be available", 
-                                                                                   srcLocator);
+      		      throw new TransformerException("XPDY0002 : An XPath 3.1 function 'base-uri' is supplied with no argument, and an XPath context item is absent.", srcLocator);
       		  }
       	   }
     	}
@@ -145,37 +208,43 @@ public class FuncBaseUri extends FunctionDef1Arg
     }
     
     /**
-     * Find and return an XML base uri of an xdm node.
+     * Method definition, to get an XML base uri for an xdm node.
      * 
-     * (as per XPath Data Model specification, XML base uri of only document, element 
-     * and PI nodes are available [which could possibly be null as well, for e.g when 
-     * an XML document object has not been constructed from an XML document file or 
-     * a url location]. For all other kinds of xdm nodes, XML base uri is null)
+     * (as per XPath Data Model specification, an XML base uri for only xdm 'document', 
+     *  'element' and 'PI' nodes are available. For all other kinds of xdm nodes, 
+     *  XML base uri is null)
      * 
-     * An XML base uri of a node, is either uri of the document to which an xdm node
-     * belongs, or value of an XML attribute named xml:base (if an XML attribute named 
-     * xml:base is present, then it overrides XML document's uri for the value of 
-     * xdm base uri) present on an xdm element node (an XML attribute named xml:base on 
-     * an element node itself, or on nearest ancestor element node is considered 
-     * when considering xml:base attribute).
+     * An XML base uri of an xdm node, is either source uri for an XML document to which 
+     * an xdm node belongs, or the value of an XML attribute (on an xdm node, or its nearest 
+     * ancestor xdm nodes) named xml:base (if an XML attribute named xml:base is present, 
+     * then it overrides XML document's source uri for the value of XML base uri) present 
+     * on an xdm element node.
      * 
-     * @param nodeSet    an xdm node object    
-     * @param dtmMgr     XalanJ XSL transformer's DTMManager object
-     * @return           XML base uri of the node as string value
-     * @throws           TransformerException 
+     * @param xmlNodeCursorImpl                   An xdm node object instance    
+     * @param xctxt                               An XPath context object, instance
+     * @return                                    An XML base uri of the node as string value
+     * @throws                                    TransformerException 
      */
-    private String getXdmNodeBaseUri(XMLNodeCursorImpl nodeSet, DTMManager dtmMgr) {
-       String xmlBaseUri = null;
+    private String getXdmNodeBaseUri(XMLNodeCursorImpl xmlNodeCursorImpl, XPathContext xctxt) {
+       
+       String result = null;
               
-       int nodeHandle = nodeSet.nextNode();
-	   DTM dtm = dtmMgr.getDTM(nodeHandle);
+       int nodeHandle = xmlNodeCursorImpl.nextNode();
+	   
+       DTM dtm = xctxt.getDTM(nodeHandle);
+	   
 	   short nodeType = dtm.getNodeType(nodeHandle);
+	   
 	   if ((nodeType == DTM.DOCUMENT_NODE) || (nodeType == DTM.ELEMENT_NODE) || 
 				                              (nodeType == DTM.PROCESSING_INSTRUCTION_NODE)) {
 		  Node node = dtm.getNode(nodeHandle);
-		  xmlBaseUri = node.getBaseURI();
+		  
+		  // The function call node.getBaseURI() considers the 'node', 
+		  // and also the ancestor nodes of the 'node'.
+		  
+		  result = node.getBaseURI();
 	   }
               
-       return xmlBaseUri;
+       return result;
     }
 }

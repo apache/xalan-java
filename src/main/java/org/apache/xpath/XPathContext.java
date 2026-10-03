@@ -85,6 +85,13 @@ public class XPathContext extends XPathStaticContext
   private HashMap m_DTMXRTreeFrags = null;
   
   /**
+   * Boolean value, indicating whether XML 1.1 supported 
+   * is active, for XPath expression processing. The default 
+   * value is true.
+   */
+  private boolean m_xml_1_1 = true;
+  
+  /**
    * state of the secure processing feature.
    */
   private boolean m_isSecureProcessing = false; 
@@ -1220,6 +1227,14 @@ public class XPathContext extends XPathStaticContext
       iter.remove();
     }
     m_DTMXRTreeFrags = null;
+  }
+
+  public boolean isXML11Support() {
+	return m_xml_1_1;
+  }
+
+  public void setXML11Support(boolean xml_1_1) {
+	this.m_xml_1_1 = xml_1_1;
   }
   
 }

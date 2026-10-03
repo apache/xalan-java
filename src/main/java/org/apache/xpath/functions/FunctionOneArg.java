@@ -206,7 +206,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
 	  }
 	  else {  
 		  result = argExpr.execute(xctxt);
-	  }
+	  }	  	  
 	  
 	  return result;
   }

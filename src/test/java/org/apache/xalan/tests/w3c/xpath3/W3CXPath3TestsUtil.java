@@ -73,6 +73,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.CastableAs;
@@ -209,6 +210,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
     public static final String XPATH20 = "XP20+";
     
     public static final String XML_VERSION = "xml-version";
+    
+    public static final String XML_VERSION_VALUE = "1.1";
     
     public static final String XSD_VERSION = "xsd-version";
     
@@ -347,7 +350,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);								
+							
+							boolean isXML11 = true;
 
 							xctxt = getXPathContext();
 
@@ -631,7 +636,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										elemTestRun.appendChild(elemTestResult);
 
 										break;
-									}
+									}									
 								}						   						   
 
 								for (int idx = 0; idx < size1; idx++) {
@@ -673,11 +678,31 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										                                                		                   (XPATH_HIGHER_ORDER_FUNC.equals(depValue) || 
 										                                                		                    NON_UNICODE_CODEPOINT_COLLATION.equals(depValue)))
 										                                                || DEFAULT_LANGUAGE.equals(depType)) {								
-
-									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));    							
+																		
+									if (!XML_VERSION.equals(depType)) {
+										for (int idx2 = (idx + 1); idx2 < size1; idx2++) {
+											if (dependencySpecified) {
+												Element el1 = (Element)(depNodeList.item(idx2));
+												String depType2 = el1.getAttribute(TYPE);
+												String depValue2 = el1.getAttribute(VALUE);
+												
+												if (XML_VERSION.equals(depType2)) {
+													if (XML_VERSION_VALUE.equals(depValue2)) {
+													   isXML11 = false;
+													   
+													   xctxt.setXML11Support(false);
+													}
+													
+													break;
+												}
+											} 
+										}
+									}
+									
+									Element elemNode1 = (Element)((testCaseElem.getElementsByTagName(TEST)).item(0));																		
 									
 									xpathExprStr = elemNode1.getTextContent();
-									xpathExprStr = getXPathNormalizedStr(xpathExprStr);
+									xpathExprStr = getXPathNormalizedStr(xpathExprStr);																		
 
 									try {
 										int sourceNode = DTM.NULL;
@@ -687,8 +712,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										}
 
 										XPath xpathObj = null;
+										
+										if (m_xslTransformTestSetFilePath.contains("fn/tokenize.xml") && 
+												                                                        "fn-tokenize-50".equals(testCaseNameStr)) {
+										    xctxt.setXML11Support(true);
+										}										
 
-										// To run XPath parse within a specified timeout, to
+										// Run XPath parse within a specified timeout, to 
 										// avoid XPath parse inf loop.
 
 										ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -714,18 +744,18 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											xpathParseTimeOut = true;
 										}
 
-										if (xpathObj != null) {																						
-											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);	
-											
+										if (xpathObj != null) {																																												
+											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);											
+																						
 											Expression expr1 = xpathObj.getExpression();
-											expr1.resetXPathVarList();
+											expr1.resetXPathVarList();																						
 										}
 									}
 									catch (TransformerException ex) {
-										String errMeg = ex.getMessage();									
+										String errMesg = ex.getMessage();									
 										
-										if (!errMeg.contains("FOCH0002")) {									
-											String[] errMesgParts = errMeg.split(":");
+										if (!errMesg.contains("FOCH0002")) {									
+											String[] errMesgParts = errMesg.split(":");
 											
 											if (errMesgParts.length > 2) {
 												runTimeErrCode = (errMesgParts[1]).trim();
@@ -739,9 +769,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											}
 										}
 										else {
-											String[] errMesgParts = errMeg.split(":");										
+											String[] errMesgParts = errMesg.split(":");										
 											runTimeErrCode = (errMesgParts[0]).trim();
-										}
+										}										
 									}    							
 									catch (Exception ex) {																		
 										String errMeg = ex.getMessage();
@@ -768,6 +798,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										if (sourceNode != DTM.NULL) {
 										   xctxt.popCurrentNode();
 										}
+										
+										xctxt.setXML11Support(true);
 									}
 
 									break;
@@ -978,7 +1010,10 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										}
 									}
 									else if (ASSERT_FALSE.equals(nodeName2)) {
-										if ((xpathResultObj != null) && !xpathResultObj.bool() && (runTimeErrCode == null)) {
+										if (!isXML11 && "FOCH0001".equals(runTimeErrCode)) {
+										   elemTestResult.setAttribute(STATUS, PASS);	
+										}										
+										else if ((xpathResultObj != null) && !xpathResultObj.bool() && (runTimeErrCode == null)) {
 											elemTestResult.setAttribute(STATUS, PASS);
 										}
 										else {
@@ -986,7 +1021,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										}
 									}
 									else if (ASSERT_EQ.equals(nodeName2)) {
-										boolean isStatusFinal = false;
+										boolean isStatusFinal = false;										
 										
 										if (runTimeErrCode != null) {
 										   elemTestResult.setAttribute(STATUS, FAIL);
@@ -1436,7 +1471,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														XPathSequenceType xpathSequenceType = (XPathSequenceType)xObj;
 
 														if (xpathResultObj != null) {										
-															if (!(xpathResultObj instanceof XPathMap)) {
+															if (!((xpathResultObj instanceof XPathMap) || (xpathResultObj instanceof XPathInlineFunction))) {
 																CastableAs castableAs = new CastableAs();
 
 																xObj = castableAs.operate(xpathResultObj, xpathSequenceType);

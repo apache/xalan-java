@@ -31,6 +31,10 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.composite.XPathSequenceTypeKindTest;
+import org.apache.xpath.composite.XPathSequenceTypeMapTest;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.context.FuncCurrentDateTime;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -188,7 +192,30 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 		   result = xpath1.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 		}
 		else if ("next".equals(funcLookupArg)) {
-		   result = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
+		   XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
+		   
+		   XPathSequenceType funcReturnType1 = new XPathSequenceType();
+		   
+		   XPathSequenceTypeMapTest seqTypeMapTest = new XPathSequenceTypeMapTest(); 
+		   
+		   XPathSequenceType mapKeySeqType = new XPathSequenceType();
+		   mapKeySeqType.setBuiltInSequenceType(XPathSequenceTypeSupport.STRING);
+		   
+		   seqTypeMapTest.setKeySequenceTypeData(mapKeySeqType);
+		   
+		   XPathSequenceType mapValueSeqType = new XPathSequenceType();
+		   
+		   XPathSequenceTypeKindTest xpathSeqTypeKindTest = new XPathSequenceTypeKindTest();
+		   xpathSeqTypeKindTest.setKindVal(XPathSequenceTypeSupport.ITEM_KIND);		   
+		   mapValueSeqType.setSequenceTypeKindTest(xpathSeqTypeKindTest);
+		   
+		   seqTypeMapTest.setValueSequenceTypeData(mapValueSeqType);
+		   
+		   funcReturnType1.setSequenceTypeMapTest(seqTypeMapTest);
+		   
+		   xpathInlineFunc.setReturnType(funcReturnType1);
+		   
+		   result = xpathInlineFunc;
 		}
 		else if ("next()?number".equals(funcLookupArg)) {
 			XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));

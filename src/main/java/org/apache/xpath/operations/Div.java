@@ -555,12 +555,14 @@ public class Div extends XPathArithmeticUtil
     	 }
 
     	 Expression leftOperandExpr = getLeftOperand();	  
-    	 if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
+    	 
+    	 if ((leftOperandExpr instanceof SelfIteratorNoPredicate) && !(left instanceof XSAnyAtomicType)) {
     		 left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
     	 }
 
     	 Expression rightOperandExpr = getRightOperand();	  
-    	 if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
+    	 
+    	 if ((rightOperandExpr instanceof SelfIteratorNoPredicate) && !(right instanceof XSAnyAtomicType)) {
     		 right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
     	 }
 

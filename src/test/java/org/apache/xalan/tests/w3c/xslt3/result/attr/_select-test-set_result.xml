@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:32Z" fail="18" name="select" pass="114" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-03T11:44:29Z" fail="17" name="select" pass="115" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -27,11 +27,11 @@
    <testResult status="pass" testName="select-1504"/>
    <testResult status="pass" testName="select-1601"/>
    <testResult status="pass" testName="select-1602"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-1701"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-1702"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-1701"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-1702"/>
    <testResult status="fail" testName="select-1703"/>
    <testResult status="fail" testName="select-1704"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-1705"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-1705"/>
    <testResult status="fail" testName="select-1801"/>
    <testResult status="pass" testName="select-1802"/>
    <testResult status="fail" testName="select-1803">
@@ -46,48 +46,48 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult status="pass" testName="select-2002"/>
    <testResult status="pass" testName="select-2003"/>
    <testResult status="pass" testName="select-2004"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2005"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2006"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2007"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2005"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2006"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2007"/>
    <testResult status="pass" testName="select-2008"/>
    <testResult status="pass" testName="select-2009"/>
    <testResult status="fail" testName="select-2010"/>
    <testResult status="pass" testName="select-2011"/>
    <testResult status="pass" testName="select-2012"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2013"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2014"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2013"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2014"/>
    <testResult status="fail" testName="select-2015"/>
    <testResult status="fail" testName="select-2016"/>
    <testResult status="pass" testName="select-2017"/>
    <testResult status="pass" testName="select-2018"/>
    <testResult status="pass" testName="select-2019"/>
    <testResult status="pass" testName="select-2020"/>
-   <testResult status="fail" testName="select-2021"/>
+   <testResult status="pass" testName="select-2021"/>
    <testResult status="pass" testName="select-2022"/>
    <testResult status="fail" testName="select-2023"/>
    <testResult status="fail" testName="select-2024"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2025"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2026"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2025"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2026"/>
    <testResult status="fail" testName="select-2027"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2028"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2029"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2030"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2031"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2032"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2033"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2034"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2035"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2028"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2029"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2030"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2031"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2032"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2033"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2034"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2035"/>
    <testResult status="fail" testName="select-2036"/>
    <testResult status="pass" testName="select-2037"/>
    <testResult status="fail" testName="select-2038"/>
    <testResult status="pass" testName="select-2039"/>
    <testResult status="fail" testName="select-2101"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2102"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2102"/>
    <testResult status="pass" testName="select-2103"/>
    <testResult status="pass" testName="select-2104"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2201"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2202"/>
-   <testResult reason="Xalan configured" status="skipped" testName="select-2203"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2201"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2202"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="select-2203"/>
    <testResult status="pass" testName="select-2301"/>
    <testResult status="fail" testName="select-2302"/>
    <testResult status="pass" testName="select-2303"/>

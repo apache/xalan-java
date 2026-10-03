@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -1153,6 +1154,10 @@ public class XslTransformEvaluationHelper {
 
     	PrefixResolver prefixResolver = xctxt.getNamespaceContext();
     	
+    	if (prefixResolver == null) {
+    	   prefixResolver = getXMLNsPrefixResolver(new HashMap<String, String>());
+    	}
+    	
     	if (prefixResolver instanceof ElemTemplateElement) {
     		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)prefixResolver; 
     		result = (List<XMLNSDecl>)(elemTemplateElement.getPrefixTable());
@@ -1262,69 +1267,6 @@ public class XslTransformEvaluationHelper {
 	}
     
     /**
-     * Method definition, to get numerical sum from xdm sequence items.
-     *  
-     * @param resultSeq  				An xdm sequence object instance
-     * @return           				The summation value
-     */
-    private static double sumResultSequence(ResultSequence resultSeq) {
-       
-       double sum = 0.0;
-       
-       int size1 = resultSeq.size();
-       
-       for (int idx = 0; idx < size1; idx++) {
-          XObject xObj = resultSeq.item(idx);
-          String str = null;
-          
-          if (xObj instanceof XSAnyType) {
-             str = ((XSAnyType)xObj).stringValue();     
-          }
-          else {
-             str = xObj.str();
-          }
-          if (str != null) {
-             XString xStr = new XString(str);
-             sum +=  xStr.toDouble();
-          }
-       }
-       
-       return sum;
-    }
-    
-    /**
-     * Method definition, to strip XML namespace nodes recursively
-     * from the supplied XML dom element node.
-     * 
-     * @param elemNode					The supplied XML dom element node
-     */
-    private static void stripNsNodesFromXmlDocument(Element elemNode) {
-
- 	   NamedNodeMap namedNodeMap = elemNode.getAttributes();
-
- 	   int attrCount = namedNodeMap.getLength();
- 	   
- 	   for (int idx = 0; idx < attrCount; idx++) {
- 		   Node node = namedNodeMap.item(idx);
- 		   String nodeName = node.getNodeName();
- 		   
- 		   if (nodeName.startsWith(Constants.ATTRNAME_XMLNS) || (Constants.ATTRNAME_XMLNSDEF).equals(nodeName)) {
- 			   elemNode.removeAttributeNode((Attr)node);
- 			   NodeList nodeList = elemNode.getChildNodes();
- 			   int nodeListLength = nodeList.getLength();
- 			   
- 			   for (int idx2 = 0; idx2 < nodeListLength; idx2++) {
- 				   Node node2 = nodeList.item(idx2);
- 				   
- 				   if (node2.getNodeType() == Node.ELEMENT_NODE) {
- 					   stripNsNodesFromXmlDocument((Element)node2); 
- 				   }
- 			   }
- 		   }
- 	   }
-    }
-    
-    /**
      * Method definition, to check whether the supplied string
      * value argument, is one of XSL built-in namespace uri.
      * 
@@ -1392,6 +1334,128 @@ public class XslTransformEvaluationHelper {
     		   result += 1; 
     	   }
     	}
+    	
+    	return result;
+    }
+    
+    /**
+     * Method definition, to get numerical sum from xdm sequence items.
+     *  
+     * @param resultSeq  				An xdm sequence object instance
+     * @return           				The summation value
+     */
+    private static double sumResultSequence(ResultSequence resultSeq) {
+       
+       double sum = 0.0;
+       
+       int size1 = resultSeq.size();
+       
+       for (int idx = 0; idx < size1; idx++) {
+          XObject xObj = resultSeq.item(idx);
+          String str = null;
+          
+          if (xObj instanceof XSAnyType) {
+             str = ((XSAnyType)xObj).stringValue();     
+          }
+          else {
+             str = xObj.str();
+          }
+          if (str != null) {
+             XString xStr = new XString(str);
+             sum +=  xStr.toDouble();
+          }
+       }
+       
+       return sum;
+    }
+    
+    /**
+     * Method definition, to strip XML namespace nodes recursively
+     * from the supplied XML dom element node.
+     * 
+     * @param elemNode					The supplied XML dom element node
+     */
+    private static void stripNsNodesFromXmlDocument(Element elemNode) {
+
+ 	   NamedNodeMap namedNodeMap = elemNode.getAttributes();
+
+ 	   int attrCount = namedNodeMap.getLength();
+ 	   
+ 	   for (int idx = 0; idx < attrCount; idx++) {
+ 		   Node node = namedNodeMap.item(idx);
+ 		   String nodeName = node.getNodeName();
+ 		   
+ 		   if (nodeName.startsWith(Constants.ATTRNAME_XMLNS) || (Constants.ATTRNAME_XMLNSDEF).equals(nodeName)) {
+ 			   elemNode.removeAttributeNode((Attr)node);
+ 			   NodeList nodeList = elemNode.getChildNodes();
+ 			   int nodeListLength = nodeList.getLength();
+ 			   
+ 			   for (int idx2 = 0; idx2 < nodeListLength; idx2++) {
+ 				   Node node2 = nodeList.item(idx2);
+ 				   
+ 				   if (node2.getNodeType() == Node.ELEMENT_NODE) {
+ 					   stripNsNodesFromXmlDocument((Element)node2); 
+ 				   }
+ 			   }
+ 		   }
+ 	   }
+    }
+    
+    /**
+     * Method definition, to construct XML namespace PrefixResolver
+     * object for XPath expression evaluation.
+     * 
+     * @param nsMap					       java.util.Map object, having XML namespace 
+     *                                     prefix and uri mappings. This map object may be
+     *                                     empty.
+     * 
+     * @return                             PrefixResolver object instance
+     */
+    private static PrefixResolver getXMLNsPrefixResolver(Map<String, String> nsMap) {
+    	
+    	PrefixResolver result = null; 
+    	
+        System.setProperty(Constants.XML_DOCUMENT_BUILDER_FACTORY_KEY, Constants.XML_DOCUMENT_BUILDER_FACTORY_VALUE);
+    	
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    	documentBuilderFactory.setNamespaceAware(true);
+
+    	DocumentBuilder documentBuilder = null;
+    	
+    	try {
+    	   documentBuilder = documentBuilderFactory.newDocumentBuilder();
+    	}
+    	catch (Exception ex) {
+    	   // No op	
+    	}
+    	
+    	
+    	Document document = documentBuilder.newDocument();
+    	Element elem = document.createElement("elem1");
+    	
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "fn", XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "math", XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "map", XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "array", XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "err", org.apache.xalan.templates.Constants.XSL_ERROR_NAMESACE);
+    	elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + "xs", XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    	
+    	if (nsMap.size() > 0) {
+    	   Set<Entry<String, String>> mapEntrySet1 = nsMap.entrySet();
+    	   Iterator<Entry<String, String>> iter1 = mapEntrySet1.iterator();
+    	   
+    	   while (iter1.hasNext()) {
+    		  Entry<String, String> mapEntry1 = iter1.next();
+    		  String prefix = mapEntry1.getKey();
+    		  String uri = mapEntry1.getValue();
+    		  
+    		  elem.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, org.apache.xalan.templates.Constants.XMLNS_COLON + prefix, uri);
+    	   }
+    	}
+    	
+    	document.appendChild(elem);
+    	
+    	result = new PrefixResolverDefault(elem);
     	
     	return result;
     }

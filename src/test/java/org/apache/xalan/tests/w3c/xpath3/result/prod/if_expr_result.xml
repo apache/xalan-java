@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:43Z" fail="3" name="prod-IfExpr" pass="24" run="27" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-03T11:39:43Z" fail="0" name="prod-IfExpr" pass="27" run="27" statusUnknown="0">
    <testResult status="pass" testName="CondExpr008"/>
    <testResult status="pass" testName="CondExpr009"/>
    <testResult status="pass" testName="CondExpr010"/>
@@ -21,9 +21,9 @@
    <testResult status="pass" testName="K-CondExpr-10"/>
    <testResult status="pass" testName="K-CondExpr-11"/>
    <testResult status="pass" testName="K-CondExpr-12"/>
-   <testResult status="fail" testName="K2-CondExpr-4"/>
+   <testResult status="pass" testName="K2-CondExpr-4"/>
    <testResult status="pass" testName="K2-CondExpr-5"/>
    <testResult status="pass" testName="K2-CondExpr-7"/>
-   <testResult status="fail" testName="cbcl-condexpr-001"/>
-   <testResult status="fail" testName="cbcl-condexpr-002"/>
+   <testResult status="pass" testName="cbcl-condexpr-001"/>
+   <testResult status="pass" testName="cbcl-condexpr-002"/>
 </testrun>

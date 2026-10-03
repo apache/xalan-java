@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-09-30T10:25:59Z" desc="W3C XSLT 3.0 test suite results" fail="852" pass="3976" run="4831" skipped="612" success="82.3%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-10-03T11:45:41Z" desc="W3C XSLT 3.0 test suite results" fail="849" pass="3979" run="4831" skipped="612" success="82.36%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
-    <expand-text fail="1" pass="58" run="59" skipped="3" success="98.31%"/>
+    <expand-text fail="0" pass="59" run="59" skipped="3" success="100.0%"/>
     <match fail="70" pass="112" run="182" skipped="112" success="61.54%"/>
     <mode fail="68" pass="73" run="141" skipped="28" success="51.77%"/>
-    <select fail="18" pass="114" run="132" skipped="26" success="86.36%"/>
+    <select fail="17" pass="115" run="132" skipped="26" success="87.12%"/>
     <tunnel fail="36" pass="22" run="58" skipped="0" success="37.93%"/>
     <xpath-default-namespace fail="2" pass="20" run="22" skipped="4" success="90.91%"/>
   </attr>
@@ -24,7 +24,7 @@
     <variable fail="14" pass="89" run="103" skipped="5" success="86.41%"/>
   </decl>
   <expr>
-    <axes fail="7" pass="193" run="200" skipped="2" success="96.5%"/>
+    <axes fail="6" pass="194" run="200" skipped="2" success="97.0%"/>
     <castable fail="0" pass="7" run="7" skipped="2" success="100.0%"/>
     <expression fail="11" pass="89" run="100" skipped="5" success="89.0%"/>
     <for fail="1" pass="3" run="4" skipped="0" success="75.0%"/>

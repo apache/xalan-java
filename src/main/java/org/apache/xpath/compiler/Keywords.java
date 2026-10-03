@@ -885,6 +885,8 @@ public class Keywords
   
   public static final String VC_GE = "ge";
   
+  public static final String COLLATION = "collation";
+  
 
   static {	  
 	  m_axisnames.put(FROM_ANCESTORS_STRING, new Integer(OpCodes.FROM_ANCESTORS));

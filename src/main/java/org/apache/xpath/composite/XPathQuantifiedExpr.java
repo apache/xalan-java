@@ -36,6 +36,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.functions.FuncQName;
 import org.apache.xpath.objects.ResultSequence;
@@ -46,7 +47,7 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * An implementation of XPath 3.1 quantified expressions 
+ * An implementation of XPath 3.1 quantified expressions, 
  * 'some' & 'every'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -212,7 +213,7 @@ public class XPathQuantifiedExpr extends Expression {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        int contextNode = xctxt.getContextNode();
+        int sourceNode = xctxt.getContextNode();
         
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
@@ -253,7 +254,7 @@ public class XPathQuantifiedExpr extends Expression {
        		    		xpathLhsObj.fixupVariables(m_vars, m_globals_size);
        		        }
        		    	
-       		    	XObject xpathLhsResult = xpathLhsObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+       		    	XObject xpathLhsResult = xpathLhsObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
        		    	
        		    	XPath xpathRhsObj = new XPath(xpathRhsStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
        		    	
@@ -284,8 +285,16 @@ public class XPathQuantifiedExpr extends Expression {
         		   
         		   varBindingXPath.fixupVariables(m_vars, m_globals_size);
         	   }
+        	   
+        	   Expression exr1 = varBindingXPath.getExpression();
+        	   
+        	   if (exr1 instanceof LocPathIterator) {
+        		  if ((sourceNode == DTM.NULL) && (xctxt.getXPath3ContextItem() == null)) {
+        			 throw new TransformerException("XPDY0002 : An XPath context item is absent.", srcLocator);  
+        		  }
+        	   }
 
-        	   XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());        	    
+        	   XObject xsObj = varBindingXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());        	    
 
         	   if (xsObj instanceof XMLNodeCursorImpl) {
         		   XMLNodeCursorImpl xsObjNodeSet = (XMLNodeCursorImpl)xsObj;
@@ -352,7 +361,7 @@ public class XPathQuantifiedExpr extends Expression {
             ResultSequence satisfiesClauseEvalResult = new ResultSequence();
             
             try {
-               XObject quantifiedTestExprValue = quantifiedExprXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+               XObject quantifiedTestExprValue = quantifiedExprXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
                
                satisfiesClauseEvalResult.add(new XSBoolean(quantifiedTestExprValue.bool()));
             }

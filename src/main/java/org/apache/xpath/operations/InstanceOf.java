@@ -509,10 +509,11 @@ public class InstanceOf extends XPathOperator
       boolean isInstanceOfResult = false;
       
       try {    	 
-    	 if (left instanceof XPathInlineFunction) {
-    		ElemTemplateElement elemTemplateElement = (ElemTemplateElement)getExpressionOwner();    		
-            XObject xObj = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, 
-            		                                                                           xctxt, elemTemplateElement.getPrefixTable());
+    	 if (left instanceof XPathInlineFunction) {    		
+    		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+    		
+            XObject xObj = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xctxt, prefixTable);            
+            
             if (xObj != null) {
                isInstanceOfResult = true;	
             }

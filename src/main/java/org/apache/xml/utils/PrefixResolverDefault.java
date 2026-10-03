@@ -23,6 +23,8 @@ package org.apache.xml.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+
 import org.apache.xalan.templates.XMLNSDecl;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
@@ -159,14 +161,19 @@ public class PrefixResolverDefault implements PrefixResolver
 	  List<XMLNSDecl> prefixTable = new ArrayList<XMLNSDecl>();
 	  
 	  NamedNodeMap namedNodeMap = m_context.getAttributes();
+	  
 	  int size1 = namedNodeMap.getLength();
+	  
 	  for (int idx = 0; idx < size1; idx++) {
 		 Attr attrNode = (Attr)(namedNodeMap.item(idx));
 		 String nsUri = attrNode.getNamespaceURI();
-		 if ("http://www.w3.org/2000/xmlns/".equals(nsUri)) {
+		 
+		 if ((XMLConstants.XMLNS_ATTRIBUTE_NS_URI).equals(nsUri)) {
 			String nodeName = attrNode.getNodeName();
 			String nodeValue = attrNode.getNodeValue();
+			
 			String prefix = null;
+			
 			if (nodeName.contains(":")) {
 			   int idx2 = nodeName.indexOf(":"); 
 			   prefix = nodeName.substring(idx2 + 1); 

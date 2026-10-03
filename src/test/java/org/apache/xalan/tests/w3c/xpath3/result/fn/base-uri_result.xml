@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-03T11:40:33Z" fail="0" name="fn-base-uri" pass="4" run="4" statusUnknown="0">
+   <testResult status="pass" testName="fn-base-uri-2"/>
+   <testResult status="pass" testName="fn-base-uri-3"/>
+   <testResult status="pass" testName="K-BaseURIFunc-1"/>
+   <testResult status="pass" testName="K-BaseURIFunc-2"/>
+</testrun>
