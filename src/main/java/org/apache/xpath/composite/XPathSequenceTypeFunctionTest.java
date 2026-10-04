@@ -57,6 +57,12 @@ public class XPathSequenceTypeFunctionTest {
 
 	public void setTypedFunctionTestReturnType(String typedFunctionTestReturnType) {
 		this.m_typedFunctionTestReturnType = typedFunctionTestReturnType;
+	}
+
+	public boolean equal(XPathSequenceTypeFunctionTest sequenceTypeFuncTest2) {
+		// no op
+		
+	    return false;	    	    
 	} 
 
 }

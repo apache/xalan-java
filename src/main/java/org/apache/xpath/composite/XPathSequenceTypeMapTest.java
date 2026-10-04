@@ -17,9 +17,8 @@
 package org.apache.xpath.composite;
 
 /**
- * An object of this class stores, an XSLT transformation run-time
- * information for an occurrence of a XPath 3.1 sequence type 
- * MapTest.
+ * Class definition, to implement XPath 3.1 sequence 
+ * type MapTest.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,6 +54,33 @@ public class XPathSequenceTypeMapTest {
 
 	public void setValueSequenceTypeData(XPathSequenceType valueSequenceTypeData) {
 		this.m_valueSequenceTypeData = valueSequenceTypeData;
+	}
+
+	/**
+	 * Method definition, to check whether, the supplied XPathSequenceTypeMapTest 
+	 * object instance is equal to this XPathSequenceTypeMapTest object instance.  
+	 * 
+	 * @param sequenceTypeMapTest2					The supplied XPathSequenceTypeMapTest
+	 *                                              object instance. 
+	 * @return                                      Boolean value true or false
+	 */
+	public boolean equal(XPathSequenceTypeMapTest sequenceTypeMapTest2) {
+		
+		boolean result = false;
+		
+		if (sequenceTypeMapTest2.isAnyMapTest() && m_isAnyMapTest) {
+		   result = true;
+		}
+		else {
+		   XPathSequenceType keySeqType2 = sequenceTypeMapTest2.getKeySequenceTypeData();
+		   XPathSequenceType valueSeqType2 = sequenceTypeMapTest2.getValueSequenceTypeData();
+		   
+		   if (keySeqType2.equal(m_keySequenceTypeData) && valueSeqType2.equal(m_valueSequenceTypeData)) {
+			  result = true; 
+		   }
+		}
+		
+		return result;
 	}
 
 }

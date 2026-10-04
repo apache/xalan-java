@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>true false</one>
+  <two>
+    <c id="1"/>
+    <b id="2"/>
+    <a id="3"/>
+  </two>
+</result>

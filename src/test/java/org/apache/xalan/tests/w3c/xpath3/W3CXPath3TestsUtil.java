@@ -350,9 +350,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);								
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
 							
-							boolean isXML11 = true;
+							// Boolean value, indicating whether XML 1.1 support 
+							// is enabled, for XPath expression evaluation.
+							boolean is_xml_1_1 = true;
 
 							xctxt = getXPathContext();
 
@@ -688,7 +690,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												
 												if (XML_VERSION.equals(depType2)) {
 													if (XML_VERSION_VALUE.equals(depValue2)) {
-													   isXML11 = false;
+													   is_xml_1_1 = false;
 													   
 													   xctxt.setXML11Support(false);
 													}
@@ -1010,7 +1012,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										}
 									}
 									else if (ASSERT_FALSE.equals(nodeName2)) {
-										if (!isXML11 && "FOCH0001".equals(runTimeErrCode)) {
+										if (!is_xml_1_1 && "FOCH0001".equals(runTimeErrCode)) {
 										   elemTestResult.setAttribute(STATUS, PASS);	
 										}										
 										else if ((xpathResultObj != null) && !xpathResultObj.bool() && (runTimeErrCode == null)) {
@@ -1364,7 +1366,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											XPathSequenceType xpathSequenceType = (XPathSequenceType)xObj;									
 
 											if (xpathResultObj != null) {										
-												if (!(xpathResultObj instanceof XPathMap)) {
+												if (!((xpathResultObj instanceof XPathMap) || (xpathResultObj instanceof XPathInlineFunction))) {
 													CastableAs castableAs = new CastableAs();
 
 													xObj = castableAs.operate(xpathResultObj, xpathSequenceType);
@@ -2120,7 +2122,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 														XPathSequenceType xpathSequenceType = (XPathSequenceType)xObj;
 
 														if (xpathResultObj != null) {										
-															if (!(xpathResultObj instanceof XPathMap)) {
+															if (!((xpathResultObj instanceof XPathMap) || (xpathResultObj instanceof XPathInlineFunction))) {
 																CastableAs castableAs = new CastableAs();
 
 																xObj = castableAs.operate(xpathResultObj, xpathSequenceType);

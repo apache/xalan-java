@@ -123,17 +123,47 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 			 Expression expr2 = rng2.getArg0();
 			 
 			 // Two XPath function calls to, fn:random-number-generator with unequal
-	    	 // seed values, result in boolean comparison result 'false'.
+	    	 // seed values, result in boolean value 'false'.
 			 
 			 if ((expr1 != null) && (expr2 == null)) {
-				result = new XSBoolean(false);
+				XObject xObj = expr1.execute(xctxt);
 				
-				return result;
+				boolean temp1 = false;
+				
+				if (xObj instanceof ResultSequence) {
+				   ResultSequence rSeq = (ResultSequence)xObj;				   
+				   int size1 = rSeq.size();
+				   
+				   if (size1 == 0) {
+					  temp1 = true;
+				   }
+				}
+				 
+				if (!temp1) {
+					result = new XSBoolean(false);
+
+					return result;
+				}
 			 }
 			 else if ((expr1 == null) && (expr2 != null)) {
-				result = new XSBoolean(false);
-					
-				return result;
+				 XObject xObj = expr2.execute(xctxt);
+
+				 boolean temp1 = false;
+
+				 if (xObj instanceof ResultSequence) {
+					 ResultSequence rSeq = (ResultSequence)xObj;				   
+					 int size1 = rSeq.size();
+
+					 if (size1 == 0) {
+						 temp1 = true;
+					 }
+				 }
+
+				 if (!temp1) {
+					 result = new XSBoolean(false);
+
+					 return result;
+				 }
 			 }
 			 else if ((expr1 != null) && (expr2 != null)) {
 				 XObject xObj1 = expr1.execute(xctxt);
@@ -185,6 +215,8 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 				 else {
 					 result = new XSBoolean(false); 
 				 }
+				 
+				 return result;
 			 }
 			 
 			 return result;

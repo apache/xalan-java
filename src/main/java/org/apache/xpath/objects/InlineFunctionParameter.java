@@ -19,8 +19,8 @@ package org.apache.xpath.objects;
 import org.apache.xpath.composite.XPathSequenceType;
 
 /**
- * An object of this class, represents one parameter 
- * of an XPath "inline function expression".
+ * Class definition, that represents an XPath 3.1 
+ * 'inline function' item parameter.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *
@@ -28,24 +28,24 @@ import org.apache.xpath.composite.XPathSequenceType;
  */
 public class InlineFunctionParameter {
     
-    private String paramName;
+    private String m_paramName;
     
-    private XPathSequenceType paramType;
+    private XPathSequenceType m_paramType;
 
     public String getParamName() {
-        return paramName;
+        return m_paramName;
     }
 
     public void setParamName(String paramName) {
-        this.paramName = paramName;
+        this.m_paramName = paramName;
     }
 
     public XPathSequenceType getParamType() {
-        return paramType;
+        return m_paramType;
     }
 
     public void setParamType(XPathSequenceType paramType) {
-        this.paramType = paramType;
+        this.m_paramType = paramType;
     }
 
 }

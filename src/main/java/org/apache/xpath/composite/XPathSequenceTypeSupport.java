@@ -125,8 +125,8 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * This class provides few utility methods, to support 
- * evaluation of XPath 3.1 sequence type expressions.
+ * Class definition, that provides few utility methods, to support 
+ * the evaluation of XPath 3.1 sequence type expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -400,6 +400,7 @@ public class XPathSequenceTypeSupport {
     	XObject result = null;
     	
     	m_PrefixTable = prefixTable;
+    	
     	if (sequenceTypeXPathExprStr != null) {
     	   result = castXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
     	}

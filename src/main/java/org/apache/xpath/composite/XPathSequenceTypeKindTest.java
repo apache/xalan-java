@@ -17,8 +17,8 @@
 package org.apache.xpath.composite;
 
 /**
- * A class definition, that stores, an XPath run-time information for 
- * a sequence type kind test expression (for e.g, element(), element(elemName), 
+ * Class definition, that represents, an XPath 3.1 sequence type 
+ * kind test expression (for e.g, element(), element(elemName), 
  * attribute(), element(elemName, typeName)* etc. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

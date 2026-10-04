@@ -169,6 +169,8 @@ public class XPATHErrorResources extends ListResourceBundle
   
   public static final String ER_FN_RANDOM_NUMBER_GENERATOR = "ER_FN_RANDOM_NUMBER_GENERATOR";
   
+  public static final String ER_FN_RANDOM_NUMBER_GENERATOR2 = "ER_FN_RANDOM_NUMBER_GENERATOR2";
+  
   public static final String ER_INCORRECT_PROGRAMMER_ASSERTION = 
 	 "ER_INCORRECT_PROGRAMMER_ASSERTION";
   public static final String ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL = 
@@ -580,7 +582,11 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
      "XPST0003 : Unexpected token ''{0}''."},
   
   { ER_FN_RANDOM_NUMBER_GENERATOR,
-     "XPST0003 : XPath 3.1 function call ''random-number-generator'' parse error."},
+     "XPST0003 : An XPath 3.1 function call ''random-number-generator'' parse error."},
+  
+  { ER_FN_RANDOM_NUMBER_GENERATOR2,
+     "XPST0003 : An XPath 3.1 function call ''random-number-generator'' parse error. "
+                                                                                     + "The function call ''permute'' argument is absent."},
 
   { ER_INCORRECT_PROGRAMMER_ASSERTION,
       "Programmer assertion is incorrect, {0}"},

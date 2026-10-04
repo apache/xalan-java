@@ -5051,10 +5051,26 @@ public class XPathParser
           if (tokenIs('(') && lookahead(')', 1)) {
         	  // An XPath expression is of the form, ... to (),
         	  // the result of which is an XPath empty sequence.
+        	  
+        	  consumeExpected('(');
 
-        	  Lexer.resetXPathOpMap(m_expression, m_ops);
+        	  if (!m_isFunctionArgumentParse) {
+        		  Lexer.resetXPathOpMap(m_expression, m_ops);
 
-        	  parseXPathEmptyLiteralSequence();
+        		  parseXPathEmptyLiteralSequence();
+        	  }
+        	  else {
+        		  List<String> seqOrArrayXPathItems = new ArrayList<String>();
+
+        		  nextToken();                            
+
+        		  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+        		  seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+
+        		  m_xpathSequenceConstructor = new XPathSequenceConstructor();              
+        		  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+        	  }
           }
           else {
         	  // $to (variable reference), @to (XML attribute reference) 
@@ -6250,13 +6266,14 @@ public class XPathParser
        matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('?', 2))) {
-       // XPath parse for unary lookup operator on map & array references       
+       // XPath parse for unary lookup operator, for xdm map 
+       // & array references.       
        
-       // e.g, $map1?a (get xdm map's entry value, for key named 'a'), 
+       // For e.g, $map1?a (get xdm map entry value, for key named 'a'), 
        // $array1?3 (get xdm item for array index 3).
     	
        // We translate these XPath expression syntax, to a 
-       // compiled form of XPath dynamic function call.
+       // compiled form, for XPath dynamic function call.
     	
        appendOp(2, OpCodes.XPath3OpCodes.OP_DYNAMIC_FUNCTION_CALL);
         
@@ -6475,7 +6492,7 @@ public class XPathParser
         		   }
         		}
         		else if ((Keywords.PERMUTE).equals(funcSuffix)) {
-        			funcSuffix = xpathParseRandomNumGeneratorPermute(funcSuffix);
+        		   funcSuffix = xpathParseRandomNumGeneratorPermute(funcSuffix);        			
         		}
 
         		m_unary_lookup_list.add(funcSuffix);
@@ -10275,6 +10292,7 @@ public class XPathParser
  	  
  	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
  		  // sequence type FunctionTest of variety AnyFunctionTest
+ 		  
  		  sequenceTypeFunctionTest = new XPathSequenceTypeFunctionTest();
  		  sequenceTypeFunctionTest.setIsAnyFunctionTest(true);
  		  nextToken();
@@ -10285,6 +10303,7 @@ public class XPathParser
  	  }
  	  else {
  		  // sequence type FunctionTest of variety TypedFunctionTest
+ 		  
  		  sequenceTypeFunctionTest = new XPathSequenceTypeFunctionTest();
  		  nextToken();
  		  consumeExpected('(');
@@ -10292,6 +10311,7 @@ public class XPathParser
  		  
  		  if (!lookahead(')', 1)) {
  			 // There's at-least one parameter specification, for TypedFunctionTest
+ 			  
  			 String typedFunctionTestParamSpec = "";
  			 
  			 while (m_token != null) {
@@ -10305,7 +10325,10 @@ public class XPathParser
  				      nextToken();
  				   }
  				   else {
- 					  typedFunctionTestParamSpecList.add(typedFunctionTestParamSpec);
+ 					  if (!"".equals(typedFunctionTestParamSpec)) {
+ 					     typedFunctionTestParamSpecList.add(typedFunctionTestParamSpec);
+ 					  }
+ 					  
  					  typedFunctionTestParamSpec = "";
  					  
  					  if (tokenIs(')')) {
@@ -10323,7 +10346,10 @@ public class XPathParser
  					  nextToken(); 
  				   }
  				   else {
- 					  typedFunctionTestParamSpecList.add(typedFunctionTestParamSpec);
+ 					  if (!"".equals(typedFunctionTestParamSpec)) {
+ 					     typedFunctionTestParamSpecList.add(typedFunctionTestParamSpec);
+ 					  }
+ 					  
  	 				  typedFunctionTestParamSpec = "";
  	 				  
  	 				  if (tokenIs(')')) {
@@ -10350,7 +10376,8 @@ public class XPathParser
  				  nextToken();
  			  }
 
- 			  if (!(tokenIs(XPathSequenceTypeSupport.Q_MARK) || tokenIs(XPathSequenceTypeSupport.STAR) || tokenIs(XPathSequenceTypeSupport.PLUS))) {
+ 			  if (!(tokenIs(XPathSequenceTypeSupport.Q_MARK) || tokenIs(XPathSequenceTypeSupport.STAR) 
+ 					                                         || tokenIs(XPathSequenceTypeSupport.PLUS))) {
  				  consumeExpected(')'); 
  			  } 			  
  		  }
@@ -10402,9 +10429,9 @@ public class XPathParser
  		  XPathSequenceType valueSequenceTypeData = new XPathSequenceType();
  		  
  		  while ((m_token != null) && !tokenIs(',')) {
- 			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
- 			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
- 			    consumeExpected(':'); 			    
+ 			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI) || tokenIs("xs")) { 				 
+ 				nextToken();
+ 				consumeExpected(':');
  			    
  			    populateSequenceTypeData(keySequenceTypeData); 			 
  			    
@@ -12866,6 +12893,7 @@ public class XPathParser
       * Method definition, to do XPath parse for function call 
       * fn:random-number-generator parameter use like: 
       * 
+      * fn:random-number-generator()?permute
       * fn:random-number-generator()?permute(..), 
       * fn:random-number-generator()?next()?permute(..)
       * 
@@ -12874,41 +12902,52 @@ public class XPathParser
       * @return                               fn:random-number-generator suffix, string value.
       * @throws TransformerException
       */
-     private String xpathParseRandomNumGeneratorPermute(String funcSuffix) throws TransformerException {
-    		
-    	 String result = funcSuffix;
+     private String xpathParseRandomNumGeneratorPermute(String funcSuffix) throws TransformerException {    	 
+    	 
+    	 String result = null;
 
     	 consumeExpected(Keywords.PERMUTE);
 
-    	 StringBuffer strBuff = new StringBuffer();
+    	 if (tokenIs('(')) {
+    		 consumeExpected('(');
+    		 
+    		 StringBuffer strBuff = new StringBuffer();
+    		 String str1 = null;
 
-    	 strBuff.append("( ");
-    	 consumeExpected('(');
+    		 strBuff.append(funcSuffix);
+    		 strBuff.append("(");
+    		 
+    		 boolean isXPathExprOk = false;
 
-    	 String str1 = null;
+    		 while (m_token != null) {
+    			 strBuff.append(m_token + " ");
+    			 str1 = (strBuff.toString()).trim();
 
-    	 boolean isXPathExprOk = false;
+    			 if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+    				 consumeExpected(')');
 
-    	 while (m_token != null) {
-    		 strBuff.append(m_token + " ");
-    		 str1 = (strBuff.toString()).trim();
+    				 isXPathExprOk = true;
 
-    		 if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
-    			 consumeExpected(')');
+    				 break; 
+    			 }
 
-    			 isXPathExprOk = true;
-
-    			 break; 
+    			 nextToken();
     		 }
 
-    		 nextToken();
-    	 }
-
-    	 if (isXPathExprOk) {
-    		 result += str1; 	
+    		 if (isXPathExprOk) {
+    			 if (!"permute()".equals(str1)) {
+    			    result = str1;
+    			 }
+    			 else {
+    				error(XPATHErrorResources.ER_FN_RANDOM_NUMBER_GENERATOR2, new Object[]{}); 
+    			 }
+    		 }
+    		 else {
+    			 error(XPATHErrorResources.ER_FN_RANDOM_NUMBER_GENERATOR, new Object[]{});
+    		 }
     	 }
     	 else {
-    		 error(XPATHErrorResources.ER_FN_RANDOM_NUMBER_GENERATOR, new Object[]{});
+    		 result = funcSuffix; 
     	 }
 
     	 return result;
@@ -12991,7 +13030,7 @@ public class XPathParser
     	  List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
     	  funcArgUsedSeq.add(Boolean.valueOf(false));
 
-    	  if ((tokenIs("mod") || tokenIs("div")) && !lookahead(null, 1)) {	      	
+    	  if ((tokenIs("mod") || tokenIs("div") || tokenIs("to")) && !lookahead(null, 1)) {	      	
     		  String str1 = m_token;
 
     		  nextToken();

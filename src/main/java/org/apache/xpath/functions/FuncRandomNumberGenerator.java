@@ -36,6 +36,7 @@ import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.context.FuncCurrentDateTime;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -89,11 +90,10 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 		
 		XPathMap xpathMap = new XPathMap();
 		
-		double randomNumValue = 0.0;		
+		double randomNumDbl = 0.0;		
 		
 		if (m_arg1 != null) {
-			throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'random-number-generator' can "
-					                                                                                                      + "have arity zero or one.", srcLocator); 
+			throw new TransformerException("XPST0017 : An XPath 3.1 function 'random-number-generator' may have, arity zero or one.", srcLocator); 
 		}
 		else if (m_arg0 != null) {
 			XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
@@ -101,79 +101,77 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 			if ((arg0Obj instanceof ResultSequence) && (((ResultSequence)arg0Obj).size() == 0)) {
 				Random random = new Random();
 				
-				randomNumValue = random.nextDouble();
+				randomNumDbl = random.nextDouble();
 			}
 			else {
-				double rngSeedValue = 0.0;
+				double rngSeedDbl = 0.0;
 
 				if (arg0Obj instanceof XNumber) {
-					rngSeedValue = ((XNumber)arg0Obj).num();
+					arg0Obj = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)arg0Obj);					
+					
+					String str1 = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+					
+					rngSeedDbl = Double.valueOf(str1);
 				}
 				else if (arg0Obj instanceof XSNumericType) {
 					XSNumericType xsNumericType = (XSNumericType)arg0Obj;
-					String numericStrValue = xsNumericType.stringValue();
+					String str1 = xsNumericType.stringValue();
 					
-					rngSeedValue = (Double.valueOf(numericStrValue)).doubleValue();
+					rngSeedDbl = (Double.valueOf(str1)).doubleValue();
 				}
 				else if (m_arg0 instanceof FuncCurrentDateTime) {
 					XSDateTime xsDateTime = (XSDateTime)(((FuncCurrentDateTime)m_arg0).execute(xctxt));
 					Calendar calendar = xsDateTime.getCalendar();
 					
-					rngSeedValue = (double)(calendar.getTimeInMillis());
+					rngSeedDbl = (double)(calendar.getTimeInMillis());
 				}
 				else if (arg0Obj instanceof XSDateTime) {
 					XSDateTime xsDateTime = (XSDateTime)arg0Obj;
 					Calendar calendar = xsDateTime.getCalendar();
 					
-					rngSeedValue = (double)(calendar.getTimeInMillis());
+					rngSeedDbl = (double)(calendar.getTimeInMillis());
 				}
 				else if ((arg0Obj instanceof XSAnyAtomicType) || (arg0Obj instanceof XString) 
 															  || (arg0Obj instanceof XBoolean) 
 															  || (arg0Obj instanceof XBooleanStatic)) {
-					String arg0Str = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+					String str1 = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+					
 					int rngSeedValue1 = 0;
-					int strLength = arg0Str.length();
+					
+					int strLength = str1.length();
 
 					for (int idx = 0; idx < strLength; idx++) {
-						int chrIntValue = arg0Str.charAt(idx);
+						int chrIntValue = str1.charAt(idx);
 						rngSeedValue1 += chrIntValue;
 					}
 
-					rngSeedValue = (double)rngSeedValue1;
+					rngSeedDbl = (double)rngSeedValue1;
 				}
 				else {
-					throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'random-number-generator' "
-																										 + "'seed' argument is not of schema "
-																										 + "type 'anyAtomicType'.", srcLocator);
+					throw new TransformerException("XPST0017 : An XPath 3.1 function 'random-number-generator' "
+																										       + "'seed' argument is not with schema "
+																										       + "type 'anyAtomicType'.", srcLocator);
 				}
 
 				Random random = new Random();
-				random.setSeed((long)rngSeedValue);
+				random.setSeed((long)rngSeedDbl);
 
-				randomNumValue = random.nextDouble();
+				randomNumDbl = random.nextDouble();
 			}
 		}
 		else {
 			Random random = new Random();
 			
-			randomNumValue = random.nextDouble();
+			randomNumDbl = random.nextDouble();
 		}
 		
-		xpathMap.put(new XSString(Keywords.NUMBER), new XSDouble(randomNumValue));
+		xpathMap.put(new XSString(Keywords.NUMBER), new XSDouble(randomNumDbl));
 		
-		String funcNextXPathStr = "function () { " + Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "() }";
+		XPathInlineFunction xpathInlineFuncNext = getFnRandomNumberGeneratorFunctionItemNext();		
+		xpathMap.put(new XSString(Keywords.NEXT), xpathInlineFuncNext);
 		
-		XPath nextExprXPath = new XPath(funcNextXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-		XObject xObj = nextExprXPath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
-		
-		xpathMap.put(new XSString(Keywords.NEXT), xObj);
-		
-        String funcPermuteXPathStr = "function ($seq) { " + Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "()?permute($seq) }";
-		
-		XPath funcPermuteXPath = new XPath(funcPermuteXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-		XObject xObj2 = funcPermuteXPath.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
-		
-		xpathMap.put(new XSString(Keywords.PERMUTE), xObj2);
+		XPathInlineFunction xpathInlineFuncPermute = getFnRandomNumberGeneratorFunctionItemPermute();		
+		xpathMap.put(new XSString(Keywords.PERMUTE), xpathInlineFuncPermute);
 		
 		String funcLookupArg = getFuncLookupArg();
 		
@@ -184,42 +182,26 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 		   result = xpathMap.get(new XSString(Keywords.NUMBER));
 		}
 		else if ("next()".equals(funcLookupArg)) {
-		   XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
-		   String xpathStr1 = xpathInlineFunc.getFuncBodyXPathExprStr();
+		   XPathInlineFunction xpathInlineFunc2 = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
+		   String xpathStr1 = xpathInlineFunc2.getFuncBodyXPathExprStr();
 		   
 		   XPath xpath1 = new XPath(xpathStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		   
 		   result = xpath1.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 		}
-		else if ("next".equals(funcLookupArg)) {
-		   XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
+		else if (Keywords.NEXT.equals(funcLookupArg)) {
+		   XPathInlineFunction xpathInlineFunc2 = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));		   
 		   
-		   XPathSequenceType funcReturnType1 = new XPathSequenceType();
-		   
-		   XPathSequenceTypeMapTest seqTypeMapTest = new XPathSequenceTypeMapTest(); 
-		   
-		   XPathSequenceType mapKeySeqType = new XPathSequenceType();
-		   mapKeySeqType.setBuiltInSequenceType(XPathSequenceTypeSupport.STRING);
-		   
-		   seqTypeMapTest.setKeySequenceTypeData(mapKeySeqType);
-		   
-		   XPathSequenceType mapValueSeqType = new XPathSequenceType();
-		   
-		   XPathSequenceTypeKindTest xpathSeqTypeKindTest = new XPathSequenceTypeKindTest();
-		   xpathSeqTypeKindTest.setKindVal(XPathSequenceTypeSupport.ITEM_KIND);		   
-		   mapValueSeqType.setSequenceTypeKindTest(xpathSeqTypeKindTest);
-		   
-		   seqTypeMapTest.setValueSequenceTypeData(mapValueSeqType);
-		   
-		   funcReturnType1.setSequenceTypeMapTest(seqTypeMapTest);
-		   
-		   xpathInlineFunc.setReturnType(funcReturnType1);
-		   
-		   result = xpathInlineFunc;
+		   result = xpathInlineFunc2;
+		}
+		else if (Keywords.PERMUTE.equals(funcLookupArg)) {
+			XPathInlineFunction xpathInlineFunc2 = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.PERMUTE)));		   
+
+			result = xpathInlineFunc2;
 		}
 		else if ("next()?number".equals(funcLookupArg)) {
-			XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
-			String xpathStr1 = xpathInlineFunc.getFuncBodyXPathExprStr();
+			XPathInlineFunction xpathInlineFunc2 = (XPathInlineFunction)(xpathMap.get(new XSString(Keywords.NEXT)));
+			String xpathStr1 = xpathInlineFunc2.getFuncBodyXPathExprStr();
 
 			XPath xpath1 = new XPath(xpathStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
@@ -341,5 +323,81 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 
 		return result;
 	}
+	
+	/**
+	 * Method definition, to get an XPathInlineFunction object instance,
+	 * that is the function item value for an XPath 3.1 expression
+	 * fn:random-number-generator()?next. 
+	 * 
+	 * @return                            An XPathInlineFunction object 
+	 *                                    instance.
+	 */
+    private XPathInlineFunction getFnRandomNumberGeneratorFunctionItemNext() {
+		
+		XPathInlineFunction xpathInlineFunc = new XPathInlineFunction();
+		
+		xpathInlineFunc.setFuncBodyXPathExprStr(Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "()");
+		
+		XPathSequenceType funcReturnType1 = new XPathSequenceType();
+
+		XPathSequenceTypeMapTest seqTypeMapTest = new XPathSequenceTypeMapTest(); 
+
+		XPathSequenceType mapKeySeqType = new XPathSequenceType();
+		mapKeySeqType.setBuiltInSequenceType(XPathSequenceTypeSupport.STRING);
+
+		seqTypeMapTest.setKeySequenceTypeData(mapKeySeqType);
+
+		XPathSequenceType mapValueSeqType = new XPathSequenceType();
+
+		XPathSequenceTypeKindTest xpathSeqTypeKindTest = new XPathSequenceTypeKindTest();
+		xpathSeqTypeKindTest.setKindVal(XPathSequenceTypeSupport.ITEM_KIND);		   
+		mapValueSeqType.setSequenceTypeKindTest(xpathSeqTypeKindTest);
+
+		seqTypeMapTest.setValueSequenceTypeData(mapValueSeqType);
+
+		funcReturnType1.setSequenceTypeMapTest(seqTypeMapTest);
+		
+		xpathInlineFunc.setReturnType(funcReturnType1);
+		
+		return xpathInlineFunc;
+	}
+    
+    /**
+	 * Method definition, to get an XPathInlineFunction object instance,
+	 * that is the function item value for an XPath 3.1 expression
+	 * fn:random-number-generator()?permute. 
+	 * 
+	 * @return                            An XPathInlineFunction object 
+	 *                                    instance.
+	 */
+    private XPathInlineFunction getFnRandomNumberGeneratorFunctionItemPermute() {
+		
+		XPathInlineFunction xpathInlineFunc = new XPathInlineFunction();
+		
+		xpathInlineFunc.setFuncBodyXPathExprStr(Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "()?permute($arg)");
+		
+		InlineFunctionParameter inlineFuncParam = new InlineFunctionParameter();
+		inlineFuncParam.setParamName("arg");
+		
+		XPathSequenceType xpathSeqType1 = new XPathSequenceType();
+		
+		XPathSequenceTypeKindTest xpathSeqTypeKindTest = new XPathSequenceTypeKindTest();
+		xpathSeqTypeKindTest.setKindVal(XPathSequenceTypeSupport.ITEM_KIND);
+		
+		xpathSeqType1.setSequenceTypeKindTest(xpathSeqTypeKindTest);
+		xpathSeqType1.setItemTypeOccurrenceIndicator(XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY);
+		
+		inlineFuncParam.setParamType(xpathSeqType1);
+		
+		List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();
+		funcParamList.add(inlineFuncParam);
+		
+		xpathInlineFunc.setFuncParamList(funcParamList);
+		
+		xpathInlineFunc.setReturnType(xpathSeqType1);
+		
+		
+		return xpathInlineFunc;
+    }
 
 }
