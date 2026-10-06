@@ -832,6 +832,9 @@ public class Keywords
   /** format-number function string. */
   public static final String FUNC_FORMAT_NUMBER = "format-number";
   
+  /** type-available function string. */
+  public static final String FUNC_TYPE_AVAILABLE = "type-available";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

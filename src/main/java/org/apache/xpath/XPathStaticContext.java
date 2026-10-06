@@ -17,6 +17,13 @@
  */
 package org.apache.xpath;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.xerces.xs.XSAttributeDeclaration;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
@@ -88,6 +95,12 @@ public class XPathStaticContext extends XPathDynamicContext {
 	 */
 	private XPathCollationSupport m_collationSupport = new XPathCollationSupport(m_default_collation);
 	
+	private Map<QName, XSTypeDefinition> m_inScopeSchemaTypeMap = new HashMap<QName, XSTypeDefinition>();
+    
+    private Map<QName, XSElementDeclaration> m_inScopeElemDeclarationMap = new HashMap<QName, XSElementDeclaration>();
+    
+    private Map<QName, XSAttributeDeclaration> m_inScopeAttrDeclarationMap = new HashMap<QName, XSAttributeDeclaration>();    
+	
 	/** The base URL of the source tree. */
 	private String m_urlOfSource;
 
@@ -113,6 +126,30 @@ public class XPathStaticContext extends XPathDynamicContext {
 
 	public void setBaseURLOfSource(String urlOfSource) {
 		this.m_urlOfSource = urlOfSource;
+	}
+
+	public Map<QName, XSTypeDefinition> getInScopeSchemaTypes() {
+		return m_inScopeSchemaTypeMap;
+	}
+
+	public void setInScopeSchemaTypes(Map<QName, XSTypeDefinition> inScopeSchemaTypeMap) {
+		this.m_inScopeSchemaTypeMap = inScopeSchemaTypeMap;
+	}
+
+	public Map<QName, XSElementDeclaration> getInScopeElementDeclarations() {
+		return m_inScopeElemDeclarationMap;
+	}
+
+	public void setInScopeElementDeclarations(Map<QName, XSElementDeclaration> inScopeElemDeclarationMap) {
+		this.m_inScopeElemDeclarationMap = inScopeElemDeclarationMap;
+	}
+
+	public Map<QName, XSAttributeDeclaration> getInScopeAttributeDeclarations() {
+		return m_inScopeAttrDeclarationMap;
+	}
+
+	public void setInScopeAttributeDeclarations(Map<QName, XSAttributeDeclaration> inScopeAttrDeclarationMap) {
+		this.m_inScopeAttrDeclarationMap = inScopeAttrDeclarationMap;
 	}
 
 }

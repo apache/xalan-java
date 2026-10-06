@@ -9923,16 +9923,16 @@ public class XPathParser
 
 	   if (elemTemplateElem != null) {
 		   NodeList nodeList = elemTemplateElem.getChildNodes();
-		   Node xsSchemaTopMostNode = nodeList.item(0);		   
+		   Node xsSchemaNode = nodeList.item(0);		   
 
-		   if (xsSchemaTopMostNode != null) {
+		   if (xsSchemaNode != null) {
 			   // xsl:import-schema instruction's child contents specifies a literal XML Schema document
-			   parseImportSchemaWithChildSchemaContents(xpathSequenceTypeExpr, type_namespace, type_name, xsSchemaTopMostNode); 
+			   parseImportSchemaWithChildSchemaContents(xpathSequenceTypeExpr, type_namespace, type_name, xsSchemaNode); 
 		   }
 		   else {
 			   // An XML Schema document is available, at the uri referenced by xsl:import-schema 
 			   // element's attribute 'schema-location'.			   
-			   parseImportSchemaFromExternalLocation(xpathSequenceTypeExpr, xslSystemId, type_namespace, type_name, elemTemplateElem);
+			   parseXslImportSchemaUri(xpathSequenceTypeExpr, xslSystemId, type_namespace, type_name, elemTemplateElem);
 		   }
 	   }
    }
@@ -9942,7 +9942,7 @@ public class XPathParser
     * of xsl:import-schema element.
     */
    private void parseImportSchemaWithChildSchemaContents(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
-		                                                 String typeName, Node xsSchemaTopMostNode) throws TransformerException {
+		                                                 String typeName, Node xsSchemaNode) throws TransformerException {
 	   
 	   StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 	   XSModel xsModel = stylesheetRoot.getXsModel();
@@ -9959,12 +9959,15 @@ public class XPathParser
 
 		   try {
 			   DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
+			   
 			   LSSerializer lsSerializer = domImplLS.createLSSerializer();
+			   
 			   DOMConfiguration domConfig = lsSerializer.getDomConfig();
 			   domConfig.setParameter(XSL3FunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
-			   xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
+			   
+			   xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaNode);
 			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSL3FunctionService.UTF_16, XSL3FunctionService.UTF_8);
-			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(Constants.ATTRNAME_SCHEMA, "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
 
 			   DOMInputImpl lsInput = new DOMInputImpl();
 			   lsInput.setCharacterStream(new StringReader(xmlSchemaDocumentStr));
@@ -9989,8 +9992,8 @@ public class XPathParser
     * XPath parse for xsl:import-schema instruction, where schema details are available from
     * xsl:import-schema element's attribute schema-location.
     */
-   private void parseImportSchemaFromExternalLocation(XPathSequenceTypeExpr xpathSequenceTypeExpr, String xslSystemId,
-		                                              String typeNamespace, String typeName, Node elemTemplateElem) throws TransformerException {
+   private void parseXslImportSchemaUri(XPathSequenceTypeExpr xpathSequenceTypeExpr, String xslSystemId,
+		                                String typeNamespace, String typeName, Node elemTemplateElem) throws TransformerException {
 	   
 	   StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
 	   XSModel xsModel = stylesheetRoot.getXsModel();

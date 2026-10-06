@@ -372,7 +372,7 @@ public class XslTransformTestsUtil extends FileComparisonUtil {
     		Assert.fail();    
     	}
     	finally {    		    		
-    		// Delete the temporary files produced while running 
+    		// Remove the temporary files produced while running 
     		// a test case using this method.
     		(new File(fileProducedName1)).delete();
     		if (fileProducedName2 != null) {

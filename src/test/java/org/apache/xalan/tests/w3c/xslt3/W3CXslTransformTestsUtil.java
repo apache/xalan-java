@@ -276,14 +276,16 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      		   }
     		   else if (isXslSchemaAwareFeatureTestCase(xslTestCaseNode)) {
     			   // We skip running XSLT 3.0 schema aware feature test cases
-    			   
-    			   Element elemTestResult = testResultDoc.createElement(TEST_RESULT);
-    			   elemTestResult.setAttribute(TEST_NAME, xslTestCaseName);
-    			   elemTestResult.setAttribute(STATUS, SKIPPED);
-    			   elemTestResult.setAttribute(FEATURE, SCHEMA_AWARE);
-    			   elemTestRun.appendChild(elemTestResult);
 
-    			   continue; 
+    			   if (!m_xslTransformTestSetFilePath.contains("fn/type-available/")) {    			   
+    				   Element elemTestResult = testResultDoc.createElement(TEST_RESULT);
+    				   elemTestResult.setAttribute(TEST_NAME, xslTestCaseName);
+    				   elemTestResult.setAttribute(STATUS, SKIPPED);
+    				   elemTestResult.setAttribute(FEATURE, SCHEMA_AWARE);
+    				   elemTestRun.appendChild(elemTestResult);
+
+    				   continue;
+    			   }
       		   }
     		   else if (isXslStreamingFeatureTestCase(xslTestCaseNode)) {
      			  // We skip running XSLT 3.0 streaming feature test cases

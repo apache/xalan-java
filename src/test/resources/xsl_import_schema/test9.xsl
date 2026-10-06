@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
 				xmlns:fn0="http://ns0"
-				exclude-result-prefixes="fn0"
+				exclude-result-prefixes="#all"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
@@ -15,7 +16,7 @@
    <!-- An xsl:import-schema instruction, that has inline XML Schema 
         definitions for complex types. -->
    <xsl:import-schema>
-		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">		   
+		<xs:schema>		   
 		   <xs:complexType name="Address">
 			  <xs:sequence>
 				 <xs:element name="fName" type="xs:string"/>

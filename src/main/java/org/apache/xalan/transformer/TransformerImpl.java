@@ -108,6 +108,7 @@ import org.apache.xalan.templates.TemplateSubPatternAssociation;
 import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.xslt.schema.XMLSchemaTypeService;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
@@ -847,11 +848,16 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
 	validateXslGlobalContextItemInstr();
 
     try
-    {               
+    {            	
       if (getXPathContext().getNamespaceContext() == null){
-         getXPathContext().setNamespaceContext(getStylesheet());
+    	 getXPathContext().setNamespaceContext(getStylesheet());
       }
+            
+      // Populate XPath 3.1 static context with XML Schema in-scope
+      // type, element and attribute information.
       
+      XMLSchemaTypeService.populateXSLAllInScopeSchemaInformation(m_stylesheetRoot, getXPathContext());
+    
       String base = null;
       
       if (source != null) {

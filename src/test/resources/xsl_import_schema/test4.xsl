@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:ns0="http://example.com/ns/ns0"
-                exclude-result-prefixes="ns0"
+                exclude-result-prefixes="#all"
                 version="3.0">
                 
   <!-- Author: mukulg@apache.org -->
@@ -14,8 +15,7 @@
   <xsl:output method="xml" indent="yes"/>
   
   <xsl:import-schema>
-      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                 targetNamespace="http://example.com/ns/ns0">
+      <xs:schema targetNamespace="http://example.com/ns/ns0">
          <xs:simpleType name="boundedInteger">
             <xs:restriction base="xs:integer">
                <xs:minInclusive value="5"/>

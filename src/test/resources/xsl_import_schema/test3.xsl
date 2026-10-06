@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:opt1="http://example.com/ns/yes-no"
-                exclude-result-prefixes="opt1"
+                exclude-result-prefixes="#all"
                 version="3.0">
                 
   <!-- Author: mukulg@apache.org -->
@@ -14,8 +15,7 @@
   <xsl:output method="xml" indent="yes"/>
   
   <xsl:import-schema>
-      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                 targetNamespace="http://example.com/ns/yes-no">
+      <xs:schema targetNamespace="http://example.com/ns/yes-no">
          <xs:simpleType name="yes-no">
             <xs:restriction base="xs:string">
                <xs:enumeration value="yes"/>
