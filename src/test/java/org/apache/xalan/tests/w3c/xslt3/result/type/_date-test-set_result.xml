@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-17T16:51:44Z" fail="45" name="date" pass="89" run="134" skipped="4" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-09T15:09:17Z" fail="44" name="date" pass="90" run="134" skipped="4" statusUnknown="0">
    <testResult status="pass" testName="date-001"/>
    <testResult status="pass" testName="date-002"/>
    <testResult status="pass" testName="date-003"/>
@@ -72,7 +72,7 @@
    <testResult status="pass" testName="date-069"/>
    <testResult status="pass" testName="date-070"/>
    <testResult status="fail" testName="date-071"/>
-   <testResult status="fail" testName="date-072"/>
+   <testResult status="pass" testName="date-072"/>
    <testResult status="pass" testName="date-073"/>
    <testResult status="pass" testName="date-074"/>
    <testResult status="pass" testName="date-074a"/>
@@ -83,10 +83,10 @@
    <testResult status="pass" testName="date-077"/>
    <testResult status="fail" testName="date-078"/>
    <testResult status="pass" testName="date-079"/>
-   <testResult reason="Xalan configured" status="skipped" testName="date-080"/>
-   <testResult reason="Xalan configured" status="skipped" testName="date-081"/>
-   <testResult reason="Xalan configured" status="skipped" testName="date-082"/>
-   <testResult reason="Xalan configured" status="skipped" testName="date-083"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="date-080"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="date-081"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="date-082"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="date-083"/>
    <testResult status="pass" testName="date-084"/>
    <testResult status="pass" testName="date-085"/>
    <testResult status="pass" testName="date-086"/>

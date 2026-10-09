@@ -590,11 +590,11 @@ public class XSLTSchema extends XSLTElementDef
 				XSLTAttributeDef.T_AVT, false, true, XSLTAttributeDef.ERROR);
 		terminateAttr.setDefault("no");
 
-		// top level attributes
 		XSLTAttributeDef xslExcludeResultPrefixesAttrOpt =
 				new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
 						"exclude-result-prefixes",
 						XSLTAttributeDef.T_PREFIXLIST, false, false, XSLTAttributeDef.ERROR);
+		
 		XSLTAttributeDef xslExtensionElementPrefixesAttr =
 				new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL,
 						"extension-element-prefixes",
@@ -1316,7 +1316,11 @@ public class XSLTSchema extends XSLTElementDef
 		XSLTAttributeDef packageVersionAttrOpt = new XSLTAttributeDef(null,
 				"package-version",
 				XSLTAttributeDef.T_NMTOKEN,
-				false, false, XSLTAttributeDef.ERROR);        
+				false, false, XSLTAttributeDef.ERROR);
+		
+		XSLTAttributeDef excludeResultPrefixesAttrOpt =
+				new XSLTAttributeDef(null, "exclude-result-prefixes",
+						XSLTAttributeDef.T_PREFIXLIST, false, false, XSLTAttributeDef.ERROR);
 
 		XSLTElementDef[] topLevelElements = new XSLTElementDef[]
 				{includeDef,                                  	
@@ -1481,6 +1485,7 @@ public class XSLTSchema extends XSLTElementDef
 										visibilityAttrOpt,
 										xpathDefaultNamespaceAttrOpt,
 										expandTextAttrOpt, useWhenAttrOpt,
+										excludeResultPrefixesAttrOpt,
 										spaceAttr }, 
 								new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true),
 
@@ -1564,10 +1569,7 @@ public class XSLTSchema extends XSLTElementDef
 								componentAttrs, 
 								new ProcessorLRE(), ElemExtensionDecl.class /* class object */),
 						exsltFunction}/* exslt */;  //end of topevelElements
-
-		XSLTAttributeDef excludeResultPrefixesAttr =
-				new XSLTAttributeDef(null, "exclude-result-prefixes",
-						XSLTAttributeDef.T_PREFIXLIST, false, false, XSLTAttributeDef.WARNING);
+		
 		XSLTAttributeDef extensionElementPrefixesAttr =
 				new XSLTAttributeDef(null, "extension-element-prefixes",
 						XSLTAttributeDef.T_PREFIX_URLLIST, false, false, XSLTAttributeDef.WARNING);
@@ -1588,7 +1590,7 @@ public class XSLTSchema extends XSLTElementDef
 				topLevelElements,
 				new XSLTAttributeDef[] {
 						extensionElementPrefixesAttr,
-						excludeResultPrefixesAttr,
+						excludeResultPrefixesAttrOpt,
 						idAttr,
 						versionAttrRequired,
 						xpathDefaultNamespaceAttrOpt,
@@ -1605,7 +1607,7 @@ public class XSLTSchema extends XSLTElementDef
 				topLevelElements,
 				new XSLTAttributeDef[] {
 						extensionElementPrefixesAttr,
-						excludeResultPrefixesAttr,
+						excludeResultPrefixesAttrOpt,
 						idAttr,
 						nameAttrOpt,
 						packageVersionAttrOpt,

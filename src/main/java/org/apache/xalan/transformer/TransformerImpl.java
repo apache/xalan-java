@@ -3051,6 +3051,21 @@ public class TransformerImpl extends Transformer implements Runnable, DTMWSFilte
       
       return;
     }
+    
+    if ((elem instanceof ElemTemplate) && (t instanceof ElemCallTemplate)) {
+       ElemTemplate elemTemplate = (ElemTemplate)elem;       
+       ElemCallTemplate elemCallTemplate = (ElemCallTemplate)t;
+       
+       List<QName> list1 = elemTemplate.getTunnelParamNameList();
+       List<XObject> list2 = elemTemplate.getTunnelParamValueList();
+       
+       ElemWithParam[] withParamArr = elemCallTemplate.gerWithParamArr();
+       
+       if ((withParamArr == null) && (list1.size() > 0)) {
+    	   elemCallTemplate.setTunnelParamNameList(list1);
+    	   elemCallTemplate.setTunnelParamValueList(list2);    	  
+       }
+    }
 
     XPathContext xctxt = m_xcontext;
     xctxt.pushSAXLocatorNull();

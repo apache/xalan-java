@@ -84,4 +84,8 @@ public class XMLNSDecl
   {
     return m_isExcluded;
   }
+  
+  public void setIsExcluded(boolean isExcluded) {
+	 m_isExcluded = isExcluded;  
+  }
 }

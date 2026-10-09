@@ -548,7 +548,7 @@ public class XSLTErrorResources extends ListResourceBundle
       "{0} requires either a name or a match attribute."},
 
     {ER_CANT_RESOLVE_NSPREFIX,
-      "Can not resolve namespace prefix: {0}"},
+      "Couldn''t resolve namespace prefix: {0}"},
 
     { ER_ILLEGAL_VALUE,
      "xml:space has an illegal value: {0}"},

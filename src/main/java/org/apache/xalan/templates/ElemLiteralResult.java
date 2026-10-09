@@ -31,8 +31,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xml.serializer.SerializationHandler;
@@ -1334,29 +1334,6 @@ public class ElemLiteralResult extends ElemUse
   {
     m_excludeResultPrefixes = v;
   }
-
-  /**
-   * Tell if the result namespace decl should be excluded.  Should be called before
-   * namespace aliasing (I think).
-   *
-   * @param prefix Prefix of namespace to check
-   * @param uri URI of namespace to check
-   *
-   * @return True if the given namespace should be excluded
-   *
-   * @throws TransformerException
-   */
-  private boolean excludeResultNSDecl(String prefix, String uri)
-          throws TransformerException
-  {
-
-    if (null != m_excludeResultPrefixes)
-    {
-      return containsExcludeResultPrefix(prefix, uri);
-    }
-
-    return false;
-  }
   
   /**
    * Copy a Literal Result Element into the Result tree, copy the
@@ -1386,9 +1363,41 @@ public class ElemLiteralResult extends ElemUse
             }
 
             rhandler.startPrefixMapping(getPrefix(), getNamespace());
+            
+            List<XMLNSDecl> prefixTable = getPrefixTable();
+            
+            if (m_excludeResultPrefixes == null) {
+            	try {
+            		ElemTemplateElement elemTemplateElement = getParentElem();
+            		ElemTemplateElement elemTemplateElement2 = elemTemplateElement.getParentElem();
 
-            // Add namespace declarations.
+            		StylesheetRoot stylesheetRoot = (StylesheetRoot)elemTemplateElement2;
+            		int count1 = stylesheetRoot.getExcludeResultPrefixCount();
+
+            		if (count1 > 0) {
+            			for (int idx = 0; idx < count1; idx++) {
+            				String str1 = stylesheetRoot.getExcludeResultPrefix(idx);            				
+            				int size2 = prefixTable.size();
+            				
+            				for (int idx2 = 0; idx2 < size2; idx2++) {
+            				   XMLNSDecl xmlNSDecl = prefixTable.get(idx2);            				   
+            				   String prefix = xmlNSDecl.getPrefix();
+            				   
+            				   if (!xmlNSDecl.getIsExcluded() && prefix.equals(str1)) {
+            					  xmlNSDecl.setIsExcluded(true); 
+            				   }
+            				}
+            			}
+            		}
+            	}
+            	catch (Exception ex) {
+            		// No op
+            	}
+            }
+
+            // Add XML namespace, declarations            
             executeNSDecls(transformer);
+            
             rhandler.startElement(getNamespace(), getLocalName(), getRawName());
         }
         catch (SAXException se)

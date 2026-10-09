@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:12Z" fail="14" name="variable" pass="89" run="103" skipped="5" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-09T15:09:05Z" fail="12" name="variable" pass="91" run="103" skipped="5" statusUnknown="0">
    <testResult status="pass" testName="variable-0101"/>
    <testResult status="pass" testName="variable-0102"/>
    <testResult status="pass" testName="variable-0103"/>
@@ -20,7 +20,7 @@
    <testResult status="fail" testName="variable-0119">
       <outResult/>
    </testResult>
-   <testResult reason="Xalan configured" status="skipped" testName="variable-0120"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="variable-0120"/>
    <testResult status="pass" testName="variable-0121"/>
    <testResult status="pass" testName="variable-0122"/>
    <testResult status="pass" testName="variable-0123"/>
@@ -33,8 +33,8 @@
    </testResult>
    <testResult status="pass" testName="variable-0206"/>
    <testResult status="pass" testName="variable-0301"/>
-   <testResult status="fail" testName="variable-0302"/>
-   <testResult status="fail" testName="variable-0303"/>
+   <testResult status="pass" testName="variable-0302"/>
+   <testResult status="pass" testName="variable-0303"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="variable-0401"/>
    <testResult status="fail" testName="variable-0501"/>
    <testResult status="pass" testName="variable-0601"/>
@@ -113,6 +113,6 @@
    <testResult status="pass" testName="variable-4602"/>
    <testResult status="pass" testName="variable-4701"/>
    <testResult status="fail" testName="variable-4702"/>
-   <testResult reason="Xalan configured" status="skipped" testName="variable-4801"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="variable-4801"/>
    <testResult status="pass" testName="variable-4802"/>
 </testrun>

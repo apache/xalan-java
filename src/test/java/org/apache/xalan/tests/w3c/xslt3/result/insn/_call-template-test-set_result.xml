@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:09Z" fail="5" name="call-template" pass="35" run="40" skipped="2" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-09T15:09:04Z" fail="3" name="call-template" pass="37" run="40" skipped="2" statusUnknown="0">
    <testResult status="pass" testName="call-template-0001"/>
    <testResult status="pass" testName="call-template-0101"/>
-   <testResult status="fail" testName="call-template-0102"/>
+   <testResult status="pass" testName="call-template-0102"/>
    <testResult status="pass" testName="call-template-0103"/>
    <testResult status="pass" testName="call-template-0104"/>
    <testResult status="pass" testName="call-template-0105"/>
@@ -24,14 +24,14 @@
    <testResult status="pass" testName="call-template-0501"/>
    <testResult status="pass" testName="call-template-0601"/>
    <testResult status="pass" testName="call-template-0701"/>
-   <testResult status="fail" testName="call-template-0702"/>
+   <testResult status="pass" testName="call-template-0702"/>
    <testResult status="pass" testName="call-template-0703"/>
    <testResult status="pass" testName="call-template-0801"/>
    <testResult status="pass" testName="call-template-0802"/>
    <testResult status="pass" testName="call-template-0901"/>
    <testResult status="pass" testName="call-template-1001"/>
    <testResult status="pass" testName="call-template-1002"/>
-   <testResult reason="Xalan configured" status="skipped" testName="call-template-1003"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="call-template-1003"/>
    <testResult status="pass" testName="call-template-1101"/>
    <testResult status="pass" testName="call-template-1102"/>
    <testResult status="pass" testName="call-template-1201"/>

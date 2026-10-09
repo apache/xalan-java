@@ -251,7 +251,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	/**
 	 * The "exclude-result-prefixes" property.
 	 */
-	private StringVector m_ExcludeResultPrefixs;
+	private StringVector m_excludeResultPrefixs;
 
 	/**
 	 * Set the "exclude-result-prefixes" property.
@@ -266,7 +266,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 */
 	public void setExcludeResultPrefixes(StringVector v)
 	{
-		m_ExcludeResultPrefixs = v;
+		m_excludeResultPrefixs = v;
 	}
 
 	/**
@@ -284,12 +284,12 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 *
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public String getExcludeResultPrefix(int i) throws ArrayIndexOutOfBoundsException
+	public String getExcludeResultPrefix(int idx) throws ArrayIndexOutOfBoundsException
 	{
-		if (m_ExcludeResultPrefixs == null)
+		if (m_excludeResultPrefixs == null)
 			throw new ArrayIndexOutOfBoundsException();
 
-		return m_ExcludeResultPrefixs.elementAt(i);
+		return m_excludeResultPrefixs.elementAt(idx);
 	}
 
 	/**
@@ -299,8 +299,7 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 */
 	public int getExcludeResultPrefixCount()
 	{
-		return (m_ExcludeResultPrefixs != null)
-				? m_ExcludeResultPrefixs.size() : 0;
+		return (m_excludeResultPrefixs != null) ? m_excludeResultPrefixs.size() : 0;
 	}
 
 	/**
@@ -314,15 +313,16 @@ public class Stylesheet extends ElemTemplateElement implements java.io.Serializa
 	 */
 	public boolean containsExcludeResultPrefix(String prefix, String uri) 
 	{
-		if ((m_ExcludeResultPrefixs == null) || (uri == null))
+		if ((m_excludeResultPrefixs == null) || (uri == null))
 			return false;
 
-		// This loop is ok here because this code only runs during
-		// stylesheet compile time.
-		for (int i =0; i< m_ExcludeResultPrefixs.size(); i++)
+		int size1 = m_excludeResultPrefixs.size();
+		
+		for (int idx = 0; idx < size1; idx++)
 		{
-			if (uri.equals(getNamespaceForPrefix(m_ExcludeResultPrefixs.elementAt(i))))
-				return true;
+			if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixs.elementAt(idx)))) {
+			   return true;
+			}
 		}
 
 		return false;

@@ -1479,7 +1479,7 @@ public class XSLTAttributeDef
     
      StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
      int nStrings = tokenizer.countTokens();
-     StringVector strings = new StringVector(nStrings);
+     StringVector strings = new StringVector(nStrings);          
      
      for (int i = 0; i < nStrings; i++)
      {

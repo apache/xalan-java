@@ -38,6 +38,8 @@ public class XSTime extends XSCalendarType {
      */
     private boolean isPopulatedFromFnCurrentTime = false;
     
+    private double m_secs_fraction = 0.0;
+    
     
     /**
      * Class constructor.
@@ -182,6 +184,19 @@ public class XSTime extends XSCalendarType {
     public boolean isTimetimezoned() {
         return _timezoned;
     }
+    
+    /**
+	 * Get the duration of time stored as the number of seconds within it.
+	 * 
+	 * @return number of seconds making up this duration of time
+	 */
+	public double value() {
+		double ret = hour() * 60 * 60;
+		ret += minute() * 60;
+		ret += second();
+		
+		return ret;
+	}
 
     @Override
     public String stringValue() {
@@ -368,9 +383,9 @@ public class XSTime extends XSCalendarType {
          
          if (!(xObject instanceof XSDayTimeDuration)) {
             throw new TransformerException("XPTY0004 : The value of schema type 'dayTimeDuration' is the only "
-            		                                                                             + "one that may be added "
-            		                                                                             + "to schema type 'time' value.");
-         }
+            		                                                                                          + "one that may be added "
+            		                                                                                          + "to schema type 'time' value.");
+         }                  
          
          XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObject;
          double secsVal = xsDayTimeDuration.value();
@@ -431,12 +446,22 @@ public class XSTime extends XSCalendarType {
 
         			 xObj = funcAdjustTimeToTimezone.execute(xctxt);
         		 }
+        		 
+        		 double secsVal1 = value();         		 
+            	 double secsVal2 = ((XSTime)xObj).value();
+            	 
+            	 double diff = (secsVal1 - secsVal2);
+            	 
+            	 if (diff == (int)diff) {
+            		 Calendar cal1 = getCalendar();
+            		 Calendar cal2 = ((XSTime)xObj).getCalendar();
+            		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
 
-        		 Calendar cal1 = getCalendar();
-        		 Calendar cal2 = ((XSTime)xObj).getCalendar();
-        		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
-
-        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+            		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+            	 }
+            	 else {
+            		 result = new XSDayTimeDuration(0, 0, 0, Math.abs(secsVal1 - secsVal2), secsVal1 < secsVal2);
+            	 }
         	 }
         	 catch (WrongNumberArgsException ex) {
         		 // No op 
@@ -492,5 +517,13 @@ public class XSTime extends XSCalendarType {
 	public void setPopulatedFromFnCurrentTime(boolean isPopulatedFromFnCurrentTime) {
 		this.isPopulatedFromFnCurrentTime = isPopulatedFromFnCurrentTime;
 	}
+	
+	public void setSecsFraction(double secsFraction) {
+	    this.m_secs_fraction = secsFraction; 		
+	}
+    
+    public double getSecsFraction() {
+    	return m_secs_fraction;
+    }
 
 }

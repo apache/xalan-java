@@ -269,7 +269,7 @@ public class XSL3FunctionService {
     						}
     						else if ((argExpr instanceof SelfIteratorNoPredicate) && (xctxt.getXPath3ContextItem() != null)) {
     							xslFuncArgVal = xctxt.getXPath3ContextItem(); 
-    						}
+    						}    						
     						else {
     							xslFuncArgVal = argExpr.execute(xctxt); 	
     						}
@@ -954,8 +954,8 @@ public class XSL3FunctionService {
 
     	return evalResult;        
     }
-    
-    /**
+
+	/**
      * Method definition to check, whether function arity of the function 
      * to be called is well-formed, for named function references specified 
      * with syntax functionNameString#integerLiteral.

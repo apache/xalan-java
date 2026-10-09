@@ -448,9 +448,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		   nodeList2 = xslTestCaseNode.getChildNodes();
     		   
     		   Element expectedResultElem = null;
-    		   int length2 = nodeList2.getLength();
     		   
-    		   for (int idx2 = 0; idx2 < length2; idx2++) {
+    		   int size2 = nodeList2.getLength();    		   
+    		   
+    		   for (int idx2 = 0; idx2 < size2; idx2++) {
     			   Node node2 = nodeList2.item(idx2);
     			   
     			   if (node2.getNodeType() == Node.ELEMENT_NODE) {
@@ -486,7 +487,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
    									 String nsUri = elemNode3.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, nsPrefix);
    									 
    									 if ((nsUri != null) && !"".equals(nsUri)) {
-   									    m_initTemplateName = "{" + nsUri + "}" + localName;
+   										m_initTemplateName = "{" + nsUri + "}" + localName;
    									 }
    								  }
    							   }
@@ -500,7 +501,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   }
     		   }
     		       		       		   
-    		   for (int idx2 = 0; idx2 < length2; idx2++) {
+    		   for (int idx2 = 0; idx2 < size2; idx2++) {
     			   Node node2 = nodeList2.item(idx2);
     			   
     			   if (node2.getNodeType() == Node.ELEMENT_NODE) {

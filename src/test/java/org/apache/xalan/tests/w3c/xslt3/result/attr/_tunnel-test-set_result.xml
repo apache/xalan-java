@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:39:01Z" fail="36" name="tunnel" pass="22" run="58" skipped="0" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-09T15:10:39Z" fail="35" name="tunnel" pass="23" run="58" skipped="0" statusUnknown="0">
    <testResult status="pass" testName="tunnel-0101"/>
    <testResult status="pass" testName="tunnel-0102"/>
    <testResult status="pass" testName="tunnel-0103"/>
    <testResult status="pass" testName="tunnel-0104"/>
    <testResult status="pass" testName="tunnel-0105"/>
-   <testResult status="fail" testName="tunnel-0106"/>
+   <testResult status="pass" testName="tunnel-0106"/>
    <testResult status="pass" testName="tunnel-0107"/>
    <testResult status="fail" testName="tunnel-0108"/>
    <testResult status="fail" testName="tunnel-0109">

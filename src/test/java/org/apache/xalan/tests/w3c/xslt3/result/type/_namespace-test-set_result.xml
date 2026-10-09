@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-28T12:13:55Z" fail="60" name="namespace" pass="161" run="221" skipped="3" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-09T15:08:39Z" fail="63" name="namespace" pass="158" run="221" skipped="3" statusUnknown="0">
    <testResult status="pass" testName="namespace-0101"/>
    <testResult status="pass" testName="namespace-0201"/>
    <testResult status="pass" testName="namespace-0202"/>
@@ -57,8 +57,8 @@
    <testResult status="fail" testName="namespace-2401"/>
    <testResult status="fail" testName="namespace-2402"/>
    <testResult status="pass" testName="namespace-2501"/>
-   <testResult status="pass" testName="namespace-2502"/>
-   <testResult status="pass" testName="namespace-2503"/>
+   <testResult status="fail" testName="namespace-2502"/>
+   <testResult status="fail" testName="namespace-2503"/>
    <testResult status="pass" testName="namespace-2601"/>
    <testResult status="fail" testName="namespace-2602">
       <outResult/>
@@ -285,7 +285,7 @@
    <testResult status="pass" testName="namespace-4401"/>
    <testResult status="fail" testName="namespace-4501"/>
    <testResult status="pass" testName="namespace-4601"/>
-   <testResult status="pass" testName="namespace-4801"/>
+   <testResult status="fail" testName="namespace-4801"/>
    <testResult status="pass" testName="namespace-4901"/>
    <testResult status="pass" testName="namespace-5001"/>
    <testResult status="pass" testName="namespace-5101"/>

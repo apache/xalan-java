@@ -31,6 +31,7 @@ import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
@@ -426,6 +427,10 @@ public class ElemTemplate extends ElemTemplateElement
    */
   private List<ElemWithParam> m_xslNextMatchWithParamList = new ArrayList<ElemWithParam>();
   
+  private List<QName> m_tunnelParamNameList = new ArrayList<QName>();
+  
+  private List<XObject> m_tunnelParamValueList = new ArrayList<XObject>();
+  
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
@@ -472,6 +477,45 @@ public class ElemTemplate extends ElemTemplateElement
    * within xsl:template element. 
    */
   private ElemParam[] m_elemParamArr = null;
+  
+  /**
+   * The "exclude-result-prefixes" property.
+   */
+  private StringVector m_excludeResultPrefixs;
+
+  public void setExcludeResultPrefixes(StringVector v) {
+	  m_excludeResultPrefixs = v;
+  }
+
+  public String getExcludeResultPrefix(int idx) throws ArrayIndexOutOfBoundsException
+  {
+	  if (m_excludeResultPrefixs == null)
+		  throw new ArrayIndexOutOfBoundsException();
+
+	  return m_excludeResultPrefixs.elementAt(idx);
+  }
+
+  public int getExcludeResultPrefixCount()
+  {
+	  return (m_excludeResultPrefixs != null) ? m_excludeResultPrefixs.size() : 0;
+  }
+
+  public boolean containsExcludeResultPrefix(String prefix, String uri) 
+  {
+	  if ((m_excludeResultPrefixs == null) || (uri == null))
+		  return false;
+
+	  int size1 = m_excludeResultPrefixs.size();
+
+	  for (int idx = 0; idx < size1; idx++)
+	  {
+		  if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixs.elementAt(idx)))) {
+			  return true;
+		  }
+	  }
+
+	  return false;
+  }
   
   /**
    * This function is called after everything else has been
@@ -999,6 +1043,22 @@ public class ElemTemplate extends ElemTemplateElement
   public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
   {      	    
       super.callChildVisitors(visitor, callAttributes);
+  }
+
+  public List<QName> getTunnelParamNameList() {
+	  return m_tunnelParamNameList;
+  }
+
+  public void setTunnelParamNameList(List<QName> tunnelParamNameList) {
+	  this.m_tunnelParamNameList = tunnelParamNameList;
+  }
+
+  public List<XObject> getTunnelParamValueList() {
+	  return m_tunnelParamValueList;
+  }
+
+  public void setTunnelParamValueList(List<XObject> tunnelParamValueList) {
+	  this.m_tunnelParamValueList = tunnelParamValueList;
   }
 
 }

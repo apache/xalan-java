@@ -561,12 +561,7 @@ public class ElemVariable extends ElemTemplateElement
 			}
 
 			return var;
-		}
-		/*else if (expr1 instanceof XSL3ConstructorOrExtensionFunction) {
-			XSL3ConstructorOrExtensionFunction func1 = (XSL3ConstructorOrExtensionFunction)expr1;
-			
-			
-		}*/
+		}		
     }
     else if (m_static) {
     	throw new TransformerException("XPST0008 : An XSL stylesheet's local variables and parameters cannot be "

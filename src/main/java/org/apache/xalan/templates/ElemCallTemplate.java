@@ -19,6 +19,7 @@ package org.apache.xalan.templates;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -208,6 +209,10 @@ public class ElemCallTemplate extends ElemForEach
 	{
 		return Constants.ELEMNAME_CALLTEMPLATE_STRING;
 	}
+	
+	private List<QName> m_tunnelParamNameList = new ArrayList<QName>();
+	  
+	private List<XObject> m_tunnelParamValueList = new ArrayList<XObject>();
 
 	/**
 	 * This function is called after everything else has been
@@ -322,9 +327,40 @@ public class ElemCallTemplate extends ElemForEach
 			
 			String nsUri = m_templateName.getNamespace();
 			String localName = m_templateName.getLocalName();
+			
 			if ((Constants.S_XSLNAMESPACEURL).equals(nsUri) && !"initial-template".equals(localName)) {
 				throw new TransformerException("XTSE0080 : An XSL named template uses reserved namespace " + Constants.S_XSLNAMESPACEURL 
 						                                                                                   + " within its name.", srcLocator);
+			}
+			
+			if (m_withParamElems != null) {
+			   int size1 = m_withParamElems.length;
+			   
+			   List<QName> list1 = m_template.getTunnelParamNameList();
+			   List<XObject> list2 = m_template.getTunnelParamValueList();
+			   
+			   for (int idx = 0; idx < size1; idx++) {
+				  ElemWithParam elemWithParam = m_withParamElems[idx];
+				  String tunnelStr1 = elemWithParam.getTunnel();
+				  
+				  if (tunnelStr1 != null && ("yes".equals(tunnelStr1.trim()) || "true".equals(tunnelStr1.trim()) 
+						                                                     || "1".equals(tunnelStr1.trim()))) {
+					  QName withParamName = elemWithParam.getName();					  
+					  ElemParam[] templateElemParamArr = m_template.getElemParamArray();
+					  
+					  if (templateElemParamArr != null) {
+						 // to do 
+					  }
+					  else {						 
+						 list1.add(withParamName);						 
+						 
+						 XPath xpathSelect = elemWithParam.getSelect();
+						 XObject xObj = xpathSelect.execute(xctxt, sourceNode, elemWithParam);
+						 						 
+						 list2.add(xObj);
+					  }
+				  }
+			   }
 			}
 
 			try {
@@ -358,6 +394,28 @@ public class ElemCallTemplate extends ElemForEach
 								varStack.setLocalVariable(ewp.m_index, xObj, nextFrame);
 								maxParamStackFrameIndex = ewp.m_index; 
 							}
+						}
+
+						propagateTunnelParameters(varStack, thisframe, nextFrame, maxParamStackFrameIndex);
+
+						varStack.setStackFrame(nextFrame);
+					}
+					else if (m_tunnelParamNameList.size() > 0) {
+						varStack.setStackFrame(thisframe);
+						int withParamSize = m_tunnelParamNameList.size();
+
+						int maxParamStackFrameIndex = -1;
+
+						for (int i = 0; i < withParamSize; i++) 
+						{														
+							QName qName = m_tunnelParamNameList.get(i);
+							
+							XObject xObj = m_tunnelParamValueList.get(i);
+							xObj.setTunnel("yes");
+							xObj.setQName(qName);
+							
+							varStack.setLocalVariable(i, xObj, nextFrame);
+							maxParamStackFrameIndex = i;
 						}
 
 						propagateTunnelParameters(varStack, thisframe, nextFrame, maxParamStackFrameIndex);
@@ -445,6 +503,10 @@ public class ElemCallTemplate extends ElemForEach
 			m_withParamElems = ewp;
 			ewp[length] = ParamElem;
 		}
+	}
+	
+	public ElemWithParam[] gerWithParamArr() {
+		return m_withParamElems;
 	}
 
 	/**
@@ -707,5 +769,21 @@ public class ElemCallTemplate extends ElemForEach
 		}
 		
 		return result;
+	}
+	
+	public List<QName> getTunnelParamNameList() {
+		return m_tunnelParamNameList;
+	}
+
+	public void setTunnelParamNameList(List<QName> tunnelParamNameList) {
+		this.m_tunnelParamNameList = tunnelParamNameList;
+	}
+
+	public List<XObject> getTunnelParamValueList() {
+		return m_tunnelParamValueList;
+	}
+
+	public void setTunnelParamValueList(List<XObject> tunnelParamValueList) {
+		this.m_tunnelParamValueList = tunnelParamValueList;
 	}
 }

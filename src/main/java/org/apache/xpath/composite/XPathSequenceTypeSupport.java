@@ -61,6 +61,7 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -74,6 +75,7 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
+import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.types.DateTimeUtil;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
@@ -500,16 +502,28 @@ public class XPathSequenceTypeSupport {
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
             XPathSequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             
+            /*if (srcValue instanceof ElemFunctionItem) {
+            	InstanceOf instanceOf = new InstanceOf();            				
+            	XObject xObj = instanceOf.operate(srcValue, seqExpectedTypeData);
+
+            	if (xObj.bool()) {
+            		return srcValue;
+            	}
+            	
+            	// to do
+            }*/            
+            
             if (srcValue instanceof XPathNamedFunctionReference) {
-            	XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)srcValue; 
+            	XPathNamedFunctionReference xpathNamedFuncRef = (XPathNamedFunctionReference)srcValue; 
             	XPathSequenceTypeFunctionTest seqTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+            	
             	if (seqTypeFunctionTest != null) {
             		if (seqTypeFunctionTest.isAnyFunctionTest()) {
             			return srcValue;
             		}
             		else {        		     		             			
-            			String localName = xpathNamedFunctionReference.getFuncName();
-            			String fNamespace = xpathNamedFunctionReference.getFuncNamespace(); 
+            			String localName = xpathNamedFuncRef.getFuncName();
+            			String fNamespace = xpathNamedFuncRef.getFuncNamespace(); 
             			
             			FunctionTable funcTable = xctxt.getFunctionTable();
             			
@@ -528,11 +542,11 @@ public class XPathSequenceTypeSupport {
             				funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
             			}            			
             			
-            			Function function = funcTable.getFunction((int)funcId);
+                        Function function = funcTable.getFunction((int)funcId);
             			
             			if (function != null) {
             				return srcValue; 
-            			}
+            			}            			          		
             		}
             	}
             }
