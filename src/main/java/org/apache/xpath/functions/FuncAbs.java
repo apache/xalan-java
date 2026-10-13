@@ -18,12 +18,14 @@
 package org.apache.xpath.functions;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -139,8 +141,16 @@ public class FuncAbs extends FunctionDef1Arg
 		else if (arg0Obj instanceof XSShort) {
 			XSShort xsShortArg = (XSShort)arg0Obj;
             BigDecimal bigDecimal1 = xsShortArg.getValue();
-			
-			result = new XSShort((bigDecimal1.abs()).toBigInteger());
+            
+            int int1 = (XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Short.MIN_INCLUSIVE * -1);
+            BigInteger bigInt = (bigDecimal1.abs()).toBigInteger();
+            
+            if ((BigInteger.valueOf(int1)).compareTo(bigInt) == 0) {
+               result = new XSInteger(int1 + "");
+            }
+            else {
+			   result = new XSShort((bigDecimal1.abs()).toBigInteger());
+            }
 		}
 		else if (arg0Obj instanceof XSInt) {
 			XSInt xsIntArg = (XSInt)arg0Obj;

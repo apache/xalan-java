@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
@@ -53,17 +55,19 @@ public class FuncNot extends FunctionOneArg
 		XObject result = null;
 
 		try {
-			FuncBoolean fnBoolean = new FuncBoolean();			
-			fnBoolean.setArg0(m_arg0);
+			FuncBoolean fnBoolean = new FuncBoolean();									
+			
+			XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);			
+			fnBoolean.setArg0(xObj);
 			
 			result = fnBoolean.execute(xctxt);
 		}
-		catch (javax.xml.transform.TransformerException ex) {
+		catch (TransformerException ex) {
             throw ex;																									
 		}
 
 		/**
-		 * Result of XPath function fn:not is, XPath function 
+		 * Result for XPath function fn:not is, XPath function 
 		 * fn:boolean result's negation for the supplied function 
 		 * argument. 
 		 */

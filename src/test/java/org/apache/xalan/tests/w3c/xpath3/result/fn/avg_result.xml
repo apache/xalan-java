@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:31Z" fail="4" name="fn-avg" pass="234" run="238" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-13T16:36:16Z" fail="2" name="fn-avg" pass="236" run="238" statusUnknown="0">
    <testResult status="pass" testName="fn-avgint1args-1"/>
    <testResult status="pass" testName="fn-avgint1args-2"/>
    <testResult status="pass" testName="fn-avgint1args-3"/>
@@ -186,8 +186,8 @@
    <testResult status="pass" testName="K-SeqAVGFunc-15"/>
    <testResult status="pass" testName="K-SeqAVGFunc-16"/>
    <testResult status="pass" testName="K-SeqAVGFunc-17"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-18"/>
-   <testResult status="fail" testName="K-SeqAVGFunc-19"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-18"/>
+   <testResult status="pass" testName="K-SeqAVGFunc-19"/>
    <testResult status="pass" testName="K-SeqAVGFunc-20"/>
    <testResult status="pass" testName="K-SeqAVGFunc-21"/>
    <testResult status="pass" testName="K-SeqAVGFunc-22"/>

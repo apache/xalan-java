@@ -216,6 +216,10 @@ public class XSDate extends XSCalendarType {
     public boolean isDateTimezoned() {
         return _timezoned;
     }
+    
+    public void setIsDateTimezoned(boolean _timezoned) {
+        this._timezoned = _timezoned;
+    }
 
     @Override
     public String stringValue() {
@@ -415,8 +419,8 @@ public class XSDate extends XSCalendarType {
         if (!((xObj instanceof XSDate) || (xObj instanceof XSYearMonthDuration)
                                        || (xObj instanceof XSDayTimeDuration))) {
            throw new TransformerException("XPTY0004 : The values of schema types 'date', 'yearMonthDuration' and "
-                                                                                 + "'dayTimeDuration' are the only ones that "
-                                                                                 + "may be subtracted from schema type 'date' value.");
+                                                                                                                 + "'dayTimeDuration' are the only ones that "
+                                                                                                                 + "may be subtracted from schema type 'date' value.");
         }
         
         if (xObj instanceof XSDate) {                   	        	        	        	
@@ -432,45 +436,45 @@ public class XSDate extends XSCalendarType {
         	catch (CloneNotSupportedException ex) {
         	   // No op	
         	}
+        	
+        	XSDuration utcTz = new XSDuration();
 
-        	if (!_timezoned) {
-        	   _tz = xctxt.getTimezone();        		
+        	if (!dtClone1.isDateTimezoned()) {
+        	   dtClone1.setTimezone(xctxt.getTimezone());
+        	   dtClone1.setIsDateTimezoned(true);
         	}
         	
-        	XSDate xsDate = (XSDate)xObj;
-        	
-    		if (xsDate.getTimezone() == null) {
-    		   xsDate.setTimezone(xctxt.getTimezone());
-    		}
-    		
-    		XSDuration utcTz = new XSDuration();
+    		if (!dtClone2.isDateTimezoned()) {
+    		   dtClone2.setTimezone(xctxt.getTimezone());
+    		   dtClone2.setIsDateTimezoned(true);
+    		}    		    		
         	
         	try {
         		FuncAdjustDateToTimezone funcAdjustDateToTimezone = new FuncAdjustDateToTimezone();
         		
         		XSDate xsDate1 = null;        		
-        		XSDate xsDate2 = null;
+        		XSDate xsDate2 = null;        		        		
         		
-        		if (!_tz.equals(utcTz)) {        			
-        			funcAdjustDateToTimezone.setArg(this, 0);
+        		if (!(dtClone1.getTimezone()).equals(utcTz)) {        			
+        			funcAdjustDateToTimezone.setArg(dtClone1, 0);
         			funcAdjustDateToTimezone.setArg(utcTz, 1);
 
         			xsDate1 = (XSDate)(funcAdjustDateToTimezone.execute(xctxt));
         		}
         		else {
-        			xsDate1 = this;
+        			xsDate1 = dtClone1;
         		}
         		
-        		XSDuration tz2 = xsDate.getTimezone(); 
+        		XSDuration tz2 = dtClone2.getTimezone(); 
         		
         		if (!tz2.equals(utcTz)) {        			
-        			funcAdjustDateToTimezone.setArg(xsDate, 0);
+        			funcAdjustDateToTimezone.setArg(dtClone2, 0);
         			funcAdjustDateToTimezone.setArg(utcTz, 1);
 
         			xsDate2 = (XSDate)(funcAdjustDateToTimezone.execute(xctxt));
         		}
         		else {
-        			xsDate2 = xsDate; 
+        			xsDate2 = dtClone2; 
         		}
         		
         		String isoDateStr1 = xsDate1.stringValue();
@@ -485,10 +489,9 @@ public class XSDate extends XSCalendarType {
         		Duration duration = Duration.between(instant2, instant1);
         		long days = duration.toDays();
         		
-        		long milliSecs = duration.toMillis();
-        		long days2 = milliSecs / (1000 * 60 * 60 * 24); 
+        		Instant epochInstant = Instant.parse("1970-01-01T00:00:00Z");
         		
-        		if (days2 != days) {
+        		if (instant1.isBefore(epochInstant) || instant2.isBefore(epochInstant)) {
         		   String xsDayTimeDurationStr = "P" + Math.abs(days) + "D";
         		   xsDayTimeDurationStr = ((days < 0) ? "-" + xsDayTimeDurationStr : xsDayTimeDurationStr);
         		   

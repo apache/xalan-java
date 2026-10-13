@@ -17,6 +17,8 @@
  */
 package org.apache.xpath.functions.datetime;
 
+import java.util.Calendar;
+
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.XPathContext;
@@ -73,7 +75,7 @@ public class FuncAdjustTimeToTimezone extends FunctionMultiArgs {
 			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 			if (xObj0 instanceof XSTime) {
-				arg0XsTime = (XSTime)xObj0; 
+				arg0XsTime = (XSTime)xObj0;
 			}
 			else if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
 				result = new ResultSequence();
@@ -211,6 +213,18 @@ public class FuncAdjustTimeToTimezone extends FunctionMultiArgs {
             String minsStr = ((mins < 10) ? "0" + mins : mins + "");
             int secs = xsDateTime2.second();
             String secsStr = ((secs < 10) ? "0" + secs : secs + "");
+            
+            Calendar calendar = xsDateTime2.getCalendar();
+            int milliSecs = calendar.get(Calendar.MILLISECOND);
+            
+            if (milliSecs > 0) {
+              double dbl = ((double)milliSecs / 1000);
+              String str1 = dbl + "";
+              int idx = str1.indexOf('.');
+              str1 = str1.substring(idx); 
+              
+              secsStr = (secsStr + str1);
+            }
             
             String resultStrValue = (hrsStr + ":" + minsStr + ":" + secsStr + timeZoneStrValue);   
 			

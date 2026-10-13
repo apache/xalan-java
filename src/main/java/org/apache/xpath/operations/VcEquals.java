@@ -110,6 +110,26 @@ public class VcEquals extends XPathRelationalOp
 		 return result;
 	  }
 	  
+	  if ((left instanceof XSUntypedAtomic) && (right instanceof XSAnyURI)) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+
+		  java.lang.String str2 = ((XSAnyURI)right).stringValue();
+
+		  result = (str1.equals(str2)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+
+		  return result;
+	  }
+	  
+	  if ((left instanceof XSAnyURI) && (right instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = ((XSAnyURI)left).stringValue();
+
+		  java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
+
+		  result = (str1.equals(str2)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+
+		  return result;
+	  }
+	  
 	  if ((left instanceof XSDecimal) && (right instanceof XSDouble)) {
 		 BigDecimal bigDecimal1 = ((XSDecimal)left).getValue();
 		 

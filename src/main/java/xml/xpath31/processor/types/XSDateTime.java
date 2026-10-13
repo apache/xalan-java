@@ -110,6 +110,10 @@ public class XSDateTime extends XSCalendarType {
         return _calendar;
     }
     
+    public void setCalendar(Calendar calendar) {
+    	_calendar = calendar; 
+    }
+    
     public XSDuration getTimezone() {
         return _tz;
     }
@@ -496,9 +500,20 @@ public class XSDateTime extends XSCalendarType {
 						    																	+ "schema type 'dateTime' value.");
             }
     
-            double ms = t[2] - ((int) t[2]);
-            ms *= 1000;
-            if (!setItem(gregorianCalObj1, Calendar.MILLISECOND, (int) ms)) {
+            int milliSecs = 0;
+            
+            String str1 = (Double.valueOf(t[2])).toString();
+            int idx2 = str1.indexOf('.');
+            
+            double secsFraction = 0.0;
+            
+            if (idx2 != -1) {
+               str1 = str1.substring(idx2);
+               milliSecs = (int)(Double.valueOf(str1) * 1000);
+               secsFraction = Double.valueOf(str1);                
+            }
+            
+            if (!setItem(gregorianCalObj1, Calendar.MILLISECOND, milliSecs)) {
                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' cannot be parsed to "
 						    																    + "schema type 'dateTime' value.");
             }
@@ -516,7 +531,8 @@ public class XSDateTime extends XSCalendarType {
                 timezoneVal = new XSDayTimeDuration(0, tz[1], tz[2], 0.0, tz[0] < 0);
             }
             
-            xsDateTime = new XSDateTime(gregorianCalObj1, timezoneVal);
+            xsDateTime = new XSDateTime(gregorianCalObj1, timezoneVal);            
+            xsDateTime.setSecsFraction(secsFraction);
         }
         catch (TransformerException ex) {
             throw ex;  
@@ -967,7 +983,7 @@ public class XSDateTime extends XSCalendarType {
         		 Calendar cal2 = ((XSDateTime)xObj).getCalendar();
         		 long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
 
-        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);        		 
+        		 result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);         		 
         	 }
         	 catch (WrongNumberArgsException ex) {
         		 // No op 

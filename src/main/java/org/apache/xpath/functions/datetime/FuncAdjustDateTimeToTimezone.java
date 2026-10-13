@@ -19,6 +19,7 @@ package org.apache.xpath.functions.datetime;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Calendar;
 
 import javax.xml.transform.SourceLocator;
 
@@ -74,7 +75,7 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 			if (xObj0 instanceof XSDateTime) {
-				arg0XsDateTime = (XSDateTime)xObj0; 
+				arg0XsDateTime = (XSDateTime)xObj0;
 			}
 			else if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
 				result = new ResultSequence();
@@ -221,6 +222,20 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 			OffsetDateTime offsetDateTimeResult = offsetDateTime.withOffsetSameInstant(zoneOffset2);
 			String resultDateTimeStrValue = offsetDateTimeResult.toString();
 			
+			String str_a = arg0XsDateTime.stringValue();
+			
+			int milliSecs = 0;
+			
+			if (str_a.contains(".") && !resultDateTimeStrValue.contains(".")) {
+			   int idx = str_a.indexOf('.');
+			   str_a = str_a.substring(idx + 1);
+			   String[] strArr = str_a.split("\\+|\\-|Z");
+			   
+			   if (strArr.length == 2) {
+				  milliSecs = Integer.valueOf(strArr[0]); 
+			   }
+			}
+			
 			int idx = resultDateTimeStrValue.indexOf('T');
 			String prefix1 = resultDateTimeStrValue.substring(0, idx);
 			String suffix1 = resultDateTimeStrValue.substring(idx + 1);
@@ -258,6 +273,17 @@ public class FuncAdjustDateTimeToTimezone extends FunctionMultiArgs {
 			}
 			
 			result = XSDateTime.parseDateTime(resultDateTimeStrValue);
+			
+			if (milliSecs > 0) {
+			   XSDateTime xsDateTime = (XSDateTime)result;
+			   
+			   Calendar calendar = xsDateTime.getCalendar();
+			   calendar.set(Calendar.MILLISECOND, milliSecs);
+			   
+			   xsDateTime.setSecsFraction((double)milliSecs / 1000);
+			   
+			   result = xsDateTime; 
+			}
 		}
 
 		return result;

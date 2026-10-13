@@ -355,6 +355,9 @@ public class Compiler extends XPathOpMap
       expr = seqBinaryExpr(opPos); break;
     case OpCodes.XPath3OpCodes.OP_SEQ_INDEX_BINARY_EXPR:
       expr = seqIndexBinaryExpr(opPos); break;
+    case OpCodes.XPath3OpCodes.OP_FUNC_ARG_FUNC_WITH_PREDICATE:
+      expr = XPathParser.m_xpathFuncArgFuncCallWithPredicate; 
+      break;      
     case OpCodes.OP_QUO:
       if (!m_xpath_ignore_compile_err) {
          error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });

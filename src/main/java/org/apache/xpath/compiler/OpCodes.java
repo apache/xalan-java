@@ -805,8 +805,10 @@ public class OpCodes
 	  
 	  public static final int OP_SEQ_INDEX_BINARY_EXPR = 141;
 	  
+	  public static final int OP_FUNC_ARG_FUNC_WITH_PREDICATE = 142;
+	  
 	  /** XPath op code's next free id. Please keep this up to date. */
-	  private static final int NEXT_FREE_ID = 142;
+	  private static final int NEXT_FREE_ID = 143;
   }
 
   /** XPath op code's next free id. Please keep this up to date. */

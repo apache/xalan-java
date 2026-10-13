@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:59Z" fail="1" name="op-time-equal" pass="51" run="52" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-13T16:36:33Z" fail="0" name="op-time-equal" pass="52" run="52" statusUnknown="0">
    <testResult status="pass" testName="op-time-equal2args-1"/>
    <testResult status="pass" testName="op-time-equal2args-2"/>
    <testResult status="pass" testName="op-time-equal2args-3"/>
@@ -20,7 +20,7 @@
    <testResult status="pass" testName="op-time-equal2args-19"/>
    <testResult status="pass" testName="op-time-equal2args-20"/>
    <testResult status="pass" testName="K-TimeEQ-1"/>
-   <testResult status="fail" testName="K-TimeEQ-2"/>
+   <testResult status="pass" testName="K-TimeEQ-2"/>
    <testResult status="pass" testName="K-TimeEQ-3"/>
    <testResult status="pass" testName="K-TimeEQ-4"/>
    <testResult status="pass" testName="K-TimeEQ-5"/>

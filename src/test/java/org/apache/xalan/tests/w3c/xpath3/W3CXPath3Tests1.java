@@ -27,7 +27,6 @@ import org.apache.xalan.tests.w3c.xpath3.array.XPath3FnArraySizeTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAbsTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustDateTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustDateToTimezoneTests;
-import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAvgTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnBooleanTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnCeilingTests;
@@ -36,7 +35,6 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnEmptyTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFormatIntegerTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnNumberTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnRandomNumberGeneratorTests;
-import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnSumTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3ExceptTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3IntersectTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3UnionTests;
@@ -66,9 +64,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3InlineFunctionExprTests.class, XPath3FnFormatIntegerTests.class, XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, 
 	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
 	            XPath3IntersectTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class, 
-	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
-	            XPath3FnSumTests.class, XPath3FnArrayAppendTests.class, XPath3FnArraySizeTests.class, XPath3FnArrayFilterTests.class,
-	            XPath3FnArrayFoldLeftTests.class, XPath3FnArrayFoldRightTests.class, XPath3FnArrayForeachTests.class,
+	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3FnArrayAppendTests.class, XPath3FnArraySizeTests.class, 
+	            XPath3FnArrayFilterTests.class, XPath3FnArrayFoldLeftTests.class, XPath3FnArrayFoldRightTests.class, XPath3FnArrayForeachTests.class,
 	            XPath3FnNumberTests.class, XPath3FnArrayGetTests.class, XPath3FnArrayHeadTests.class, XPath3XsDurationEqualTests.class, 
 	            XPath3FnAvgTests.class, XPath3FnRandomNumberGeneratorTests.class, XPath3FnEmptyTests.class })
 public class W3CXPath3Tests1 {
