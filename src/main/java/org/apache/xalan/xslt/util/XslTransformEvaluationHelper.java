@@ -1210,12 +1210,12 @@ public class XslTransformEvaluationHelper {
 		   
 		   if (key1 instanceof XString) {
 			   String str1 = ((XString)key1).str();
-			   str1 = str1.replace(" : ", ":");
+			   str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);			   
 			   newKey1 = new XSString(str1);
 		   }
 		   else if (key1 instanceof XSString) {
 			  String str1 = ((XSString)key1).stringValue();
-			  str1 = str1.replace(" : ", ":");
+			  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
 			  newKey1 = new XSString(str1);
 		   }		   
 		   else if (key1 instanceof XSUntypedAtomic) {
@@ -1223,7 +1223,7 @@ public class XslTransformEvaluationHelper {
 		   }
 		   else if (key1 instanceof XSAnyURI) {
 			  String str1 = ((XSAnyURI)key1).stringValue();
-			  str1 = str1.replace(" : ", ":");
+			  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
 			  newKey1 = new XSString(str1);
 		   }
 		   else {

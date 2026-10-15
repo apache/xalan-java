@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:57Z" fail="2" name="op-boolean-equal" pass="47" run="49" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-15T16:45:45Z" fail="1" name="op-boolean-equal" pass="48" run="49" statusUnknown="0">
    <testResult status="pass" testName="op-boolean-equal2args-1"/>
    <testResult status="pass" testName="op-boolean-equal2args-2"/>
    <testResult status="pass" testName="op-boolean-equal2args-3"/>
@@ -20,7 +20,7 @@
    <testResult status="pass" testName="op-boolean-equal-14"/>
    <testResult status="pass" testName="op-boolean-equal-15"/>
    <testResult status="pass" testName="op-boolean-equal-16"/>
-   <testResult status="fail" testName="op-boolean-equal-17"/>
+   <testResult status="pass" testName="op-boolean-equal-17"/>
    <testResult status="fail" testName="op-boolean-equal-18"/>
    <testResult status="pass" testName="op-boolean-equal-19"/>
    <testResult status="pass" testName="op-boolean-equal-more-args-001"/>

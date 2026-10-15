@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -147,12 +148,12 @@ public class FuncMapContains extends Function2Args {
 	    	    
 	    if (arg1Obj instanceof XString) {
 	    	String str1 = ((XString)arg1Obj).str();
-	    	str1 = str1.replace(" : ", ":");
+	    	str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
 	    	arg1Obj = new XSString(str1);
 		}
 	    else if (arg1Obj instanceof XSString) {
 	    	String str1 = ((XSString)arg1Obj).stringValue();
-	    	str1 = str1.replace(" : ", ":");
+	    	str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
 	    	arg1Obj = new XSString(str1);
 		}
 	    else if (arg1Obj instanceof XSUntypedAtomic) {
@@ -160,7 +161,7 @@ public class FuncMapContains extends Function2Args {
 	    }
 	    else if (arg1Obj instanceof XSAnyURI) {
 	       String str1 = ((XSAnyURI)arg1Obj).stringValue();
-		   str1 = str1.replace(" : ", ":");
+	       str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
 		   arg1Obj = new XSString(str1);
 	    }
 	    

@@ -196,16 +196,16 @@ public class FuncApply extends Function2Args {
 	  Object funcIdObj = null;
 	  
 	  if ((funcNamespace == null) || (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace))) {
-		  funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
+		  funcIdObj = funcTable.getFunctionIdForXSLBuiltinFunc(funcLocalName);
 	  }
 	  else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
-		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFunc(funcLocalName);
 	  }
 	  else if (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
-		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFunc(funcLocalName);
 	  }
 	  else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
-		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+		  funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFunc(funcLocalName);
 	  }
 	  
 	  String funcExpandedName = null;

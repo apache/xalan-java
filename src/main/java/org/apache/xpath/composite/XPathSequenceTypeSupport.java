@@ -530,16 +530,16 @@ public class XPathSequenceTypeSupport {
             			Object funcId = null;
 
             			if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) { 
-            				funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+            				funcId = funcTable.getFunctionIdForXSLBuiltinFunc(localName);
             			}
             			else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
-            				funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+            				funcId = funcTable.getFunctionIdForXPathBuiltinMathFunc(localName);
             			}
             			else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
-            				funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+            				funcId = funcTable.getFunctionIdForXPathBuiltinMapFunc(localName);
             			}
             			else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {     	   
-            				funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+            				funcId = funcTable.getFunctionIdForXPathBuiltinArrayFunc(localName);
             			}            			
             			
                         Function function = funcTable.getFunction((int)funcId);

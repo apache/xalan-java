@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -106,7 +104,7 @@ public class XPathLetExpr extends Expression {
     		   String varName = letExprVarBinding.getVarName();
     		   String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();
     		   
-    		   varResultXPathExprStr = varResultXPathExprStr.replace(" : ", ":");
+    		   varResultXPathExprStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(varResultXPathExprStr);
     		   varResultXPathExprStr = varResultXPathExprStr.replace(": =", ":=");
 
     		   if (prefixTable != null) {
@@ -177,16 +175,16 @@ public class XPathLetExpr extends Expression {
     			   Object funcIdObj = null;    			   
     			   
     			   if ((funcNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace))) { 
-    				   funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
+    				   funcIdObj = funcTable.getFunctionIdForXSLBuiltinFunc(funcLocalName);
     			   }
     			   else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {    	       	   
-    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFunc(funcLocalName);
     			   }
     			   else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace)) {    	       	   
-    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFunc(funcLocalName);
     			   }
     			   else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {     	   
-    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+    				   funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFunc(funcLocalName);
     			   }    			   
 
     			   if (funcIdObj != null) {

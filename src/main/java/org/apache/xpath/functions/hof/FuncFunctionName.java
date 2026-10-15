@@ -198,7 +198,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 		
 		if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) {
 			prefix = "fn";
-			Object funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+			Object funcId = funcTable.getFunctionIdForXSLBuiltinFunc(localName);
 			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
@@ -220,7 +220,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 		}
 		else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {
 			prefix = "math";
-			Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+			Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFunc(localName);
 			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
@@ -242,7 +242,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 		}
 		else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {
 			prefix = "map";
-			Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+			Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFunc(localName);
 			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));
@@ -264,7 +264,7 @@ public class FuncFunctionName extends FunctionDef1Arg
 		}
 		else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {
 			prefix = "array";
-			Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+			Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFunc(localName);
 			
 			if (funcId != null) {
 				Function function = funcTable.getFunction(Integer.valueOf(funcId.toString()));

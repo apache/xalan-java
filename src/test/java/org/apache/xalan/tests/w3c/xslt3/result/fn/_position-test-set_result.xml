@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:38:04Z" fail="15" name="position" pass="196" run="211" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-15T16:48:36Z" fail="14" name="position" pass="197" run="211" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="position-4901"/>
    <testResult status="pass" testName="position-0101"/>
-   <testResult status="fail" testName="position-0102"/>
+   <testResult status="pass" testName="position-0102"/>
    <testResult status="fail" testName="position-0103"/>
    <testResult status="pass" testName="position-0201"/>
    <testResult status="pass" testName="position-0202"/>
@@ -125,14 +125,14 @@
    <testResult status="pass" testName="position-2806"/>
    <testResult status="fail" testName="position-2901">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 12, Column# : 137 XPST0003: Expected ), but found: ,
-java.lang.Exception: Line# : 12, Column# : 137 XPST0003: Expected ), but found: ,</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 15, Column# : 166 XPST0003: Expected ), but found: ,
+java.lang.Exception: Line# : 15, Column# : 166 XPST0003: Expected ), but found: ,</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="position-2902">
       <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 12, Column# : 128 XPST0003: Expected ), but found: ,
-java.lang.Exception: Line# : 12, Column# : 128 XPST0003: Expected ), but found: ,</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 15, Column# : 162 XPST0003: Expected ), but found: ,
+java.lang.Exception: Line# : 15, Column# : 162 XPST0003: Expected ), but found: ,</errTrace>
       </outResult>
    </testResult>
    <testResult status="fail" testName="position-2903">
@@ -164,7 +164,7 @@ java.lang.Exception: Line# : 18, Column# : 93 XPST0003: Expected ), but found: ,
    <testResult status="pass" testName="position-3201"/>
    <testResult status="pass" testName="position-3301"/>
    <testResult status="pass" testName="position-3302"/>
-   <testResult reason="Xalan configured" status="skipped" testName="position-3303"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="position-3303"/>
    <testResult status="pass" testName="position-3304"/>
    <testResult status="fail" testName="position-3305"/>
    <testResult status="pass" testName="position-3306"/>

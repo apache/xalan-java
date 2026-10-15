@@ -224,7 +224,7 @@ public class VcLt extends XPathRelationalOp
 			  isLEmpty = true;
 		  }
 		  else if (((ResultSequence)left).size() > 1) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator lt's first operand cannot be a "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator lt's first operand cannot be a "
 			  		                                                                                                      + "sequence of size greater than one.", this); 
 		  }
 	  }
@@ -235,7 +235,7 @@ public class VcLt extends XPathRelationalOp
 			  isLEmpty = true;
 		  }
 		  else if (nodeRef1.getLength() > 1) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator lt's first operand cannot be a "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator lt's first operand cannot be a "
 			  		                                                                                                     + "sequence of size greater than one.", this);
 		  }
 	  }
@@ -247,7 +247,7 @@ public class VcLt extends XPathRelationalOp
 			  isREmpty = true;
 		  }
 		  else if (((ResultSequence)right).size() > 1) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator lt's second operand cannot be a "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator lt's second operand cannot be a "
 			  																											 + "sequence of size greater than one.", this);
 		  }
 	  }
@@ -258,7 +258,7 @@ public class VcLt extends XPathRelationalOp
 			  isREmpty = true;
 		  }
 		  else if (nodeRef1.getLength() > 1) {
-			  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator lt's second operand cannot be a "
+			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator lt's second operand cannot be a "
 			  																									         + "sequence of size greater than one.", this);
 		  }
 	  }

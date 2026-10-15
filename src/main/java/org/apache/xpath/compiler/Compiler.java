@@ -358,6 +358,9 @@ public class Compiler extends XPathOpMap
     case OpCodes.XPath3OpCodes.OP_FUNC_ARG_FUNC_WITH_PREDICATE:
       expr = XPathParser.m_xpathFuncArgFuncCallWithPredicate; 
       break;      
+    case OpCodes.XPath3OpCodes.OP_LITERAL_WITH_PREDICATE:
+      expr = XPathParser.m_xpathLiteralWithPredicate;
+      break;	
     case OpCodes.OP_QUO:
       if (!m_xpath_ignore_compile_err) {
          error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
@@ -418,8 +421,8 @@ public class Compiler extends XPathOpMap
 		  	  // This can handle all XPath built-in functions, from
 			  // all XPath 3.1 F&O specified function XML namespaces.
 			  
-			  lStr = lStr.replace(" : ", ":");
-			  rStr = rStr.replace(" : ", ":");
+			  lStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(lStr);
+			  rStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(rStr);
 			  			  
 			  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 
@@ -495,9 +498,9 @@ public class Compiler extends XPathOpMap
 		  if ((str1 != null) && (str2 != null)) {			  
 			  // This can handle all XPath built-in functions, from
 			  // all XPath 3.1 F&O specified function namespaces.
-			  
-			  str1 = str1.replace(" : ", ":");
-			  str2 = str2.replace(" : ", ":");
+
+			  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
+			  str2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str2);
 			  			  
 			  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 
@@ -537,8 +540,8 @@ public class Compiler extends XPathOpMap
 				  String xpathStr1 = xpathSeqBinaryOp.getLeftStr();
 				  String xpathStr2 = xpathSeqBinaryOp.getRightStr();
 
-				  xpathStr1 = xpathStr1.replace(" : ", ":");
-				  xpathStr2 = xpathStr2.replace(" : ", ":");
+				  xpathStr1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(xpathStr1);
+				  xpathStr2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(xpathStr2);
 
 				  xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr1, prefixTable);
 				  xpathStr2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr2, prefixTable);
@@ -1280,8 +1283,8 @@ public class Compiler extends XPathOpMap
 
 	  if ((lStr != null) && (rStr != null)) {
 		  try {
-			  lStr = lStr.replace(" : ", ":");
-			  rStr = rStr.replace(" : ", ":");
+			  lStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(lStr);
+			  rStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(rStr);
 
 			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
 			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
@@ -1358,8 +1361,8 @@ public class Compiler extends XPathOpMap
 	  
 	  if ((lStr != null) && (rStr != null)) {
 		  try {
-			  lStr = lStr.replace(" : ", ":");
-			  rStr = rStr.replace(" : ", ":");
+			  lStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(lStr);
+			  rStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(rStr);
 
 			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
 			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');
@@ -1436,8 +1439,8 @@ public class Compiler extends XPathOpMap
 	  
 	  if ((lStr != null) && (rStr != null)) {
 		  try {
-			  lStr = lStr.replace(" : ", ":");
-			  rStr = rStr.replace(" : ", ":");
+			  lStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(lStr);
+			  rStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(rStr);
 
 			  boolean a1 = StringUtil.isStrHasBalancedParentheses(lStr, '(', ')');
 			  boolean a2 = StringUtil.isStrHasBalancedParentheses(rStr, '(', ')');

@@ -25,6 +25,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -233,8 +234,7 @@ public class XPathSequenceConstructor extends Expression {
         			   }
 
         			   if (isEmptyNodeSet) {
-        				   // Possible XML namespace string handling 
-        				   xpathExprStr = xpathExprStr.replace(" : ", ":");
+        				   xpathExprStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(xpathExprStr);
         				   
         				   if (prefixTable != null) {
     						   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);

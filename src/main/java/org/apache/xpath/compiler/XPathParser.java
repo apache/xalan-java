@@ -106,6 +106,7 @@ import org.apache.xpath.composite.XPathFunctionCall2;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.composite.XPathLetExprVarBinding;
+import org.apache.xpath.composite.XPathLiteralWithPredicate;
 import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathQuantifiedExpr;
@@ -346,6 +347,7 @@ public class XPathParser
   static String m_xpath_op_name_str = null;
   
   static XPathFuncArgFuncCallWithPredicate m_xpathFuncArgFuncCallWithPredicate = null;
+  static XPathLiteralWithPredicate m_xpathLiteralWithPredicate = null;
   
   private String m_arrowOpRemainingXPathExprStr = null;    
   
@@ -1543,16 +1545,16 @@ public class XPathParser
 
 		  if (id == null) {
 			  if ((nsUri == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri))) {
-				  id = m_functionTable.getFunctionIdForXSLBuiltinFuncs(key);
+				  id = m_functionTable.getFunctionIdForXSLBuiltinFunc(key);
 			  }
 			  else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
-				  id = m_functionTable.getFunctionIdForXPathBuiltinMathFuncs(key);
+				  id = m_functionTable.getFunctionIdForXPathBuiltinMathFunc(key);
 			  }
 			  else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
-				  id = m_functionTable.getFunctionIdForXPathBuiltinMapFuncs(key);
+				  id = m_functionTable.getFunctionIdForXPathBuiltinMapFunc(key);
 			  }
 			  else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
-				  id = m_functionTable.getFunctionIdForXPathBuiltinArrayFuncs(key);
+				  id = m_functionTable.getFunctionIdForXPathBuiltinArrayFunc(key);
 			  }			  
 		  }
 
@@ -6347,13 +6349,53 @@ public class XPathParser
 
       matchFound = true;
     }
-    else if ((m_token != null) && ((('.' == m_tokenChar) && (m_token.length() > 1) && Character.isDigit(
-            m_token.charAt(1))) || Character.isDigit(m_tokenChar)))
-    {
-      appendOp(2, OpCodes.OP_NUMBERLIT);
-      
-      Number();
+    else if ((m_token != null) && ((('.' == m_tokenChar) && (m_token.length() > 1) && Character.isDigit(m_token.charAt(1))) 
+    		                                                                         || Character.isDigit(m_tokenChar))) {          	
+      if (lookahead('[', 1)) {
+    	 // An XPath predicate follows a numeric literal
+    	  
+    	 StringBuffer strBuff = new StringBuffer();
+    	 String str1 = m_token;    	     	 
+    	 String str2 = null;
+    	 
+    	 nextToken();
+    	     	     	 
+    	 strBuff.append('[');    	 
+    	 consumeExpected('[');
+    	 
+    	 boolean isXPathExprOk = false;
+    	 
+    	 while (m_token != null) {
+    		 strBuff.append(m_token + " ");
+    		 str2 = (strBuff.toString()).trim();
 
+    		 if (tokenIs(']') && StringUtil.isStrHasBalancedParentheses(str2, '[', ']')) {
+    			 isXPathExprOk = true;
+    			 
+    			 consumeExpected(']');
+    			 
+    			 str2 = str2.substring(1, str2.length() - 1);
+
+    			 break;
+    		 }
+
+    		 nextToken();
+    	 }
+    	 
+    	 if (isXPathExprOk) {    		 
+    		appendOp(2, OpCodes.XPath3OpCodes.OP_LITERAL_WITH_PREDICATE);
+    		
+    		m_xpathLiteralWithPredicate = new XPathLiteralWithPredicate();
+    		m_xpathLiteralWithPredicate.setLiteralStr(str1);
+    		m_xpathLiteralWithPredicate.setPredicateStr(str2);
+    	 }
+      }
+      else {
+    	 appendOp(2, OpCodes.OP_NUMBERLIT);
+          
+         Number(); 
+      }
+      
       m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
                                                   m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
 

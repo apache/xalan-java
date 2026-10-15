@@ -331,16 +331,16 @@ public class XSL3FunctionService {
     							Object funcId = null;
 
     							if ((fNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(fNamespace))) { 
-    								funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(localName);
+    								funcId = funcTable.getFunctionIdForXSLBuiltinFunc(localName);
     							}
     							else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
-    								funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(localName);
+    								funcId = funcTable.getFunctionIdForXPathBuiltinMathFunc(localName);
     							}
     							else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(fNamespace)) {    	       	   
-    								funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(localName);
+    								funcId = funcTable.getFunctionIdForXPathBuiltinMapFunc(localName);
     							}
     							else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(fNamespace)) {     	   
-    								funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(localName);
+    								funcId = funcTable.getFunctionIdForXPathBuiltinArrayFunc(localName);
     							}    				    			 
 
     							if (funcId != null) {
@@ -1025,16 +1025,16 @@ public class XSL3FunctionService {
     	Object funcIdObj = null;
     	
     	if ((funcNamespace == null) || (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI.equals(funcNamespace))) {
-    		funcIdObj = funcTable.getFunctionIdForXSLBuiltinFuncs(funcLocalName);
+    		funcIdObj = funcTable.getFunctionIdForXSLBuiltinFunc(funcLocalName);
     	}
     	else if (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI.equals(funcNamespace)) {
-    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcLocalName);
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMathFunc(funcLocalName);
     	}
     	else if (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI.equals(funcNamespace)) {
-    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcLocalName);
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinMapFunc(funcLocalName);
     	}
     	else if (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI.equals(funcNamespace)) {
-    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcLocalName);
+    		funcIdObj = funcTable.getFunctionIdForXPathBuiltinArrayFunc(funcLocalName);
     	}
 
     	if (funcIdObj != null) {
@@ -1224,24 +1224,24 @@ public class XSL3FunctionService {
         FunctionTable funcTable = xctxt.getFunctionTable();
         
         if ((funcNamespace == null) || ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace))) {
-           Object funcId = funcTable.getFunctionIdForXSLBuiltinFuncs(funcName);
+           Object funcId = funcTable.getFunctionIdForXSLBuiltinFunc(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            
            result = funcTable.getFunction(funcIdValue);
         }
         else if ((XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {
-           Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFuncs(funcName);
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinMathFunc(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            
            result = funcTable.getFunction(funcIdValue);
         }
         else if ((XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace)) {
-           Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFuncs(funcName);
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinMapFunc(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            result = funcTable.getFunction(funcIdValue);
         }
         else if ((XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace)) {
-           Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFuncs(funcName);
+           Object funcId = funcTable.getFunctionIdForXPathBuiltinArrayFunc(funcName);
            int funcIdValue = (int)Integer.valueOf(funcId.toString());
            
            result = funcTable.getFunction(funcIdValue);

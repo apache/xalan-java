@@ -1249,7 +1249,7 @@ public class FunctionTable
    * @return                           Function id, for an XSL built-in
    *                                   function.
    */
-  public Object getFunctionIdForXSLBuiltinFuncs(String localName) {
+  public Object getFunctionIdForXSLBuiltinFunc(String localName) {
 	  
 	    Object id = null;
 		
@@ -1784,7 +1784,7 @@ public class FunctionTable
    * @return                           Function id, for an XSL built-in
    *                                   function.
    */
-  public Object getFunctionIdForXPathBuiltinMathFuncs(String localName) {	    
+  public Object getFunctionIdForXPathBuiltinMathFunc(String localName) {	    
 	    
 	    Object id = null;
 		
@@ -1848,7 +1848,7 @@ public class FunctionTable
    * @return                           Function id, for an XSL built-in
    *                                   function.
    */
-  public Object getFunctionIdForXPathBuiltinMapFuncs(String localName) {		
+  public Object getFunctionIdForXPathBuiltinMapFunc(String localName) {		
 		
 	    Object id = null;
 		
@@ -1900,7 +1900,7 @@ public class FunctionTable
    * @return                           Function id, for an XSL built-in
    *                                   function.
    */
-  public Object getFunctionIdForXPathBuiltinArrayFuncs(String localName) {	  
+  public Object getFunctionIdForXPathBuiltinArrayFunc(String localName) {	  
 		
 	    Object id = null;
 		
@@ -1977,7 +1977,7 @@ public class FunctionTable
   {	  
 	  boolean result = false;
 	  
-	  Object funcId = getFunctionIdForXSLBuiltinFuncs(methName);
+	  Object funcId = getFunctionIdForXSLBuiltinFunc(methName);
 	  
 	  if (funcId != null) {
 		 result = true; 
