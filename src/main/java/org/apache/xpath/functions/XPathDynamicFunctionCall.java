@@ -310,7 +310,7 @@ public class XPathDynamicFunctionCall extends Expression {
     	final int contextNode = xctxt.getCurrentNode();
 
     	if (prefixTable != null) {
-    		xpathKeyStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathKeyStr, prefixTable);
+    		xpathKeyStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathKeyStr, prefixTable);
     	}
 
     	XPath argXPath = new XPath(xpathKeyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -487,7 +487,7 @@ public class XPathDynamicFunctionCall extends Expression {
 				}
 				else if (result instanceof XPathArray) {
 					if (prefixTable != null) {
-						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+						argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -684,7 +684,7 @@ public class XPathDynamicFunctionCall extends Expression {
 				
 				if (idx == 0) {
 					if (prefixTable != null) {
-						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+						argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -702,7 +702,7 @@ public class XPathDynamicFunctionCall extends Expression {
 				}
 				else if (result instanceof XPathArray) {
 					if (prefixTable != null) {
-						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+						argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -746,7 +746,7 @@ public class XPathDynamicFunctionCall extends Expression {
 					}
 					else {
 						if (prefixTable != null) {
-							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+							argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 						}
 
 						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -817,7 +817,7 @@ public class XPathDynamicFunctionCall extends Expression {
 			String argXPathStr = m_argList.get(idx);
 			
 			if (prefixTable != null) {
-				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+				argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 			}
 
 			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -886,7 +886,7 @@ public class XPathDynamicFunctionCall extends Expression {
 					String argXPathStr = m_argList.get(idx);
 
 					if (prefixTable != null) {
-						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+						argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 					}
 
 					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1021,7 +1021,7 @@ public class XPathDynamicFunctionCall extends Expression {
 						String argXPathStr = m_argList.get(idx);
 						
 						if (prefixTable != null) {
-							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+							argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 						}
 
 						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1039,7 +1039,7 @@ public class XPathDynamicFunctionCall extends Expression {
 						String argXPathStr = m_argList.get(idx);
 						
 						if (prefixTable != null) {
-							argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+							argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 						}
 
 						XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1108,7 +1108,7 @@ public class XPathDynamicFunctionCall extends Expression {
 				String argXPathStr = m_argList.get(idx);
 				
 				if (prefixTable != null) {
-					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+					argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 				}
 
 				XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1166,7 +1166,7 @@ public class XPathDynamicFunctionCall extends Expression {
 			String argXPathStr = m_argList.get(0);
 			
 			if (prefixTable != null) {
-				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+				argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
 			}
 
 			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

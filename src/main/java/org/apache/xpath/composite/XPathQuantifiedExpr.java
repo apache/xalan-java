@@ -110,7 +110,7 @@ public class XPathQuantifiedExpr extends Expression {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (prefixTable != null) {
-            m_xpathQuantifierTestStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathQuantifierTestStr, prefixTable);
+            m_xpathQuantifierTestStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathQuantifierTestStr, prefixTable);
         }
         
         XPath quantifiedExprXPath = new XPath(m_xpathQuantifierTestStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -226,7 +226,7 @@ public class XPathQuantifiedExpr extends Expression {
            String varBindingXPathStr = quantifiedExprVarBinding.getXPathExprStr();                      
            
            if (prefixTable != null) {
-               varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+               varBindingXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                         varBindingXPathStr, prefixTable);
            }
            

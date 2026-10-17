@@ -109,9 +109,9 @@ public class XPathIntersect extends Expression
       List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 	  
       if (prefixTable != null) {
-    	  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable); 
+    	  m_lstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_lstr, prefixTable); 
 
-    	  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+    	  m_rstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rstr, prefixTable);
       }
 	  
 	  XPath xpath1 = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

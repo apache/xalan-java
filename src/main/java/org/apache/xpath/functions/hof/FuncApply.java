@@ -355,7 +355,7 @@ public class FuncApply extends Function2Args {
 				  String xpathStr = arrConsXPathParts.get(idx);
 				  
 				  if (prefixTable != null) {
-					  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+					  xpathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, prefixTable);
 				  }
 
 				  XPath argXPath = new XPath(xpathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

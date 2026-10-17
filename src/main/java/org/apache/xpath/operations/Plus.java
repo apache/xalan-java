@@ -46,6 +46,8 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -120,28 +122,50 @@ public class Plus extends XPathArithmeticUtil
       }
 	  
 	  if (left instanceof XPathMap) {
-		 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '+', but "
-		 		                                                                                           + "the supplied type is a map "
-		 		                                                                                           + "type which cannot be atomized.", this); 
+		 throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '+', but "
+		 		                                                                                                 + "the supplied type is a map "
+		 		                                                                                                 + "type which cannot be atomized.", this); 
 	  }
 	  
 	  if (right instanceof XPathMap) {
-		 throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of '+', but "
-			 		                                                                                       + "the supplied type is a map "
-			 		                                                                                       + "type which cannot be atomized.", this); 
+		 throw new TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of '+', but "
+			 		                                                                                              + "the supplied type is a map "
+			 		                                                                                              + "type which cannot be atomized.", this); 
 	  }
 	  
 	  if (isXPathOperandXdmFunctionItem(left)) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '+', but "
-																										  + "the supplied type is a function "
-																										  + "type which cannot be atomized.", this); 
+		  throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '+', but "
+																										          + "the supplied type is a function "
+																										          + "type which cannot be atomized.", this); 
 	  }
 
 	  if (isXPathOperandXdmFunctionItem(right)) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of '+', but "
-																										  + "the supplied type is a function "
-																										  + "type which cannot be atomized.", this); 
-	  }	  	  
+		  throw new TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of '+', but "
+																										           + "the supplied type is a function "
+																										           + "type which cannot be atomized.", this); 
+	  }
+	  
+	  if (left instanceof ResultSequence) {
+		  ResultSequence rSeq = (ResultSequence)left;
+
+		  if (rSeq.size() > 1) {
+			  throw new TransformerException("XPTY0004 : An XPath operator '+' cannot be applied to operands, that have cardinality greater than one."); 			  
+		  }
+		  else if (rSeq.size() == 1) {
+			  left = rSeq.item(0);   
+		  }
+	  }
+
+	  if (right instanceof ResultSequence) {
+		  ResultSequence rSeq = (ResultSequence)right;
+
+		  if (rSeq.size() > 1) {
+			  throw new TransformerException("XPTY0004 : An XPath operator '+' cannot be applied to operands, that have cardinality greater than one."); 			  
+		  }
+		  else if (rSeq.size() == 1) {
+			  right = rSeq.item(0);   
+		  }
+	  }
 	  
 	  java.lang.String lNodeStr = null;
 	  java.lang.String rNodeStr = null;
@@ -193,14 +217,25 @@ public class Plus extends XPathArithmeticUtil
 		 }		 
 	  }
 	  
-	  if ((left instanceof XSInteger) && (right instanceof XNumber)) {
-		  XNumber xNumber = (XNumber)right;
+	  if ((left instanceof XSInteger) && (right instanceof XNumber)) {		  
+		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
 		  
-		  if (((int)xNumber.num()) == xNumber.num()) {
+		  java.lang.String str_a = XslTransformEvaluationHelper.getStrVal(right);
+		  
+		  boolean isRNumberInt = true;
+		  
+		  try {
+			 Integer.valueOf(str_a); 
+		  }
+		  catch (NumberFormatException ex) {
+			 isRNumberInt = false; 
+		  }
+		  
+		  if (isRNumberInt) {
 			  java.lang.String str1 = ((XSInteger)left).stringValue(); 			 			
 			  BigInteger bigInt1 = new BigInteger(str1);
 
-			  BigInteger bigInt2 = new BigInteger(((int)xNumber.num()) + "");
+			  BigInteger bigInt2 = new BigInteger(str_a);
 
 			  BigInteger bigIntResult = bigInt1.add(bigInt2);
 
@@ -211,13 +246,24 @@ public class Plus extends XPathArithmeticUtil
 	  }
 	  
 	  if ((right instanceof XSInteger) && (left instanceof XNumber)) {
-		  XNumber xNumber = (XNumber)left;
+		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
 		  
-		  if (((int)xNumber.num()) == xNumber.num()) {
+		  java.lang.String str_a = XslTransformEvaluationHelper.getStrVal(left);
+		  
+		  boolean isLNumberInt = true;
+		  
+		  try {
+			 Integer.valueOf(str_a); 
+		  }
+		  catch (NumberFormatException ex) {
+			 isLNumberInt = false; 
+		  }
+		  
+		  if (isLNumberInt) {
 			  java.lang.String str1 = ((XSInteger)right).stringValue(); 			 			
 			  BigInteger bigInt1 = new BigInteger(str1);
 
-			  BigInteger bigInt2 = new BigInteger(((int)xNumber.num()) + "");
+			  BigInteger bigInt2 = new BigInteger(str_a);
 
 			  BigInteger bigIntResult = bigInt1.add(bigInt2);
 
@@ -384,8 +430,7 @@ public class Plus extends XPathArithmeticUtil
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
 				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
-					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' operand, cannot be a "
-							  																							+ "node validated with schema complex type.");				  
+					  throw new TransformerException("FOTY0013 : An XPath 3.1 operator '+' operand, cannot be a node validated with schema complex type.");				  
 				  }
 				  else {
 					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
@@ -465,8 +510,7 @@ public class Plus extends XPathArithmeticUtil
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
 				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
-					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator '+' operand, cannot be a "
-							  																							+ "node validated with schema complex type.");
+					  throw new TransformerException("FOTY0013 : An XPath 3.1 operator '+' operand, cannot be a node validated with schema complex type.");
 				  }
 				  else {
 					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
@@ -623,39 +667,32 @@ public class Plus extends XPathArithmeticUtil
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		 if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 			                                                                       (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-                                                                                                                     + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }
 		 else if ("date".equals(typeName1) && !("yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-			 		                                                                                                 + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }		 
 		 else if ("date".equals(typeName2) && !("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-			 		                                                                                                 + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }
 		 else if (("time".equals(typeName1) && !"dayTimeDuration".equals(typeName2)) ||
 				  ("dayTimeDuration".equals(typeName1) && !("date".equals(typeName2) || "time".equals(typeName2) || 
 						                                                                "dateTime".equals(typeName2) ||
 						                                                                "dayTimeDuration".equals(typeName2)))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-                                                                                                                     + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }		 
 		 else if ("dateTime".equals(typeName1) && !("yearMonthDuration".equals(typeName2) || "dayTimeDuration".equals(typeName2))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-			 		                                                                                                 + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }
 		 else if ("dateTime".equals(typeName2) && !("yearMonthDuration".equals(typeName1) || "dayTimeDuration".equals(typeName1))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-			 		                                                                                                 + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }
 		 else if (("yearMonthDuration".equals(typeName1) && !("date".equals(typeName2) || "dateTime".equals(typeName2) || 
 				                                                                          "yearMonthDuration".equals(typeName2))) ||
 				  ("dayTimeDuration".equals(typeName1) && !("date".equals(typeName2) || "time".equals(typeName2) || 
 						                                                                "dateTime".equals(typeName2) || 
 						                                                                "dayTimeDuration".equals(typeName2)))) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema "
-                                                                                                                     + "types " + typeName1Actual + " and " + typeName2Actual + ".");
+			 throw new TransformerException("XPTY0004 : An XPath 3.1 operator '+' cannot add values of schema types " + typeName1Actual + " and " + typeName2Actual + ".");
 		 }
 		 
 		 List<XMLNSDecl> nsPrefixTable = null;	  
@@ -670,7 +707,7 @@ public class Plus extends XPathArithmeticUtil
 		 
 		 if (lNodeStr != null) {
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
-			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			  xpathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
 			  try {
 			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -688,7 +725,7 @@ public class Plus extends XPathArithmeticUtil
 
 		  if (rNodeStr != null) {
 			  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
-			  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+			  xpathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, nsPrefixTable);
 			  XPath xpathObj = null;
 			  try {
 			     xpathObj = new XPath(xpathStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1128,7 +1165,7 @@ public class Plus extends XPathArithmeticUtil
 		     result = new ResultSequence();
 		  }
 		  else {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : One or both of the operands of operator + are not numeric."); 
+			 throw new TransformerException("XPTY0004 : One or both of the operands of operator + are not numeric."); 
 		  }
 	  }
 	  catch (Exception ex) {

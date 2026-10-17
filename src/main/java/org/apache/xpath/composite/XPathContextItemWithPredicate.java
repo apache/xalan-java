@@ -75,7 +75,7 @@ public class XPathContextItemWithPredicate extends Expression {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (prefixTable != null) {
-        	m_xpathPredicateSuffixExpr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+        	m_xpathPredicateSuffixExpr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
         																								m_xpathPredicateSuffixExpr, prefixTable);
         }
         

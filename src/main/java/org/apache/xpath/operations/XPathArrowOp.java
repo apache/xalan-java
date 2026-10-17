@@ -617,7 +617,7 @@ public class XPathArrowOp extends XPathOperator
        List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
        
        if (prefixTable != null) {
-          arrowOpNextStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(arrowOpNextStr, prefixTable);
+          arrowOpNextStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(arrowOpNextStr, prefixTable);
        }
        
        XPath xpathObj = new XPath(arrowOpNextStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

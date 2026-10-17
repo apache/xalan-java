@@ -1067,7 +1067,7 @@ public class XSL3FunctionService {
     					String argXPathStr = xpathArgStrList.get(idx);
     					
     					if (prefixTable != null) {
-    						argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    						argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
     					}
 
     					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1103,7 +1103,7 @@ public class XSL3FunctionService {
     			String argXPathStr = xpathArgStrList.get(idx);
     			
     			if (prefixTable != null) {
-    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    				argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
     			}
 
     			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1153,7 +1153,7 @@ public class XSL3FunctionService {
     				String argXPathStr = xpathArgStrList.get(idx);
 
     				if (prefixTable != null) {
-    					argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    					argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
     				}
 
     				XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1467,7 +1467,7 @@ public class XSL3FunctionService {
     	String xpathInlineFnBodyStr = xpathInlineFunction.getFuncBodyXPathExprStr();
     	
     	if (prefixTable != null) {
-    	   xpathInlineFnBodyStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathInlineFnBodyStr, prefixTable);
+    	   xpathInlineFnBodyStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathInlineFnBodyStr, prefixTable);
  	    }
     	
     	XPath xpathObj = new XPath(xpathInlineFnBodyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1478,7 +1478,7 @@ public class XSL3FunctionService {
     		String arg1XPathStr = argList.get(0);
     		
     		if (prefixTable != null) {
-    			arg1XPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(arg1XPathStr, prefixTable);
+    			arg1XPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(arg1XPathStr, prefixTable);
     		}
     		
     		XPath argXPath = new XPath(arg1XPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1530,7 +1530,7 @@ public class XSL3FunctionService {
     			}
 
     			if (prefixTable != null) {
-    				argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, prefixTable);
+    				argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
     			}
 
     			XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -1592,7 +1592,7 @@ public class XSL3FunctionService {
     	inlineFunctionVarMap.putAll(functionParamAndArgMap);
 
     	if (prefixTable != null) {
-    		xpathInlineFnBodyStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathInlineFnBodyStr, prefixTable);
+    		xpathInlineFnBodyStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathInlineFnBodyStr, prefixTable);
     	}
 
     	XPath inlineFnXPath = new XPath(xpathInlineFnBodyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

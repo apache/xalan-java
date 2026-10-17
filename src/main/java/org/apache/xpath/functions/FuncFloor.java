@@ -102,6 +102,10 @@ public class FuncFloor extends FunctionDef1Arg
 			throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'floor' argument is not numeric.", srcLocator);
 		}
 		
+		if (arg0Obj instanceof XNumber) {
+		   arg0Obj = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)arg0Obj);
+		}
+		
 		if (arg0Obj instanceof XSFloat) {
 			XSFloat xsFloatArg = (XSFloat)arg0Obj;
 			

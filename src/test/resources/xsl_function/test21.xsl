@@ -5,7 +5,7 @@
 			    
   <!-- Author: mukulg@apache.org -->
     
-  <!-- An XSL stylesheet test case, to test an XSL element xsl:function.
+  <!-- An XSL stylesheet test case, to test an XSLT instruction xsl:function.
        Using a rudimentary maths problem for this use case.
   -->			    
   
@@ -15,20 +15,27 @@
      <xsl:copy-of select="fn0:triangleArea((1,3),(2,-5),(-8,4))"/>
   </xsl:template>
   
-  <!-- An XSL function definition, to find area of a triangle 
-       whose vertex co-ordinates are specified. -->
+  <!-- An XSL stylesheet function declaration, to get area of a triangle 
+       whose vertex co-ordinates are supplied to this function declaration. -->
   <xsl:function name="fn0:triangleArea" as="element(area)">
      <xsl:param name="p1" as="xs:integer*"/>
 	 <xsl:param name="p2" as="xs:integer*"/>
 	 <xsl:param name="p3" as="xs:integer*"/>
+	 
 	 <xsl:variable name="x1" select="$p1[1]" as="xs:integer"/>
 	 <xsl:variable name="y1" select="$p1[2]" as="xs:integer"/>
 	 <xsl:variable name="x2" select="$p2[1]" as="xs:integer"/>
 	 <xsl:variable name="y2" select="$p2[2]" as="xs:integer"/>
 	 <xsl:variable name="x3" select="$p3[1]" as="xs:integer"/>
 	 <xsl:variable name="y3" select="$p3[2]" as="xs:integer"/>
+	 
+	 <xsl:variable name="a" select="$x1 - $x3" as="xs:integer"/>
+	 <xsl:variable name="b" select="$y2 - $y3" as="xs:integer"/>
+	 <xsl:variable name="c" select="$x2 - $x3" as="xs:integer"/>
+	 <xsl:variable name="d" select="$y1 - $y3" as="xs:integer"/>
+	 
 	 <area>
-	   <xsl:value-of select="abs(0.5 * (($x1 - $x3)*($y2 - $y3) - ($x2 - $x3)*($y1 - $y3)))"/>
+	   <xsl:value-of select="abs(0.5 * (($a * $b) - ($c * $d)))"/>
 	 </area>	 
   </xsl:function>
   

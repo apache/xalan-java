@@ -114,9 +114,9 @@ public class XPathUnion extends Expression
       List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 	  
       if (prefixTable != null) {
-    	  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable); 
+    	  m_lstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_lstr, prefixTable); 
 
-    	  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+    	  m_rstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rstr, prefixTable);
       }
 	  
 	  int idx = m_lstr.lastIndexOf("/");
@@ -145,13 +145,13 @@ public class XPathUnion extends Expression
 		  XPath lxpath = null;
 
 		  if (isSuffixFuncPattern) {
-			  str1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str1, prefixTable);
+			  str1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str1, prefixTable);
 
 			  lxpath = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 			  
 		  }
 		  else {
-			  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable);
+			  m_lstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_lstr, prefixTable);
 
 			  lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			  
 		  }
@@ -169,7 +169,7 @@ public class XPathUnion extends Expression
 				  
 				  int nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-					 str2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str2, prefixTable);
+					 str2 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str2, prefixTable);
 					 str2 = str2.replaceAll("\\s*", "");
 					 
 					 XPath xpath_a = new XPath(str2, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -227,12 +227,12 @@ public class XPathUnion extends Expression
 		  XPath rxpath = null;
 
 		  if (isSuffixFuncPattern) {
-			  str3 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str3, prefixTable);
+			  str3 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str3, prefixTable);
 
 			  rxpath = new XPath(str3, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			  
 		  }
 		  else {
-			  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+			  m_rstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rstr, prefixTable);
 			  
 			  rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			   
 		  }
@@ -250,7 +250,7 @@ public class XPathUnion extends Expression
 				  
 				  int nextNode = DTM.NULL;
 				  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-					 str4 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str4, prefixTable);
+					 str4 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str4, prefixTable);
 					 str4 = str4.replaceAll("\\s*", "");
 					 
 					 XPath xpath_a = new XPath(str4, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -296,7 +296,7 @@ public class XPathUnion extends Expression
 		  		  
 		  m_lstr = m_lstr.replaceAll("\\s*", "");
 		  
-		  m_lstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_lstr, prefixTable);
+		  m_lstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_lstr, prefixTable);
 
 		  XPath lxpath = new XPath(m_lstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);		  
 		  
@@ -329,12 +329,12 @@ public class XPathUnion extends Expression
 			  XPath rxpath = null;
 
 			  if (isSuffixFuncPattern) {
-				  str1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str1, prefixTable);
+				  str1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str1, prefixTable);
 
 				  rxpath = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);				  
 			  }
 			  else {
-				  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+				  m_rstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rstr, prefixTable);
 
 				  rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);				    
 			  }
@@ -352,7 +352,7 @@ public class XPathUnion extends Expression
 					  
 					  nextNode = DTM.NULL;
 					  while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
-						 str2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str2, prefixTable);
+						 str2 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str2, prefixTable);
 						 str2 = str2.replaceAll("\\s*", "");
 						 
 						 XPath xpath_a = new XPath(str2, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -393,7 +393,7 @@ public class XPathUnion extends Expression
 		  else if (idx2 == 0) {
 			  m_rstr = m_rstr.replaceAll("\\s*", "");
 			  
-			  m_rstr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rstr, prefixTable);
+			  m_rstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rstr, prefixTable);
 			  
 			  XPath rxpath = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);			  
 			  

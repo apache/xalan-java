@@ -36,7 +36,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3FunctionStringTests.class, XPath3FnSumTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
+@SuiteClasses({ XPath3FnAdjustTimeToTimezoneTests.class, XPath3FunctionStringTests.class, XPath3FnSumTests.class,
 	            XPath3FnTokenizeTests.class, XPath3FnSubsequenceTests.class, XPath3FnMapGetTests.class, XPath3FnBaseUriTests.class })
 public class W3CXPath3Tests3 {
 

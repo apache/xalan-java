@@ -113,7 +113,7 @@ public class XPathInlineFunction extends XObject {
     	List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
     	
     	if (prefixTable != null) {
-    	   m_funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_funcBodyXPathExprStr, prefixTable);
+    	   m_funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_funcBodyXPathExprStr, prefixTable);
   	    }
     	
     	Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
@@ -149,7 +149,7 @@ public class XPathInlineFunction extends XObject {
 				xctxt.setXPath3ContextItem(xpathInlineFunction);
 				
 				if (prefixTable != null) {
-				    m_xpath_predicate_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpath_predicate_str, prefixTable);
+				    m_xpath_predicate_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpath_predicate_str, prefixTable);
 			  	}
 				
 				XPath xpathObj1 = new XPath(m_xpath_predicate_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -256,7 +256,7 @@ public class XPathInlineFunction extends XObject {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 		
 		if (prefixTable != null) {
-			m_func_arg_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_func_arg_str, prefixTable);
+			m_func_arg_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_func_arg_str, prefixTable);
 		}
 		
 		XPath xpathObj1 = new XPath(m_func_arg_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -287,7 +287,7 @@ public class XPathInlineFunction extends XObject {
 		}			
 		
 		if (prefixTable != null) {
-			m_funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_funcBodyXPathExprStr, prefixTable);
+			m_funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_funcBodyXPathExprStr, prefixTable);
 		}
 
 		XPath xpathObj = new XPath(m_funcBodyXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

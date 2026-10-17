@@ -127,7 +127,7 @@ public class XPathIfExpr extends Expression {
     	   }              
 
     	   if (prefixTable != null) {
-    		   m_ifBranchConditionXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+    		   m_ifBranchConditionXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
     				   																					m_ifBranchConditionXPathStr, prefixTable);
     	   }
 
@@ -250,7 +250,7 @@ public class XPathIfExpr extends Expression {
 
     	   if ((ifConditionEagerCheck && ifConditionEvalResult) || (!ifConditionEagerCheck && ifConditionXPathResult.bool())) {
     		   if (prefixTable != null) {
-    			   m_thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_thenExprXPathStr, prefixTable);
+    			   m_thenExprXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_thenExprXPathStr, prefixTable);
     		   }
 
     		   XPath thenExprXPath = null;
@@ -287,7 +287,7 @@ public class XPathIfExpr extends Expression {
     	   }
     	   else if ((ifConditionEagerCheck && !ifConditionEvalResult) || (!ifConditionEagerCheck && !ifConditionXPathResult.bool())) {
     		   if (prefixTable != null) {
-    			   m_elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_elseExprXPathStr, prefixTable);
+    			   m_elseExprXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_elseExprXPathStr, prefixTable);
     		   }
 
     		   XPath elseExprXPath = null;

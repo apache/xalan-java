@@ -884,7 +884,7 @@ public class ElemValueOf extends ElemTemplateElement {
                            
                            // Evaluate the, variable reference XPath expression
                            if (prefixTable != null) {
-                              varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                              varRefXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                                              varRefXPathExprStr, 
                                                                                                              prefixTable);
                            }
@@ -899,7 +899,7 @@ public class ElemValueOf extends ElemTemplateElement {
                            
                            // Evaluate the, xdm sequence index XPath expression
                            if (prefixTable != null) {
-                              xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                              xpathIndexExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                                               xpathIndexExprStr, 
                                                                                                               prefixTable);
                            }
@@ -982,7 +982,7 @@ public class ElemValueOf extends ElemTemplateElement {
                         	   }
 
                         	   if (prefixTable != null) {
-                        		   prefix1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(prefix1, prefixTable);
+                        		   prefix1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(prefix1, prefixTable);
                         	   }
 
                         	   XPath xpathObj = new XPath(prefix1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

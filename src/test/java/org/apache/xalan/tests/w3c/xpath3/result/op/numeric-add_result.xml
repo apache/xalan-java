@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:20:48Z" fail="8" name="op-numeric-add" pass="123" run="131" skipped="11" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-17T16:31:50Z" fail="1" name="op-numeric-add" pass="130" run="131" skipped="11" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-addint2args-1"/>
    <testResult status="pass" testName="op-numeric-addint2args-2"/>
    <testResult status="pass" testName="op-numeric-addint2args-3"/>
@@ -96,12 +96,12 @@
    <testResult status="pass" testName="K-NumericAdd-31"/>
    <testResult status="pass" testName="K-NumericAdd-32"/>
    <testResult status="pass" testName="K-NumericAdd-33"/>
-   <testResult status="fail" testName="K-NumericAdd-34"/>
+   <testResult status="pass" testName="K-NumericAdd-34"/>
    <testResult status="pass" testName="K-NumericAdd-35"/>
-   <testResult status="fail" testName="K-NumericAdd-36"/>
-   <testResult status="fail" testName="K-NumericAdd-37"/>
-   <testResult status="fail" testName="K-NumericAdd-38"/>
-   <testResult status="fail" testName="K-NumericAdd-39"/>
+   <testResult status="pass" testName="K-NumericAdd-36"/>
+   <testResult status="pass" testName="K-NumericAdd-37"/>
+   <testResult status="pass" testName="K-NumericAdd-38"/>
+   <testResult status="pass" testName="K-NumericAdd-39"/>
    <testResult status="fail" testName="K-NumericAdd-40"/>
    <testResult status="pass" testName="K-NumericAdd-41"/>
    <testResult status="pass" testName="K-NumericAdd-42"/>
@@ -112,7 +112,7 @@
    <testResult status="pass" testName="K-NumericAdd-47"/>
    <testResult status="pass" testName="K-NumericAdd-48"/>
    <testResult status="pass" testName="K-NumericAdd-49"/>
-   <testResult status="fail" testName="K-NumericAdd-50"/>
+   <testResult status="pass" testName="K-NumericAdd-50"/>
    <testResult status="pass" testName="K-NumericAdd-51"/>
    <testResult status="pass" testName="K-NumericAdd-52"/>
    <testResult status="pass" testName="K-NumericAdd-53"/>
@@ -129,7 +129,7 @@
    <testResult status="pass" testName="K-NumericAdd-64"/>
    <testResult status="pass" testName="K-NumericAdd-65"/>
    <testResult status="pass" testName="K-NumericAdd-66"/>
-   <testResult status="fail" testName="K2-NumericAdd-1"/>
+   <testResult status="pass" testName="K2-NumericAdd-1"/>
    <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-2"/>
    <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-3"/>
    <testResult reason="schemaValidation" status="skipped" testName="op-numeric-add-4"/>

@@ -90,7 +90,7 @@ public class XPathArrayConstructor extends Expression {
            String xpathExprStr = m_arrayConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
-              xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+              xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
            }
            
            XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -127,7 +127,7 @@ public class XPathArrayConstructor extends Expression {
                    String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, xpathExprStr.indexOf(']'));
                    
                    if (prefixTable != null) {
-                      varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(varRefXPathExprStr, 
+                      varRefXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varRefXPathExprStr, 
                     		   																								  prefixTable);
                    }
                    
@@ -138,7 +138,7 @@ public class XPathArrayConstructor extends Expression {
                    // Evaluate an, xdm sequence XPath index expression
                    
                    if (prefixTable != null) {
-                      xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathIndexExprStr, prefixTable);
+                      xpathIndexExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathIndexExprStr, prefixTable);
                    }
                    
                    XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

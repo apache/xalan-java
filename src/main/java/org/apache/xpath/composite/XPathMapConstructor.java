@@ -118,7 +118,7 @@ public class XPathMapConstructor extends Expression {
            String xpathValueStr = mapEntry.getValue();
            
            if (prefixTable != null) {
-        	  xpathKeyStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathKeyStr, 
+        	  xpathKeyStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathKeyStr, 
                                                                                                       prefixTable);        	  
            }
            
@@ -138,7 +138,7 @@ public class XPathMapConstructor extends Expression {
            }
            
            if (prefixTable != null) {
-        	  xpathValueStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathValueStr, 
+        	  xpathValueStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathValueStr, 
                                                                                                        prefixTable);        	  
            }
            
@@ -368,7 +368,7 @@ public class XPathMapConstructor extends Expression {
 
 		XObject result = null;
 
-		xpathFuncExprString = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathFuncExprString, prefixTable);
+		xpathFuncExprString = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathFuncExprString, prefixTable);
 
 		org.apache.xpath.compiler.Compiler.m_verify_func_arg_count = false;        	
 		XPath xpathObj = new XPath(xpathFuncExprString, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);        	

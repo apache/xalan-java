@@ -97,9 +97,9 @@ public class XPathSequenceBinaryOp extends Expression {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
 		if (prefixTable != null) {
-			m_leftStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_leftStr, prefixTable);
+			m_leftStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_leftStr, prefixTable);
 			
-			m_rightStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rightStr, prefixTable);
+			m_rightStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rightStr, prefixTable);
 		}
 
 		XPath lXPath = new XPath(m_leftStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

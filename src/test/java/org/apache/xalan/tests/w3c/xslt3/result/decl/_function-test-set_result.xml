@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-27T11:27:27Z" fail="11" name="function" pass="76" run="87" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-17T16:28:35Z" fail="9" name="function" pass="78" run="87" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="function-0001"/>
    <testResult status="pass" testName="function-0002"/>
    <testResult status="pass" testName="function-0003"/>
@@ -26,12 +26,7 @@
    <testResult status="skipped" testName="function-0120a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="function-0120b"/>
    <testResult status="pass" testName="function-0121"/>
-   <testResult status="fail" testName="function-0122">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XTSE0080 : An XSL stylesheet function name {http://www.w3.org/2005/xqt-errors}count-elements uses an reserved namespace 'http://www.w3.org/2005/xqt-errors'.
-javax.xml.transform.TransformerException: XTSE0080 : An XSL stylesheet function name {http://www.w3.org/2005/xqt-errors}count-elements uses an reserved namespace 'http://www.w3.org/2005/xqt-errors'.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="function-0122"/>
    <testResult status="pass" testName="function-0201"/>
    <testResult status="pass" testName="function-0202"/>
    <testResult status="pass" testName="function-0203"/>
@@ -54,13 +49,13 @@ javax.xml.transform.TransformerException: XTSE0080 : An XSL stylesheet function 
    <testResult status="pass" testName="function-1002"/>
    <testResult status="pass" testName="function-1003"/>
    <testResult status="pass" testName="function-1004"/>
-   <testResult status="fail" testName="function-1005"/>
+   <testResult status="pass" testName="function-1005"/>
    <testResult status="fail" testName="function-1007"/>
    <testResult status="fail" testName="function-1009"/>
    <testResult status="pass" testName="function-1011"/>
    <testResult status="pass" testName="function-1012"/>
    <testResult status="pass" testName="function-1013"/>
-   <testResult reason="Xalan configured" status="skipped" testName="function-1014"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="function-1014"/>
    <testResult status="pass" testName="function-1015"/>
    <testResult status="pass" testName="function-1016"/>
    <testResult status="pass" testName="function-1017"/>

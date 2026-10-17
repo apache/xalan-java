@@ -254,7 +254,7 @@ public class InstanceOf extends XPathOperator
     		if (list1.size() == 1) {    		   
     		   java.lang.String xpathExprStr = list1.get(0);    		   
     		   
-    		   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, nsPrefixTable);
+    		   xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, nsPrefixTable);
     		   
     		   XPath xpathObj = null;
     		   XObject xObj = null;
@@ -276,7 +276,7 @@ public class InstanceOf extends XPathOperator
     		   
     		   sequenceTypeMapTest.setKeySequenceTypeData(xpathSeqTypeData1);
     		   
-    		   funcReturnTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcReturnTypeStr, nsPrefixTable);
+    		   funcReturnTypeStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(funcReturnTypeStr, nsPrefixTable);
     		   
     		   if (isRawXPathCtxt) {
      		      xpathObj = new XPath(funcReturnTypeStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);

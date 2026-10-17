@@ -216,7 +216,7 @@ public class FuncFunctionLookup extends Function2Args {
 				
 				List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);				
 				if (prefixTable != null) {
-					xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr1, prefixTable); 
+					xpathStr1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr1, prefixTable); 
 				}
 
 				XPath xpathObj = new XPath(xpathStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

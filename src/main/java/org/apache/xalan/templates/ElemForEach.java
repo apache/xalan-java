@@ -729,7 +729,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                     
                // Evaluate the, variable reference XPath expression
                if (prefixTable != null) {
-                  varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                  varRefXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                                    varRefXPathExprStr, 
                                                                                                    prefixTable);
                }
@@ -747,7 +747,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                     
                // Evaluate an, xdm sequence index XPath expression
                if (prefixTable != null) {
-                  xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                  xpathIndexExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                                   xpathIndexExprStr, 
                                                                                                   prefixTable);
                }

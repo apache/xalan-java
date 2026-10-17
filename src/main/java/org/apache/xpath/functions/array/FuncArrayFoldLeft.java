@@ -116,7 +116,7 @@ public class FuncArrayFoldLeft extends Function3Args {
            List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
               
            if (prefixTable != null) {
-              inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+              inlineFnXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                             inlineFnXPathStr, prefixTable);
            }
               

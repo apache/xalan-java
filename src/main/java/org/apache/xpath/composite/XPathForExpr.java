@@ -91,7 +91,7 @@ public class XPathForExpr extends Expression {
     		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
     		if (prefixTable != null) {
-    			m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_returnExprXPathStr, 
+    			m_returnExprXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_returnExprXPathStr, 
     																													prefixTable);
     		}
 
@@ -169,7 +169,7 @@ public class XPathForExpr extends Expression {
            String varBindingXPathStr = forExprVarBinding.getXPathExprStr();
            
            if (prefixTable != null) {
-              varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+              varBindingXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                             varBindingXPathStr, prefixTable);
            }                     
            

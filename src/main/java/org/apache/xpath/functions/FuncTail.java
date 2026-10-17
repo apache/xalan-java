@@ -16,12 +16,18 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Variable;
 
 /**
  * Implementation of an XPath 3.1 function fn:tail.
@@ -54,20 +60,24 @@ public class FuncTail extends FunctionOneArg {
         
         ResultSequence result = new ResultSequence();
         
-        XObject xObject0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
         
-        if (xObject0 instanceof XMLNodeCursorImpl) {
-           XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject0;
+        if (xObj0 instanceof XMLNodeCursorImpl) {
+           XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj0;
            
-           DTMCursorIterator dtmIter = nodeSet.iterRaw();
+           DTMCursorIterator dtmIter = xmlNodeCursorImpl.iter();
            int nextNode = dtmIter.nextNode();
+           
+           List<Integer> nodeHandleList = new ArrayList<Integer>();
+           
            while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
-              XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
-              result.add(xdmNode);
+        	 nodeHandleList.add(nextNode);
            }
+           
+           return new XMLNodeCursorImpl(nodeHandleList, xctxt); 
         }
-        else if (xObject0 instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)xObject0;
+        else if (xObj0 instanceof ResultSequence) {
+           ResultSequence resultSeq = (ResultSequence)xObj0;
            int size1 = resultSeq.size();
            for (int idx = 1; idx < size1; idx++) {
               result.add(resultSeq.item(idx)); 

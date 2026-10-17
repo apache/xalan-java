@@ -2447,7 +2447,7 @@ public class ElemTemplateElement extends UnImplNode
 			  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt); 
 
 			  if (prefixTable != null) {
-				  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+				  xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
 			  }
 
 			  ElemTemplateElement elemTemplateElem =  getParentElem();
@@ -2514,7 +2514,7 @@ public class ElemTemplateElement extends UnImplNode
 		  while (idx1 > -1) {
 			  if ((xpathExprStr != null) && !"".equals(xpathExprStr.trim())) {
 				  if (prefixTable != null) {
-					  xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+					  xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
 				  }
 				  
 				  String str2 = null;

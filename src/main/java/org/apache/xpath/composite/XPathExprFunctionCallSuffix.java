@@ -80,7 +80,7 @@ public class XPathExprFunctionCallSuffix extends Expression {
     	List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (prefixTable != null) {
-        	m_xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathExprStr, 
+        	m_xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathExprStr, 
                                                                                                 prefixTable);
         }
         

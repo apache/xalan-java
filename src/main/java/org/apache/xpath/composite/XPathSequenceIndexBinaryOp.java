@@ -96,15 +96,15 @@ public class XPathSequenceIndexBinaryOp extends Expression {
 
 		if (prefixTable != null) {
 			if (m_leftStr != null) {
-			   m_leftStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_leftStr, prefixTable);
+			   m_leftStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_leftStr, prefixTable);
 			}
 			
 			if (m_rightStr != null) {
-			   m_rightStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_rightStr, prefixTable);
+			   m_rightStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rightStr, prefixTable);
 			}
 			
 			if (m_xpath_complete_str != null) {
-			   m_xpath_complete_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpath_complete_str, prefixTable);
+			   m_xpath_complete_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpath_complete_str, prefixTable);
 			}
 		}
 		

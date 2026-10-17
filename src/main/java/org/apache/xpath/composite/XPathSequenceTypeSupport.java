@@ -1510,7 +1510,7 @@ public class XPathSequenceTypeSupport {
             		    for (int idx = 0; idx < funcExpectedParamCount; idx++) {
             		       String expectedParamTypeStr = functionExpectedParamTypes.get(idx);
             		       if (m_PrefixTable != null) {
-            		    	  expectedParamTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+            		    	  expectedParamTypeStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
             		    			                                                                 expectedParamTypeStr, m_PrefixTable);  
             		       }
             		       
@@ -1533,7 +1533,7 @@ public class XPathSequenceTypeSupport {
             		 String functionReturnTypeStr = sequenceTypeFunctionTest.getTypedFunctionTestReturnType();
             		 
             		 if (m_PrefixTable != null) {
-            			functionReturnTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+            			functionReturnTypeStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
        		    	    		                                                                     functionReturnTypeStr, m_PrefixTable);  
        		         }
             		 

@@ -360,7 +360,10 @@ public class Compiler extends XPathOpMap
       break;      
     case OpCodes.XPath3OpCodes.OP_LITERAL_WITH_PREDICATE:
       expr = XPathParser.m_xpathLiteralWithPredicate;
-      break;	
+      break;
+    case OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR:
+        expr = XPathParser.m_xpathIdentityExpr;
+        break;  
     case OpCodes.OP_QUO:
       if (!m_xpath_ignore_compile_err) {
          error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });
@@ -426,8 +429,8 @@ public class Compiler extends XPathOpMap
 			  			  
 			  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 
-			  lStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(lStr, prefixTable);
-			  rStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(rStr, prefixTable);
+			  lStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(lStr, prefixTable);
+			  rStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(rStr, prefixTable);
 
 			  XPath xpathObj1 = null;
 			  XPath xpathObj2 = null;
@@ -504,8 +507,8 @@ public class Compiler extends XPathOpMap
 			  			  
 			  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 
-			  str1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str1, prefixTable);
-			  str2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(str2, prefixTable);
+			  str1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str1, prefixTable);
+			  str2 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(str2, prefixTable);
 
 			  XPath xpathObj1 = null;
 
@@ -543,8 +546,8 @@ public class Compiler extends XPathOpMap
 				  xpathStr1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(xpathStr1);
 				  xpathStr2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(xpathStr2);
 
-				  xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr1, prefixTable);
-				  xpathStr2 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr2, prefixTable);
+				  xpathStr1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr1, prefixTable);
+				  xpathStr2 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr2, prefixTable);
 
 				  try {
 					  XPath xpathObj_1 = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
@@ -2650,7 +2653,7 @@ private static final boolean DEBUG = false;
 	  
 	  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 	  
-	  String xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+	  String xpathStr1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, prefixTable);
 
 	  XPath xpathObj = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
 	  
@@ -2686,7 +2689,7 @@ private static final boolean DEBUG = false;
 	  
 	  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 	  
-	  String xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+	  String xpathStr1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, prefixTable);
 
 	  XPath xpathObj = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
 	  
@@ -2721,7 +2724,7 @@ private static final boolean DEBUG = false;
 
 	  List<XMLNSDecl> prefixTable = getDefaultXmlNsPrefixTable();
 
-	  String xpathStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, prefixTable);
+	  String xpathStr1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, prefixTable);
 
 	  XPath xpathObj = new XPath(xpathStr1, null, getXMLNsPrefixResolver(), XPath.SELECT, null);
 

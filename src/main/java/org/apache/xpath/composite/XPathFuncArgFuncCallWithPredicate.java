@@ -89,7 +89,7 @@ public class XPathFuncArgFuncCallWithPredicate extends Expression {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
 		if (prefixTable != null) {
-			m_func_call_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_func_call_str, prefixTable);
+			m_func_call_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_func_call_str, prefixTable);
 		}
 		
 		XObject xObj1 = null;
@@ -162,7 +162,7 @@ public class XPathFuncArgFuncCallWithPredicate extends Expression {
 		}
 		
 		if (prefixTable != null) {
-			m_predicate_expr_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_predicate_expr_str, prefixTable);
+			m_predicate_expr_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_predicate_expr_str, prefixTable);
 		}
 		
         XPath predicateXPath = new XPath(m_predicate_expr_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

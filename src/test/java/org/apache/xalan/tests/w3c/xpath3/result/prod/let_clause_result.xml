@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-25T15:58:48Z" fail="3" name="prod-LetClause" pass="20" run="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-17T16:31:48Z" fail="1" name="prod-LetClause" pass="22" run="23" statusUnknown="0">
    <testResult status="pass" testName="LetExpr001"/>
    <testResult status="pass" testName="LetExpr002"/>
    <testResult status="pass" testName="LetExpr003"/>
@@ -6,7 +6,7 @@
    <testResult status="pass" testName="LetExpr005"/>
    <testResult status="pass" testName="LetExpr006"/>
    <testResult status="pass" testName="LetExpr008"/>
-   <testResult status="fail" testName="LetExpr010"/>
+   <testResult status="pass" testName="LetExpr010"/>
    <testResult status="pass" testName="LetExpr011"/>
    <testResult status="pass" testName="LetExpr012"/>
    <testResult status="pass" testName="LetExpr013"/>
@@ -17,7 +17,7 @@
    <testResult status="fail" testName="K-LetExprWithout-1"/>
    <testResult status="pass" testName="K-LetExprWithout-2"/>
    <testResult status="pass" testName="K-LetExprWithout-3"/>
-   <testResult status="fail" testName="K2-LetExprWithout-8"/>
+   <testResult status="pass" testName="K2-LetExprWithout-8"/>
    <testResult status="pass" testName="K2-LetExprWithout-19"/>
    <testResult status="pass" testName="K2-LetExprWithout-25"/>
    <testResult status="pass" testName="xquery10keywords2"/>

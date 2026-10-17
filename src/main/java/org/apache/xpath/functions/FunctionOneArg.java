@@ -28,6 +28,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
@@ -206,7 +207,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
 	  }
 	  else {  
 		  result = argExpr.execute(xctxt);
-	  }	  	  
+	  }
 	  
 	  return result;
   }

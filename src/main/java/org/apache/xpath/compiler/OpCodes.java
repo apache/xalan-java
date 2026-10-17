@@ -809,8 +809,10 @@ public class OpCodes
 	  
 	  public static final int OP_LITERAL_WITH_PREDICATE = 143;
 	  
+	  public static final int OP_XPATH_IDENTITY_EXPR = 144;
+	  
 	  /** XPath op code's next free id. Please keep this up to date. */
-	  private static final int NEXT_FREE_ID = 144;
+	  private static final int NEXT_FREE_ID = 145;
   }
 
   /** XPath op code's next free id. Please keep this up to date. */

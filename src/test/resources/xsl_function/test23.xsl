@@ -17,18 +17,25 @@
     <xsl:copy-of select="fn0:triangleArea(json-to-xml(unparsed-text('info1.json')))"/>
   </xsl:template>
   
-  <!-- An XSL function definition, to find area of a triangle 
-       whose vertex co-ordinates are specified. -->
+  <!-- An XSL stylesheet function declaration, to get area of a triangle 
+       whose vertex co-ordinates are supplied to this function declaration. -->
   <xsl:function name="fn0:triangleArea" as="element(area)">
      <xsl:param name="var1" as="document-node()"/>
+	 
 	 <xsl:variable name="x1" select="$var1/fn:array/fn:map[1]/fn:number[@key eq 'x']" as="xs:integer"/>
 	 <xsl:variable name="y1" select="$var1/fn:array/fn:map[1]/fn:number[@key eq 'y']" as="xs:integer"/>
 	 <xsl:variable name="x2" select="$var1/fn:array/fn:map[2]/fn:number[@key eq 'x']" as="xs:integer"/>
 	 <xsl:variable name="y2" select="$var1/fn:array/fn:map[2]/fn:number[@key eq 'y']" as="xs:integer"/>
 	 <xsl:variable name="x3" select="$var1/fn:array/fn:map[3]/fn:number[@key eq 'x']" as="xs:integer"/>
-	 <xsl:variable name="y3" select="$var1/fn:array/fn:map[3]/fn:number[@key eq 'y']" as="xs:integer"/>	 	 
+	 <xsl:variable name="y3" select="$var1/fn:array/fn:map[3]/fn:number[@key eq 'y']" as="xs:integer"/>	
+	  	 
+	 <xsl:variable name="a" select="$x1 - $x3" as="xs:integer"/>
+	 <xsl:variable name="b" select="$y2 - $y3" as="xs:integer"/>
+	 <xsl:variable name="c" select="$x2 - $x3" as="xs:integer"/>
+	 <xsl:variable name="d" select="$y1 - $y3" as="xs:integer"/>
+	 
 	 <area>
-	   <xsl:value-of select="abs(0.5 * (($x1 - $x3)*($y2 - $y3) - ($x2 - $x3)*($y1 - $y3)))"/>
+	   <xsl:value-of select="abs(0.5 * (($a * $b) - ($c * $d)))"/>
 	 </area>
   </xsl:function>
   

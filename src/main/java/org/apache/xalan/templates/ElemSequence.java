@@ -793,7 +793,7 @@ public class ElemSequence extends ElemTemplateElement
 
 						  // Evaluate the, variable reference XPath expression
 						  if (prefixTable != null) {
-							  varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(varRefXPathExprStr, prefixTable);
+							  varRefXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varRefXPathExprStr, prefixTable);
 						  }                                      
 
 						  XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -805,7 +805,7 @@ public class ElemSequence extends ElemTemplateElement
 
 						  // Evaluate the, xdm sequence index XPath expression
 						  if (prefixTable != null) {
-							  xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathIndexExprStr, prefixTable);
+							  xpathIndexExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathIndexExprStr, prefixTable);
 						  }
 
 						  XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

@@ -90,7 +90,7 @@ public class XPathArrayComparison extends Expression {
         for (int idx = 0; idx < m_arrayConstructorXPathLhs.size(); idx++) {
         	String xpathExprStr = m_arrayConstructorXPathLhs.get(idx);        	
         	if (prefixTable != null) {
-        	   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+        	   xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
     		}
         	
         	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -106,7 +106,7 @@ public class XPathArrayComparison extends Expression {
         for (int idx = 0; idx < m_seqArrConstructorXPathRhs.size(); idx++) {
         	String xpathExprStr = m_seqArrConstructorXPathRhs.get(idx);        	
         	if (prefixTable != null) {
-        	   xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+        	   xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
     		}
         	
         	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

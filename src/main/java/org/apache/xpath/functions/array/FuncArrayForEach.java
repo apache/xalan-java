@@ -476,7 +476,7 @@ public class FuncArrayForEach extends Function2Args {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (prefixTable != null) {
-           funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+           funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
         		                                                                                funcBodyXPathExprStr, prefixTable);
         }
         

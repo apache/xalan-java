@@ -695,7 +695,7 @@ public class VcEquals extends XPathRelationalOp
 
 	  if (lNodeStr != null) {
 		  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName1 + "('" + lNodeStr + "')");
-		  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+		  xpathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, nsPrefixTable);
 		  XPath xpathObj = null;
 		  
 		  try {
@@ -714,7 +714,7 @@ public class VcEquals extends XPathRelationalOp
 
 	  if (rNodeStr != null) {
 		  java.lang.String xpathStr = (XMLConstants.W3C_XML_SCHEMA_NS_URI + ":" + typeName2 + "('" + rNodeStr + "')");
-		  xpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathStr, nsPrefixTable);
+		  xpathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathStr, nsPrefixTable);
 		  XPath xpathObj = null;
 		  
 		  try {

@@ -135,7 +135,7 @@ public class FuncArraySort extends FunctionMultiArgs
                  String sortKeyXPathStr = arg2InlineFunc.getFuncBodyXPathExprStr();
                  
                  if (prefixTable != null) {
-                     sortKeyXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(sortKeyXPathStr, 
+                     sortKeyXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(sortKeyXPathStr, 
                                                                                                          prefixTable);
                  }
                  

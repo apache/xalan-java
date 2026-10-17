@@ -71,7 +71,7 @@ public class XPathLiteralWithPredicate extends Expression {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 		
 		if (prefixTable != null) {
-		   m_predicate_xpath_str = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_predicate_xpath_str, prefixTable);
+		   m_predicate_xpath_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_predicate_xpath_str, prefixTable);
 		}
 		
 		XPath predicateXPathObj = new XPath(m_predicate_xpath_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

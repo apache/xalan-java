@@ -1207,7 +1207,7 @@ public class XPath implements Serializable, ExpressionOwner
 	  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
 	  if (prefixTable != null) {
-		  xpathExprPrefixStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprPrefixStr, prefixTable);
+		  xpathExprPrefixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprPrefixStr, prefixTable);
 	  }
 
 	  XPath xpathObj = new XPath(xpathExprPrefixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);            
@@ -1228,7 +1228,7 @@ public class XPath implements Serializable, ExpressionOwner
 	  }
 
 	  if (prefixTable != null) {
-		  xpathExprPredicateStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprPredicateStr, prefixTable);
+		  xpathExprPredicateStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprPredicateStr, prefixTable);
 	  }
 
 	  xpathObj = new XPath(xpathExprPredicateStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

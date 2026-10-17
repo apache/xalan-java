@@ -124,53 +124,63 @@ public class FuncEndsWith extends XSL3StringCollationAwareFunction
 	        
 	  XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
 	    
-	  if ((arg0StrValue != null) && (arg1StrValue != null)) {	    	
-		  if (numOfArgs == 2) {
-			  result = arg0StrValue.endsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-		  }
-		  else if (collationUri != null) {
-			  result = XBoolean.S_FALSE;
-			  
-			  int str0Length = arg0StrValue.length();
-			  for (int idx = 0; idx < str0Length; idx++) {
-				  String str0Suffix = arg0StrValue.substring(str0Length - (idx + 1), str0Length);
-				  int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Suffix, arg1StrValue, collationUri);
-				  if (comparisonResult == 0) {
-					  result = XBoolean.S_TRUE;
-					  
-					  break;
-				  }        			 
-			  } 	
+	  if ((arg0StrValue != null) && (arg1StrValue != null)) {
+		  if (!"".equals(arg1StrValue)) {
+			  if (numOfArgs == 2) {
+				  result = arg0StrValue.endsWith(arg1StrValue) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+			  }
+			  else if (collationUri != null) {
+				  result = XBoolean.S_FALSE;
+
+				  int str0Length = arg0StrValue.length();
+				  for (int idx = 0; idx < str0Length; idx++) {
+					  String str0Suffix = arg0StrValue.substring(str0Length - (idx + 1), str0Length);
+					  int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(str0Suffix, arg1StrValue, collationUri);
+					  if (comparisonResult == 0) {
+						  result = XBoolean.S_TRUE;
+
+						  break;
+					  }        			 
+				  } 	
+			  }
+			  else {
+				  String xpathInlineFuncExprStr = "function($collation) { ends-with('" + arg0StrValue + "', '" + arg1StrValue + "', $collation) }";
+
+				  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+				  result = xpathObj.execute(xctxt, DTM.NULL, null);
+			  } 
 		  }
 		  else {
-			  String xpathInlineFuncExprStr = "function($collation) { ends-with('" + arg0StrValue + "', '" + arg1StrValue + "', $collation) }";
-
-			  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-
-			  result = xpathObj.execute(xctxt, DTM.NULL, null);
+			  result = XBoolean.S_TRUE; 
 		  }
 	  }
 	  else if ((arg0StrValue == null) && (arg1StrValue != null)) {
-		  if (numOfArgs == 2) {
-			  String xpathInlineFuncExprStr = "function($arg0) { ends-with($arg0, '" + arg1StrValue + "') }";
+		  if (!"".equals(arg1StrValue)) {
+			  if (numOfArgs == 2) {
+				  String xpathInlineFuncExprStr = "function($arg0) { ends-with($arg0, '" + arg1StrValue + "') }";
 
-			  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
-			  result = xpathObj.execute(xctxt, DTM.NULL, null);
-		  }
-		  else if (collationUri != null) {
-			  String xpathInlineFuncExprStr = "function($arg0) { ends-with($arg0, '" + arg1StrValue + "', '" + collationUri + "') }";
+				  result = xpathObj.execute(xctxt, DTM.NULL, null);
+			  }
+			  else if (collationUri != null) {
+				  String xpathInlineFuncExprStr = "function($arg0) { ends-with($arg0, '" + arg1StrValue + "', '" + collationUri + "') }";
 
-			  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+				  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
-			  result = xpathObj.execute(xctxt, DTM.NULL, null);
+				  result = xpathObj.execute(xctxt, DTM.NULL, null);
+			  }
+			  else {
+				  String xpathInlineFuncExprStr = "function($arg0, $collation) { ends-with($arg0, '" + arg1StrValue + "', $collation) }";
+
+				  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+				  result = xpathObj.execute(xctxt, DTM.NULL, null);
+			  }
 		  }
 		  else {
-			  String xpathInlineFuncExprStr = "function($arg0, $collation) { ends-with($arg0, '" + arg1StrValue + "', $collation) }";
-
-			  XPath xpathObj = new XPath(xpathInlineFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-
-			  result = xpathObj.execute(xctxt, DTM.NULL, null);
+			  result = XBoolean.S_TRUE; 
 		  }
 	  }
 	  else if ((arg0StrValue != null) && (arg1StrValue == null)) {
@@ -231,14 +241,7 @@ public class FuncEndsWith extends XSL3StringCollationAwareFunction
    * @throws WrongNumberArgsException
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-	  /*if (!(argNum > 1 && argNum <= 3)) {
-		  reportWrongNumberArgs();
-	  }
-	  else {
-		  numOfArgs = argNum;   
-	  }*/
-	  
+  {	  	  
 	  numOfArgs = argNum;
   }
   

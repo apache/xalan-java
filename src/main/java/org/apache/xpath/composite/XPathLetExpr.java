@@ -108,7 +108,7 @@ public class XPathLetExpr extends Expression {
     		   varResultXPathExprStr = varResultXPathExprStr.replace(": =", ":=");
 
     		   if (prefixTable != null) {
-    			   varResultXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(varResultXPathExprStr, prefixTable);
+    			   varResultXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varResultXPathExprStr, prefixTable);
     		   }
 
     		   XPath letExprVarBindingXPath = new XPath(varResultXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -239,7 +239,7 @@ public class XPathLetExpr extends Expression {
     	   }              
 
     	   if (prefixTable != null) {
-    		   m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+    		   m_returnExprXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
     				                                                                                m_returnExprXPathStr, prefixTable);
     	   }
 
@@ -258,10 +258,16 @@ public class XPathLetExpr extends Expression {
 			   ResultSequence rSeq = new ResultSequence();
 			   
 			   int nextNode = DTM.NULL;
+			   
+			   List<Integer> nodeHandleList = new ArrayList<Integer>();
+			   
+			   int count = 0;
     		   
     		   while ((nextNode = iter1.nextNode()) != DTM.NULL) {
     			   DTM dtm = xctxt.getDTM(nextNode);    			  
-    			   String nodeName = dtm.getNodeName(nextNode);    			  
+    			   String nodeName = dtm.getNodeName(nextNode);
+    			   
+    			   count++;
 
     			   if (StringUtil.isXdmNodeShallowSynthetic(nodeName)) {
     				   Node node = dtm.getNode(nextNode);
@@ -281,11 +287,17 @@ public class XPathLetExpr extends Expression {
     				   catch (NumberFormatException ex) {
     					   // No op 
     				   }
-    			   }    			  
+    			   }
+    			   else {
+    				   nodeHandleList.add(nextNode);
+    			   }
     		   }
     		   
-    		   if (rSeq.size() != 0) {    			  
+    		   if (rSeq.size() == count) {    			  
     			  evalResult = rSeq;
+    		   }
+    		   else if (nodeHandleList.size() == count) {
+    			  evalResult = new XMLNodeCursorImpl(nodeHandleList, xctxt); 
     		   }
     		   else {
     			  evalResult = returnExprXpath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());

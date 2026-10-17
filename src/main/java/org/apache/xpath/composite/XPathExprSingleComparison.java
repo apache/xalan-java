@@ -89,7 +89,7 @@ public class XPathExprSingleComparison extends Expression {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt); 
         
         if (prefixTable != null) {
-        	m_xpathExprLhs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_xpathExprLhs, prefixTable);
+        	m_xpathExprLhs = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathExprLhs, prefixTable);
         }
 
         XPath xpathObj = new XPath(m_xpathExprLhs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -110,7 +110,7 @@ public class XPathExprSingleComparison extends Expression {
         for (int idx = 0; idx < m_seqArrConstructorXPathRhs.size(); idx++) {
         	String xpathExprStr = m_seqArrConstructorXPathRhs.get(idx);        	
         	if (prefixTable != null) {
-        		xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, prefixTable);
+        		xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
         	}
 
         	XPath xpathObj2 = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

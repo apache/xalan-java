@@ -16,11 +16,16 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Variable;
 
 /**
  * Implementation of an XPath 3.1 function fn:head.
@@ -53,7 +58,22 @@ public class FuncHead extends FunctionOneArg {
         
         XObject result = null;
         
+        final int sourceNode = xctxt.getCurrentNode();
+        
+        SourceLocator srcLocator = xctxt.getSAXLocator(); 
+        
         XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        
+        if (m_arg0 instanceof Variable) {
+           if (xObj0 instanceof XMLNodeCursorImpl) {
+        	  QName qName = ((Variable)m_arg0).getQName();
+        	  String xpathStr1 = "$" + qName.toString() + "[1]";        	  
+        	  
+        	  XPath xpathObj = new XPath(xpathStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	  
+        	  xObj0 = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext()); 
+           }
+        }
         
         if (xObj0 instanceof XMLNodeCursorImpl) {
            XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObj0;

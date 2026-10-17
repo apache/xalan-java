@@ -791,7 +791,7 @@ public class ElemVariable extends ElemTemplateElement
 
                    // Evaluate the, variable reference XPath expression
                    if (prefixTable != null) {
-                       varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                       varRefXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                                  varRefXPathExprStr, 
                                                                                                  prefixTable);
                    }                                      
@@ -806,7 +806,7 @@ public class ElemVariable extends ElemTemplateElement
 
                    // Evaluate the, xdm sequence index XPath expression
                    if (prefixTable != null) {
-                       xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                       xpathIndexExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                                      xpathIndexExprStr, 
                                                                                                      prefixTable);
                    }
@@ -1802,12 +1802,12 @@ public class ElemVariable extends ElemTemplateElement
 		                            	  // Check equality of data type objects, corresponding to 
 		                            	  // paramSpec1 and elemParamAs at the same positional index.
 		                            	   
-		                            	  elemParamAs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elemParamAs, prefixTable);                                    	   
+		                            	  elemParamAs = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(elemParamAs, prefixTable);                                    	   
 		                            	  XPath seqTypeXPath1 = new XPath(elemParamAs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 		                               	  XObject seqTypeExpressionEvalResult1 = seqTypeXPath1.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
 		                               	  XPathSequenceType seqExpectedTypeData1 = (XPathSequenceType)seqTypeExpressionEvalResult1;
 		                               	  
-		                               	  paramSpec1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(paramSpec1, prefixTable);
+		                               	  paramSpec1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(paramSpec1, prefixTable);
 		                               	  XPath seqTypeXPath2 = new XPath(paramSpec1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 		                             	  XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
 		                             	  XPathSequenceType seqExpectedTypeData2 = (XPathSequenceType)seqTypeExpressionEvalResult2;
@@ -1834,12 +1834,12 @@ public class ElemVariable extends ElemTemplateElement
 						  
 						  String elemFuncAs = elemFunction.getAs();
 						  if ((elemFuncAs != null) && (funcReturnTypeSpec != null)) {
-							  elemFuncAs = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elemFuncAs, prefixTable);
+							  elemFuncAs = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(elemFuncAs, prefixTable);
 							  XPath seqTypeXPath1 = new XPath(elemFuncAs, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 							  XObject seqTypeExpressionEvalResult1 = seqTypeXPath1.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
 							  XPathSequenceType seqExpectedTypeData1 = (XPathSequenceType)seqTypeExpressionEvalResult1;
 
-							  funcReturnTypeSpec = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcReturnTypeSpec, prefixTable);
+							  funcReturnTypeSpec = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(funcReturnTypeSpec, prefixTable);
 							  XPath seqTypeXPath2 = new XPath(funcReturnTypeSpec, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);    	    	                                       	
 							  XObject seqTypeExpressionEvalResult2 = seqTypeXPath2.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());                                       	
 							  XPathSequenceType seqExpectedTypeData2 = (XPathSequenceType)seqTypeExpressionEvalResult2;
@@ -2455,7 +2455,7 @@ public class ElemVariable extends ElemTemplateElement
                 }    			
     			
     			if (prefixTable != null) {
-    			   xpathPatternStr1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathPatternStr1, prefixTable);					
+    			   xpathPatternStr1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathPatternStr1, prefixTable);					
     			}
     			
     			XPath xpathSelect1 = new XPath(xpathPatternStr1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -2535,7 +2535,7 @@ public class ElemVariable extends ElemTemplateElement
     				XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)expr1;
     				String xpathInlineFuncBody1 = xpathInlineFunc.getFuncBodyXPathExprStr();
     				if (prefixTable != null) {
-    					xpathInlineFuncBody1 = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathInlineFuncBody1, prefixTable);					
+    					xpathInlineFuncBody1 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathInlineFuncBody1, prefixTable);					
     				}
 
     				xpathSelect1 = new XPath(xpathInlineFuncBody1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

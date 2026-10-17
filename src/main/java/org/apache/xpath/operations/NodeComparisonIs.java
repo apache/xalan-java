@@ -96,10 +96,7 @@ public class NodeComparisonIs extends XPathOperator
           xmlNodeCursorImpl2 = (XMLNodeCursorImpl)(xmlNodeCursorImpl2.getFresh());
        }
        
-       if ((xmlNodeCursorImpl1 != null) && (xmlNodeCursorImpl2 != null)) {
-    	   xmlNodeCursorImpl1 = (XMLNodeCursorImpl)(xmlNodeCursorImpl1.getFresh());
-    	   xmlNodeCursorImpl2 = (XMLNodeCursorImpl)(xmlNodeCursorImpl2.getFresh());
-    			   
+       if ((xmlNodeCursorImpl1 != null) && (xmlNodeCursorImpl2 != null)) {    			   
     	   int nodeHandle1 = (xmlNodeCursorImpl1.iter()).nextNode();
     	   int nodeHandle2 = (xmlNodeCursorImpl2.iter()).nextNode();
 

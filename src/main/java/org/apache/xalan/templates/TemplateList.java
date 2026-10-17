@@ -222,6 +222,8 @@ public class TemplateList implements java.io.Serializable
     		
     		String namespace = funcName.getNamespace();
     		
+    		// to do
+    		
     		if ((Constants.S_XSLNAMESPACEURL).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(namespace) || (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(namespace) || 
     				                                               (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(namespace) ||
     				                                               (XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(namespace) ||

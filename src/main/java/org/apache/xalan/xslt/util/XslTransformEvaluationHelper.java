@@ -159,9 +159,9 @@ public class XslTransformEvaluationHelper {
      * the corresponding declared XML namespace prefixes, using information 
      * from the supplied XML namespace prefix table.
      */
-    public static String replaceNsUrisWithPrefixesOnXPathStr(String xpathExprStr, 
-                                                                          List<XMLNSDecl> nsPrefixTable) {
-       String replacedXPathExprStr = xpathExprStr;
+    public static String replaceXmlNsUrisWithPrefixesXPathStr(String xpathExprStr, List<XMLNSDecl> nsPrefixTable) {
+       
+       String result = xpathExprStr;
        
        int size1 = nsPrefixTable.size();
        
@@ -169,12 +169,12 @@ public class XslTransformEvaluationHelper {
           XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
           String prefix = xmlNSDecl.getPrefix();
           String uri = xmlNSDecl.getURI();
-          replacedXPathExprStr = replacedXPathExprStr.replace(uri + ":", prefix + ":");
+          result = result.replace(uri + ":", prefix + ":");
        }
        
-       replacedXPathExprStr = replacedXPathExprStr.replace(XMLConstants.XML_NS_URI + ":", "xml:");
+       result = result.replace(XMLConstants.XML_NS_URI + ":", "xml:");
        
-       return replacedXPathExprStr; 
+       return result; 
     }
     
     /**
@@ -183,7 +183,7 @@ public class XslTransformEvaluationHelper {
      */
     public static String getPrefixFromNsUri(String nsUri, List<XMLNSDecl> nsPrefixTable) {    	
     	
-    	String prefix = null;
+    	String result = null;
 
     	if (nsUri != null) {
     		int size1 = nsPrefixTable.size();
@@ -192,14 +192,14 @@ public class XslTransformEvaluationHelper {
     			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
     			
     			if (nsUri.equals(xmlNSDecl.getURI())) {
-    				prefix = xmlNSDecl.getPrefix();
+    				result = xmlNSDecl.getPrefix();
     				
     				break;
     			}
     		}
     	}
 
-    	return prefix; 
+    	return result; 
     }
     
     /**

@@ -232,7 +232,7 @@ public class FuncFilter extends Function2Args {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
         if (prefixTable != null) {
-        	funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(funcBodyXPathExprStr, prefixTable);
+        	funcBodyXPathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(funcBodyXPathExprStr, prefixTable);
         }
         
         XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

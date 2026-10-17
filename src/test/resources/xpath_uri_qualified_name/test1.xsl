@@ -16,7 +16,11 @@
         <a><xsl:value-of select="Q{http://ns0/}incr(5)"/></a>
 	    <b><xsl:value-of select="Q{http://ns0/}incr(5) + 10"/></b>
 	    <c><xsl:value-of select="10 + Q{http://ns0/}incr(5)"/></c>
-	    <d><xsl:value-of select="(2 * Q{http://ns0/}incr(5)) + Q{http://ns0/}incr(10)"/></d>
+	    <d>
+	      <xsl:variable name="x" select="2 * Q{http://ns0/}incr(5)" as="xs:double"/>
+	      <xsl:variable name="y" select="Q{http://ns0/}incr(10)" as="xs:double"/>
+	      <xsl:value-of select="$x + $y"/>
+	    </d>
      </result>
   </xsl:template>
 

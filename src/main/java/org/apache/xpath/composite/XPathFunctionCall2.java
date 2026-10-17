@@ -66,7 +66,7 @@ public class XPathFunctionCall2 extends Expression {
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 
 		if (prefixTable != null) {
-			m_func_call_expr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_func_call_expr, prefixTable);
+			m_func_call_expr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_func_call_expr, prefixTable);
 		}
 
 		XPath xpathObj = new XPath(m_func_call_expr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);

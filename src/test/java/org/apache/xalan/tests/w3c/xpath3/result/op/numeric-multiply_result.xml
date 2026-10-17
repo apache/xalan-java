@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:01Z" fail="6" name="op-numeric-multiply" pass="67" run="73" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-17T16:31:51Z" fail="4" name="op-numeric-multiply" pass="69" run="73" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-multiplydec2args-1"/>
    <testResult status="pass" testName="op-numeric-multiplydec2args-2"/>
    <testResult status="pass" testName="op-numeric-multiplydec2args-3"/>
@@ -70,6 +70,6 @@
    <testResult status="pass" testName="K-NumericMultiply-29"/>
    <testResult status="pass" testName="K-NumericMultiply-30"/>
    <testResult status="pass" testName="K-NumericMultiply-31"/>
-   <testResult status="fail" testName="K-NumericMultiply-32"/>
-   <testResult status="fail" testName="K-NumericMultiply-33"/>
+   <testResult status="pass" testName="K-NumericMultiply-32"/>
+   <testResult status="pass" testName="K-NumericMultiply-33"/>
 </testrun>

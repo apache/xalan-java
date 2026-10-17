@@ -28,6 +28,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -83,7 +84,7 @@ public class FuncRoundHalfToEven extends Function2Args
           else if (m_arg0 instanceof XPathInlineFunction) {
     		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath function round-half-to-even(), but the "
                                                                                           + "supplied type is a function type, which cannot be atomized.", srcLocator);
-    	  }
+    	  }                    
           
           String strValueOfArg0 = (getArgAsString(m_arg0, xctxt)).toString();
           
@@ -106,12 +107,28 @@ public class FuncRoundHalfToEven extends Function2Args
         	  }
           }
           
+          XObject xObj0 =  null;
+          
           if (!((m_arg0 instanceof XSNumericType) || (m_arg0 instanceof XNumber))) {
-        	  m_arg0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        	  xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+          }
+          else {
+        	  xObj0 = (XObject)m_arg0;  
           }
           
-          if (m_arg0 instanceof XSFloat) {
-        	  XSFloat arg0XsFloat = (XSFloat)m_arg0;
+          if (xObj0 instanceof ResultSequence) {
+        	 ResultSequence rSeq = (ResultSequence)xObj0;
+        	 
+        	 if (rSeq.size() == 1) {
+        		 xObj0 = rSeq.item(0);  
+        	 }
+        	 else {
+        		// to do 
+        	 }
+          }
+          
+          if (xObj0 instanceof XSFloat) {
+        	  XSFloat arg0XsFloat = (XSFloat)xObj0;
         	  
         	  if (arg0XsFloat.nan() || arg0XsFloat.zero() || arg0XsFloat.negativeZero() || arg0XsFloat.infinite()){
         		  result = arg0XsFloat; 
@@ -123,8 +140,8 @@ public class FuncRoundHalfToEven extends Function2Args
         		  result = new XSFloat(roundValue.floatValue());
         	  }
           }
-          else if (m_arg0 instanceof XSDouble) {
-        	  XSDouble arg0XsDouble = (XSDouble)m_arg0;
+          else if (xObj0 instanceof XSDouble) {
+        	  XSDouble arg0XsDouble = (XSDouble)xObj0;
         	  
         	  if (arg0XsDouble.nan() || arg0XsDouble.zero() || arg0XsDouble.negativeZero() || arg0XsDouble.infinite()) {
         		 result = arg0XsDouble;  
@@ -136,24 +153,24 @@ public class FuncRoundHalfToEven extends Function2Args
         		  result = new XSDouble(roundValue.floatValue()); 
         	  }
           }
-          else if (m_arg0 instanceof XSDecimal) {
-        	  XSDecimal arg0XsDecimal = (XSDecimal)m_arg0;        	  
+          else if (xObj0 instanceof XSDecimal) {
+        	  XSDecimal arg0XsDecimal = (XSDecimal)xObj0;        	  
         	  
         	  BigDecimal arg0Decimal = new BigDecimal(arg0XsDecimal.stringValue());
         	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
     		  
     		  result = new XSDecimal(roundValue);
           }
-          else if (m_arg0 instanceof XSInteger) {
-        	  XSInteger arg0XsInteger = (XSInteger)m_arg0;        	  
+          else if (xObj0 instanceof XSInteger) {
+        	  XSInteger arg0XsInteger = (XSInteger)xObj0;        	  
         	  
         	  BigDecimal arg0Decimal = new BigDecimal(arg0XsInteger.stringValue());
         	  BigDecimal roundValue = arg0Decimal.setScale(precision, BigDecimal.ROUND_HALF_EVEN);
     		  
     		  result = new XSInteger(roundValue.toBigInteger());
           }
-          else if (m_arg0 instanceof XSNumericType) {
-        	  String arg0StrValue = ((XSNumericType)m_arg0).stringValue();
+          else if (xObj0 instanceof XSNumericType) {
+        	  String arg0StrValue = ((XSNumericType)xObj0).stringValue();
         	  XSDecimal arg0XsDecimal = new XSDecimal(arg0StrValue);
         	  
         	  BigDecimal arg0Decimal = new BigDecimal(arg0XsDecimal.stringValue());
@@ -161,8 +178,8 @@ public class FuncRoundHalfToEven extends Function2Args
     		  
     		  result = new XSDecimal(roundValue);
           }
-          else if (m_arg0 instanceof XNumber) {
-        	  XNumber xNumber = (XNumber)m_arg0;        	  
+          else if (xObj0 instanceof XNumber) {
+        	  XNumber xNumber = (XNumber)xObj0;        	  
         	  
         	  XSDecimal xsDecimal = xNumber.getXsDecimal();
         	  
