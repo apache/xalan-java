@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-10-17T16:32:46Z" desc="W3C XPath 3.1 test suite results" fail="795" pass="8827" run="9622" skipped="20" success="91.74%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-10-19T10:10:12Z" desc="W3C XPath 3.1 test suite results" fail="772" pass="8850" run="9622" skipped="20" success="91.98%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -50,7 +50,7 @@
     <fn-index-of fail="7" pass="46" run="53" success="86.79%"/>
     <fn-lower-case fail="0" pass="28" run="28" success="100.0%"/>
     <fn-matches fail="34" pass="128" run="162" success="79.01%"/>
-    <fn-number fail="10" pass="56" run="66" success="84.85%"/>
+    <fn-number fail="2" pass="64" run="66" success="96.97%"/>
     <fn-one-or-more fail="1" pass="52" run="53" success="98.11%"/>
     <fn-path fail="5" pass="10" run="15" success="66.67%"/>
     <fn-random-number-generator fail="4" pass="36" run="40" success="90.0%"/>
@@ -139,13 +139,13 @@
     <op-node-after fail="10" pass="16" run="26" success="61.54%"/>
     <op-node-before fail="9" pass="17" run="26" success="65.38%"/>
     <op-numeric-add fail="1" pass="130" run="131" skipped="11" success="99.24%"/>
-    <op-numeric-divide fail="4" pass="115" run="119" success="96.64%"/>
-    <op-numeric-equal fail="4" pass="174" run="178" success="97.75%"/>
+    <op-numeric-divide fail="1" pass="118" run="119" success="99.16%"/>
+    <op-numeric-equal fail="0" pass="178" run="178" success="100.0%"/>
     <op-numeric-greater-than fail="0" pass="92" run="92" success="100.0%"/>
     <op-numeric-less-than fail="0" pass="154" run="154" success="100.0%"/>
-    <op-numeric-mod fail="13" pass="100" run="113" success="88.5%"/>
-    <op-numeric-multiply fail="4" pass="69" run="73" success="94.52%"/>
-    <op-numeric-subtract fail="3" pass="103" run="106" success="97.17%"/>
+    <op-numeric-mod fail="12" pass="101" run="113" success="89.38%"/>
+    <op-numeric-multiply fail="0" pass="73" run="73" success="100.0%"/>
+    <op-numeric-subtract fail="0" pass="106" run="106" success="100.0%"/>
     <op-numeric-unary-minus fail="3" pass="59" run="62" success="95.16%"/>
     <op-numeric-unary-plus fail="1" pass="51" run="52" success="98.08%"/>
     <op-QName-equal fail="0" pass="36" run="36" success="100.0%"/>

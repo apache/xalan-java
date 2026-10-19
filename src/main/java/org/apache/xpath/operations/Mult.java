@@ -345,6 +345,27 @@ public class Mult extends XPathArithmeticUtil
 		  return new XSDouble(dbl1 * dbl2);
 	  }
 	  
+	  if (left instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+
+		  try  {
+			  new BigDecimal(str1);  
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' is not a valid numeric literal."); 
+		  }
+	  } 
+	  else if (right instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)right).stringValue();
+
+		  try  {
+			  new BigDecimal(str1);
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' is not a valid numeric literal."); 
+		  }
+	  }
+	  
 	  if (left instanceof XMLNodeCursorImpl) {
 		  left = left.getFresh();
 		  

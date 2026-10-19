@@ -20,6 +20,8 @@ public class XSDouble extends XSNumericType {
 	
 	private XPath3DecimalFormat xpath3DecimalFormat = new XPath3DecimalFormat(
 	                                                              "0.#################E0");
+	
+	private boolean _isSrcFloat = false;
 
 	/**
 	 * Class constructor.
@@ -207,5 +209,13 @@ public class XSDouble extends XSNumericType {
     public int getType() {
         return CLASS_XS_DOUBLE;
     }
+
+	public boolean getIsSrcFloat() {
+		return _isSrcFloat;
+	}
+
+	public void setIsSrcFloat(boolean isSrcFloat) {
+		this._isSrcFloat = isSrcFloat;
+	}
     
 }

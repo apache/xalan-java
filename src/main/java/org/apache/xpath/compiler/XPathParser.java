@@ -1661,12 +1661,88 @@ public class XPathParser
           TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
           
           if (isSequenceConstructor && tokenIs(')')) {
-        	  if (lookahead(null, 1)) {
-        		  // An XPath expression is ()        	  
+        	  if (lookahead(null, 1)) {        		          		  
         		  parseXPathEmptyLiteralSequence();
+        		  
+        		  return;
+        	  }        		  
+        	  else if ((lookahead('+',1) || lookahead('-',1) || lookahead('*',1) || lookahead("div",1) || lookahead("mod",1) 
+										        				                                       || lookahead("idiv",1) || lookahead("to",1) || lookahead("eq",1) 
+										        				                                       || lookahead("ne",1) || lookahead("gt",1) || lookahead("lt",1)
+										        				                                       || lookahead("le",1) || lookahead("ge",1))) {	      	
+        		  parseXPathEmptyLiteralSequence();
+        		  
+        		  String str1 = m_token;
+
+        		  nextToken();
+
+        		  StringBuffer strBuff = new StringBuffer();
+        		  String str2 = null;
+
+        		  boolean isXPathExprOk = false;
+
+        		  /**
+        		   * Check for the well-formedness of XPath 3.1 operator's 
+        		   * second operand, and omit the second argument.
+        		   */
+
+        		  if (tokenIs('(')) {
+        			  // An XPath 3.1 operator's second operand is a literal
+        			  // sequence constructor.
+
+        			  while (m_token != null) {
+        				  strBuff.append(m_token + " ");
+        				  str2 = (strBuff.toString()).trim();
+
+        				  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+        					  consumeExpected(')'); 
+
+        					  isXPathExprOk = true;
+
+        					  break;
+        				  }
+
+        				  nextToken();
+        			  }
+
+        			  if (!isXPathExprOk) {
+        				  error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 + " ..." }); 
+        			  }
+        		  }
+        		  else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))) {
+        			  // An XPath 3.1 operator's second operand is a function call
+
+        			  if (lookahead('(', 1)) {
+        				  nextToken();    				     				 
+        			  }
+        			  else if (lookahead(':', 1) && lookahead('(', 3)) {
+        				  nextToken();    				      				  
+        				  consumeExpected(':');
+        				  nextToken();
+        			  }
+
+        			  while (m_token != null) {
+        				  strBuff.append(m_token + " ");
+        				  str2 = (strBuff.toString()).trim();
+
+        				  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+        					  consumeExpected(')'); 
+
+        					  isXPathExprOk = true;
+
+        					  break;
+        				  }
+
+        				  nextToken();
+        			  }    				      				  
+
+        			  if (!isXPathExprOk) {
+        				  error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 + " ..." }); 
+        			  }
+        		  }        		  
 
         		  return;
-        	  }
+        	  }	        		  
         	  else if (lookahead('|', 1) || lookahead(Keywords.UNION, 1)) {
         		  // An XPath expression is like, () | ...
         		  
@@ -1716,9 +1792,9 @@ public class XPathParser
         		  return;
         	  }
           }          
-          else if (((isSquareArrayConstructor && tokenIs(']')) || (isCurlyArrayConstructor && tokenIs('}'))) && 
-        		  																					lookahead(null, 1)) {
-             // An XPath expression is [], or {}        	 
+          else if (((isSquareArrayConstructor && tokenIs(']')) || (isCurlyArrayConstructor && tokenIs('}'))) && lookahead(null, 1)) {
+             // An XPath expression is [], or {}
+        	  
              parseXPathEmptyLiteralArray();
              
              return;             
@@ -1847,7 +1923,7 @@ public class XPathParser
                  /**
                   * An XPath 3.1 literal sequence constructor is, followed by an 
                   * XPath operator +, -, '*', "div", "mod", "idiv" and subsequently 
-                  * followed by respective XPath operator's second operand.         		 
+                  * followed by an XPath respective operator's second operand.         		 
                   */ 
         		 
         		 String xpathOpStr = m_token;
@@ -1980,6 +2056,132 @@ public class XPathParser
         			restoreTokenQueueXPathParsePos(prevTokenQueuePos);
         		 }
              }
+        	 else if (isXpathExprOk && (tokenIs("eq") || tokenIs("ne") || tokenIs("lt") 
+                                                                       || tokenIs("gt") || tokenIs("le") || tokenIs("ge"))
+                                                                                                           && !m_isSequenceTypeXPathExpr) {
+        		 /**
+                  * An XPath 3.1 literal sequence constructor is, followed by an 
+                  * XPath operator "eq", "ne", "lt", "gt", "le", "ge" and subsequently 
+                  * followed by an XPath respective operator's second operand.         		 
+                  */ 
+        		 
+        		 String xpathOpStr = m_token;
+        		         		         		 
+        		 nextToken();
+        		 
+    			 if (!tokenIs('(')) {        			         			 
+    				 int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
+
+    				 appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    				 str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
+
+    				 List<String> seqConstructorXPathParts = new ArrayList<String>();
+    				 seqConstructorXPathParts.add(str1);
+
+    				 XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+    				 xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);
+
+    				 m_xpathSequenceConstructor = xPathSeqConstructor;        		         		 
+
+    				 if ("eq".equals(xpathOpStr)) {
+    					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_EQUALS);
+    				 }
+    				 else if ("ne".equals(xpathOpStr)) {
+    					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_NOT_EQUALS);
+    				 }
+    				 else if ("lt".equals(xpathOpStr)) {
+    					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_LT);
+    				 }
+    				 else if ("gt".equals(xpathOpStr)) {
+    					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_GT);
+    				 }
+    				 else if ("le".equals(xpathOpStr)) {
+    					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_LE);
+    				 }
+    				 else if ("ge".equals(xpathOpStr)) {
+    					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_GE);
+    				 } 
+
+    				 ExprSingle();
+
+    				 m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+    						                                     m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);        		 
+
+    				 return;
+    			 }        		 
+    			 else {
+    				 boolean isXpathExprOk2 = false;
+
+    				 StringBuffer strBuff2 = new StringBuffer();
+    				 String str2 = null;
+
+    				 while (m_token != null) {
+    					 strBuff2.append(m_token + " ");
+    					 str2 = (strBuff2.toString()).trim();
+
+    					 if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+    						 consumeExpected(')');
+
+    						 isXpathExprOk2 = true;
+
+    						 break;
+    					 }
+
+    					 nextToken();
+    				 }
+
+    				 if (isXpathExprOk2) {
+    					 int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
+
+    					 appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+
+    					 str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
+
+    					 List<String> seqConstructorXPathParts = new ArrayList<String>();
+    					 seqConstructorXPathParts.add(str1);
+
+    					 XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+    					 xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);
+
+    					 m_xpathSequenceConstructor = xPathSeqConstructor;        		         		 
+
+    					 if ("eq".equals(xpathOpStr)) {
+        					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_EQUALS);
+        				 }
+        				 else if ("ne".equals(xpathOpStr)) {
+        					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_NOT_EQUALS);
+        				 }
+        				 else if ("lt".equals(xpathOpStr)) {
+        					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_LT);
+        				 }
+        				 else if ("gt".equals(xpathOpStr)) {
+        					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_GT);
+        				 }
+        				 else if ("le".equals(xpathOpStr)) {
+        					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_LE);
+        				 }
+        				 else if ("ge".equals(xpathOpStr)) {
+        					 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_VC_GE);
+        				 } 
+
+    					 appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR);
+    					 
+    					 str2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str2); 
+
+    					 m_xpathIdentityExpr = new XPathIdentityExpr();        					         					         					 
+    					 m_xpathIdentityExpr.setXpathExprStr(str2);
+
+    					 m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+    							                                     m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);        		 
+
+    					 return;
+    				 }
+    				 else {
+    					 restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
+    				 }
+    			 }
+        	 }
         	 else {
         		 restoreTokenQueueXPathParsePos(prevTokenQueuePos); 
         	 }
@@ -3035,13 +3237,15 @@ public class XPathParser
   /**
    * Method definition, to parse an XPath empty literal 
    * sequence.
+   * @throws TransformerException 
    */
-  private void parseXPathEmptyLiteralSequence() {	  
+  private void parseXPathEmptyLiteralSequence() throws TransformerException {	  
+	  
 	  List<String> seqOrArrayXPathItems = new ArrayList<String>();
 
 	  int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
 
-	  nextToken();                            
+	  consumeExpected(')');                            
 
 	  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
 
@@ -3059,6 +3263,7 @@ public class XPathParser
    * array.
    */
   private void parseXPathEmptyLiteralArray() {	  
+	  
 	  int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
 
 	  nextToken();                            
@@ -6344,8 +6549,16 @@ public class XPathParser
     int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
 
     int filterMatch;
+    
+    boolean xpathPrimaryExpr = PrimaryExpr();
+    
+    if (xpathPrimaryExpr) {
+       if (tokenIs(":=")) {
+    	  error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ ":=" });  
+       }
+    }
 
-    if (PrimaryExpr())
+    if (xpathPrimaryExpr)
     {
       if (tokenIs('['))
       {
@@ -8573,6 +8786,27 @@ public class XPathParser
 
     if (m_token != null)
     {
+      if (tokenIs('*') && seenSlash) {
+    	 String str1 = getTokenRelative(0);
+    	 
+    	 try {
+    		new BigDecimal(str1);
+    		
+    		error(XPATHErrorResources.ER_UNEXPECTED_NUMERIC_LITERAL, new Object[]{ str1 });
+    	 }
+    	 catch (NumberFormatException ex) {
+    	    // No op 
+    	 }
+    	 
+    	 if ((str1.startsWith("'") && str1.endsWith("'")) || (str1.startsWith("\"") && str1.endsWith("\""))) {
+    		error(XPATHErrorResources.ER_UNEXPECTED_STRING_LITERAL, new Object[]{ str1 }); 
+    	 }
+    	 
+    	 if ("$".equals(str1)) {
+    		error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 }); 
+    	 }
+      }
+    	
       if (!RelativeLocationPath() && !seenSlash)
       {                
          throw new javax.xml.transform.TransformerException("XPST0003 : A location path was expected, but the following token was encountered " 
@@ -11452,7 +11686,14 @@ public class XPathParser
  	  
  	  m_isSequenceOperand = true;
  	  
- 	  Expr();
+ 	  if (lookahead(')', 1)) {
+ 		 // An XPath operator second argument is literal empty sequence
+ 		 
+ 		 xpathParseArgumentEmptySequence(addPos);
+ 	  }
+ 	  else {
+ 	     Expr();
+ 	  }
  	  
  	  if (!m_isSequenceOperand) {
  		  // The method Expr() has set variable m_isSequenceOperand to false
@@ -13426,16 +13667,86 @@ public class XPathParser
     	  funcArgUsedSeq.add(Boolean.valueOf(false));
     	  
     	  if ((tokenIs('+') || tokenIs('-') || tokenIs('*') || tokenIs("div") || tokenIs("mod") 
-    			                                                              || tokenIs("idiv") || tokenIs("to")) && !lookahead(null, 1)) {	      	
+    			                                            || tokenIs("idiv") || tokenIs("to") || tokenIs("eq") 
+    			                                            || tokenIs("ne") || tokenIs("gt") || tokenIs("lt")
+    			                                            || tokenIs("le") || tokenIs("ge")) && !lookahead(null, 1)) {	      	
     		  String str1 = m_token;
-
+    		  
     		  nextToken();
-
-    		  if (tokenIs(')') && lookahead(null, 1)) {
-    			  error(XPATHErrorResources.ER_UNEXPECTED_TOKEN, new Object[]{ m_token, str1 });
+    		  
+    		  StringBuffer strBuff = new StringBuffer();
+    		  String str2 = null;
+    		  
+    		  boolean isXPathExprOk = false;
+    		  
+    		  /**
+			   * Check for the well-formedness of XPath 3.1 operator's 
+			   * second operand, and omit the second argument.
+			   */
+    		  
+    		  if (tokenIs('(')) {
+    			  // An XPath 3.1 operator's second operand is a literal
+   			      // sequence constructor.
+    			  
+    			  while (m_token != null) {
+    				 strBuff.append(m_token + " ");
+    				 str2 = (strBuff.toString()).trim();
+    				 
+    				 if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) && 
+    						                                                         StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+    					consumeExpected(')'); 
+    					 
+    					isXPathExprOk = true;
+    					
+    					break;
+    				 }
+    				 
+    				 nextToken();
+    			  }
+    			  
+    			  if (!isXPathExprOk) {
+    				 error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 + " ..." }); 
+    			  }
     		  }
+    		  else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))) {
+    			  // An XPath 3.1 operator's second operand is a function call
+    			  
+    			  if (lookahead('(', 1)) {
+    				  nextToken();    				     				 
+    			  }
+    			  else if (lookahead(':', 1) && lookahead('(', 3)) {
+    				  nextToken();    				      				  
+    				  consumeExpected(':');
+    				  nextToken();
+    			  }
+    			  
+    			  while (m_token != null) {
+    				  strBuff.append(m_token + " ");
+    				  str2 = (strBuff.toString()).trim();
 
-    		  nextToken();    		  
+    				  if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) && 
+    						                                                          StringUtil.isStrHasBalancedParentheses(str2, '(', ')')) {
+    					  consumeExpected(')'); 
+
+    					  isXPathExprOk = true;
+
+    					  break;
+    				  }
+
+    				  nextToken();
+    			  }    				      				  
+    			  
+    			  if (!isXPathExprOk) {
+					  error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 + " ..." }); 
+				  }
+    		  }
+    		  else {
+    			  if (tokenIs(')') && lookahead(null, 1)) {
+        			 error(XPATHErrorResources.ER_UNEXPECTED_TOKEN, new Object[]{ m_token, str1 });
+        		  }
+
+        		  nextToken(); 
+    		  }    		  
     	  }	      		      	
     	  else if (tokenIs(Keywords.IS) || tokenIs(Keywords.EQUAL) || (tokenIs("!") && lookahead('=', 1))) {
 

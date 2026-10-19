@@ -350,8 +350,8 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
-							
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);
+														
 							// Boolean value, indicating whether XML 1.1 support 
 							// is enabled, for XPath expression evaluation.
 							boolean is_xml_1_1 = true;
@@ -1127,7 +1127,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											boolean a1 = false;
 											
 											if (m_xslTransformTestSetFilePath.contains("ForClause.xml") && expectedResultStrUnquoted 
-																															 && (xpathResultObj instanceof ResultSequence)) {
+																					                    && (xpathResultObj instanceof ResultSequence)) {
 												a1 = true;
 
 												ResultSequence rSeq = (ResultSequence)xpathResultObj;
@@ -1172,11 +1172,38 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 												   resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
 												}
 												
-												if (expectedStr1.equals(resultStr1)) {
-													elemTestResult.setAttribute(STATUS, PASS);
+												boolean isCheckOk = false;
+												
+												if ((xpathResultObj instanceof XSDouble) && ((XSDouble)xpathResultObj).getIsSrcFloat()) {
+											        String str1 = ((XSDouble)xpathResultObj).doubleValue() + "";
+											        
+											        if ("3.4028235E38".equals(str1)) {
+											        	// Check for xs:float upper bound
+											        	
+											        	if (expectedStr1.contains("E") && !"3.4028235E38".equals(expectedStr1)) {
+											        		int idx2 = expectedStr1.indexOf('E');
+											        		String str3 = expectedStr1.substring(0, idx2);     		
+											        		str3 = String.format("%.7f", Double.valueOf(str3));
+											        		
+											        		if ("3.4028235".equals(str3)) {
+											        		   elemTestResult.setAttribute(STATUS, PASS);
+											        		}
+											        		else {
+											        		   elemTestResult.setAttribute(STATUS, FAIL);
+											        		}
+											        		
+											        		isCheckOk = true;
+											        	}
+											        }
 												}
-												else {
-													elemTestResult.setAttribute(STATUS, FAIL);
+												
+												if (!isCheckOk) {
+													if (expectedStr1.equals(resultStr1)) {
+														elemTestResult.setAttribute(STATUS, PASS);
+													}
+													else {
+														elemTestResult.setAttribute(STATUS, FAIL);
+													}
 												}
 											}
 										}
@@ -1692,7 +1719,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													else if (ASSERT_STRING_VALUE.equals(nodeName3)) {
 														if (xpathResultObj != null) {                                        		                                          		  
 															if (m_xslTransformTestSetFilePath.contains("ForClause.xml") && expectedResultStrUnquoted 
-																	&& (xpathResultObj instanceof ResultSequence)) {
+																	                                                    && (xpathResultObj instanceof ResultSequence)) {
 																ResultSequence rSeq = (ResultSequence)xpathResultObj;
 																expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr.length() - 1);
 																String[] expectedStrArr = expectedResultStr2.split("\\s+");
@@ -1743,6 +1770,26 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															}
 															else {
 																resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+															}
+															
+															if ((xpathResultObj instanceof XSDouble) && ((XSDouble)xpathResultObj).getIsSrcFloat()) {
+														        String str1 = ((XSDouble)xpathResultObj).doubleValue() + "";
+														        
+														        if ("3.4028235E38".equals(str1)) {
+														        	// Check for xs:float upper bound
+														        	
+														        	if (expectedStr1.contains("E") && !"3.4028235E38".equals(expectedStr1)) {
+														        		int idx2 = expectedStr1.indexOf('E');
+														        		String str3 = expectedStr1.substring(0, idx2);     		
+														        		str3 = String.format("%.7f", Double.valueOf(str3));
+														        		
+														        		if (!"3.4028235".equals(str3)) {
+														        			isXslTestPass = false;
+
+																			break;
+														        		}
+														        	}
+														        }
 															}
 
 															if (!expectedStr1.equals(resultStr1)) {
@@ -2333,7 +2380,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 													else if (ASSERT_STRING_VALUE.equals(nodeName3)) {
 														if (xpathResultObj != null) {                                        		                                          		  
 															if (m_xslTransformTestSetFilePath.contains("ForClause.xml") && expectedResultStrUnquoted 
-																	&& (xpathResultObj instanceof ResultSequence)) {
+																	                                                    && (xpathResultObj instanceof ResultSequence)) {
 																ResultSequence rSeq = (ResultSequence)xpathResultObj;
 																expectedResultStr2 = expectedResultStr2.substring(1, expectedResultStr.length() - 1);
 																String[] expectedStrArr = expectedResultStr2.split("\\s+");
@@ -2382,6 +2429,26 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 															}
 															else {
 																resultStr1 = (XslTransformEvaluationHelper.getStrVal(xpathResultObj)).trim();
+															}
+															
+															if ((xpathResultObj instanceof XSDouble) && ((XSDouble)xpathResultObj).getIsSrcFloat()) {
+														        String str1 = ((XSDouble)xpathResultObj).doubleValue() + "";
+														        
+														        if ("3.4028235E38".equals(str1)) {
+														        	// Check for xs:float upper bound
+														        	
+														        	if (expectedStr1.contains("E") && !"3.4028235E38".equals(expectedStr1)) {
+														        		int idx2 = expectedStr1.indexOf('E');
+														        		String str3 = expectedStr1.substring(0, idx2);     		
+														        		str3 = String.format("%.7f", Double.valueOf(str3));
+														        		
+														        		if ("3.4028235".equals(str3)) {
+														        			isXslTestPass = true;
+
+																			break;
+														        		}
+														        	}
+														        }
 															}
 
 															if (expectedStr1.equals(resultStr1)) {

@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,8 +48,6 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -56,13 +55,13 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 
-import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * An implementation of XPath 3.1 operator 'idiv'.
@@ -214,6 +213,27 @@ public class IDiv extends XPathArithmeticUtil
 			  catch (NumberFormatException ex) {
 				  left = left.getFresh(); 
 			  }
+		  }
+	  }
+	  
+	  if (left instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+
+		  try  {
+			  new BigDecimal(str1);  
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' is not a valid numeric literal."); 
+		  }
+	  } 
+	  else if (right instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)right).stringValue();
+
+		  try  {
+			  new BigDecimal(str1);
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' is not a valid numeric literal."); 
 		  }
 	  }
 	  

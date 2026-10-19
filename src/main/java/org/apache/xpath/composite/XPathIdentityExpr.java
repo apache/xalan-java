@@ -32,10 +32,23 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
+/**
+ * Class definition, that evaluates an XPath expression, without 
+ * constraints on an XPath expression's grammar and result type. 
+ * Any XPath 3.1 valid expression may be evaluated by this class 
+ * implementation.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
+ */
 public class XPathIdentityExpr extends Expression {	
 
 	private static final long serialVersionUID = -7777603348399435402L;
 	
+	/**
+	 * An XPath 3.1 expression's string value.
+	 */
 	private String m_xpathExprStr = null;
 	
     private Vector m_vars;

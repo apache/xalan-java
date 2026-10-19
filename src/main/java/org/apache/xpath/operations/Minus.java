@@ -46,8 +46,6 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -545,6 +543,27 @@ public class Minus extends XPathArithmeticUtil
 
 			  XMLString xmlStr2 = dtm.getStringValue(nodeHandle);
 			  rNodeStr = xmlStr2.toString();
+		  }
+	  }
+	  
+	  if (left instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+
+		  try  {
+			  new BigDecimal(str1);  
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' is not a valid numeric literal."); 
+		  }
+	  } 
+	  else if (right instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)right).stringValue();
+
+		  try  {
+			  new BigDecimal(str1);
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' is not a valid numeric literal."); 
 		  }
 	  }
 	  

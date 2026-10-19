@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:43Z" fail="10" name="fn-number" pass="56" run="66" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-19T10:08:51Z" fail="2" name="fn-number" pass="64" run="66" statusUnknown="0">
    <testResult status="pass" testName="fn-numberint1args-1"/>
    <testResult status="pass" testName="fn-numberint1args-2"/>
    <testResult status="pass" testName="fn-numberint1args-3"/>
@@ -11,9 +11,9 @@
    <testResult status="pass" testName="fn-numberdbl1args-1"/>
    <testResult status="pass" testName="fn-numberdbl1args-2"/>
    <testResult status="pass" testName="fn-numberdbl1args-3"/>
-   <testResult status="fail" testName="fn-numberflt1args-1"/>
+   <testResult status="pass" testName="fn-numberflt1args-1"/>
    <testResult status="pass" testName="fn-numberflt1args-2"/>
-   <testResult status="fail" testName="fn-numberflt1args-3"/>
+   <testResult status="pass" testName="fn-numberflt1args-3"/>
    <testResult status="pass" testName="fn-numberlng1args-1"/>
    <testResult status="pass" testName="fn-numberlng1args-2"/>
    <testResult status="pass" testName="fn-numberlng1args-3"/>
@@ -41,13 +41,13 @@
    <testResult status="pass" testName="fn-number-1"/>
    <testResult status="pass" testName="fn-number-2"/>
    <testResult status="pass" testName="fn-number-3"/>
-   <testResult status="fail" testName="fn-number-4"/>
-   <testResult status="fail" testName="fn-number-5"/>
-   <testResult status="fail" testName="fn-number-6"/>
+   <testResult status="pass" testName="fn-number-4"/>
+   <testResult status="pass" testName="fn-number-5"/>
+   <testResult status="pass" testName="fn-number-6"/>
    <testResult status="pass" testName="fn-number-7"/>
-   <testResult status="fail" testName="fn-number-8"/>
-   <testResult status="fail" testName="fn-number-9"/>
-   <testResult status="fail" testName="fn-number-10"/>
+   <testResult status="pass" testName="fn-number-8"/>
+   <testResult status="pass" testName="fn-number-9"/>
+   <testResult status="pass" testName="fn-number-10"/>
    <testResult status="pass" testName="K-NodeNumberFunc-1"/>
    <testResult status="pass" testName="K-NodeNumberFunc-2"/>
    <testResult status="pass" testName="K-NodeNumberFunc-3"/>

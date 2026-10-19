@@ -23,7 +23,10 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -31,9 +34,12 @@ import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.patterns.NodeTest;
 
+import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of an XPath 3.1 function fn:number.
@@ -63,27 +69,39 @@ public class FuncNumber extends FunctionDef1Arg
 	{
 
 		XObject result = null;
+		
+		final int sourceNode = xctxt.getCurrentNode();
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
 		if (m_arg0 instanceof NodeTest) {
 			if (XslTransformEvaluationHelper.isNodeTestExpressionFuntionType((NodeTest)m_arg0)) {
-				throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
-																																                                     + "supplied type is a function type, which cannot be atomized.", srcLocator); 
+				throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the supplied type is a function type, which cannot be atomized.", srcLocator); 
 			}
 		}
 		else if (m_arg0 instanceof XPathInlineFunction) {
-			throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the "
-																																                                     + "supplied type is a function type, which cannot be atomized.", srcLocator); 
+			throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first argument of XPath 3.1 function 'number', but the supplied type is a function type, which cannot be atomized.", srcLocator); 
 		}
 
-		if (m_arg0 != null) {     	  
+		if (m_arg0 != null) { 
+			if (m_arg0 instanceof SelfIteratorNoPredicate) {
+			   if ((sourceNode == DTM.NULL) && (xctxt.getXPath3ContextItem() == null)) {
+				  throw new TransformerException("XPDY0002 : An XPath function call 'number' is provided with an argument ., and XPath context item is undefined.", srcLocator);  
+			   }
+			}
+			
 			XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
 			if (xObj0 instanceof XSNumericType) {
 				String str1 = ((XSNumericType)xObj0).stringValue();
 
-				result = new XSDouble(Double.valueOf(str1));
+				XSDouble xsDouble = new XSDouble(Double.valueOf(str1));
+				
+				if (xObj0 instanceof XSFloat) {
+				   xsDouble.setIsSrcFloat(true);
+				}
+				
+				result = xsDouble; 
 			}
 			else if (xObj0 instanceof XNumber) {
 				XNumber xNumber = (XNumber)xObj0;
@@ -133,12 +151,22 @@ public class FuncNumber extends FunctionDef1Arg
 					result = new XSDouble(Double.NaN);
 				}				
 			}
-			else if ((xObj0 instanceof XSString) || (xObj0 instanceof XString)) {
+			else if ((xObj0 instanceof XSString) || (xObj0 instanceof XString) || (xObj0 instanceof XSUntypedAtomic)) {
 				try {
-					result = new XSDouble(getArg0AsNumber(xctxt));
+					String str1 = XslTransformEvaluationHelper.getStrVal(xObj0);
+					
+					result = new XSDouble(str1.trim());
 				}
-				catch (TransformerException ex) {
+				catch (Exception ex) {
 					result = new XSDouble(Double.NaN); 
+				}
+			}
+			else if ((xObj0 instanceof XSBoolean) || (xObj0 instanceof XBoolean) || (xObj0 instanceof XBooleanStatic)) {				
+				if (xObj0.bool()) {
+				    result = new XSDouble("1.0");
+				}
+				else {
+					result = new XSDouble("0.0");
 				}
 			}
 			else {
@@ -156,8 +184,8 @@ public class FuncNumber extends FunctionDef1Arg
 			}
 			else {
 				throw new TransformerException("XPDY0002 : An XPath 3.1 function 'number' is called without "
-																									       + "an argument, and XPath context "
-																									       + "item is absent.", srcLocator);
+																									        + "an argument, and XPath context "
+																									        + "item is absent.", srcLocator);
 			}
 		}
 

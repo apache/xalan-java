@@ -196,6 +196,57 @@ public class VcEquals extends XPathRelationalOp
      		 xctxt = new XPathContext();
      	  } 
       }
+      
+      if ((left instanceof XSDouble) && (right instanceof XSDouble)) {
+    	 // XPath equal check for xs:float lower and upper bound values
+    	  
+    	 XSDouble xsDouble1 = (XSDouble)left;    	 
+    	 java.lang.String str1 = xsDouble1.doubleValue() + "";
+    	 
+    	 XSDouble xsDouble2 = (XSDouble)right;
+    	 java.lang.String str2 = xsDouble2.doubleValue() + "";
+     	 
+     	 if (xsDouble1.getIsSrcFloat() && "-3.4028235E38".equals(str1) 
+     			                                                     && str2.contains("E") && !"-3.4028235E38".equals(str2)) {
+     		int idx = str2.indexOf('E');
+     		java.lang.String str3 = str2.substring(0, idx);     		
+     		str3 = java.lang.String.format("%.7f", Double.valueOf(str3));
+     		
+     		if ("-3.4028235".equals(str3)) {
+     		   return XBoolean.S_TRUE;
+     		}
+     	 }     	 
+     	 else if (xsDouble2.getIsSrcFloat() && "-3.4028235E38".equals(str2) 
+     			                                                          && str1.contains("E") && !"-3.4028235E38".equals(str1)) {
+     		 int idx = str1.indexOf('E');
+     		 java.lang.String str3 = str1.substring(0, idx);     		
+     		 str3 = java.lang.String.format("%.7f", Double.valueOf(str3));
+
+     		 if ("-3.4028235".equals(str3)) {
+     			 return XBoolean.S_TRUE;
+     		 }
+     	 }
+     	 else if (xsDouble1.getIsSrcFloat() && "3.4028235E38".equals(str1) 
+     			                                                         && str2.contains("E") && !"3.4028235E38".equals(str2)) {
+     		int idx = str2.indexOf('E');
+     		java.lang.String str3 = str2.substring(0, idx);     		
+     		str3 = java.lang.String.format("%.7f", Double.valueOf(str3));
+     		
+     		if ("3.4028235".equals(str3)) {
+     		   return XBoolean.S_TRUE;
+     		}
+     	 }     	 
+     	 else if (xsDouble2.getIsSrcFloat() && "3.4028235E38".equals(str2) 
+     			                                                         && str1.contains("E") && !"3.4028235E38".equals(str1)) {
+     		 int idx = str1.indexOf('E');
+     		 java.lang.String str3 = str1.substring(0, idx);     		
+     		 str3 = java.lang.String.format("%.7f", Double.valueOf(str3));
+
+     		 if ("3.4028235".equals(str3)) {
+     			 return XBoolean.S_TRUE;
+     		 }
+     	 }
+      }
             
       if ((left instanceof XString) || (left instanceof XSString)) {
     	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);

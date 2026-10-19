@@ -391,9 +391,21 @@ class Lexer
 			  break;
 		  case ':' :
 			  if (i > 0)
-			  {
-				  boolean isXPathMapExpr = isXPathMapExpr(pat);
+			  {				  
+				  if (((i + 1) < nChars) && (pat.charAt(i + 1) == '=')) {					 
+					  String str1 = pat.substring(0, i);
+
+					  if (!str1.contains("let")) {
+						  addToTokenQueue(":=");
+
+						  i++;
+
+						  break; 
+					  }							 					 
+				  }
 				  
+				  boolean isXPathMapExpr = isXPathMapExpr(pat);				  				  
+				  				  
 				  if (isXPathMapExpr) {
 					  // Handle ':' character as XPath map entry's key, value separator					  
 					  boolean doBreak = handleXPathMapColon(pat, i);
