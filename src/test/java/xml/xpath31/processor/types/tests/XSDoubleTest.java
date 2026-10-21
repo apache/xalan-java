@@ -17,12 +17,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import xml.xpath31.processor.types.XPath3DecimalFormat;
 import xml.xpath31.processor.types.XSDouble;
 
 /**
  * Xalan-J XPath 3.1 data type xs:double test cases.
  * 
- * Contributed via Xalan Java mailing list.
+ * Contributed via Xalan-J mailing list.
  * 
  * @author Samael Bate                       
  *                       
@@ -95,8 +96,8 @@ public class XSDoubleTest {
 
     @Test
     public void infinite() throws TransformerException {
-        assertTrue(new XSDouble("INF").infinite());
-        assertTrue(new XSDouble("-INF").infinite());
+        assertTrue(new XSDouble(XPath3DecimalFormat.POSITIVE_INF_STR1).infinite());
+        assertTrue(new XSDouble(XPath3DecimalFormat.NEGATIVE_INF_STR).infinite());
         assertTrue(new XSDouble(Double.POSITIVE_INFINITY).infinite());
         assertTrue(new XSDouble(Double.NEGATIVE_INFINITY).infinite());
     }

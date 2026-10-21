@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:01Z" fail="3" name="op-numeric-unary-minus" pass="59" run="62" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-21T00:21:45Z" fail="0" name="op-numeric-unary-minus" pass="62" run="62" statusUnknown="0">
    <testResult status="pass" testName="op-numeric-unary-minusint1args-1"/>
    <testResult status="pass" testName="op-numeric-unary-minusint1args-2"/>
    <testResult status="pass" testName="op-numeric-unary-minusint1args-3"/>
@@ -51,8 +51,8 @@
    <testResult status="pass" testName="K-NumericUnaryMinus-11"/>
    <testResult status="pass" testName="K-NumericUnaryMinus-12"/>
    <testResult status="pass" testName="K-NumericUnaryMinus-13"/>
-   <testResult status="fail" testName="K-NumericUnaryMinus-14"/>
-   <testResult status="fail" testName="K-NumericUnaryMinus-15"/>
+   <testResult status="pass" testName="K-NumericUnaryMinus-14"/>
+   <testResult status="pass" testName="K-NumericUnaryMinus-15"/>
    <testResult status="pass" testName="K2-NumericUnaryMinus-1"/>
    <testResult status="pass" testName="K2-NumericUnaryMinus-2"/>
    <testResult status="pass" testName="K2-NumericUnaryMinus-3"/>
@@ -60,5 +60,5 @@
    <testResult status="pass" testName="K2-NumericUnaryMinus-5"/>
    <testResult status="pass" testName="K2-NumericUnaryMinus-6"/>
    <testResult status="pass" testName="K2-NumericUnaryMinus-7"/>
-   <testResult status="fail" testName="K2-NumericUnaryMinus-9"/>
+   <testResult status="pass" testName="K2-NumericUnaryMinus-9"/>
 </testrun>

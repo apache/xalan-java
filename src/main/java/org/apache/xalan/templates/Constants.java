@@ -544,6 +544,10 @@ public class Constants extends org.apache.xml.utils.Constants
   
   public static final String ATTRVAL_ABSENT = "absent";
   
+  public static final String POSITIVE_INF_STR = "INF";
+  
+  public static final String NEGATIVE_INF_STR = "-INF";
+  
   /**
    * An xsl:fork instruction's xsl:sequence run-time
    * timeout, in seconds. Specification of this time-out

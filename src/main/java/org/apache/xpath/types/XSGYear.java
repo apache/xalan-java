@@ -41,7 +41,7 @@ public class XSGYear extends XSAnyAtomicType {
 	private static final long serialVersionUID = 4500652479945465195L;
 
 	/**
-	 * Class fields to represent components of XML Schema type xs:gYear.  
+	 * Class fields to represent components for XML Schema type xs:gYear.  
 	 */
 	
     private int m_year;
@@ -159,7 +159,34 @@ public class XSGYear extends XSAnyAtomicType {
 	 * Implementation of operation equals, for the type xs:gYear.
 	 */
 	public boolean eq(XSGYear obj2) {
+		
 		boolean result = false;
+		
+		int obj2_year2 = obj2.getYear();
+		
+        boolean isTz1Negative = m_isTimeZoneNegative;		
+		boolean isTz2Negative = obj2.isTimeZoneNegative();
+		
+		int obj2_tz_hrs = obj2.getTimezoneHrs();
+		int obj2_tz_min = obj2.getTimezoneMin();
+		
+		if (isTz1Negative && (m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+		   isTz1Negative = false;	
+		}
+		
+		if (isTz2Negative && (obj2_tz_hrs == 0) && (obj2_tz_min == 0)) {
+		   isTz2Negative = false;	
+		}
+		
+		if (m_year == obj2_year2) {
+		   if (!isTz1Negative && !isTz2Negative) {
+			  if ((m_timezone_hrs == 0) && (m_timezone_min == 0) && (obj2_tz_hrs == 0) && (obj2_tz_min == 0)) {
+				 result = true;
+				 
+				 return result;
+			  }
+		   }
+		}
 
 		result = ((m_year == obj2.getYear()) && (m_isNegative == obj2.isNegative()) && 
 				  (m_isTimeZoneNegative == obj2.isTimeZoneNegative()) && (m_isTimeZoneUtc == obj2.isTimeZoneUtc()) && 

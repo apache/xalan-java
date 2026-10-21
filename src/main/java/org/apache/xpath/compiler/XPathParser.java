@@ -1666,10 +1666,10 @@ public class XPathParser
         		  
         		  return;
         	  }        		  
-        	  else if ((lookahead('+',1) || lookahead('-',1) || lookahead('*',1) || lookahead("div",1) || lookahead("mod",1) 
-										        				                                       || lookahead("idiv",1) || lookahead("to",1) || lookahead("eq",1) 
-										        				                                       || lookahead("ne",1) || lookahead("gt",1) || lookahead("lt",1)
-										        				                                       || lookahead("le",1) || lookahead("ge",1))) {	      	
+        	  else if ((lookahead('+', 1) || lookahead('-', 1) || lookahead('*', 1) || lookahead("div", 1) || lookahead("mod", 1) 
+										        				                                           || lookahead("idiv", 1) || lookahead("to", 1) || lookahead("eq", 1) 
+										        				                                           || lookahead("ne", 1) || lookahead("gt", 1) || lookahead("lt", 1)
+										        				                                           || lookahead("le", 1) || lookahead("ge", 1))) {	      	
         		  parseXPathEmptyLiteralSequence();
         		  
         		  String str1 = m_token;
@@ -6013,43 +6013,145 @@ public class XPathParser
   {
 
     int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
+    
     boolean isUnary = false;
     
     if (m_tokenChar == '-')
-    {
-    	nextToken();
+    {    	    	    	    	
+    	nextToken();    	    	
     	
-    	/**
-    	 * An XPath unary operator '-' followed by, sequence of
-    	 * consecutive XPath unary operators '-', '+' may change 
-    	 * the effective sign of XPath unary operator as '-', or '+'.
-    	 */
-    	
-    	boolean isXPathUnaryMinus = true;
-    	
-    	while (m_token != null) {
-    		if (!(tokenIs('-') || tokenIs('+'))) {
-    			break; 
-    		}
-    		else if (tokenIs('-')) {
-    			if (isXPathUnaryMinus) {
-    				isXPathUnaryMinus = false;
-    			}
-    			else {
-    				isXPathUnaryMinus = true;
-    			}
-    		}
+    	if (lookahead('[', 1)) {
+    		// An XPath 3.1 predicate has higher precedence, 
+    		// than XPath unary minus.
+    		
+    		appendOp(2, OpCodes.OP_NEG);
+    		
+    		StringBuffer strBuff = new StringBuffer();
+            String str1 = null;
+            
+            String errToken = m_token + "[";
+            
+            strBuff.append(m_token);
+            
+            nextToken();                         
+            
+            boolean isXpathExprOk = false;
+            
+            while (m_token != null) {
+               strBuff.append(m_token + " ");
+               str1 = (strBuff.toString()).trim();
+               
+               if (tokenIs(']') && StringUtil.isStrHasBalancedParentheses(str1, '[', ']')) {
+            	   consumeExpected(']');
+            	   
+            	   isXpathExprOk = true;
+            	   
+            	   break;
+               }
+               
+               nextToken();
+            }
+            
+            if (isXpathExprOk) {
+            	appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR);
+
+            	str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1); 
+
+    			m_xpathIdentityExpr = new XPathIdentityExpr();        					         					         					 
+    			m_xpathIdentityExpr.setXpathExprStr(str1);
+            }
+            else {
+            	error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ errToken + " ..." });
+            }
+    	}
+    	else if (lookahead(Keywords.SIMPLE_MAP_OP, 1) && !lookahead('=', 2)) {
+    		// An XPath 3.1 simple map operator has higher precedence, 
+    		// than XPath unary minus.
+    		
+    		appendOp(2, OpCodes.OP_NEG);
+
+    		StringBuffer strBuff = new StringBuffer();
+    		String str1 = null;
+
+    		String errToken = m_token + "!";
+    		strBuff.append(m_token);
 
     		nextToken();
-    	}
+    		strBuff.append(m_token + " ");
+    		nextToken();
+    		strBuff.append(m_token + " ");
+    		
+    		boolean isXpathFuncCall = false;
+    		
+    		if ((lookahead(':', 1) && lookahead('(', 3)) || lookahead('(', 1)) {
+    		   isXpathFuncCall = true;
+    		}
 
-    	if (isXPathUnaryMinus) {
-    		appendOp(2, OpCodes.OP_NEG);
+    		boolean isXpathExprOk = false;
+
+    		if (isXpathFuncCall) {
+    			while (m_token != null) {    				
+    				str1 = (strBuff.toString()).trim();
+
+    				if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '[', ']')) {
+    					consumeExpected(')');
+
+    					isXpathExprOk = true;
+
+    					break;
+    				}
+
+    				nextToken();
+    				
+    				strBuff.append(m_token + " ");
+    			}
+    		}
+
+    		if (isXpathExprOk) {
+    			appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR);
+
+    			str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1); 
+
+    			m_xpathIdentityExpr = new XPathIdentityExpr();        					         					         					 
+    			m_xpathIdentityExpr.setXpathExprStr(str1);
+    		}
+    		else {
+    			error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ errToken + " ..." });
+    		}
     	}
     	else {
-    		appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
-    	}
+    		/**
+    		 * An XPath unary operator '-' followed by, sequence of
+    		 * consecutive XPath unary operators '-', '+' may change 
+    		 * the effective sign of XPath unary operator as '-', or '+'.
+    		 */
 
+    		boolean isXPathUnaryMinus = true;
+
+    		while (m_token != null) {
+    			if (!(tokenIs('-') || tokenIs('+'))) {
+    				break; 
+    			}
+    			else if (tokenIs('-')) {
+    				if (isXPathUnaryMinus) {
+    					isXPathUnaryMinus = false;
+    				}
+    				else {
+    					isXPathUnaryMinus = true;
+    				}
+    			}
+
+    			nextToken();
+    		}
+
+    		if (isXPathUnaryMinus) {
+    			appendOp(2, OpCodes.OP_NEG);
+    		}
+    		else {
+    			appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
+    		}    		
+    	}
+    	
     	isUnary = true;
     }
     else if (m_tokenChar == '+')
@@ -6090,7 +6192,9 @@ public class XPathParser
     	isUnary = true;
     }
 
-    NodeCombiningExpr();
+    if (m_token != null) {
+       NodeCombiningExpr();
+    }
 
     if (isUnary)
       m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
@@ -7138,6 +7242,17 @@ public class XPathParser
 	int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
     
     appendOp(2, OpCodes.OP_ARGUMENT);
+    
+    if ((m_tokenChar == '-') && lookahead('(', 1)) {       
+    	appendOp(2, OpCodes.OP_NEG);
+
+    	nextToken();
+    }
+    else if ((m_tokenChar == '+') && lookahead('(', 1)) {       
+    	appendOp(2, OpCodes.XPath3OpCodes.OP_POS);
+
+    	nextToken();
+    }
     
     if (tokenIs('(')) {
     	// XPath literal sequence as, function argument

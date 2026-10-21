@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:39Z" fail="9" name="op-node-before" pass="17" run="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-21T00:21:44Z" fail="8" name="op-node-before" pass="18" run="26" statusUnknown="0">
    <testResult status="fail" testName="nodeexpression17"/>
    <testResult status="fail" testName="nodeexpression19"/>
    <testResult status="fail" testName="nodeexpression20"/>
@@ -22,7 +22,7 @@
    <testResult status="pass" testName="K-NodeBefore-6"/>
    <testResult status="pass" testName="K-NodeBefore-7"/>
    <testResult status="pass" testName="K-NodeBefore-8"/>
-   <testResult status="fail" testName="K-NodeBefore-9"/>
+   <testResult status="pass" testName="K-NodeBefore-9"/>
    <testResult status="pass" testName="K-NodeBefore-10"/>
    <testResult status="pass" testName="K-NodeBefore-11"/>
 </testrun>

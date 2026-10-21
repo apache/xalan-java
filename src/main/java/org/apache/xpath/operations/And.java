@@ -22,6 +22,7 @@ import java.math.BigInteger;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -191,7 +192,7 @@ public class And extends XPathOperator
 		  if (xObj0 instanceof XSNumericType) {
 			  java.lang.String str1 = ((XSNumericType)xObj0).stringValue();
 			  
-			  if (!("INF".equals(str1) || "-INF".equals(str1))) {
+			  if (!((Constants.POSITIVE_INF_STR).equals(str1) || (Constants.NEGATIVE_INF_STR).equals(str1))) {
 				  double dbl = Double.valueOf(str1);
 				  
 				  if (dbl == 0) {
@@ -345,7 +346,7 @@ public class And extends XPathOperator
 			  if (xObj1 instanceof XSNumericType) {
 				  java.lang.String str1 = ((XSNumericType)xObj1).stringValue();
 				  
-				  if (!("INF".equals(str1) || "-INF".equals(str1))) {
+				  if (!((Constants.POSITIVE_INF_STR).equals(str1) || (Constants.NEGATIVE_INF_STR).equals(str1))) {
 					  double dbl = Double.valueOf(str1);
 					  
 					  if (dbl == 0) {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:59Z" fail="1" name="op-gMonth-equal" pass="38" run="39" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-21T00:21:43Z" fail="0" name="op-gMonth-equal" pass="39" run="39" statusUnknown="0">
    <testResult status="pass" testName="op-gMonth-equal2args-1"/>
    <testResult status="pass" testName="op-gMonth-equal2args-2"/>
    <testResult status="pass" testName="op-gMonth-equal2args-3"/>
@@ -22,7 +22,7 @@
    <testResult status="pass" testName="op-gMonth-equal-12"/>
    <testResult status="pass" testName="op-gMonth-equal-13"/>
    <testResult status="pass" testName="op-gMonth-equal-14"/>
-   <testResult status="fail" testName="K-gMonthEQ-1"/>
+   <testResult status="pass" testName="K-gMonthEQ-1"/>
    <testResult status="pass" testName="K-gMonthEQ-2"/>
    <testResult status="pass" testName="K-gMonthEQ-3"/>
    <testResult status="pass" testName="K-gMonthEQ-4"/>

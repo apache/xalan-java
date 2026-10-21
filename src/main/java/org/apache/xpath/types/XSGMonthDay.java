@@ -44,7 +44,7 @@ public class XSGMonthDay extends XSAnyAtomicType {
 	private static final long serialVersionUID = -3463438692413910274L;
 
 	/**
-	 * Class fields to represent components of XML Schema type xs:gMonthDay.  
+	 * Class fields to represent components for XML Schema type xs:gMonthDay.  
 	 */
 	
 	private int m_month;
@@ -186,7 +186,55 @@ public class XSGMonthDay extends XSAnyAtomicType {
 	 * Implementation of operation equals, for the type xs:gMonthDay.
 	 */
 	public boolean eq(XSGMonthDay obj2) {
+		
 		boolean result = false;
+		
+		int obj2_month = obj2.getMonth();
+		int obj2_day = obj2.getDay();
+		
+		int obj2_tz_hrs = obj2.getTimezoneHrs();
+		int obj2_tz_min = obj2.getTimezoneMin();
+		
+		boolean isTz1Negative = m_isTimeZoneNegative;		
+		boolean isTz2Negative = obj2.isTimeZoneNegative();
+		
+		if (isTz1Negative && (m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+		   isTz1Negative = false;	
+		}
+		
+		if (isTz2Negative && (obj2_tz_hrs == 0) && (obj2_tz_min == 0)) {
+		   isTz2Negative = false;	
+		}
+		
+		if ((obj2_month == m_month) && (obj2_day == m_day) && 
+				                                             m_isTimeZoned && obj2.isTimeZoned()) {
+		   if (!isTz1Negative && !isTz2Negative && (obj2_tz_hrs == 0) && (obj2_tz_min == 0) 
+				                                                      && (m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+			  result = true;
+			  
+			  return result;
+		   }
+		}
+		
+		if ((obj2_month == m_month) && ((obj2_day + 1) == m_day)) {
+		   if (!isTz1Negative && isTz2Negative) {
+			  if ((m_timezone_hrs == 12) && (obj2_tz_hrs == 12) && (m_timezone_min == 0) && (obj2_tz_min == 0)) {
+				  result = true;
+				  
+				  return result; 
+			  }
+		   }
+		}
+		
+		if ((obj2_month == m_month) && (obj2_day == (m_day + 1))) {
+			if (isTz1Negative && !isTz2Negative) {
+				if ((m_timezone_hrs == 12) && (obj2_tz_hrs == 12) && (m_timezone_min == 0) && (obj2_tz_min == 0)) {
+					result = true;
+
+					return result; 
+				}
+			}
+		}
 		
 		result = ((m_month == obj2.getMonth()) && (m_day == obj2.getDay()) && (m_isTimeZoneNegative == 
 				   obj2.isTimeZoneNegative()) && (m_isTimeZoneUtc == obj2.isTimeZoneUtc()) && 
@@ -200,7 +248,8 @@ public class XSGMonthDay extends XSAnyAtomicType {
 	 * Implementation of operation not equals, for the type xs:gMonthDay.
 	 */
 	public boolean ne(XSGMonthDay obj2) {
-        boolean result = false;
+        
+		boolean result = false;
 		
 		result = !eq(obj2);
 		

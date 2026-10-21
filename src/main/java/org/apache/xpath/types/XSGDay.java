@@ -41,7 +41,7 @@ public class XSGDay extends XSAnyAtomicType {
 	private static final long serialVersionUID = 5356100798451721396L;
 
 	/**
-	 * Class fields to represent components of XML Schema type xs:gDay.  
+	 * Class fields to represent components for XML Schema type xs:gDay.  
 	 */
 	
 	private int m_day;
@@ -155,6 +155,7 @@ public class XSGDay extends XSAnyAtomicType {
 	@Override
 	public String stringValue() {
 		String result = m_gDayStrValue; 
+		
 		if (m_isTimeZoneUtc) {
 		   result = result.replace("+00:00", "Z");
 		}
@@ -170,11 +171,48 @@ public class XSGDay extends XSAnyAtomicType {
 	 * Implementation of operation equals, for the type xs:gDay.
 	 */
 	public boolean eq(XSGDay obj2) {
-        boolean result = false;
+        
+		boolean result = false;
 		
-		result = ((m_day == obj2.getDay()) && (m_isTimeZoneNegative == obj2.isTimeZoneNegative()) && 
-				  (m_isTimeZoneUtc == obj2.isTimeZoneUtc()) && (m_timezone_hrs == obj2.getTimezoneHrs()) && 
-				  (m_timezone_min == obj2.getTimezoneMin()) && (m_isTimeZoned == obj2.isTimeZoned()));
+		int obj2_day = obj2.getDay();
+		
+		int obj2_tz_hrs = obj2.getTimezoneHrs();
+		int obj2_tz_min = obj2.getTimezoneMin();
+		
+		boolean isTz1Negative = m_isTimeZoneNegative;		
+		boolean isTz2Negative = obj2.isTimeZoneNegative();
+		
+		if (isTz1Negative && (m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+		   isTz1Negative = false;	
+		}
+		
+		if (isTz2Negative && (obj2_tz_hrs == 0) && (obj2_tz_min == 0)) {
+		   isTz2Negative = false;	
+		}
+		
+		if ((m_day == (obj2_day + 1)) && m_isTimeZoned && obj2.isTimeZoned()) {
+		   if (!isTz1Negative && isTz2Negative) {
+			  if (((m_timezone_hrs == 12) && (m_timezone_min == 0)) && ((obj2_tz_hrs == 12) && (obj2_tz_min == 0))) {
+				 result = true;
+				 
+				 return result; 
+			  }
+		   }
+		}
+		
+		if (((m_day + 1) == obj2_day) && m_isTimeZoned && obj2.isTimeZoned()) {
+			if (isTz1Negative && !isTz2Negative) {
+				if (((m_timezone_hrs == 12) && (m_timezone_min == 0)) && ((obj2_tz_hrs == 12) && (obj2_tz_min == 0))) {
+					result = true;
+
+					return result; 
+				}
+			}
+		}
+		
+		result = ((m_day == obj2_day) && (isTz1Negative == isTz2Negative) && 
+				  (m_isTimeZoneUtc == obj2.isTimeZoneUtc()) && (m_timezone_hrs == obj2_tz_hrs) && 
+				  (m_timezone_min == obj2_tz_min) && (m_isTimeZoned == obj2.isTimeZoned()));
 		
 		return result;
 	}
@@ -235,6 +273,7 @@ public class XSGDay extends XSAnyAtomicType {
 		try {
 			if (gDayStrValue.startsWith("---")) {
 				String suffixValue = gDayStrValue.substring(3);
+				
 				if (suffixValue.endsWith("Z")) {
 				    m_day = Integer.valueOf(suffixValue.substring(0,2));
 				    m_isTimeZoneUtc = true;
@@ -242,16 +281,20 @@ public class XSGDay extends XSAnyAtomicType {
 				}
 				else {
 					int plusIdx = suffixValue.indexOf('+');
-					if (plusIdx > -1) {
+					
+					if (plusIdx != -1) {
 						m_day = Integer.valueOf(suffixValue.substring(0, plusIdx));
 						String timeZoneStr = suffixValue.substring(plusIdx + 1);
-						if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+						
+						if (isTimeZoneStrFormatOk(timeZoneStr)) {
 							String[] timeZoneStrParts = timeZoneStr.split(":");
 							m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 							m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
+							
 							if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
 								m_isTimeZoneUtc = true;  
 							}
+							
 							m_isTimeZoned = true;
 						}
 						else {
@@ -261,17 +304,23 @@ public class XSGDay extends XSAnyAtomicType {
 					}
 					else {
 						int minusIdx = suffixValue.indexOf('-');
-						if (minusIdx > -1) {
+						
+						if (minusIdx != -1) {
 							m_day = Integer.valueOf(suffixValue.substring(0, minusIdx));
 							String timeZoneStr = suffixValue.substring(minusIdx + 1);
-							if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+							
+							if (isTimeZoneStrFormatOk(timeZoneStr)) {
 								String[] timeZoneStrParts = timeZoneStr.split(":");
 								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
+								
 								if ((m_timezone_hrs == 0) && (m_timezone_min == 0)) {
 									m_isTimeZoneUtc = true;  
 								}
+								
 								m_isTimeZoned = true;
+								
+								m_isTimeZoneNegative = true;
 							}
 							else {
 								throw new TransformerException("FORG0001 : A string value " + gDayStrValue + " cannot be parsed to a "
@@ -296,19 +345,22 @@ public class XSGDay extends XSAnyAtomicType {
 	}
 	
 	/**
-	 * Method definition to check the string format of a timezone string.
+	 * Method definition, to check the timezone string value's lexical format.
 	 * 
 	 * (The regex for timezone's string value is specified within XML Schema 
 	 *  datatypes specification)
 	 * 
-	 * @param strValue					The supplied string value of timezone
-	 * @return							Boolean true or false
+	 * @param str1					The supplied timezone value's string format
+	 * @return					    Boolean value true or false
 	 */
-	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
+	private boolean isTimeZoneStrFormatOk(String str1) {
+		
 		boolean result = false;
 		
 		Pattern pattern = Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");
-		Matcher matcher = pattern.matcher(strValue);
+		
+		Matcher matcher = pattern.matcher(str1);
+		
 		result = matcher.matches(); 
 		
 		return result;

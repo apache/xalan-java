@@ -1654,14 +1654,21 @@ public class XSL3FunctionService {
     	ResultSequence evalResultSequence = null;
     	ResultSequence argSequence = new ResultSequence();
     	
-    	int funcArgCount = funcObj.getArgCount();    	
+    	int funcArgCount = funcObj.getArgCount();
+    	
+    	String funcName1 = funcObj.getFunctionName();
     	
     	for (int idx = 0; idx < funcArgCount; idx++) {
 			Expression funcArg = funcObj.getArg(idx);    						
 			String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-			Constructor cons = dataType.getConstructor(new Class[] { String.class });
-			Object obj = cons.newInstance(new Object[] { argStr });
-			argSequence.add((XObject)obj);
+			
+			if (!(Keywords.XS_NORMALIZED_STRING).equals(funcName1)) {
+			   argStr = argStr.trim();
+			}
+			
+			Constructor cons_1 = dataType.getConstructor(new Class[] { String.class });
+			Object obj_1 = cons_1.newInstance(new Object[] { argStr });
+			argSequence.add((XObject)obj_1);
 		}
     	
     	Object obj = dataType.newInstance();

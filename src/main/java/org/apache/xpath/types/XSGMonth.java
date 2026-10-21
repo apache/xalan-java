@@ -41,7 +41,7 @@ public class XSGMonth extends XSAnyAtomicType {
 	private static final long serialVersionUID = -3607305468895616720L;
 
 	/**
-	 * Class fields to represent components of XML Schema type xs:gMonth.  
+	 * Class fields to represent components for XML Schema type xs:gMonth.  
 	 */
 	
 	private int m_month;

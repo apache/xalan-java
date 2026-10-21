@@ -17,7 +17,7 @@ import xml.xpath31.processor.types.XPath3DecimalFormat;
 /**
  * Xalan-J XPath 3.1 decimal format test cases.
  * 
- * Contributed via Xalan Java mailing list.
+ * Contributed via Xalan-J mailing list.
  * 
  * @author Samael Bate                       
  *                       

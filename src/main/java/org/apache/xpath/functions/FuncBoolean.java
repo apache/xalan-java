@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
@@ -227,7 +228,7 @@ public class FuncBoolean extends FunctionOneArg
 			
 			   return result;
 			}			
-			else if ("-INF".equals(str1) || "INF".equals(str1)) {
+			else if ((Constants.POSITIVE_INF_STR).equals(str1) || (Constants.NEGATIVE_INF_STR).equals(str1)) {
 				result = new XSBoolean(true);
 
 				return result;

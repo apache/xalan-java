@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
@@ -32,6 +33,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Class definition, representing an XPath 3.1 compiled expression
@@ -53,7 +57,7 @@ public class XPathLiteralWithPredicate extends Expression {
 	 * that filters whether the literal should be returned or not 
 	 * by an XPath expression.
 	 */
-	private String m_predicate_xpath_str = null;
+	private String m_xpath_predicate_str = null;
 	
     private Vector m_vars;
 	
@@ -65,27 +69,47 @@ public class XPathLiteralWithPredicate extends Expression {
 		XObject result = null;
 		
         SourceLocator srcLocator = null;
-		
-		final int sourceNode = xctxt.getCurrentNode(); 
+        
+        final int sourceNode = xctxt.getCurrentNode(); 
 		
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 		
 		if (prefixTable != null) {
-		   m_predicate_xpath_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_predicate_xpath_str, prefixTable);
+		   m_xpath_predicate_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpath_predicate_str, prefixTable);
 		}
 		
-		XPath predicateXPathObj = new XPath(m_predicate_xpath_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		XPath xpathPredicateObj = new XPath(m_xpath_predicate_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		
 		if (m_vars != null) {
-			predicateXPathObj.fixupVariables(m_vars, m_globals_size);
+			xpathPredicateObj.fixupVariables(m_vars, m_globals_size);
 		}
 		
-		XObject xObj1 = predicateXPathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		XObject xpathCtxtItem = null;
+		
+		try {
+		   xpathCtxtItem = new XSDecimal(m_literal_str);
+		}
+		catch (NumberFormatException ex) {
+		   xpathCtxtItem = new XSString(m_literal_str);
+		}
+		
+		XObject xObj1 = null;
+		
+		XObject prevXPathCtxtItem = xctxt.getXPath3ContextItem(); 
+		
+		xctxt.setXPath3ContextItem(xpathCtxtItem);
+		
+		try {
+		   xObj1 = xpathPredicateObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		}
+		finally {
+		   xctxt.setXPath3ContextItem(prevXPathCtxtItem);
+		}
 		
 		if (xObj1.bool()) {
 		   XPath literalXPathObj = new XPath(m_literal_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 		   
-		   result = literalXPathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());; 
+		   result = literalXPathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());; 
 		}
 		else {
 		   result = new ResultSequence();
@@ -120,11 +144,11 @@ public class XPathLiteralWithPredicate extends Expression {
 	}
 
 	public String getPredicateStr() {
-		return m_predicate_xpath_str;
+		return m_xpath_predicate_str;
 	}
 
 	public void setPredicateStr(String predicateStr) {
-		this.m_predicate_xpath_str = predicateStr;
+		this.m_xpath_predicate_str = predicateStr;
 	}
 
 }

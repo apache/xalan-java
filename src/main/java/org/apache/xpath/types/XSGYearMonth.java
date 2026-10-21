@@ -41,7 +41,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	private static final long serialVersionUID = 7570071303286900072L;
 	
 	/**
-	 * Class fields to represent components of XML Schema type xs:gYearMonth.  
+	 * Class fields to represent components for XML Schema type xs:gYearMonth.  
 	 */
 	
 	private int m_year;
@@ -177,7 +177,35 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	 * Implementation of operation equals, for the type xs:gYearMonth.
 	 */
 	public boolean eq(XSGYearMonth obj2) {		
+		
 		boolean result = false;
+		
+		int obj2_year = obj2.getYear();
+		int obj2_month = obj2.getMonth();
+
+		boolean isTz1Negative = m_isTimeZoneNegative;		
+		boolean isTz2Negative = obj2.isTimeZoneNegative();
+
+		int obj2_tz_hrs = obj2.getTimezoneHrs();
+		int obj2_tz_min = obj2.getTimezoneMin();
+
+		if (isTz1Negative && (m_timezone_hrs == 0) && (m_timezone_min == 0)) {
+			isTz1Negative = false;	
+		}
+
+		if (isTz2Negative && (obj2_tz_hrs == 0) && (obj2_tz_min == 0)) {
+			isTz2Negative = false;	
+		}
+
+		if ((m_year == obj2_year) && (m_month == obj2_month)) {
+			if (!isTz1Negative && !isTz2Negative) {
+				if ((m_timezone_hrs == 0) && (m_timezone_min == 0) && (obj2_tz_hrs == 0) && (obj2_tz_min == 0)) {
+					result = true;
+
+					return result;
+				}
+			}
+		}
 		
 		result = ((m_year == obj2.getYear()) && (m_month == obj2.getMonth()) && 
 				  (m_isNegative == obj2.isNegative()) && (m_isTimeZoneNegative == obj2.isTimeZoneNegative()) && 

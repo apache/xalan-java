@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:59Z" fail="7" name="op-gMonthDay-equal" pass="38" run="45" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-21T00:21:43Z" fail="0" name="op-gMonthDay-equal" pass="45" run="45" statusUnknown="0">
    <testResult status="pass" testName="op-gMonthDay-equal2args-1"/>
    <testResult status="pass" testName="op-gMonthDay-equal2args-2"/>
    <testResult status="pass" testName="op-gMonthDay-equal2args-3"/>
@@ -22,14 +22,14 @@
    <testResult status="pass" testName="op-gMonthDay-equal-12"/>
    <testResult status="pass" testName="op-gMonthDay-equal-13"/>
    <testResult status="pass" testName="op-gMonthDay-equal-14"/>
-   <testResult status="fail" testName="K-gMonthDayEQ-1"/>
+   <testResult status="pass" testName="K-gMonthDayEQ-1"/>
    <testResult status="pass" testName="K-gMonthDayEQ-2"/>
    <testResult status="pass" testName="K-gMonthDayEQ-3"/>
    <testResult status="pass" testName="K-gMonthDayEQ-4"/>
-   <testResult status="fail" testName="K-gMonthDayEQ-5"/>
+   <testResult status="pass" testName="K-gMonthDayEQ-5"/>
    <testResult status="pass" testName="K-gMonthDayEQ-6"/>
    <testResult status="pass" testName="K-gMonthDayEQ-7"/>
-   <testResult status="fail" testName="K-gMonthDayEQ-8"/>
+   <testResult status="pass" testName="K-gMonthDayEQ-8"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-002"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-003"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-004"/>
@@ -38,10 +38,10 @@
    <testResult status="pass" testName="cbcl-gMonthDay-equal-008"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-009"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-010"/>
-   <testResult status="fail" testName="cbcl-gMonthDay-equal-015"/>
-   <testResult status="fail" testName="cbcl-gMonthDay-equal-016"/>
-   <testResult status="fail" testName="cbcl-gMonthDay-equal-017"/>
-   <testResult status="fail" testName="cbcl-gMonthDay-equal-018"/>
+   <testResult status="pass" testName="cbcl-gMonthDay-equal-015"/>
+   <testResult status="pass" testName="cbcl-gMonthDay-equal-016"/>
+   <testResult status="pass" testName="cbcl-gMonthDay-equal-017"/>
+   <testResult status="pass" testName="cbcl-gMonthDay-equal-018"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-019"/>
    <testResult status="pass" testName="cbcl-gMonthDay-equal-020"/>
 </testrun>

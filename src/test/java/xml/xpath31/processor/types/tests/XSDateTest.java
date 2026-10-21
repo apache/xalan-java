@@ -24,7 +24,7 @@ import xml.xpath31.processor.types.XSDate;
 /**
  * Xalan-J XPath 3.1 data type xs:date test cases.
  * 
- * Contributed via Xalan Java mailing list.
+ * Contributed via Xalan-J mailing list.
  * 
  * @author Samael Bate                       
  *                       

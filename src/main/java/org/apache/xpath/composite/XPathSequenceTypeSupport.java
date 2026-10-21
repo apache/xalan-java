@@ -1851,8 +1851,8 @@ public class XPathSequenceTypeSupport {
                result = new XSUnsignedByte(srcStrVal);
             }            
             else if (expectedType == XS_FLOAT) {
-            	boolean isStrValueNumeric;
-            	if (!("INF".equals(srcStrVal) || "-INF".equals(srcStrVal))) {
+            	boolean isStrValueNumeric;            	
+            	if (!((Constants.POSITIVE_INF_STR).equals(srcStrVal) || (Constants.NEGATIVE_INF_STR).equals(srcStrVal))) {
             	   isStrValueNumeric = isStrValueNumericFormat(srcStrVal);
             	}
             	else {
@@ -1865,7 +1865,7 @@ public class XPathSequenceTypeSupport {
             }
             else if (expectedType == XS_DOUBLE) {               
             	boolean isStrValueNumeric;
-            	if (!("INF".equals(srcStrVal) || "-INF".equals(srcStrVal))) {
+            	if (!((Constants.POSITIVE_INF_STR).equals(srcStrVal) || (Constants.NEGATIVE_INF_STR).equals(srcStrVal))) {
             	   isStrValueNumeric = isStrValueNumericFormat(srcStrVal);
             	}
             	else {

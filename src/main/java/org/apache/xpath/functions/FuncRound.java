@@ -22,6 +22,7 @@ import java.text.DecimalFormat;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
@@ -83,7 +84,7 @@ public class FuncRound extends Function2Args
               throw new javax.xml.transform.TransformerException("FORG0006 : The XPath function call round() is provided with an empty first argument.", srcLocator);
           }
           
-          if ("INF".equals(strValueOfArg0) || "-INF".equals(strValueOfArg0)) {
+          if ((Constants.POSITIVE_INF_STR).equals(strValueOfArg0) || (Constants.NEGATIVE_INF_STR).equals(strValueOfArg0)) {
         	  throw new javax.xml.transform.TransformerException("FOAR0001 : An XPath function call round() has an argument to be "
         	  		                                                                                      + "rounded as INF, or -INF, which was probably "
         	  		                                                                                      + "evaluated as result of division by zero.", srcLocator); 

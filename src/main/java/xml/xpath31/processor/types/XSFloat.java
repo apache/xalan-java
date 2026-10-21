@@ -39,14 +39,14 @@ public class XSFloat extends XSNumericType {
      * Class constructor.
      */
 	public XSFloat(String strVal) throws javax.xml.transform.TransformerException {
-		try {
-	       if ("-INF".equals(strVal)) {
-			  _value = new Float(Float.NEGATIVE_INFINITY);
-		   } 
-	       else if ("INF".equals(strVal) || "+INF".equals(strVal)) {
-	    	  // +INF is rejected with XSD 1.0
+		try {	        
+		   if ((XPath3DecimalFormat.POSITIVE_INF_STR1).equals(strVal) || (XPath3DecimalFormat.POSITIVE_INF_STR2).equals(strVal)) {
+	    	  // Literal string +INF is rejected with XSD 1.0			   
 			  _value = new Float(Float.POSITIVE_INFINITY);
 		   } 
+		   else if ((XPath3DecimalFormat.NEGATIVE_INF_STR).equals(strVal)) {
+			  _value = new Float(Float.NEGATIVE_INFINITY);
+		   }
 	       else {
 		      _value = new Float(strVal);
 		   }
@@ -97,11 +97,11 @@ public class XSFloat extends XSNumericType {
             
             String strVal = xsAnyType.stringValue();
             
-            if ("INF".equals(strVal) || "+INF".equals(strVal)) {
-            	// +INF is rejected with XSD 1.0
+            if ((XPath3DecimalFormat.POSITIVE_INF_STR1).equals(strVal) || (XPath3DecimalFormat.POSITIVE_INF_STR2).equals(strVal)) {
+            	// Literal string +INF is rejected with XSD 1.0            	
                 floatVal = new Float(Float.POSITIVE_INFINITY);
             } 
-            else if ("-INF".equals(strVal)) {
+            else if ((XPath3DecimalFormat.NEGATIVE_INF_STR).equals(strVal)) {
                 floatVal = new Float(Float.NEGATIVE_INFINITY);
             } 
             else if (xsAnyType instanceof XSBoolean) {

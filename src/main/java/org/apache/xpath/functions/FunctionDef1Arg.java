@@ -18,6 +18,7 @@
 package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
@@ -187,10 +188,10 @@ public class FunctionDef1Arg extends FunctionOneArg
        else if (xObj instanceof XString) {
     	   XString xStr = (XString)xObj;
     	   String str1 = xStr.str();
-    	   if ("INF".equals(str1)) {
+    	   if ((Constants.POSITIVE_INF_STR).equals(str1)) {
     		  return Double.POSITIVE_INFINITY; 
     	   }
-    	   else if ("-INF".equals(str1)) {
+    	   else if ((Constants.NEGATIVE_INF_STR).equals(str1)) {
     		  return Double.NEGATIVE_INFINITY; 
     	   }
     	   else {

@@ -20,7 +20,7 @@ import xml.xpath31.processor.types.XSTime;
 /**
  * Xalan-J XPath 3.1 data type xs:time test cases.
  * 
- * Contributed via Xalan Java mailing list.
+ * Contributed via Xalan-J mailing list.
  * 
  * @author Samael Bate                      
  *                       

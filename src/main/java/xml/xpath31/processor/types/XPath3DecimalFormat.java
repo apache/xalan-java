@@ -11,20 +11,23 @@ import java.text.FieldPosition;
 import java.util.Locale;
 
 /**
- * This class provides an XPath 3.0 specific implementation of decimal 
- * number string format, to handle few of the XPath specific decimal number 
- * string formatting requirements.
+ * Class definition, that provides an XPath 3.0 specific 
+ * implementation for decimal number string format, to support 
+ * few of the XPath specific decimal number string formatting 
+ * requirements.
  * 
  * This class extends the Java class java.text.DecimalFormat and inherits 
  * most of its significant implementation behavior.  
  */
 public class XPath3DecimalFormat extends DecimalFormat {
 
-    private static final long serialVersionUID = 5055460273589749811L;
-
-    private static final String NEG_INFINITY = "-INF";
+    private static final long serialVersionUID = 5055460273589749811L;    
 	
-	private static final String POS_INFINITY = "INF";
+	public static final String POSITIVE_INF_STR1 = "INF";
+	
+	public static final String POSITIVE_INF_STR2 = "+INF";
+	
+	public static final String NEGATIVE_INF_STR = "-INF";
 
 	/*
 	 * Class constructor.
@@ -63,11 +66,11 @@ public class XPath3DecimalFormat extends DecimalFormat {
         Float floatValue = (Float) floatVal;
         
         if (floatValue.floatValue() == Float.NEGATIVE_INFINITY) {
-            return NEG_INFINITY;
+            return NEGATIVE_INF_STR;
         }
         
         if (floatValue.floatValue() == Float.POSITIVE_INFINITY) {
-            return POS_INFINITY;
+            return POSITIVE_INF_STR1;
         }        
         
         if (floatValue.floatValue() > -1E6f && floatValue.floatValue() < 1E6f) {            
@@ -88,11 +91,11 @@ public class XPath3DecimalFormat extends DecimalFormat {
 		Double doubleValue = (Double) doubleVal;
 		
 		if (doubleValue.doubleValue() == Double.NEGATIVE_INFINITY) {
-			return NEG_INFINITY;
+			return NEGATIVE_INF_STR;
 		}
 		
 		if (doubleValue.doubleValue() == Double.POSITIVE_INFINITY) {
-			return POS_INFINITY;
+			return POSITIVE_INF_STR1;
 		}
 		
 		BigDecimal doubValue = new BigDecimal((((Double) doubleVal)).

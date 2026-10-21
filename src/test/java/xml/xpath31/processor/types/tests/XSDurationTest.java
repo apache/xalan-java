@@ -24,7 +24,7 @@ import xml.xpath31.processor.types.XSDuration;
 /**
  * Xalan-J XPath 3.1 data type xs:duration test cases.
  * 
- * Contributed via Xalan Java mailing list.
+ * Contributed via Xalan-J mailing list.
  * 
  * @author Samael Bate                       
  *                       
