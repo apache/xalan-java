@@ -80,6 +80,7 @@ import org.apache.xpath.composite.XPathExprFuncCallExtendedArg;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
+import org.apache.xpath.functions.context.FuncCurrentDateTime;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
@@ -192,37 +193,19 @@ public class XSL3FunctionService {
     		String funcName = funcObj.getFunctionName();
     		String funcNamespace = funcObj.getNamespace();
     		
-    		Vector argVector2 = funcObj.getArgVector();    		
-    		int size1 = argVector2.size();
+    		final int funcArgCount = funcObj.getArgCount();
     		
-    		boolean argVectorModified = false;
+    		Vector funcArgVector = funcObj.getArgVector();
     		
-    		for (int idx = 0; idx < size1; idx++) {
-    			Object argObj1 = argVector2.elementAt(idx); 
+    		for (int idx = 0; idx < funcArgCount; idx++) {
+    			Object argObj1 = funcArgVector.elementAt(idx); 
     			
     			if (argObj1 instanceof XNumber) {
     				XNumber xNumber = (XNumber)argObj1;
-    				
-    				if (xNumber.getXsDecimal() != null) {
-    					argVector2.setElementAt(xNumber.getXsDecimal(), idx);
-    					
-    					argVectorModified = true;
-    				}
-    				else if (xNumber.getXsDouble() != null) {
-    					argVector2.setElementAt(xNumber.getXsDouble(), idx);
-    					
-    					argVectorModified = true;
-    				}
-    				else if (xNumber.getXsInteger() != null) {
-    					argVector2.setElementAt(xNumber.getXsInteger(), idx);
-    					
-    					argVectorModified = true;
-    				}
+    				    				
+    				XObject xObj = XslTransformEvaluationHelper.getXNumberNormalizedValue(xNumber);
+    				funcArgVector.setElementAt(xObj, idx);
     			}
-    		}
-    		
-    		if (argVectorModified) {
-    			funcObj.setArgVector(argVector2);
     		}
     		
     		if (!((Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace) || (Constants.S_EXTENSIONS_XALANLIB_URL).equals(funcNamespace))) {
@@ -247,15 +230,14 @@ public class XSL3FunctionService {
     				}
 
     				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
-
-    				Vector argVector = funcObj.getArgVector();
+    				
     				int xslFuncArgCount = 0;
+    				
     				ResultSequence xslFuncArgSequence = new ResultSequence();
     				List<String> funcExtArgStrList = null;
-    				int argCount = argVector.size();
     				
-    				for (int idx = 0; idx < argCount; idx++) {
-    					Expression argExpr = (Expression)(argVector.elementAt(idx));
+    				for (int idx = 0; idx < funcArgCount; idx++) {
+    					Expression argExpr = (Expression)(funcArgVector.elementAt(idx));
     					
     					if (argExpr instanceof XPathExprFuncCallExtendedArg) {    						    						
     						XPathExprFuncCallExtendedArg xpathExprFuncCallExtendedArg = (XPathExprFuncCallExtendedArg)argExpr;
@@ -356,7 +338,7 @@ public class XSL3FunctionService {
     											function.setArg(argXPath.getExpression(), idx);
     										} 
     										catch (WrongNumberArgsException ex) {
-    											// no op
+    											// No op
     										}    									
     									}
 
@@ -426,8 +408,8 @@ public class XSL3FunctionService {
     				// within XML Schema namespace.
 
     				ResultSequence argSequence = new ResultSequence();
-    				ResultSequence evalResultSequence = null;
-
+    				ResultSequence evalResultSequence = null;    				
+    				
     				try {
     					switch (funcName) {
     					case Keywords.XS_STRING :
@@ -562,7 +544,7 @@ public class XSL3FunctionService {
     						
     						break;
     					case Keywords.FUNC_BOOLEAN_STRING :    					
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    						for (int idx = 0; idx < funcArgCount; idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							Boolean boolVal = Boolean.valueOf(("0".equals(argStr) || "false".equals(argStr)) ? "false" : "true");
@@ -574,19 +556,31 @@ public class XSL3FunctionService {
 
     						break;
     					case Keywords.XS_DATE :
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    							Expression funcArg = funcObj.getArg(idx);    						
-    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    						for (int idx = 0; idx < funcArgCount; idx++) {
+    							Expression funcArg = funcObj.getArg(idx);
+    							String argStr = null;
     							
-    							argSequence.add(XSDate.parseDate(argStr));
+    							if (!(funcArg instanceof FuncCurrentDateTime)) {
+    							   argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    							   argSequence.add(XSDate.parseDate(argStr));
+    							   
+    							   evalResultSequence = (new XSDate()).constructor(argSequence);
+    							}    							
+    							else {
+    							   FuncCurrentDateTime funcCurrentDateTime = (FuncCurrentDateTime)funcArg;
+    							   XSDateTime xsDateTime = (XSDateTime)(funcCurrentDateTime.execute(xctxt));    							   
+    							   
+    							   argSequence.add(xsDateTime);
+    							   
+    							   evalResultSequence = (new XSDate()).constructor(argSequence);
+    							}    							    							
     						}
-    						
-    						evalResultSequence = (new XSDate()).constructor(argSequence); 
+    						    						 
     						evalResult = evalResultSequence.item(0);
 
     						break;
     					case Keywords.XS_DATETIME :
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    						for (int idx = 0; idx < funcArgCount; idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							
@@ -598,7 +592,7 @@ public class XSL3FunctionService {
 
     						break;
     					case Keywords.XS_DURATION :
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    						for (int idx = 0; idx < funcArgCount; idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							XSDuration xsDuration = XSDuration.parseDuration(argStr);
@@ -609,14 +603,15 @@ public class XSL3FunctionService {
     								evalResult = evalResultSequence.item(0);
     							}
     							else {
-    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:duration value '" + 
-    																									argStr + "' is present in the input.", srcLocator); 
+    								throw new TransformerException("FORG0001 : An XML Schema type constructor function call for 'duration' has "
+    										                                                                                    + "incorrectly formatted argument "
+    										                                                                                    + "string value.", srcLocator); 
     							}
     						}
 
     						break;
     					case Keywords.XS_YEAR_MONTH_DURATION :                   
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    						for (int idx = 0; idx < funcArgCount; idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							XSDuration xsDuration = XSYearMonthDuration.parseYearMonthDuration(argStr);
@@ -627,14 +622,15 @@ public class XSL3FunctionService {
     								evalResult = evalResultSequence.item(0);
     							}
     							else {
-    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
-    																									argStr + "' is present in the input.", srcLocator); 
+    								throw new TransformerException("FORG0001 : An XML Schema type constructor function call for 'yearMonthDuration' has "
+																				                                                + "incorrectly formatted argument "
+																				                                                + "string value.", srcLocator);
     							}
     						}
 
     						break;
     					case Keywords.XS_DAY_TIME_DURATION :                 
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    						for (int idx = 0; idx < funcArgCount; idx++) {
     							Expression funcArg = funcObj.getArg(idx);    						
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(argStr);
@@ -644,28 +640,42 @@ public class XSL3FunctionService {
     								evalResultSequence = (new XSDayTimeDuration()).constructor(argSequence); 
     								evalResult = evalResultSequence.item(0);
     							}
-    							else {
-    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
-    																									argStr + "' is present in the input.", srcLocator); 
+    							else {    								
+    								throw new TransformerException("FORG0001 : An XML Schema type constructor function call for 'dayTimeDuration' has "
+																									                                                  + "incorrectly formatted argument "
+																									                                                  + "string value.", srcLocator);
     							}                            
     						}
 
     						break;
     					case Keywords.XS_TIME :                 
-    						for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    							Expression funcArg = funcObj.getArg(idx);    						
-    							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
-    							XSTime xsTime = XSTime.parseTime(argStr);
+    						for (int idx = 0; idx < funcArgCount; idx++) {
+    							Expression funcArg = funcObj.getArg(idx);
     							
-    							if (xsTime != null) {
-    								argSequence.add(xsTime);
-    								evalResultSequence = (new XSTime()).constructor(argSequence); 
-    								evalResult = evalResultSequence.item(0);
+    							if (!(funcArg instanceof FuncCurrentDateTime)) {    							
+    								String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+    								XSTime xsTime = XSTime.parseTime(argStr);
+
+    								if (xsTime != null) {
+    									argSequence.add(xsTime);
+    									evalResultSequence = (new XSTime()).constructor(argSequence); 
+    								}
+    								else {
+    									throw new TransformerException("FORG0001 : An XML Schema type constructor function call for 'time' has "
+																								                                                + "incorrectly formatted argument "
+																								                                                + "string value.", srcLocator); 
+    								}
     							}
     							else {
-    								throw new TransformerException("FORG0001 : An incorrectly formatted xs:time value '" + 
-    																									argStr + "' is present in the input.", srcLocator); 
-    							}                            
+    								FuncCurrentDateTime funcCurrentDateTime = (FuncCurrentDateTime)funcArg;
+    								XSDateTime xsDateTime = (XSDateTime)(funcCurrentDateTime.execute(xctxt));    							   
+
+    								argSequence.add(xsDateTime);
+
+    								evalResultSequence = (new XSTime()).constructor(argSequence);
+    							}
+    							
+    							evalResult = evalResultSequence.item(0);
     						}
 
     						break;
@@ -673,10 +683,8 @@ public class XSL3FunctionService {
     						evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSAnyURI.class, xctxt);
     						
     						break;
-    					case Keywords.XS_QNAME :		    					
-    						int argCount = funcObj.getArgCount();		    					
-    						
-    						if (argCount == 1) {
+    					case Keywords.XS_QNAME :		    							    					    						
+    						if (funcArgCount == 1) {
     							Expression funcArg = funcObj.getArg(0);
     							String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
     							int colonIdx = argStr.indexOf(':');
@@ -714,7 +722,7 @@ public class XSL3FunctionService {
 
     							evalResult = new XSQName(prefix, localName, namespaceUri);
     						}
-    						else if (argCount == 2) {		    					    		    					    
+    						else if (funcArgCount == 2) {		    					    		    					    
     							String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
     							String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
 
@@ -740,7 +748,7 @@ public class XSL3FunctionService {
 
     							evalResult = new XSQName(prefix, localName, namespaceUri);
     						}
-    						else if (argCount == 3) {
+    						else if (funcArgCount == 3) {
     							String prefix = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(0), xctxt);
     							String localName = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(1), xctxt);
     							String namespaceUri = getXPathBuiltInConstructorFunctionArgStr(funcObj.getArg(2), xctxt);
@@ -754,7 +762,7 @@ public class XSL3FunctionService {
     						
     						evalResult = new XSUntypedAtomic(argStr);
     					default:
-    						// no op
+    						// No op
     					}
     				}
     				catch (Exception ex) {
@@ -1909,7 +1917,7 @@ public class XSL3FunctionService {
 				    }
 				}	
 				catch (Exception ex) {
-					// no op	
+					// No op	
 				}
 			}
 
