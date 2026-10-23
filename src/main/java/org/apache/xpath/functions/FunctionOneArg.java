@@ -28,7 +28,6 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
@@ -258,13 +257,6 @@ public class FunctionOneArg extends Function implements ExpressionOwner
 
  	  if (xpathArr.size() == 0) {
  		  result = true;	
- 	  }
- 	  else if (xpathArr.size() == 1) {
- 		  XObject xObj = xpathArr.get(0);
- 		  
- 		  if ((xObj instanceof XPathArray) && (((XPathArray)xObj).size() == 0)) {
- 			  result = true; 
- 		  }
  	  }
 
  	  return result;

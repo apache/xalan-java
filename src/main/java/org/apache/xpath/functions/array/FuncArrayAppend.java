@@ -73,8 +73,19 @@ public class FuncArrayAppend extends Function2Args {
 		XObject xObj2 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		
 		xpathArr.add(xObj2);
-
-		result = xpathArr;
+		
+		if ((xObj0 instanceof XPathArray) && (xObj2 instanceof XPathArray)) {
+		   if ((((XPathArray)xObj0).size() == 0) && (((XPathArray)xObj2).size() == 0)) {
+			  XPathArray xpathArr2 = new XPathArray();			  
+			  xpathArr2.add(new XPathArray());
+			  
+			  result = xpathArr2; 
+		   }
+		}
+		
+		if (result == null) {
+		   result = xpathArr;
+		}
 
 		return result;
 	}

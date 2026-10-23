@@ -4378,7 +4378,7 @@ public class XPathParser
     		
     		while (m_token != null) {    		   
     		   strBuff1.append(m_token + " ");
-    		   String str1 = strBuff1.toString();    		       		   
+    		   String str1 = (strBuff1.toString()).trim();    		       		   
     		   
     		   if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
     			  strBuff.append(str1);
@@ -4395,12 +4395,22 @@ public class XPathParser
     					break;
     				 }    				  
     				 else {
-    					 restoreTokenQueueXPathParsePos(prevTokenQueuePos1);    					 
+    					 restoreTokenQueueXPathParsePos(prevTokenQueuePos1);
+    					 
     					 isExtraCheck = true;
     					 
     					 break;
     				 }
     			  } 
+    		   }
+    		   else if (tokenIs(',') && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '(', ')')) {
+    			  str1 = str1.substring(0, str1.length() - 1);    			  
+    			  strBuff.append(str1);
+     			  str1 = strBuff.toString();
+     			  
+     			  isExtraCheck2 = true;
+     			  
+     			  break;
     		   }
     		   
     		   nextToken();    		   
@@ -8119,7 +8129,7 @@ public class XPathParser
 
        return;
     }
-    else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))) {
+    else if ((lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))) && !(Keywords.IF).equals(m_token)) {
        TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
        
        String funcName = null;
@@ -12098,25 +12108,60 @@ public class XPathParser
 			}
 		}
 		else {
-			int funcTok = getFunctionToken(funcLocalName, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);
+			int funcTok = getFunctionToken(funcLocalName, XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);						
 			
 			if (funcTok >= 0) {
-				String namedFuncRef = m_token;
-				nextToken();
+				if (lookahead("=>",1)) {
+					String namedFuncRef = m_token;					
+					nextToken();
 
-				insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+					insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_ARROW);
+					
+					consumeExpected("=>");
+					
+					appendOp(2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
 
-				m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
-				m_xpathNamedFunctionReference.setFuncName(funcLocalName);
-				m_xpathNamedFunctionReference.setFuncNamespace(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);			
-				String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
-				
-				if ((Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
-					m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+					m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+					m_xpathNamedFunctionReference.setFuncName(funcLocalName);
+					m_xpathNamedFunctionReference.setFuncNamespace(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);			
+					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
+
+					if ((Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+						m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+					}
+					else {
+						m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
+					}
+					
+					FunctionCall();
+
+					if (m_token != null) {
+						m_arrowOpRemainingXPathExprStr = "";  
+					}
+
+					while (m_token != null) {
+						m_arrowOpRemainingXPathExprStr += m_token;
+						nextToken();
+					}
 				}
 				else {
-					m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
-				}
+					String namedFuncRef = m_token;
+					nextToken();
+
+					insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+
+					m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+					m_xpathNamedFunctionReference.setFuncName(funcLocalName);
+					m_xpathNamedFunctionReference.setFuncNamespace(XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI);			
+					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#') + 1);
+
+					if ((Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
+						m_xpathNamedFunctionReference.setConcatArity(Integer.valueOf(funcArityStr));
+					}
+					else {
+						m_xpathNamedFunctionReference.setArity(Short.valueOf(funcArityStr));
+					}	
+				}															
 
 				m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH, 
 						                                    m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
@@ -13146,7 +13191,7 @@ public class XPathParser
 
     	boolean isXPathGeneralCmp = false;
     	
-    	if (tokenIs('=')) {
+    	if (tokenIs("=")) {
     		isXPathGeneralCmp = true;
 
     		appendOp(2, OpCodes.XPath3OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
@@ -13224,7 +13269,10 @@ public class XPathParser
     		m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH, 
     				                                    m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
 
-    	}    	
+    	}
+    	else if (tokenIs("=>") && lookahead("apply", 1) && lookahead('(', 2)) {
+    		error(XPATHErrorResources.ER_FN_APPLY_WRONG_ARG, new Object[]{});
+    	}
     	else {
     		// Resume XPath parse, using the same token queue
     		m_queueMark = 0;            		  

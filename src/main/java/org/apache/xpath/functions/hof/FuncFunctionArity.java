@@ -34,6 +34,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.FuncPeriod;
 import org.apache.xpath.functions.Function;
@@ -106,7 +107,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 					   Function func1 = (Function)obj1;					   
 					   
 					   if ((func1 instanceof FuncConcat) || (func1 instanceof FuncPeriod)) {
-						  result = new XSInteger(func1.getRuntimeArgCount() + ""); 
+						  result = new XSInteger(func1.getFuncArgCount() + ""); 
 					   }
 					   else {
 						  short arity = (func1.getArity())[0];
@@ -267,14 +268,29 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		 * verified below with an XPath function's arity value defined within 
 		 * XPath 3.1 F&O spec and correspondingly configured within Xalan-J code.
 		 */
-		final Short runTimeArity = xpathNamedFunctionReference.getArity();
+		Short runTimeArity = xpathNamedFunctionReference.getArity();
 		
-		short funcActualArity = FUNC_ARITY_NOT_KNOWN;
+		int fnConcatRunTimeArity = 0;
 		
 		String funcName = xpathNamedFunctionReference.getFuncName();
 		String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
 		
-		String funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + runTimeArity;
+		if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && (Keywords.FUNC_CONCAT_STRING).equals(funcName)) {
+			if (runTimeArity == null) {
+			   fnConcatRunTimeArity = xpathNamedFunctionReference.getConcatArity(); 
+			}
+		}
+		
+		short funcActualArity = FUNC_ARITY_NOT_KNOWN;				
+		
+		String funcNameRefStr = null;
+		
+		if (fnConcatRunTimeArity == 0) {
+		   funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + runTimeArity;
+		}
+		else {
+		   funcNameRefStr = "{" + funcNamespace + "}" + funcName + "#" + fnConcatRunTimeArity;
+		}
 		
 		ElemFunction elemFunction = xpathNamedFunctionReference.getXslStylesheetFunction();
 		
@@ -290,10 +306,25 @@ public class FuncFunctionArity extends FunctionDef1Arg
 				   funcActualArity = 1;
 				   result = new XSInteger(String.valueOf(funcActualArity));
 				}
-			}									
+			}
+			else if (function instanceof FuncConcat) {
+				FuncConcat funcConcat = (FuncConcat)function;
+				int funcMinArity = funcConcat.getMinArity();
+				int funcMaxArity = funcConcat.getMaxArity();
+				
+				if ((fnConcatRunTimeArity >= funcMinArity) && (fnConcatRunTimeArity <= funcMaxArity)) {
+				   result = new XSInteger(String.valueOf(fnConcatRunTimeArity));
+				}
+				else {
+				   throw new TransformerException("XPST0017 : An XSL function definition for function reference " + funcNameRefStr 
+							                                                                                      + " not found.", srcLocator);
+				}
+			}
 			else {
-				Short[] funcDefinedArityArr = function.getArity();						
+				Short[] funcDefinedArityArr = function.getArity();	
+				
 				List<Short> funcDefinedArityList = Arrays.asList(funcDefinedArityArr);
+				
 				if (funcDefinedArityList.contains(runTimeArity)) {
 					funcActualArity = runTimeArity;
 					result = new XSInteger(String.valueOf(funcActualArity));

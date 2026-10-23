@@ -20,6 +20,7 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
@@ -64,6 +65,14 @@ public class FuncArrayHead extends FunctionOneArg {
 	       
 	       if (xpathArr.size() > 0) {
 	          result = xpathArr.get(0);
+	          
+	          if ((result instanceof ResultSequence) && (((ResultSequence)result).size() == 0)) {
+	        	 result = xpathArr.get(1);
+	        	 
+	        	 if (result instanceof ResultSequence) {
+	        		result = ((ResultSequence)result).item(0);  
+	        	 }
+	          }
 	       }
 	       else {
 	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : An XPath 3.1 function array 'head' argument "

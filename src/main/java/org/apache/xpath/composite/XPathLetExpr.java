@@ -197,7 +197,7 @@ public class XPathLetExpr extends Expression {
     				   
     				   if (function instanceof FuncConcat) {        		     
     					   FuncConcat funcConcat = (FuncConcat)function;
-    					   funcConcat.setRuntimeArgCount(fnConcatArity);
+    					   funcConcat.setFuncArgCount(fnConcatArity);
     				   }
     				   else {
     					   function.setArity(new Short[] { funcArity });

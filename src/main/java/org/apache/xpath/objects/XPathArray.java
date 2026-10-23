@@ -137,33 +137,35 @@ public class XPathArray extends XObject {
 	   int size1 = this.size();
 	   
 	   for (int idx = 0; idx < size1; idx++) {
-		   XObject arrItem = this.get(idx);
+		   XObject arrItem1 = this.get(idx);
 		   
-		   if (arrItem instanceof ResultSequence) {
-		      ResultSequence expandedResultSeq = new ResultSequence();
+		   if (arrItem1 instanceof ResultSequence) {
+		      ResultSequence rSeqExpanded = new ResultSequence();
 	          
-		      XslTransformEvaluationHelper.expandResultSequence((ResultSequence)arrItem, expandedResultSeq);
+		      XslTransformEvaluationHelper.expandResultSequence((ResultSequence)arrItem1, rSeqExpanded);
 	          
-	          int size2 = expandedResultSeq.size();
+	          int size2 = rSeqExpanded.size();
 	          
 	          for (int idx2 = 0; idx2 < size2; idx2++) {
-	        	 XObject xObj = expandedResultSeq.item(idx2);
+	        	 XObject xObj = rSeqExpanded.item(idx2);
+	        	 
 	        	 result.add(xObj);
 	          }
-	       }
-		   if (arrItem instanceof XPathArray) {
-	          XPathArray xpathArr = (XPathArray)arrItem;
+	       }		   
+		   else if (arrItem1 instanceof XPathArray) {
+	          XPathArray xpathArr = (XPathArray)arrItem1;
 	          ResultSequence rSeq = xpathArr.atomize();
 	          
 	          int size2 = rSeq.size();
 	          
 	          for (int idx2 = 0; idx2 < size2; idx2++) {
 	        	  XObject xObj = rSeq.item(idx2);
+	        	  
 	        	  result.add(xObj);
 		      }
 	       }
 	       else {
-		      result.add(arrItem);
+		      result.add(arrItem1);
 	       }
 	   }
 

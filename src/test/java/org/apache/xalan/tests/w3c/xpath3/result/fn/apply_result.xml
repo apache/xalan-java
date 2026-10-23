@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-23T16:57:44Z" fail="0" name="fn-apply" pass="14" run="14" statusUnknown="0">
+   <testResult status="pass" testName="fn-apply-01"/>
+   <testResult status="pass" testName="fn-apply-02"/>
+   <testResult status="pass" testName="fn-apply-03"/>
+   <testResult status="pass" testName="fn-apply-04"/>
+   <testResult status="pass" testName="fn-apply-06"/>
+   <testResult status="pass" testName="fn-apply-07"/>
+   <testResult status="pass" testName="fn-apply-08"/>
+   <testResult status="pass" testName="fn-apply-09"/>
+   <testResult status="pass" testName="fn-apply-10"/>
+   <testResult status="pass" testName="fn-apply-11"/>
+   <testResult status="pass" testName="fn-apply-12"/>
+   <testResult status="pass" testName="fn-apply-13"/>
+   <testResult status="pass" testName="fn-apply-16"/>
+   <testResult status="pass" testName="fn-apply-17"/>
+</testrun>

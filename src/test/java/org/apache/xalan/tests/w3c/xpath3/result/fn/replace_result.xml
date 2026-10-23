@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:03Z" fail="12" name="fn-replace" pass="76" run="88" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-23T16:57:18Z" fail="12" name="fn-replace" pass="77" run="89" statusUnknown="0">
    <testResult status="pass" testName="fn-replace3args-1"/>
    <testResult status="pass" testName="fn-replace3args-2"/>
    <testResult status="pass" testName="fn-replace3args-3"/>
@@ -83,7 +83,7 @@
    <testResult status="pass" testName="K2-ReplaceFunc-5"/>
    <testResult status="pass" testName="K2-ReplaceFunc-6"/>
    <testResult status="pass" testName="K2-ReplaceFunc-7"/>
-   <testResult status="skipped" testName="cbcl-fn-replace-001"/>
+   <testResult status="pass" testName="cbcl-fn-replace-001"/>
    <testResult status="fail" testName="cbcl-fn-replace-002"/>
    <testResult status="fail" testName="cbcl-fn-replace-003"/>
    <testResult status="fail" testName="cbcl-fn-replace-004"/>

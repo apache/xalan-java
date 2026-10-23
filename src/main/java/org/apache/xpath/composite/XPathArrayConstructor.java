@@ -55,7 +55,7 @@ public class XPathArrayConstructor extends Expression {
 
 	private List<String> m_arrayConstructorXPathParts = new ArrayList<String>();
 	
-	private boolean m_IsEmptyArray = false;
+	private boolean m_isEmptyArray = false;
     
 	/**
 	 * This class field is used during, XPath.fixupVariables(..) action 
@@ -74,7 +74,7 @@ public class XPathArrayConstructor extends Expression {
         
         XPathArray result = new XPathArray();
         
-        if (m_IsEmptyArray) {
+        if (m_isEmptyArray) {
            return result;  	
         }
         
@@ -85,6 +85,18 @@ public class XPathArrayConstructor extends Expression {
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         int size1 = m_arrayConstructorXPathParts.size();
+        
+        if (size1 == 1) {
+           String str1 = m_arrayConstructorXPathParts.get(0);
+           
+           if (str1.startsWith("[") && str1.endsWith("]")) {
+        	  str1 = (str1.substring(1, str1.length() - 1)).trim();        	  
+        	  
+        	  if (!"".equals(str1)) {
+        	     m_arrayConstructorXPathParts.set(0, str1);
+        	  }
+           }
+        }
         
         for (int idx = 0; idx < size1; idx++) {
            String xpathExprStr = m_arrayConstructorXPathParts.get(idx);
@@ -213,6 +225,19 @@ public class XPathArrayConstructor extends Expression {
            }
         }
         
+        int size2 = result.size();
+        
+        if (size2 == 1) {
+        	ResultSequence rSeq = result.atomize();
+        	result = new XPathArray();
+
+        	int size3 = rSeq.size();
+        	
+        	for (int idx = 0; idx < size3; idx++) {
+        	   result.add(rSeq.item(idx));
+        	}
+        }
+        
         return result;
     }
 
@@ -241,11 +266,11 @@ public class XPathArrayConstructor extends Expression {
     }
 
 	public boolean isEmptyArray() {
-		return m_IsEmptyArray;
+		return m_isEmptyArray;
 	}
 
 	public void setIsEmptyArray(boolean isEmptyArray) {
-		this.m_IsEmptyArray = isEmptyArray;
+		this.m_isEmptyArray = isEmptyArray;
 	}
 
 }

@@ -17,7 +17,6 @@
  */
 package org.apache.xpath.functions.hof;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,16 +38,21 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
-import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -88,11 +92,167 @@ public class FuncApply extends Function2Args {
 	   TransformerImpl transformerImpl = null;
 
 	   ElemFunction elemFunction = null;
+	   
+	   XObject arg0Obj = null;
+	   
+	   boolean isFuncArgsContainsPlaceholderExpr = false;	   	   
+	   
+	   Function function = null;
+	   
+	   Expression funcArg0 = null;
+	   Expression funcArg1 = null;
+	   Expression funcArg2 = null;
+	   
+	   int funcArgumentPlaceHolderCount = 0;
+	   
+	   if (m_arg0 instanceof Function3Args) {
+		   function = (Function3Args)m_arg0;
 
-	   if (m_arg0 instanceof XPathNamedFunctionReference) {
-		   XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)m_arg0;
+		   funcArg0 = ((Function3Args)function).getArg0();
+		   funcArg1 = ((Function3Args)function).getArg1();
+		   funcArg2 = ((Function3Args)function).getArg2();
 
-		   result = getFnApplyResult(namedFuncRef, m_arg1, xctxt);
+		   if (funcArg0 instanceof FuncArgPlaceholder) {
+			   funcArgumentPlaceHolderCount++;
+		   }
+		   
+		   if (funcArg1 instanceof FuncArgPlaceholder) {
+			   funcArgumentPlaceHolderCount++;
+		   }
+		   
+		   if (funcArg2 instanceof FuncArgPlaceholder) {
+			   funcArgumentPlaceHolderCount++;
+		   }
+		   
+		   if (funcArgumentPlaceHolderCount > 0) {
+			  isFuncArgsContainsPlaceholderExpr = true; 
+		   }
+	   }
+	   else if (m_arg0 instanceof Function2Args) {
+		   function = (Function2Args)m_arg0;
+
+		   funcArg0 = ((Function2Args)function).getArg0();
+		   funcArg1 = ((Function2Args)function).getArg1();
+
+		   if (funcArg0 instanceof FuncArgPlaceholder) {
+			   funcArgumentPlaceHolderCount++;
+		   }
+		   
+		   if (funcArg1 instanceof FuncArgPlaceholder) {
+			   funcArgumentPlaceHolderCount++;
+		   }
+		   
+		   if (funcArgumentPlaceHolderCount > 0) {
+			  isFuncArgsContainsPlaceholderExpr = true; 
+		   }
+	   }
+	   else if (m_arg0 instanceof FunctionOneArg) {
+		   function = (FunctionOneArg)m_arg0;
+	   }
+	   
+	   if (isFuncArgsContainsPlaceholderExpr) {
+		   XObject arg1XObj = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		   
+		   if (arg1XObj instanceof XPathArray) {
+			  XPathArray xpathArr = (XPathArray)arg1XObj;
+			  int size1 = xpathArr.size();
+			  
+			  if (funcArgumentPlaceHolderCount == size1) {
+				  try {
+					  if (m_arg0 instanceof Function3Args) {
+						  if ((funcArg0 instanceof FuncArgPlaceholder) && (funcArg1 instanceof FuncArgPlaceholder) 
+								                                       && (funcArg2 instanceof FuncArgPlaceholder)) {
+							 function.setArg(xpathArr.get(0), 0);  
+							 function.setArg(xpathArr.get(1), 1);
+							 function.setArg(xpathArr.get(2), 2);
+						  }
+						  else if ((funcArg0 instanceof FuncArgPlaceholder) && (funcArg1 instanceof FuncArgPlaceholder)) {
+							  function.setArg(xpathArr.get(0), 0);  
+							  function.setArg(xpathArr.get(1), 1);
+                          }
+						  else if ((funcArg0 instanceof FuncArgPlaceholder) && (funcArg2 instanceof FuncArgPlaceholder)) {
+							  function.setArg(xpathArr.get(0), 0);  
+							  function.setArg(xpathArr.get(1), 2);
+                          }
+						  else if ((funcArg1 instanceof FuncArgPlaceholder) && (funcArg2 instanceof FuncArgPlaceholder)) {
+							  function.setArg(xpathArr.get(0), 1);  
+							  function.setArg(xpathArr.get(1), 2);
+                          }						  
+						  
+						  result = function.execute(xctxt);
+						  
+						  return result;
+					  }
+					  else if (m_arg0 instanceof Function2Args) {
+						  if ((funcArg0 instanceof FuncArgPlaceholder) && (funcArg1 instanceof FuncArgPlaceholder)) {
+							 function.setArg(xpathArr.get(0), 0);  
+						     function.setArg(xpathArr.get(1), 1); 
+						  }
+						  else if (funcArg0 instanceof FuncArgPlaceholder) {
+							 function.setArg(xpathArr.get(0), 0);  						  
+						  }
+                          else if (funcArg1 instanceof FuncArgPlaceholder) {
+                        	 function.setArg(xpathArr.get(0), 1); 
+						  }
+						  
+                          result = function.execute(xctxt);
+						  
+						  return result;
+					  }
+					  else if (m_arg0 instanceof FunctionOneArg) {
+						  if (funcArg0 instanceof FuncArgPlaceholder) {
+							 function.setArg(xpathArr.get(0), 0); 
+						  }
+						  
+                          result = function.execute(xctxt);
+						  
+						  return result;
+					  }
+				  }
+				  catch (WrongNumberArgsException ex) {
+					  // No op
+				  }
+			  }
+			  else {
+				  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second xdm array argument, has cardinality error. "
+				 		                                                                                                                                         + "The function item parameter count "
+				 		                                                                                                                                         + "is not equal to size of the xdm array.", srcLocator); 
+			  }
+		   }
+		   else {
+			  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument, is not an xdm array.", srcLocator);     
+		   }
+	   }
+	   else {
+		   arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+	   }
+
+	   if (arg0Obj != null) {
+		   if (arg0Obj instanceof XPathNamedFunctionReference) {
+			   XPathNamedFunctionReference xpathNamedFuncRef = (XPathNamedFunctionReference)arg0Obj;
+
+			   result = getFnApplyResult(xpathNamedFuncRef, m_arg1, xctxt);
+		   }
+		   else if (arg0Obj instanceof XPathInlineFunction) {
+			   XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0Obj;
+
+			   result = getFnApplyResult(xpathInlineFunction, m_arg1, xctxt);
+		   }
+		   else if ((arg0Obj instanceof XMLNodeCursorImpl) && (m_arg0 instanceof NodeTest)) {
+			   transformerImpl = getTransformerImplFromXPathExpression(m_arg0);
+
+			   elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression((NodeTest)m_arg0, srcLocator);
+
+			   result = getFnApplyResult(elemFunction, m_arg1, xctxt, transformerImpl);
+		   }
+		   else {
+			   throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' first argument is not a function reference.", srcLocator);               
+		   }
+	   }
+	   else if (m_arg0 instanceof XPathNamedFunctionReference) {
+		   XPathNamedFunctionReference xpathNamedFuncRef = (XPathNamedFunctionReference)m_arg0;		   
+
+		   result = getFnApplyResult(xpathNamedFuncRef, m_arg1, xctxt);
 	   }
 	   else if (m_arg0 instanceof XPathInlineFunction) {
 		   XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)m_arg0;
@@ -106,26 +266,7 @@ public class FuncApply extends Function2Args {
 
 		   result = getFnApplyResult(elemFunction, m_arg1, xctxt, transformerImpl);
 	   }
-	   else if (m_arg0 instanceof Variable) {           
-		   XObject arg0VarValue = getFunctionArgEffectiveValue(m_arg0, xctxt);
-
-		   if (arg0VarValue instanceof XPathNamedFunctionReference) {
-			   XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg0VarValue;
-
-			   result = getFnApplyResult(namedFuncRef, m_arg1, xctxt);
-		   }
-		   else if (arg0VarValue instanceof XPathInlineFunction) {            	
-			   XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0VarValue;
-
-			   result = getFnApplyResult(xpathInlineFunction, m_arg1, xctxt);
-		   }
-		   else {
-			   throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' first argument is not a function reference.", srcLocator);    
-		   }
-	   }
-	   else {
-		   throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' first argument is not a function reference.", srcLocator);               
-	   }
+	   
 
 	   return result;
   }
@@ -176,7 +317,7 @@ public class FuncApply extends Function2Args {
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
 	  if (!(arg1XObj instanceof XPathArray)) {
-		 throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument is not an xdm array.", srcLocator);   
+		 throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument, is not an xdm array.", srcLocator);   
 	  }
 	  
 	  String funcNamespace = namedFuncRef.getFuncNamespace();
@@ -186,6 +327,10 @@ public class FuncApply extends Function2Args {
 	  if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) && 
 			  															        (Keywords.FUNC_CONCAT_STRING).equals(funcLocalName)) {
 		  funcArity = namedFuncRef.getConcatArity();
+		  
+		  if (funcArity == 0) {
+			 funcArity = namedFuncRef.getArity();  
+		  }
 	  }
 	  else {
 		  funcArity = namedFuncRef.getArity(); 
@@ -224,17 +369,29 @@ public class FuncApply extends Function2Args {
 		  try {
 			 XPathArray xpathArr = (XPathArray)arg1XObj;
 			 
-			 int size1 = xpathArr.size();
-			 
-			 for (int idx = 0; idx < size1; idx++) {
-				XObject arrayItem = xpathArr.get(idx);
-				function.setArg(arrayItem, idx);
+			 if (funcArity == 0) {
+				if (xpathArr.size() != 0) {
+					throw new javax.xml.transform.TransformerException("FOAP0001 : Wrong number of arguments provided, "
+								                                                                                       + "during function call " + funcExpandedName + ".", srcLocator);
+				}				
+			 }
+			 else if (funcArity != 1) {
+				 int size1 = xpathArr.size();
+
+				 for (int idx = 0; idx < size1; idx++) {
+					 XObject arrayItem = xpathArr.get(idx);
+					 function.setArg(arrayItem, idx);
+				 }
+			 }
+			 else {
+				 ResultSequence rSeq = xpathArr.atomize();
+				 function.setArg(rSeq, 0);
 			 }
 			 
 			 result = function.execute(xctxt);
 		  } 
 		  catch (WrongNumberArgsException ex) {			    
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : Wrong number of arguments provided, "
+			 throw new javax.xml.transform.TransformerException("FOAP0001 : Wrong number of arguments provided, "
 					                                                   									+ "during function call " + funcExpandedName + ".", srcLocator); 
 		  }               
 	  }
@@ -264,6 +421,8 @@ public class FuncApply extends Function2Args {
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
+	  final int sourceNode = xctxt.getCurrentNode();
+	  
 	  // Construct an XPath dynamic function call expression, to evaluate this function call
 	  
 	  XPathDynamicFunctionCall xpathDynamicFunctionCall = new XPathDynamicFunctionCall();
@@ -272,12 +431,14 @@ public class FuncApply extends Function2Args {
 
 	  Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
 	  inlineFunctionVarMap.put(new QName(funcRefVarName), xpathInlineFunction);
+	  
+	  XObject arg1Obj = getFunctionArgEffectiveValue(arrXPathExpr, xctxt);
 
-	  if (!(arrXPathExpr instanceof XPathArrayConstructor)) {
-		  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument is not an xdm array.", srcLocator);  
+	  if (!(arg1Obj instanceof XPathArray)) {
+		  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument, is not an xdm array.", srcLocator);  
 	  }
 	  else {
-		  XPathArrayConstructor xpathArrConstructor = (XPathArrayConstructor)arrXPathExpr;
+		  /*XPathArrayConstructor xpathArrConstructor = (XPathArrayConstructor)arrXPathExpr;
 		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
 		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
 		  
@@ -301,6 +462,69 @@ public class FuncApply extends Function2Args {
 			  xpathDynamicFunctionCall.setArgList(dfcArgList);
 			  
 			  result = xpathDynamicFunctionCall.execute(xctxt);
+		  }*/
+		  
+		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
+		  
+		  XPathArray xpathArr = (XPathArray)arg1Obj;
+		  int size1 = xpathArr.size();
+		  int size2 = inlineFuncParamList.size();
+		  
+		  Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
+		  
+		  if (size1 == size2) {
+			  for (int idx = 0; idx < size2; idx++) {
+				  InlineFunctionParameter xpathInlineFuncParam = inlineFuncParamList.get(idx);
+				  String funcParamNameStr = xpathInlineFuncParam.getParamName();
+				  xpathVarMap.put(new QName(funcParamNameStr), xpathArr.get(idx));								
+			  }
+			  
+			  try {
+				  String funcBodyXPathStr = xpathInlineFunction.getFuncBodyXPathExprStr();
+
+				  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+
+				  if (prefixTable != null) {
+					  funcBodyXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(funcBodyXPathStr, prefixTable);
+				  }
+
+				  XPath xpathObj1 = new XPath(funcBodyXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);				
+
+				  XObject xObj1 = xpathObj1.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+				  
+				  XPathSequenceType funcReturnType = xpathInlineFunction.getReturnType();
+				  
+				  if (funcReturnType != null) {
+					  InstanceOf instanceOf = new InstanceOf();
+
+					  XObject xObj2 = instanceOf.operate(xObj1, funcReturnType);
+					  
+					  if (xObj2.bool()) {
+						 result = xObj1;  
+					  }
+					  else {
+						 throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'apply' function item evaluation "
+						 		                                                                                                + "result, failed with return "
+						 		                                                                                                + "type error.", srcLocator);
+					  }
+				  }
+				  else {
+					  result = xObj1; 
+				  }
+				  
+			  }
+			  finally {
+				  for (int idx = 0; idx < size2; idx++) {
+					  InlineFunctionParameter xpathInlineFuncParam = inlineFuncParamList.get(idx);
+					  String funcParamNameStr = xpathInlineFuncParam.getParamName();
+					  xpathVarMap.remove(new QName(funcParamNameStr));								
+				  }
+			  }
+		  }
+		  else {
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'apply' function item's arity, is not equal "
+																								                                + "to the supplied xdm array's "
+																								                                + "cardinality.", srcLocator);
 		  }
 	  }
 

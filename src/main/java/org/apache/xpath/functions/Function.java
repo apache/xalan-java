@@ -211,11 +211,11 @@ public abstract class Function extends Expression
 	  this.m_max_arity = maxArity;
   }
 
-  public int getRuntimeArgCount() {
+  public int getFuncArgCount() {
 	  return m_arg_count; 
   }
 
-  public void setRuntimeArgCount(int argCount) {
+  public void setFuncArgCount(int argCount) {
 	  this.m_arg_count = argCount; 
   } 
 

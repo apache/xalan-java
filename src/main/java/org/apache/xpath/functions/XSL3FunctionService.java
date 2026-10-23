@@ -1054,7 +1054,7 @@ public class XSL3FunctionService {
     		function.setNamespace(funcNamespace);
     		
     		if (function instanceof FuncConcat) {
-    		    ((FuncConcat)function).setRuntimeArgCount(funcArity);
+    		    ((FuncConcat)function).setFuncArgCount(funcArity);
     		}
     		else {
     			function.setArity(new Short[] { (short)funcArity });
