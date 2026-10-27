@@ -842,27 +842,10 @@ public class Keywords
   
   
   /**
-   * XPath 3.1 language keywords. This is a subset of XPath 3.1 language
-   * keywords.
-   */
-  
-  public static final String UNION = "union";
-  
-  public static final String INTERSECT = "intersect";
-  
-  public static final String EXCEPT = "except";
-  
-  public static final String NEXT = "next";
-  
-  public static final String Q_MARK = "?";
-  
-  public static final String SIMPLE_MAP_OP = "!";
-  
-  public static final String NUMBER = "number";
-  
-  public static final String PERMUTE = "permute";
-  
-  public static final String FOR = "for";
+   * XPath 3.1 language keywords, 'operator' names, and other 
+   * symbols. This is a subset of XPath 3.1 language all 
+   * such information.
+   */    
   
   public static final String LET = "let";
   
@@ -870,7 +853,21 @@ public class Keywords
   
   public static final String EVERY = "every";
   
+  public static final String FOR = "for";
+  
   public static final String IF = "if";
+  
+  public static final String NUMBER = "number";
+  
+  public static final String PERMUTE = "permute";
+  
+  public static final String UNION = "union";
+  
+  public static final String INTERSECT = "intersect";
+  
+  public static final String EXCEPT = "except";
+  
+  public static final String NEXT = "next";        
   
   public static final String IS = "is";
   
@@ -890,7 +887,13 @@ public class Keywords
   
   public static final String COLLATION = "collation";
   
+  public static final String XPATH_ARROW_OP = "=>";
+  
+  public static final String XPATH_SIMPLE_MAP_OP = "!";
+  
+  public static final String Q_MARK = "?";     
 
+  
   static {	  
 	  m_axisnames.put(FROM_ANCESTORS_STRING, new Integer(OpCodes.FROM_ANCESTORS));
 	  m_axisnames.put(FROM_ANCESTORS_OR_SELF_STRING, new Integer(OpCodes.FROM_ANCESTORS_OR_SELF));

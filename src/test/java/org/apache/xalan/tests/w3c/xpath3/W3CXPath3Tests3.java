@@ -19,6 +19,8 @@ package org.apache.xalan.tests.w3c.xpath3;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnAdjustTimeToTimezoneTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnApplyTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnBaseUriTests;
+import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction1Tests;
+import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction2Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnSubsequenceTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnSumTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnTokenizeTests;
@@ -38,8 +40,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3FnApplyTests.class, XPath3OpTestsThreePart2.class, XPath3FnAdjustTimeToTimezoneTests.class,
-	            XPath3FunctionStringTests.class, XPath3FnSumTests.class, XPath3FnTokenizeTests.class, 
+@SuiteClasses({ XPath3FnFunction1Tests.class, XPath3OpTestsThreePart2.class, XPath3FnApplyTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
+	            XPath3FunctionStringTests.class, XPath3FnSumTests.class, XPath3FnTokenizeTests.class, XPath3FnFunction2Tests.class, 
 	            XPath3FnSubsequenceTests.class, XPath3FnMapGetTests.class, XPath3FnBaseUriTests.class })
 public class W3CXPath3Tests3 {
 

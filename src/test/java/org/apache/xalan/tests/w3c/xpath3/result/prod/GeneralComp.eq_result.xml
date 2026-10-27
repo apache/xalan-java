@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:06Z" fail="19" name="prod-GeneralComp.eq" pass="100" run="119" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-27T10:01:25Z" fail="6" name="prod-GeneralComp.eq" pass="113" run="119" statusUnknown="0">
    <testResult status="pass" testName="generalexpression1"/>
    <testResult status="pass" testName="generalexpression2"/>
    <testResult status="pass" testName="generalexpression3"/>
@@ -41,15 +41,15 @@
    <testResult status="pass" testName="generalexpression88"/>
    <testResult status="pass" testName="generalexpression89"/>
    <testResult status="pass" testName="generalexpression90"/>
-   <testResult status="pass" testName="generalexpression91"/>
-   <testResult status="pass" testName="generalexpression92"/>
+   <testResult status="fail" testName="generalexpression91"/>
+   <testResult status="fail" testName="generalexpression92"/>
    <testResult status="pass" testName="generalexpression93"/>
    <testResult status="pass" testName="generalexpression97"/>
    <testResult status="pass" testName="generalexpression98"/>
    <testResult status="pass" testName="generalexpression99"/>
    <testResult status="pass" testName="K-GenCompEq-1"/>
    <testResult status="pass" testName="K-GenCompEq-2"/>
-   <testResult status="fail" testName="K-GenCompEq-3"/>
+   <testResult status="pass" testName="K-GenCompEq-3"/>
    <testResult status="pass" testName="K-GenCompEq-4"/>
    <testResult status="pass" testName="K-GenCompEq-5"/>
    <testResult status="pass" testName="K-GenCompEq-6"/>
@@ -66,7 +66,7 @@
    <testResult status="pass" testName="K-GenCompEq-17"/>
    <testResult status="pass" testName="K-GenCompEq-18"/>
    <testResult status="pass" testName="K-GenCompEq-19"/>
-   <testResult status="fail" testName="K-GenCompEq-20"/>
+   <testResult status="pass" testName="K-GenCompEq-20"/>
    <testResult status="pass" testName="K-GenCompEq-21"/>
    <testResult status="pass" testName="K-GenCompEq-22"/>
    <testResult status="fail" testName="K-GenCompEq-23"/>
@@ -76,12 +76,12 @@
    <testResult status="pass" testName="K-GenCompEq-27"/>
    <testResult status="pass" testName="K-GenCompEq-28"/>
    <testResult status="pass" testName="K-GenCompEq-29"/>
-   <testResult status="fail" testName="K-GenCompEq-30"/>
-   <testResult status="fail" testName="K-GenCompEq-31"/>
-   <testResult status="fail" testName="K-GenCompEq-32"/>
+   <testResult status="pass" testName="K-GenCompEq-30"/>
+   <testResult status="pass" testName="K-GenCompEq-31"/>
+   <testResult status="pass" testName="K-GenCompEq-32"/>
    <testResult status="pass" testName="K-GenCompEq-33"/>
-   <testResult status="fail" testName="K-GenCompEq-34"/>
-   <testResult status="fail" testName="K-GenCompEq-35"/>
+   <testResult status="pass" testName="K-GenCompEq-34"/>
+   <testResult status="pass" testName="K-GenCompEq-35"/>
    <testResult status="pass" testName="K-GenCompEq-36"/>
    <testResult status="pass" testName="K-GenCompEq-37"/>
    <testResult status="pass" testName="K-GenCompEq-38"/>
@@ -93,26 +93,26 @@
    <testResult status="pass" testName="K-GenCompEq-44"/>
    <testResult status="pass" testName="K-GenCompEq-45"/>
    <testResult status="pass" testName="K-GenCompEq-46"/>
-   <testResult status="fail" testName="K-GenCompEq-47"/>
-   <testResult status="fail" testName="K-GenCompEq-48"/>
+   <testResult status="pass" testName="K-GenCompEq-47"/>
+   <testResult status="pass" testName="K-GenCompEq-48"/>
    <testResult status="pass" testName="K-GenCompEq-49"/>
    <testResult status="pass" testName="K-GenCompEq-50"/>
    <testResult status="pass" testName="K-GenCompEq-51"/>
-   <testResult status="fail" testName="K-GenCompEq-52"/>
-   <testResult status="fail" testName="K-GenCompEq-53"/>
+   <testResult status="pass" testName="K-GenCompEq-52"/>
+   <testResult status="pass" testName="K-GenCompEq-53"/>
    <testResult status="pass" testName="K-GenCompEq-54"/>
    <testResult status="fail" testName="K-GenCompEq-55"/>
    <testResult status="pass" testName="K-GenCompEq-56"/>
    <testResult status="pass" testName="K-GenCompEq-57"/>
-   <testResult status="fail" testName="K-GenCompEq-58"/>
-   <testResult status="fail" testName="K-GenCompEq-59"/>
+   <testResult status="pass" testName="K-GenCompEq-58"/>
+   <testResult status="pass" testName="K-GenCompEq-59"/>
    <testResult status="pass" testName="K2-GenCompEq-7"/>
    <testResult status="pass" testName="GenCompEq-1"/>
    <testResult status="pass" testName="GenCompEq-2"/>
    <testResult status="pass" testName="GenCompEq-3"/>
-   <testResult status="fail" testName="GenCompEq-4"/>
+   <testResult status="pass" testName="GenCompEq-4"/>
    <testResult status="pass" testName="GenCompEq-5"/>
-   <testResult status="fail" testName="GenCompEq-6"/>
+   <testResult status="pass" testName="GenCompEq-6"/>
    <testResult status="pass" testName="GenCompEq-7"/>
    <testResult status="fail" testName="GenCompEq-8"/>
    <testResult status="pass" testName="GenCompEq-9"/>

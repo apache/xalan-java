@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-03T10:18:28Z" fail="2" name="array-head" pass="6" run="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-27T10:01:30Z" fail="0" name="array-head" pass="8" run="8" statusUnknown="0">
    <testResult status="pass" testName="array-head-601"/>
    <testResult status="pass" testName="array-head-602"/>
    <testResult status="pass" testName="array-head-603"/>
    <testResult status="pass" testName="array-head-604"/>
    <testResult status="pass" testName="array-head-605"/>
    <testResult status="pass" testName="array-head-606"/>
-   <testResult status="fail" testName="array-head-608"/>
-   <testResult status="fail" testName="array-head-609"/>
+   <testResult status="pass" testName="array-head-608"/>
+   <testResult status="pass" testName="array-head-609"/>
 </testrun>

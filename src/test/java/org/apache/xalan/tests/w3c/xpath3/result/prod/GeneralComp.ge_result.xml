@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:07Z" fail="8" name="prod-GeneralComp.ge" pass="50" run="58" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-27T10:01:25Z" fail="6" name="prod-GeneralComp.ge" pass="52" run="58" statusUnknown="0">
    <testResult status="pass" testName="generalexpression496"/>
    <testResult status="pass" testName="generalexpression497"/>
    <testResult status="pass" testName="generalexpression498"/>
@@ -48,9 +48,9 @@
    <testResult status="pass" testName="generalexpression593"/>
    <testResult status="pass" testName="generalexpression594"/>
    <testResult status="pass" testName="greaterthaneqonanyuri-1"/>
-   <testResult status="fail" testName="K-GenCompGTEQ-1"/>
+   <testResult status="pass" testName="K-GenCompGTEQ-1"/>
    <testResult status="fail" testName="K-GenCompGTEQ-2"/>
-   <testResult status="fail" testName="K-GenCompGTEQ-3"/>
+   <testResult status="pass" testName="K-GenCompGTEQ-3"/>
    <testResult status="fail" testName="K-GenCompGTEQ-4"/>
    <testResult status="pass" testName="K-GenCompGTEQ-5"/>
    <testResult status="fail" testName="K-GenCompGTEQ-6"/>

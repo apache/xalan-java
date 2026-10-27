@@ -167,6 +167,8 @@ public class XPATHErrorResources extends ListResourceBundle
   
   public static final String ER_UNEXPECTED_TOKEN_1 = "ER_UNEXPECTED_TOKEN_1";
   
+  public static final String ER_ARRAY_LITERAL = "ER_ARRAY_LITERAL";
+  
   public static final String ER_UNEXPECTED_NUMERIC_LITERAL = "ER_UNEXPECTED_NUMERIC_LITERAL";
   
   public static final String ER_UNEXPECTED_STRING_LITERAL = "ER_UNEXPECTED_STRING_LITERAL";
@@ -586,6 +588,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_UNEXPECTED_TOKEN_1,
      "XPST0003 : Unexpected token ''{0}''"},
+  
+  { ER_ARRAY_LITERAL,
+     "XPST0003 : An XPath 3.1 array literal expression starting with ''{0}'' has syntax error"},
   
   { ER_UNEXPECTED_NUMERIC_LITERAL,
      "XPST0003 : Unexpected numeric literal ''{0}''"},

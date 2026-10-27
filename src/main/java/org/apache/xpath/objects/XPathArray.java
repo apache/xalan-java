@@ -39,6 +39,8 @@ public class XPathArray extends XObject {
     * XObject list, store for this xdm array object instance.
     */
    private List<XObject> m_list = new ArrayList<XObject>();
+   
+   private boolean m_is_curly_array_cons_src = false;
     
    /**
     * Class constructor.
@@ -210,6 +212,14 @@ public class XPathArray extends XObject {
        result = strBuff.toString(); 
        
        return result;
+   }
+
+   public boolean getIsCurlyArrayConsSrc() {
+	   return m_is_curly_array_cons_src;
+   }
+
+   public void setIsCurlyArrayConsSrc(boolean isCurlyArrayConsSrc) {
+	   this.m_is_curly_array_cons_src = isCurlyArrayConsSrc;
    }
 
 }

@@ -50,6 +50,7 @@ import org.apache.xpath.compiler.XPathParser.XPathArrayConsFuncArgs;
 import org.apache.xpath.compiler.XPathParser.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathForExpr;
+import org.apache.xpath.composite.XPathIdentityExpr;
 import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.composite.XPathSequenceBinaryOp;
 import org.apache.xpath.composite.XPathSequenceConstructor;
@@ -362,7 +363,11 @@ public class Compiler extends XPathOpMap
       expr = XPathParser.m_xpathLiteralWithPredicate;
       break;
     case OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR:
-        expr = XPathParser.m_xpathIdentityExpr;
+    	XPathIdentityExpr xpathIdentityExpr = (XPathParser.m_xpathIdentityExprList).get(0);
+    	(XPathParser.m_xpathIdentityExprList).remove(0);
+        
+    	expr = xpathIdentityExpr;
+        
         break;  
     case OpCodes.OP_QUO:
       if (!m_xpath_ignore_compile_err) {
@@ -579,6 +584,15 @@ public class Compiler extends XPathOpMap
 	  else {
 		  int leftPos = getFirstChildPos(opPos);
 		  int rightPos = getNextOpPos(leftPos);
+		  
+		  if ((XPathParser.m_xpath_arrow_left_str != null) && (XPathParser.m_xpath_arrow_right_str != null)) {
+			 result = xpathOp1;
+			 
+			 XPathParser.m_xpath_arrow_left_str = null;
+			 XPathParser.m_xpath_arrow_right_str = null;
+			 
+			 return result;
+		  }
 		  
 		  if (xpathOp1 instanceof XPathArrowOp) {
 			  m_arrow_op_func_check = false;
@@ -1017,7 +1031,8 @@ public class Compiler extends XPathOpMap
    */
   protected Expression arrowOp(int opPos) throws TransformerException
   {
-	return compileXPathOperator(new XPathArrowOp(), opPos);
+	return compileXPathOperator(new XPathArrowOp(XPathParser.m_xpath_arrow_left_str, 
+			                                     XPathParser.m_xpath_arrow_right_str), opPos);
   }
 
   /**

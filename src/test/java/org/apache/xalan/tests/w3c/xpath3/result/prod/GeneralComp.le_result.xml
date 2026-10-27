@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-12T13:18:07Z" fail="7" name="prod-GeneralComp.le" pass="50" run="57" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-27T10:01:25Z" fail="5" name="prod-GeneralComp.le" pass="52" run="57" statusUnknown="0">
    <testResult status="pass" testName="generalexpression298"/>
    <testResult status="pass" testName="generalexpression299"/>
    <testResult status="pass" testName="generalexpression300"/>
@@ -48,9 +48,9 @@
    <testResult status="pass" testName="generalexpression395"/>
    <testResult status="pass" testName="generalexpression396"/>
    <testResult status="pass" testName="lessthaneqonanyuri-1"/>
-   <testResult status="fail" testName="K-GenCompLTEQ-1"/>
+   <testResult status="pass" testName="K-GenCompLTEQ-1"/>
    <testResult status="fail" testName="K-GenCompLTEQ-2"/>
-   <testResult status="fail" testName="K-GenCompLTEQ-3"/>
+   <testResult status="pass" testName="K-GenCompLTEQ-3"/>
    <testResult status="pass" testName="K-GenCompLTEQ-4"/>
    <testResult status="fail" testName="K-GenCompLTEQ-5"/>
    <testResult status="fail" testName="K-GenCompLTEQ-6"/>

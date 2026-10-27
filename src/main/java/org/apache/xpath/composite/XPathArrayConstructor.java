@@ -38,6 +38,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.operations.Range;
 
 import xml.xpath31.processor.types.XSNumericType;
 
@@ -56,6 +57,8 @@ public class XPathArrayConstructor extends Expression {
 	private List<String> m_arrayConstructorXPathParts = new ArrayList<String>();
 	
 	private boolean m_isEmptyArray = false;
+	
+	private boolean m_is_xpath_literal_curly_arr = false;
     
 	/**
 	 * This class field is used during, XPath.fixupVariables(..) action 
@@ -72,7 +75,9 @@ public class XPathArrayConstructor extends Expression {
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
-        XPathArray result = new XPathArray();
+        XPathArray result = new XPathArray(); 
+        
+        result.setIsCurlyArrayConsSrc(m_is_xpath_literal_curly_arr);
         
         if (m_isEmptyArray) {
            return result;  	
@@ -89,12 +94,8 @@ public class XPathArrayConstructor extends Expression {
         if (size1 == 1) {
            String str1 = m_arrayConstructorXPathParts.get(0);
            
-           if (str1.startsWith("[") && str1.endsWith("]")) {
-        	  str1 = (str1.substring(1, str1.length() - 1)).trim();        	  
-        	  
-        	  if (!"".equals(str1)) {
-        	     m_arrayConstructorXPathParts.set(0, str1);
-        	  }
+           if ("[]".equals(str1.trim())) {
+        	  return result;  
            }
         }
         
@@ -198,6 +199,16 @@ public class XPathArrayConstructor extends Expression {
                    }
                }
            }
+           else if (expr instanceof Range) {
+        	   XObject xObj = expr.execute(xctxt);
+        	   ResultSequence rSeq = (ResultSequence)xObj;
+        	   
+        	   int size2 = rSeq.size();
+        	   
+        	   for (int idx2 = 0; idx2 < size2; idx2++) {
+        		  result.add(rSeq.item(idx2)); 
+        	   }
+           }
            else {
                XObject xObj = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
                
@@ -223,19 +234,6 @@ public class XPathArrayConstructor extends Expression {
             	  result.add(xObj);               
                }
            }
-        }
-        
-        int size2 = result.size();
-        
-        if (size2 == 1) {
-        	ResultSequence rSeq = result.atomize();
-        	result = new XPathArray();
-
-        	int size3 = rSeq.size();
-        	
-        	for (int idx = 0; idx < size3; idx++) {
-        	   result.add(rSeq.item(idx));
-        	}
         }
         
         return result;
@@ -271,6 +269,14 @@ public class XPathArrayConstructor extends Expression {
 
 	public void setIsEmptyArray(boolean isEmptyArray) {
 		this.m_isEmptyArray = isEmptyArray;
+	}
+
+	public void setIsXpathLiteralCurlyArr(boolean xpathLiteralCurlyArr) {
+	    m_is_xpath_literal_curly_arr = xpathLiteralCurlyArr; 		
+	}
+	
+	public boolean getIsXpathLiteralCurlyArr() {
+		return this.m_is_xpath_literal_curly_arr;
 	}
 
 }

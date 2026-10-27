@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-10-23T16:57:57Z" desc="W3C XPath 3.1 test suite results" fail="734" pass="8904" run="9638" skipped="19" success="92.38%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-10-27T10:02:37Z" desc="W3C XPath 3.1 test suite results" fail="707" pass="8931" run="9638" skipped="19" success="92.66%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -7,7 +7,7 @@
     <array-fold-right fail="0" pass="9" run="9" success="100.0%"/>
     <array-for-each fail="0" pass="9" run="9" success="100.0%"/>
     <array-get fail="0" pass="9" run="9" success="100.0%"/>
-    <array-head fail="2" pass="6" run="8" success="75.0%"/>
+    <array-head fail="0" pass="8" run="8" success="100.0%"/>
     <array-size fail="0" pass="7" run="7" success="100.0%"/>
   </array>
   <fn>
@@ -68,7 +68,7 @@
     <fn-sum fail="13" pass="209" run="222" success="94.14%"/>
     <fn-tail fail="0" pass="5" run="5" success="100.0%"/>
     <fn-tokenize fail="10" pass="55" run="65" success="84.62%"/>
-    <fn-translate fail="3" pass="41" run="44" success="93.18%"/>
+    <fn-translate fail="1" pass="43" run="44" success="97.73%"/>
     <fn-true fail="0" pass="25" run="25" success="100.0%"/>
     <fn-upper-case fail="0" pass="29" run="29" success="100.0%"/>
     <fn-zero-or-one fail="1" pass="48" run="49" success="97.96%"/>
@@ -172,7 +172,7 @@
     <op-yearMonthDuration-less-than fail="0" pass="28" run="28" success="100.0%"/>
   </op>
   <prod>
-    <prod-ArrowPostfix fail="11" pass="31" run="42" success="73.81%"/>
+    <prod-ArrowPostfix fail="5" pass="37" run="42" success="88.1%"/>
     <prod-AxisStep.abbr fail="2" pass="19" run="21" success="90.48%"/>
     <prod-AxisStep.ancestor-or-self fail="4" pass="17" run="21" success="80.95%"/>
     <prod-AxisStep.ancestor fail="1" pass="20" run="21" success="95.24%"/>
@@ -183,10 +183,10 @@
     <prod-AxisStep fail="28" pass="208" run="236" success="88.14%"/>
     <prod-CastableExpr fail="148" pass="700" run="848" success="82.55%"/>
     <prod-ForClause fail="14" pass="61" run="75" success="81.33%"/>
-    <prod-GeneralComp.eq fail="19" pass="100" run="119" success="84.03%"/>
-    <prod-GeneralComp.ge fail="8" pass="50" run="58" success="86.21%"/>
+    <prod-GeneralComp.eq fail="6" pass="113" run="119" success="94.96%"/>
+    <prod-GeneralComp.ge fail="6" pass="52" run="58" success="89.66%"/>
     <prod-GeneralComp.gt fail="10" pass="57" run="67" success="85.07%"/>
-    <prod-GeneralComp.le fail="7" pass="50" run="57" success="87.72%"/>
+    <prod-GeneralComp.le fail="5" pass="52" run="57" success="91.23%"/>
     <prod-GeneralComp.lt fail="12" pass="62" run="74" success="83.78%"/>
     <prod-GeneralComp.ne fail="8" pass="81" run="89" success="91.01%"/>
     <prod-IfExpr fail="0" pass="27" run="27" success="100.0%"/>

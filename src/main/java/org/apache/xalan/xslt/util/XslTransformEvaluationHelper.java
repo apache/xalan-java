@@ -137,8 +137,8 @@ public class XslTransformEvaluationHelper {
           
           if (seqItem instanceof ResultSequence) {
              expandResultSequence((ResultSequence)seqItem, result); 
-          }
-          if (seqItem instanceof XPathArray) {
+          }          
+          else if (seqItem instanceof XPathArray) {
              ResultSequence rSeq = ((XPathArray)seqItem).atomize();
              int size2 = rSeq.size();
              

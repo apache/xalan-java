@@ -18,8 +18,6 @@ package org.apache.xalan.tests.w3c.xpath3;
 
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnContainsTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnContainsTokenTests;
-import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction1Tests;
-import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction2Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction3Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnFunction4Tests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnLowerCaseTests;
@@ -69,7 +67,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ XPath3IfExprTests.class, XPath3FunctionMathTests.class, XPath3FnTailTests.class, XPath3QuantifiedExprTests.class, XPath3ForClauseTests.class, 
 	            XPath3LetClauseTests.class, XPath3XsType1Tests.class, XPath3OpTestsOne.class, XPath3OpTestsTwo.class, 
 	            XPath3OpTestsThreePart1.class, XPath3OpTestsFour.class, XPath3IsSameNodeTests.class, XPath3OpTestsFive.class, 
-	            XPath3OpTestsSix.class, XPath3FnFunction1Tests.class, XPath3FnFunction2Tests.class, XPath3FnFunction3Tests.class, XPath3FnFunction4Tests.class,
+	            XPath3OpTestsSix.class, XPath3FnFunction3Tests.class, XPath3FnFunction4Tests.class,
 	            XPath3OrExprTests.class, XPath3FnMatchesTests.class, XPath3FnReplaceTests.class, XPath3QnameEqualTests.class,
 	            XPath3FnContainsTests.class, XPath3FnContainsTokenTests.class, XPath3FnXmlInscopePrefixesTests.class,
 	            XPath3FnLowerCaseTests.class, XPath3FnUpperCaseTests.class, XPath3FnStringJoinTests.class,

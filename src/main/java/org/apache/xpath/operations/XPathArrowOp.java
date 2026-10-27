@@ -70,7 +70,11 @@ public class XPathArrowOp extends XPathOperator
 	 * arrow expression. For example, with an XPath expression 
 	 * a=>func1()=>func2() the value of this class field shall be =>func2().
 	 */
-	private java.lang.String m_xpath_arrowOpRemainingExprStr;
+	private java.lang.String m_xpath_arrowOpRemainingExprStr = null;
+	
+	private java.lang.String m_xpath_arrowOp_left_str = null;
+	
+	private java.lang.String m_xpath_arrowOp_right_str = null;
 	
 	// Class field, used for Xalan-J fixupVariables action
     private Vector m_vars;
@@ -79,6 +83,11 @@ public class XPathArrowOp extends XPathOperator
     private int m_globals_size;
     
     private XSL3FunctionService m_xsl3FunctionService = XSLFunctionBuilder.getXSLFunctionService();
+    
+    public XPathArrowOp(java.lang.String xPathStr1, java.lang.String xPathStr2) {
+       m_xpath_arrowOp_left_str = xPathStr1;
+       m_xpath_arrowOp_right_str = xPathStr2;
+    }
 
 	/**
 	 * Evaluate an XPath arrow operator, and return the result.
@@ -97,6 +106,38 @@ public class XPathArrowOp extends XPathOperator
       SourceLocator srcLocator = xctxt.getSAXLocator();
       
       List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+      
+      if ((m_xpath_arrowOp_left_str != null) && (m_xpath_arrowOp_right_str != null)) {
+    	  if (prefixTable != null) {
+    		  m_xpath_arrowOp_left_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpath_arrowOp_left_str, prefixTable);
+
+    		  m_xpath_arrowOp_right_str = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpath_arrowOp_right_str, prefixTable);
+    	  }
+
+    	  XPath xpathObj1 = new XPath(m_xpath_arrowOp_left_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	  
+    	  int idx = m_xpath_arrowOp_right_str.indexOf('(');
+    	  java.lang.String str1 = (m_xpath_arrowOp_right_str.substring(0, idx + 1)).trim();
+    	  java.lang.String str2 = (m_xpath_arrowOp_right_str.substring(idx + 1)).trim();
+    	  
+    	  if (")".equals(str2)) {
+    	     m_xpath_arrowOp_right_str = (str1 + "''" + str2);
+    	  }
+    	  else {
+    		 m_xpath_arrowOp_right_str = (str1 + "'', " + str2);
+    	  }
+    	  
+    	  XPath xpathObj2 = new XPath(m_xpath_arrowOp_right_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    	  if (m_vars != null) {
+    		  xpathObj1.fixupVariables(m_vars, m_globals_size);
+    		  xpathObj2.fixupVariables(m_vars, m_globals_size);
+    	  }
+    	  
+    	  m_left = xpathObj1.getExpression();
+    	  
+    	  m_right = xpathObj2.getExpression();
+      }
       
       if (m_right instanceof XPathDynamicFunctionCall) {
     	 XPathDynamicFunctionCall dfc = (XPathDynamicFunctionCall)m_right;    	     	 
@@ -328,7 +369,7 @@ public class XPathArrowOp extends XPathOperator
     		 // to do
     	 }
       }      
-      else {
+      else if (m_right instanceof Function) {
     	  Function function = (Function)m_right;
     	  
     	  if (function instanceof FuncParseJson) {
@@ -557,8 +598,7 @@ public class XPathArrowOp extends XPathOperator
 		  result = getXPathArrowOpFinalResult(result, m_xpath_arrowOpRemainingExprStr, xctxt);
 	  }
       
-      return result;
-      
+      return result;      
     }
     
     @Override
@@ -598,6 +638,7 @@ public class XPathArrowOp extends XPathOperator
        
        int idx3 = arrowOpNextStr.indexOf("=>");
        java.lang.String arrowOpRemainingXPathExprStr2 = null;
+       
        if (idx3 != -1) {
     	  arrowOpRemainingXPathExprStr2 = arrowOpNextStr.substring(idx3);  
        }
@@ -605,6 +646,7 @@ public class XPathArrowOp extends XPathOperator
        int idx2 = arrowOpNextStr.indexOf('(');
        java.lang.String str1 = arrowOpNextStr.substring(0, idx2 + 1) + "''";
        java.lang.String a1 = arrowOpNextStr.substring(idx2 + 1);
+       
        if (a1.startsWith(")")) {
     	  str1 = str1 + ")";
        }
@@ -637,7 +679,7 @@ public class XPathArrowOp extends XPathOperator
 
     	   result = xsl3ConstructorOrExtensionFunction.execute(xctxt);
        }
-       else {
+       else if (expr1 instanceof Function) {
     	   Function function = (Function)expr1;
 
     	   if (function instanceof Function3Args) {
@@ -662,9 +704,29 @@ public class XPathArrowOp extends XPathOperator
     		   result = getXPathArrowOpFinalResult(result, arrowOpRemainingXPathExprStr2, xctxt);
     	   }
        }
+       else if (expr1 instanceof XPathArrowOp) {
+    	   XPathArrowOp xpathArrowOp = (XPathArrowOp)expr1;
+    	   
+    	   Expression expr2 = xpathArrowOp.getLeftOperand();
+
+    	   if (expr2 instanceof Function) {
+    		  Function function = (Function)expr2;
+    		  function.setArg0(prevResult);
+    		  
+    		  XObject xObj = function.execute(xctxt);
+    		  xpathArrowOp.setLeftRight(xObj, xpathArrowOp.getRightOperand());
+    		  
+    		  result = xpathArrowOp.execute(xctxt); 
+    	   }
+    	   else {
+    		  result = xpathArrowOp.execute(xctxt); 
+    	   }
+       }
+       else {
+    	   result = expr1.execute(xctxt); 
+       }
        
-       return result;
-       
+       return result;       
     }
     
 }

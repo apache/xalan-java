@@ -350,7 +350,7 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 						try {
 							String testCaseNameStr = testCaseElem.getAttribute(NAME);												
-							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);
+							NodeList envNodeList = testCaseElem.getElementsByTagName(ENVIRONMENT);							
 														
 							// Boolean value, indicating whether XML 1.1 support 
 							// is enabled, for XPath expression evaluation.
@@ -2022,6 +2022,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 															if (xpathResultObj1 instanceof ResultSequence) {
 																rSeq1 = (ResultSequence)xpathResultObj1;
+																
+																ResultSequence rSeq_a = new ResultSequence(); 
+																XslTransformEvaluationHelper.expandResultSequence(rSeq1, rSeq_a);
+																rSeq1 = rSeq_a; 
+																																
 																ResultSequence rSeq2 = (ResultSequence)xpathExpectedObj2;												
 
 																int size3 = rSeq1.size();
@@ -2681,6 +2686,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 															if (xpathResultObj1 instanceof ResultSequence) {
 																rSeq1 = (ResultSequence)xpathResultObj1;
+																
+																ResultSequence rSeq_a = new ResultSequence(); 
+																XslTransformEvaluationHelper.expandResultSequence(rSeq1, rSeq_a);
+																rSeq1 = rSeq_a; 
+																
 																ResultSequence rSeq2 = (ResultSequence)xpathExpectedObj2;												
 
 																int size3 = rSeq1.size();
@@ -2757,8 +2767,13 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 											   xpathResultObj1 = rSeq1; 
 											}
 											
-											if (xpathResultObj1 instanceof ResultSequence) {
+											if (xpathResultObj1 instanceof ResultSequence) {												
 												rSeq1 = (ResultSequence)xpathResultObj1;
+												
+												ResultSequence rSeq_a = new ResultSequence(); 
+												XslTransformEvaluationHelper.expandResultSequence(rSeq1, rSeq_a);
+												rSeq1 = rSeq_a; 
+												
 												ResultSequence rSeq2 = (ResultSequence)xpathExpectedObj;												
 												
 												int size2 = rSeq1.size();

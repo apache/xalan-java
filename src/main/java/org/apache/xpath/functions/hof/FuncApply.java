@@ -370,22 +370,66 @@ public class FuncApply extends Function2Args {
 			 XPathArray xpathArr = (XPathArray)arg1XObj;
 			 
 			 if (funcArity == 0) {
-				if (xpathArr.size() != 0) {
+				int size1 = xpathArr.size();
+				
+				boolean isXdmArrayArgOk = false;
+				
+				if ((size1 == 1) && (xpathArr.get(0) instanceof ResultSequence)) {
+				   if (((ResultSequence)(xpathArr.get(0))).size() == 0) {
+					  isXdmArrayArgOk = true;  
+				   }
+				}
+				 
+				if (!isXdmArrayArgOk && (xpathArr.size() != 0)) {
 					throw new javax.xml.transform.TransformerException("FOAP0001 : Wrong number of arguments provided, "
 								                                                                                       + "during function call " + funcExpandedName + ".", srcLocator);
 				}				
 			 }
-			 else if (funcArity != 1) {
-				 int size1 = xpathArr.size();
-
-				 for (int idx = 0; idx < size1; idx++) {
-					 XObject arrayItem = xpathArr.get(idx);
-					 function.setArg(arrayItem, idx);
-				 }
-			 }
-			 else {
+			 
+			 if (funcArity == 1) {
 				 ResultSequence rSeq = xpathArr.atomize();
-				 function.setArg(rSeq, 0);
+				 
+				 if (rSeq.size() == 1) {
+					function.setArg(rSeq.item(0), 0);
+				 }
+				 else {
+					function.setArg(rSeq, 0); 
+				 }
+			 }			 
+			 else {
+				 int size1 = xpathArr.size();
+				 
+				 ResultSequence rSeqArg = new ResultSequence(); 
+				 
+				 for (int idx = 0; idx < size1; idx++) {
+					 XObject xObj = xpathArr.get(idx);
+					 
+					 if (xObj instanceof ResultSequence) {
+						ResultSequence rSeq = (ResultSequence)xObj;
+						int size2 = rSeq.size();
+						
+						for (int idx2 = 0; idx2 < size2; idx2++) {
+						   rSeqArg.add(rSeq.item(idx2));
+						}
+					 }
+					 else {
+						rSeqArg.add(xObj); 
+					 }
+				 }
+				 
+				 int size2 = rSeqArg.size();
+				 
+				 if (size2 == funcArity) {				 
+					 for (int idx = 0; idx < size2; idx++) {
+						XObject xObj = rSeqArg.item(idx);
+						function.setArg(xObj, idx);						
+					 }
+				 }
+				 else {
+					 throw new javax.xml.transform.TransformerException("FOAP0001 : Wrong number of arguments provided, "
+								                                                                                        + "during function call " + funcExpandedName 
+								                                                                                        + ".", srcLocator); 
+				 }
 			 }
 			 
 			 result = function.execute(xctxt);
@@ -437,33 +481,7 @@ public class FuncApply extends Function2Args {
 	  if (!(arg1Obj instanceof XPathArray)) {
 		  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument, is not an xdm array.", srcLocator);  
 	  }
-	  else {
-		  /*XPathArrayConstructor xpathArrConstructor = (XPathArrayConstructor)arrXPathExpr;
-		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
-		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
-		  
-		  int size1 = arrConsXPathParts.size();
-		  
-		  int size2 = inlineFuncParamList.size();
-		  
-		  if (size1 != size2) {
-			  throw new TransformerException("XPTY0004 : An XPath 3.1 function call 'apply' function item's arity, is not equal "
-			  		                                                                                                           + "to the supplied xdm array's "
-			  		                                                                                                           + "cardinality.", srcLocator); 
-		  }
-		  else {
-			  List<String> dfcArgList = new ArrayList<String>();			  			  
-			  
-			  for (int idx = 0; idx < size1; idx++) {
-				  String arrItemXPathStr = arrConsXPathParts.get(idx);				  
-				  dfcArgList.add(arrItemXPathStr);
-			  }
-			  
-			  xpathDynamicFunctionCall.setArgList(dfcArgList);
-			  
-			  result = xpathDynamicFunctionCall.execute(xctxt);
-		  }*/
-		  
+	  else {		  		  
 		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
 		  
 		  XPathArray xpathArr = (XPathArray)arg1Obj;

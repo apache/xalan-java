@@ -238,6 +238,8 @@ public class FunctionOneArg extends Function implements ExpressionOwner
  			 result.add(xObj);  
  		 }
  	 }
+ 	 
+ 	 result.setIsCurlyArrayConsSrc(xpathArr.getIsCurlyArrayConsSrc());
 
  	 return result;
   }
