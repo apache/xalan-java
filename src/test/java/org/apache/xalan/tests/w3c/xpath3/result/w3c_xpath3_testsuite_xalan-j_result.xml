@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-10-27T10:02:37Z" desc="W3C XPath 3.1 test suite results" fail="707" pass="8931" run="9638" skipped="19" success="92.66%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-10-28T10:34:46Z" desc="W3C XPath 3.1 test suite results" fail="698" pass="8940" run="9638" skipped="19" success="92.76%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -65,7 +65,7 @@
     <fn-substring-after fail="3" pass="35" run="38" success="92.11%"/>
     <fn-substring-before fail="1" pass="36" run="37" success="97.3%"/>
     <fn-substring fail="6" pass="42" run="48" success="87.5%"/>
-    <fn-sum fail="13" pass="209" run="222" success="94.14%"/>
+    <fn-sum fail="4" pass="218" run="222" success="98.2%"/>
     <fn-tail fail="0" pass="5" run="5" success="100.0%"/>
     <fn-tokenize fail="10" pass="55" run="65" success="84.62%"/>
     <fn-translate fail="1" pass="43" run="44" success="97.73%"/>
