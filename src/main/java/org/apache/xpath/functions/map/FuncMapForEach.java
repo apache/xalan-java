@@ -33,7 +33,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -199,7 +199,7 @@ public class FuncMapForEach extends Function2Args {
 	 */
 	private void verifyInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
 																								javax.xml.transform.TransformerException {
-		List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
+		List<XPathInlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
 		if (funcParamList.size() != 2) {
 			throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function map:for-each's function item has " + 
 																			                                 funcParamList.size() 
@@ -214,7 +214,7 @@ public class FuncMapForEach extends Function2Args {
 					                                                                                     throws TransformerException {
 		ResultSequence resultSeq = new ResultSequence();
 		
-		List<InlineFunctionParameter> funcParamList = funcItem.getFuncParamList();
+		List<XPathInlineFunctionParameter> funcParamList = funcItem.getFuncParamList();
         QName funcParam1 = new QName((funcParamList.get(0)).getParamName());
         QName funcParam2 = new QName((funcParamList.get(1)).getParamName());				
         

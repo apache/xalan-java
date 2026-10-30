@@ -26,7 +26,7 @@ import org.apache.xpath.composite.XPathSequenceType;
  *
  * @xsl.usage advanced
  */
-public class InlineFunctionParameter {
+public class XPathInlineFunctionParameter {
     
     private String m_paramName;
     

@@ -13,8 +13,8 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 /**
  * Implementation of XML Schema data type xs:base64Binary.
  * 
- * The core logic of this class has been reused from 
- * Apache Xerces-J.
+ * An implementation logic for this class, has been reused 
+ * from Xerces-J.
  * 
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM

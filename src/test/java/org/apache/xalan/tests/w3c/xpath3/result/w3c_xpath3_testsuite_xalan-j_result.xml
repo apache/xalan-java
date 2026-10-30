@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-10-28T10:34:46Z" desc="W3C XPath 3.1 test suite results" fail="698" pass="8940" run="9638" skipped="19" success="92.76%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-10-30T10:43:47Z" desc="W3C XPath 3.1 test suite results" fail="677" pass="9002" run="9679" skipped="19" success="93.01%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -42,7 +42,7 @@
     <fn-floor fail="1" pass="87" run="88" success="98.86%"/>
     <fn-format-integer fail="35" pass="42" run="77" success="54.55%"/>
     <fn-generate-id fail="10" pass="10" run="20" skipped="1" success="50.0%"/>
-    <fn-head fail="1" pass="7" run="8" success="87.5%"/>
+    <fn-head fail="0" pass="8" run="8" success="100.0%"/>
     <fn-hours-from-dateTime fail="3" pass="24" run="27" success="88.89%"/>
     <fn-hours-from-duration fail="3" pass="28" run="31" success="90.32%"/>
     <fn-hours-from-time fail="3" pass="24" run="27" success="88.89%"/>
@@ -65,7 +65,7 @@
     <fn-substring-after fail="3" pass="35" run="38" success="92.11%"/>
     <fn-substring-before fail="1" pass="36" run="37" success="97.3%"/>
     <fn-substring fail="6" pass="42" run="48" success="87.5%"/>
-    <fn-sum fail="4" pass="218" run="222" success="98.2%"/>
+    <fn-sum fail="2" pass="220" run="222" success="99.1%"/>
     <fn-tail fail="0" pass="5" run="5" success="100.0%"/>
     <fn-tokenize fail="10" pass="55" run="65" success="84.62%"/>
     <fn-translate fail="1" pass="43" run="44" success="97.73%"/>
@@ -188,19 +188,21 @@
     <prod-GeneralComp.gt fail="10" pass="57" run="67" success="85.07%"/>
     <prod-GeneralComp.le fail="5" pass="52" run="57" success="91.23%"/>
     <prod-GeneralComp.lt fail="12" pass="62" run="74" success="83.78%"/>
-    <prod-GeneralComp.ne fail="8" pass="81" run="89" success="91.01%"/>
+    <prod-GeneralComp.ne fail="7" pass="82" run="89" success="92.13%"/>
     <prod-IfExpr fail="0" pass="27" run="27" success="100.0%"/>
-    <prod-InlineFunctionExpr fail="5" pass="23" run="28" success="82.14%"/>
+    <prod-InlineFunctionExpr fail="2" pass="27" run="29" success="93.1%"/>
     <prod-InstanceofExpr fail="54" pass="219" run="273" success="80.22%"/>
     <prod-LetClause fail="1" pass="22" run="23" success="95.65%"/>
-    <prod-Literal fail="19" pass="95" run="114" success="83.33%"/>
+    <prod-Literal fail="7" pass="107" run="114" success="93.86%"/>
     <prod-OrExpr fail="10" pass="319" run="329" success="96.96%"/>
     <prod-QuantifiedExpr fail="12" pass="149" run="161" success="92.55%"/>
   </prod>
   <xs>
-    <xs-anyURI fail="1" pass="8" run="9" success="88.89%"/>
+    <xs-anyURI fail="0" pass="9" run="9" success="100.0%"/>
+    <xs-base64Binary fail="0" pass="39" run="39" success="100.0%"/>
     <xs-double fail="0" pass="4" run="4" skipped="1" success="100.0%"/>
-    <xs-float fail="1" pass="4" run="5" skipped="1" success="80.0%"/>
+    <xs-float fail="0" pass="5" run="5" skipped="1" success="100.0%"/>
+    <xs-hexBinary fail="0" pass="1" run="1" success="100.0%"/>
     <xs-normalizedString fail="0" pass="6" run="6" success="100.0%"/>
     <xs-token fail="0" pass="6" run="6" success="100.0%"/>
   </xs>

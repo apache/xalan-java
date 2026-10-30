@@ -45,8 +45,11 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
+import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -57,6 +60,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.CastableAs;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSString;
@@ -138,6 +142,7 @@ public class XPathDynamicFunctionCall extends Expression {
        // Try find an XPath function reference object
        XObject functionRef = xpathVariableMap.get(new QName(m_funcRefVarName));
        
+       try {
        if (functionRef == null) {
            ExpressionContext exprContext = xctxt.getExpressionContext();
           
@@ -178,15 +183,85 @@ public class XPathDynamicFunctionCall extends Expression {
     	    	if (m_argList == null) {
     	    		m_argList = new ArrayList<String>(); 
     	    	}
+    	    	
+    	    	XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)functionRef;
 
-    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)functionRef, m_argList, m_ArrowOpArgObj, 
-																					    	    			xctxt, prefixTable, m_vars, m_globals_size, 
-																					    	    			m_xpathVarList, m_funcRefVarName);               
-	            if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
-	        	   evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
-	        			                                                                      null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
-	        			                                                                      xctxt); 
+    	    	evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction(xpathInlineFunc, m_argList, m_ArrowOpArgObj, 
+																					    	    xctxt, prefixTable, m_vars, m_globals_size, 
+																					    	    m_xpathVarList, m_funcRefVarName);               
+	            
+	            if ((evalResult instanceof XPathInlineFunction) && (m_trailingArgList != null)) {
+	               Map<QName,XObject> xpathVarMap = xctxt.getXPathVarMap();
+	               
+	               List<XPathInlineFunctionParameter> xpathInlineFuncParamList = xpathInlineFunc.getFuncParamList();	                
+	               
+	               try {
+	            	   if ((m_argList != null) && (xpathInlineFuncParamList.size() == m_argList.size())) {
+	            		   int size1 = xpathInlineFuncParamList.size();
+
+	            		   for (int idx = 0; idx < size1; idx++) {
+	            			   XPathInlineFunctionParameter inlineFuncParam = xpathInlineFuncParamList.get(idx);
+	            			   String funcParamName = inlineFuncParam.getParamName();
+	            			   XPathSequenceType xpathSeqType = inlineFuncParam.getParamType();
+
+	            			   String xpathArgStr = m_argList.get(idx);
+
+	            			   XPath argXPath = new XPath(xpathArgStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+	            			   if (m_vars != null) {
+	            				   argXPath.fixupVariables(m_vars, m_globals_size);
+	            			   }
+
+	            			   XObject xObj = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+	            			   if (xpathSeqType != null) {
+	            				   CastableAs castableAs = new CastableAs();
+	            				   castableAs.setLeftRight(xObj, xpathSeqType);
+
+	            				   XObject xObj2 = castableAs.execute(xctxt);
+
+	            				   if (!xObj2.bool()) {
+	            					   throw new TransformerException("XPTY0004 : An XPath 3.1 inline function parameter '" + funcParamName + "' argument "
+	            							                                                                                                + "value doesn't match an sequence "
+	            							                                                                                                + "expected type.", srcLocator);
+	            				   }
+	            			   }
+
+	            			   xpathVarMap.put(new QName(funcParamName), xObj);
+	            		   }
+	            	   }
+	            	   else {
+	            		   throw new TransformerException("XPTY0004 : An XPath 3.1 inline function argument list size is not equals to parameter list size.", srcLocator); 
+	            	   }
+	            	   
+	            	   if (m_trailingArgList.size() == 1) {
+	            		  String xpathStr1 = m_trailingArgList.get(0);
+	            		  
+	            		  if ("".equals(xpathStr1)) {
+	            			 m_trailingArgList = new ArrayList<String>(); 
+	            		  }
+	            	   }
+
+	            	   evalResult = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)evalResult, m_trailingArgList, null, 
+	            			                                                                                          xctxt, prefixTable, m_vars, m_globals_size, 
+	            			                                                                                          m_xpathVarList, m_funcRefVarName);
+	               }
+	               finally {
+	            	   int size1 = xpathInlineFuncParamList.size();
+
+            		   for (int idx = 0; idx < size1; idx++) {
+            			   XPathInlineFunctionParameter inlineFuncParam = xpathInlineFuncParamList.get(idx);
+            			   String funcParamName = inlineFuncParam.getParamName();
+            			   
+            			   xpathVarMap.remove(new QName(funcParamName));
+            		   }
+	               }
 	            }
+	            else if ((evalResult instanceof XPathNamedFunctionReference) && (m_trailingArgList != null)) {
+		        	   evalResult = m_xsl3FunctionService.evaluateXPathNamedFunctionReference((XPathNamedFunctionReference)evalResult, m_trailingArgList, 
+		        			                                                                                         null, prefixTable, m_vars, m_globals_size, getExpressionOwner(), 
+		        			                                                                                         xctxt); 
+		        }
 	        }
     	    else if (functionRef instanceof XPathMap) {
      		   evalResult = getDfcResultFromXdmMap((XPathMap)functionRef, xctxt, srcLocator, contextNode, prefixTable);
@@ -229,7 +304,11 @@ public class XPathDynamicFunctionCall extends Expression {
 								    			                                                        xctxt, prefixTable, m_vars, m_globals_size, 
 								    			                                                        m_xpathVarList, m_funcRefVarName); 
       }
-               
+      }
+      catch (TransformerException ex) {
+    	 throw ex; 
+      }
+      
       return evalResult;
       
     }
@@ -474,9 +553,9 @@ public class XPathDynamicFunctionCall extends Expression {
 		XObject result = null;
 
 		if (m_xpathChainedArgListArr != null) {
-			int arrSize = m_xpathChainedArgListArr.length;
+			int size1 = m_xpathChainedArgListArr.length;
 			
-			for (int idx = 0; idx < arrSize; idx++) {
+			for (int idx = 0; idx < size1; idx++) {
 				String argXPathStr = m_xpathChainedArgListArr[idx];     				 
 				
 				if (idx == 0) {
@@ -499,6 +578,33 @@ public class XPathDynamicFunctionCall extends Expression {
 					XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
 
 					result = getXPathArrayResultByIndex((XPathArray)result, argValue, xctxt); 
+				}
+				else if (result instanceof XPathInlineFunction) {										
+					if (prefixTable != null) {
+						argXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(argXPathStr, prefixTable);
+					}
+
+					XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+					
+					if (m_vars != null) {
+						argXPath.fixupVariables(m_vars, m_globals_size);
+					}
+					
+					Expression expr1 = argXPath.getExpression();
+					
+					List<String> argList = new ArrayList<String>();
+					
+					if (expr1 instanceof XPathSequenceConstructor) {
+					   XPathSequenceConstructor xpathSequenceConstructor = (XPathSequenceConstructor)expr1;
+					   argList = xpathSequenceConstructor.getSequenceConstructorXPathParts();
+					}
+					else {
+					   argList.add(argXPathStr);
+					}
+					
+					result = m_xsl3FunctionService.evaluateXPathInlineFunction((XPathInlineFunction)result, argList, null, 
+																							    	    			xctxt, prefixTable, m_vars, m_globals_size, 
+																							    	    			m_xpathVarList, m_funcRefVarName);
 				}
 			}
 		}

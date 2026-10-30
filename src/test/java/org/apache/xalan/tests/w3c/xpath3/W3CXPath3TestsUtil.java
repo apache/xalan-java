@@ -747,7 +747,11 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 										}
 
 										if (xpathObj != null) {																																												
-											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);											
+											xpathResultObj = xpathObj.execute(xctxt, sourceNode, xmlNsPrefixResolver);
+											
+											if (xpathResultObj instanceof XNumber) {
+											   xpathResultObj = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)xpathResultObj);
+											}
 																						
 											Expression expr1 = xpathObj.getExpression();
 											expr1.resetXPathVarList();																						

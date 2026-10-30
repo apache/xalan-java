@@ -43,7 +43,7 @@ import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.functions.string.FuncConcat;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
@@ -145,7 +145,7 @@ public class FuncFunctionArity extends FunctionDef1Arg
 		   }
 		   else if (xObj instanceof XPathInlineFunction) {
 			   XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj;
-			   List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
+			   List<XPathInlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
 			   
 			   result = new XSInteger(String.valueOf(funcParamList.size()));
 		   }
@@ -231,14 +231,14 @@ public class FuncFunctionArity extends FunctionDef1Arg
 			}
 			else if (xObj instanceof XPathInlineFunction) {
 				XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj;
-				List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
+				List<XPathInlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
 				
 				result = new XSInteger(String.valueOf(funcParamList.size()));
 			}
 		}
 		else if (m_arg0 instanceof XPathInlineFunction) {
 			XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)m_arg0;
-			List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
+			List<XPathInlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
 			
 			result = new XSInteger(String.valueOf(funcParamList.size()));
 		}

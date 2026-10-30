@@ -28,11 +28,15 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
@@ -533,14 +537,12 @@ public class FuncSum extends FunctionMultiArgs
 					arg1Obj = null;
 				}
 
-				if ((arg1Obj != null) && !((arg1Obj instanceof XSNumericType) || (arg1Obj instanceof XNumber) 
-																			  || (arg1Obj instanceof XSYearMonthDuration) 
-																			  || (arg1Obj instanceof XSDayTimeDuration)
-																			  || (arg1Obj instanceof XSUntypedAtomic))) {
-					throw new TransformerException("FORG0006 : An XPath 3.1 function 'sum', second argument should be "
-																													  + "an xdm atomic value with following possible "
-																													  + "schema types : 'numeric', 'yearMonthDuration', "
-																													  + "'dayTimeDuration', 'untypedAtomic'.", srcLocator);
+				if ((arg1Obj != null) && !((arg1Obj instanceof XSAnyAtomicType) || (arg1Obj instanceof XNumber) 
+																			    || (arg1Obj instanceof XString)
+						                                                        || (arg1Obj instanceof XBoolean)
+						                                                        || (arg1Obj instanceof XBooleanStatic))) {
+					throw new TransformerException("FORG0006 : An XPath 3.1 function 'sum', second argument doesn't conform with XML Schema "
+							                                                                                               + "simple type.", srcLocator);
 				}
 
 				if (arg1Obj != null) {

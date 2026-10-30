@@ -39,6 +39,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncPeriod;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
@@ -174,19 +175,42 @@ public class XPathSequenceConstructor extends Expression {
            try {
               xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
            }
-           catch (TransformerException ex) {        	  
-        	  if (m_list_temp1.contains(xpathExprStr)) {
-        		 throw ex;  
-        	  }
+           catch (TransformerException ex) {
+        	  boolean isXPathExprOk = false;
         	  
-        	  m_list_temp1.add(xpathExprStr);
+        	  if (xpathExprStr.startsWith("(") && xpathExprStr.endsWith(")")) {
+        		 String str1 = (xpathExprStr.substring(1, xpathExprStr.length() - 1)).trim();
+        		 
+        		 try {
+        		    xpathObj = new XPath(str1, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        		    
+        		    if (xpathObj.getExpression() instanceof Function) {
+        		      isXPathExprOk = true;
+        		    }
+        		 }
+        		 catch (TransformerException ex2) {
+        			if (m_list_temp1.contains(str1)) {
+        			   throw ex2;  
+        			} 
+        			
+        			m_list_temp1.add(str1);
+        		 }
+        	  }
         	   
-        	  if (!xpathExprStr.startsWith("(") && !xpathExprStr.endsWith(")")) {        		         		 
-        	     xpathObj = new XPath("(" + xpathExprStr + ")", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-        	  }
-        	  
-        	  if (xpathObj == null) {
-        		 xpathObj = new XPath("(" + xpathExprStr + ")", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        	  if (!isXPathExprOk) {
+        		  if (m_list_temp1.contains(xpathExprStr)) {
+        			  throw ex;  
+        		  }
+
+        		  m_list_temp1.add(xpathExprStr);
+
+        		  if (!xpathExprStr.startsWith("(") && !xpathExprStr.endsWith(")")) {        		         		 
+        			  xpathObj = new XPath("(" + xpathExprStr + ")", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        		  }
+
+        		  if (xpathObj == null) {
+        			  xpathObj = new XPath("(" + xpathExprStr + ")", srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        		  }
         	  }
            }
            
@@ -816,17 +840,22 @@ public class XPathSequenceConstructor extends Expression {
         			  xctxt.popCurrentNode(); 
         		  }
         		  
-        		  if (!isSuffixPredicate) {        		  
-        			  XMLNodeCursorImpl newNodeSet = (XMLNodeCursorImpl)evalResult;
-        			  DTMCursorIterator iter2 = newNodeSet.iterRaw();
+        		  if (!isSuffixPredicate) {
+        			  if (evalResult instanceof XMLNodeCursorImpl) {
+        				  XMLNodeCursorImpl newNodeSet = (XMLNodeCursorImpl)evalResult;
+        				  DTMCursorIterator iter2 = newNodeSet.iterRaw();
 
-        			  int nextNode = DTM.NULL;
+        				  int nextNode = DTM.NULL;
 
-        			  while ((nextNode = iter2.nextNode()) != DTM.NULL) {
-        				  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
-        				  rSeqNew.add(node);
+        				  while ((nextNode = iter2.nextNode()) != DTM.NULL) {
+        					  XMLNodeCursorImpl node = new XMLNodeCursorImpl(nextNode, xctxt);
+        					  rSeqNew.add(node);
+        				  }
         			  }
-        		  }
+        			  else {
+        				  rSeqNew.add(evalResult);
+        			  }
+        		  }        		  
         		  else if (evalResult.bool()) {
         			  rSeqNew.add(xObj);
         		  }

@@ -41,7 +41,7 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XObject;
@@ -389,7 +389,7 @@ public class FuncArrayFilter extends Function2Args {
    */
   private void verifyInlineFunctionParamArity(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                       javax.xml.transform.TransformerException {
-      List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
+      List<XPathInlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
           throw new TransformerException("XPTY0004 : An XPath 3.1 function array 'filter' function item argument has " + 
                                                                                                       funcParamList.size() + " parameters. "
@@ -418,7 +418,7 @@ public class FuncArrayFilter extends Function2Args {
 	  
 	  final int sourceNode = xctxt.getCurrentNode();
 
-	  List<InlineFunctionParameter> funcParamList = funcItem.getFuncParamList();
+	  List<XPathInlineFunctionParameter> funcParamList = funcItem.getFuncParamList();
 	  QName funcItemParamName = new QName((funcParamList.get(0)).getParamName());
 
 	  String funcBodyXPathExprStr = funcItem.getFuncBodyXPathExprStr();

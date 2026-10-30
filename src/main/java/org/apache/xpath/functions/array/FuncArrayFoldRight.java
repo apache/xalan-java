@@ -27,7 +27,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -107,7 +107,7 @@ public class FuncArrayFoldRight extends Function3Args {
         }
                    
         String inlineFnXPathStr = foldRightFunc.getFuncBodyXPathExprStr();
-        List<InlineFunctionParameter> funcParamList = foldRightFunc.getFuncParamList();
+        List<XPathInlineFunctionParameter> funcParamList = foldRightFunc.getFuncParamList();
            
         if (funcParamList.size() == 2) {              
            String funcItemParam1Name = (funcParamList.get(0)).getParamName();

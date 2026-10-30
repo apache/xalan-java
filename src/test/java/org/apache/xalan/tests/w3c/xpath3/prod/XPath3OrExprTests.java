@@ -22,7 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases
+ * Xalan-J XSL 3 test driver, to run W3C XPath 3.1 test cases,
  * for XPath 3.1 'or' expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>

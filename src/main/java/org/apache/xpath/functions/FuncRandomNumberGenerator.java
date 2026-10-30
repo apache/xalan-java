@@ -36,7 +36,7 @@ import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.context.FuncCurrentDateTime;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -376,7 +376,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 		
 		xpathInlineFunc.setFuncBodyXPathExprStr(Keywords.FUNC_RANDOM_NUMBER_GENERATOR + "()?permute($arg)");
 		
-		InlineFunctionParameter inlineFuncParam = new InlineFunctionParameter();
+		XPathInlineFunctionParameter inlineFuncParam = new XPathInlineFunctionParameter();
 		inlineFuncParam.setParamName("arg");
 		
 		XPathSequenceType xpathSeqType1 = new XPathSequenceType();
@@ -389,7 +389,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 		
 		inlineFuncParam.setParamType(xpathSeqType1);
 		
-		List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();
+		List<XPathInlineFunctionParameter> funcParamList = new ArrayList<XPathInlineFunctionParameter>();
 		funcParamList.add(inlineFuncParam);
 		
 		xpathInlineFunc.setFuncParamList(funcParamList);

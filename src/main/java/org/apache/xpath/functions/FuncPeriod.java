@@ -35,7 +35,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
@@ -100,7 +100,7 @@ public class FuncPeriod extends FunctionMultiArgs {
 				try {
 					XPathInlineFunction xpathInlineFunc = (XPathInlineFunction)xpath3CtxtItem;
 
-					List<InlineFunctionParameter> funcParamList = xpathInlineFunc.getFuncParamList();
+					List<XPathInlineFunctionParameter> funcParamList = xpathInlineFunc.getFuncParamList();
 					String xpathFuncBodyStr = xpathInlineFunc.getFuncBodyXPathExprStr();		    	
 					int funcParamCount = funcParamList.size();		    			    			    			    			    
 					int argCount = getFunctionArgumentCount();
@@ -111,7 +111,7 @@ public class FuncPeriod extends FunctionMultiArgs {
 					}
 
 					for (int idx = 0; idx < funcParamCount; idx++) {
-						InlineFunctionParameter funcParam = funcParamList.get(idx);
+						XPathInlineFunctionParameter funcParam = funcParamList.get(idx);
 						String funcParamName = funcParam.getParamName();
 						XPathSequenceType paramType = funcParam.getParamType();
 						

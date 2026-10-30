@@ -83,7 +83,7 @@ import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.objects.XdmProcessingInstructionItem;
-import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.operations.XPathOperator;
@@ -669,7 +669,7 @@ public class ElemVariable extends ElemTemplateElement
              
             return evalResult;
         }
-        else if ((selectExpression instanceof Range) || (selectExpression instanceof XPathArrowOp)) {
+        else if ((selectExpression instanceof XPathRange) || (selectExpression instanceof XPathArrowOp)) {
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
@@ -2651,7 +2651,7 @@ public class ElemVariable extends ElemTemplateElement
     				// No op
     			}
     			else if ((expr1 instanceof LocPathIterator) || (expr1 instanceof XPathSequenceConstructor) 
-    					                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof Range)) {
+    					                                                           || (expr1 instanceof ResultSequence) || (expr1 instanceof XPathRange)) {
     				// No op
     			}
     			else if (expr1 instanceof XPathOperator) {

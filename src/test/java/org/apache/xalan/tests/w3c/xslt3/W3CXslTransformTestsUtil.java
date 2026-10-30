@@ -592,7 +592,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				   xslSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
 				   
 				   inpStream.close(); 
-    		   }
+    		   }    		   
     		   
     		   try {
     		      runW3CXSLTTestSuiteXslTransformAndEmitResult(xslTestCaseName, source, xslSource, xslParamMap, expectedResultElem, elemTestRun, testResultDoc);

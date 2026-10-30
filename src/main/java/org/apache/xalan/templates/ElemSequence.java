@@ -57,7 +57,7 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.XPathOperator;
-import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.w3c.dom.NodeList;
@@ -746,7 +746,7 @@ public class ElemSequence extends ElemTemplateElement
 				  }            
 			  }
 			  else if ((selectExpression instanceof Function) || (selectExpression instanceof XPathSimpleMapOperator) || 
-					                                             (selectExpression instanceof Range) ||
+					                                             (selectExpression instanceof XPathRange) ||
 					                                             (selectExpression instanceof XPathDynamicFunctionCall)) {
 				  result = m_selectPattern.execute(xctxt, sourceNode, this);
 				  if (result instanceof XPathArray) {

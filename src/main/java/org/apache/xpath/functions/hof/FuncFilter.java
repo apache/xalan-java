@@ -37,7 +37,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -198,7 +198,7 @@ public class FuncFilter extends Function2Args {
    */
   private void validateInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
-      List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
+      List<XPathInlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
           throw new javax.xml.transform.TransformerException("XPTY0004 : The function fn:filter is called with a function item argument having " + 
                                                                                                       funcParamList.size() + " parameter(s). "
@@ -220,7 +220,7 @@ public class FuncFilter extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        List<InlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
+        List<XPathInlineFunctionParameter> funcParamList = xpathInlineFunction.getFuncParamList();
         QName varQname = new QName((funcParamList.get(0)).getParamName());
         
         String funcBodyXPathExprStr = xpathInlineFunction.getFuncBodyXPathExprStr();

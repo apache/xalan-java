@@ -29,7 +29,7 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSUntyped;
@@ -66,8 +66,8 @@ public class XPathHigherOrderBuiltinFunction extends Function3Args {
         
         int contextNode = xctxt.getContextNode();
 
-        if (xpathExpr instanceof Range) {
-            resultSeq = (ResultSequence)(((Range)xpathExpr).execute(xctxt));    
+        if (xpathExpr instanceof XPathRange) {
+            resultSeq = (ResultSequence)(((XPathRange)xpathExpr).execute(xctxt));    
         }
         else if (xpathExpr instanceof XPathSequenceConstructor) {
         	resultSeq = (ResultSequence)(((XPathSequenceConstructor)xpathExpr).execute(xctxt));

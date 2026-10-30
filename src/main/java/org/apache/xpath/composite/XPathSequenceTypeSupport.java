@@ -62,7 +62,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ElemFunctionItem;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -1502,7 +1502,7 @@ public class XPathSequenceTypeSupport {
             		 result = srcValue; 
             	  }
             	  else {
-            		 List<InlineFunctionParameter> inlineFuncParameterList = xpathInlineFuncExpr.getFuncParamList();            		 
+            		 List<XPathInlineFunctionParameter> inlineFuncParameterList = xpathInlineFuncExpr.getFuncParamList();            		 
             		 
             		 List<String> functionExpectedParamTypes = sequenceTypeFunctionTest.getTypedFunctionTestParamSpecList();
             		 int funcExpectedParamCount = functionExpectedParamTypes.size();

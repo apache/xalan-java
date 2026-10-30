@@ -47,7 +47,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -870,7 +870,7 @@ public class FuncSerialize extends FunctionMultiArgs {
 				}				
 				else if (xObj1 instanceof XPathInlineFunction) {
 					XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)xObj1;
-					List<InlineFunctionParameter> paramList = xpathInlineFunction.getFuncParamList();
+					List<XPathInlineFunctionParameter> paramList = xpathInlineFunction.getFuncParamList();
 					int arity = paramList.size();
 					
 					String str1 = "(anonymous-function)#" + arity;

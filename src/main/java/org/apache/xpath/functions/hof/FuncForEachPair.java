@@ -36,7 +36,7 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -209,7 +209,7 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunction {
         int contextNode = xctxt.getContextNode();
         
         String inlineFnXPathStr = inlineFunc.getFuncBodyXPathExprStr();
-        List<InlineFunctionParameter> funcParamList = inlineFunc.getFuncParamList();
+        List<XPathInlineFunctionParameter> funcParamList = inlineFunc.getFuncParamList();
         
         if (funcParamList.size() == 2) {                           
             String funcItemFirstArgName = (funcParamList.get(0)).getParamName();

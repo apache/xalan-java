@@ -34,7 +34,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -137,7 +137,7 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunction {
         
         if (foldLeftInlineFuncArg != null) {
         	String inlineFnXPathStr = foldLeftInlineFuncArg.getFuncBodyXPathExprStr();
-        	List<InlineFunctionParameter> funcParamList = foldLeftInlineFuncArg.getFuncParamList();
+        	List<XPathInlineFunctionParameter> funcParamList = foldLeftInlineFuncArg.getFuncParamList();
 
         	if (funcParamList.size() == 2) {              
         		String funcItemFirstArgName = (funcParamList.get(0)).getParamName();

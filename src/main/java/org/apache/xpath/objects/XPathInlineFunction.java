@@ -47,7 +47,7 @@ public class XPathInlineFunction extends XObject {
      * This class field, is a list, that represents an XPath inline 
      * function expression parameters.
      */
-    private List<InlineFunctionParameter> m_funcParamList = new ArrayList<InlineFunctionParameter>();
+    private List<XPathInlineFunctionParameter> m_funcParamList = new ArrayList<XPathInlineFunctionParameter>();
     
     /**
      * This class field, is a string value, that represents an XPath 
@@ -126,7 +126,7 @@ public class XPathInlineFunction extends XObject {
 		
 		try {
 			for (int idx = 0; idx < size1; idx++) {
-				InlineFunctionParameter xpathInlineFuncParam = m_funcParamList.get(idx);
+				XPathInlineFunctionParameter xpathInlineFuncParam = m_funcParamList.get(idx);
 				String funcParamName = xpathInlineFuncParam.getParamName();
 
 				QName qName = new QName(funcParamName);
@@ -196,11 +196,11 @@ public class XPathInlineFunction extends XObject {
         return CLASS_FUNCTION_ITEM;
     }
     
-    public List<InlineFunctionParameter> getFuncParamList() {
+    public List<XPathInlineFunctionParameter> getFuncParamList() {
         return m_funcParamList;
     }
 
-    public void setFuncParamList(List<InlineFunctionParameter> funcParamList) {
+    public void setFuncParamList(List<XPathInlineFunctionParameter> funcParamList) {
         this.m_funcParamList = funcParamList;
     }
 
@@ -278,7 +278,7 @@ public class XPathInlineFunction extends XObject {
 		}
 		else {
 			for (int idx = 0; idx < size2; idx++) {
-				InlineFunctionParameter xpathInlineFuncParam = m_funcParamList.get(idx);
+				XPathInlineFunctionParameter xpathInlineFuncParam = m_funcParamList.get(idx);
 				String funcParamName = xpathInlineFuncParam.getParamName();
 
 				QName qName = new QName(funcParamName);

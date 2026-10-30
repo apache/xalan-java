@@ -46,7 +46,7 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -482,7 +482,7 @@ public class FuncApply extends Function2Args {
 		  throw new javax.xml.transform.TransformerException("FORG0006 : An XPath 3.1 function 'apply' second argument, is not an xdm array.", srcLocator);  
 	  }
 	  else {		  		  
-		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
+		  List<XPathInlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
 		  
 		  XPathArray xpathArr = (XPathArray)arg1Obj;
 		  int size1 = xpathArr.size();
@@ -492,7 +492,7 @@ public class FuncApply extends Function2Args {
 		  
 		  if (size1 == size2) {
 			  for (int idx = 0; idx < size2; idx++) {
-				  InlineFunctionParameter xpathInlineFuncParam = inlineFuncParamList.get(idx);
+				  XPathInlineFunctionParameter xpathInlineFuncParam = inlineFuncParamList.get(idx);
 				  String funcParamNameStr = xpathInlineFuncParam.getParamName();
 				  xpathVarMap.put(new QName(funcParamNameStr), xpathArr.get(idx));								
 			  }
@@ -533,7 +533,7 @@ public class FuncApply extends Function2Args {
 			  }
 			  finally {
 				  for (int idx = 0; idx < size2; idx++) {
-					  InlineFunctionParameter xpathInlineFuncParam = inlineFuncParamList.get(idx);
+					  XPathInlineFunctionParameter xpathInlineFuncParam = inlineFuncParamList.get(idx);
 					  String funcParamNameStr = xpathInlineFuncParam.getParamName();
 					  xpathVarMap.remove(new QName(funcParamNameStr));								
 				  }

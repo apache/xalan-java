@@ -101,7 +101,7 @@ public class XPathDynamicContext extends DTMManager {
 	 * This represents the value returned by XPath 3.1 function 
 	 * fn:current-dateTime.
 	 */
-	private GregorianCalendar m_currentDateTime;
+	private static GregorianCalendar m_currentDateTime;
 	
 	/**
 	 * We use this java.util.Map object, to store variable binding information 

@@ -34,7 +34,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -129,7 +129,7 @@ public class FuncArraySort extends FunctionMultiArgs
               if (numOfArgs == 3) {                                   
                  XPathInlineFunction arg2InlineFunc = (XPathInlineFunction)arg2;
                  
-                 List<InlineFunctionParameter> funcParamList = arg2InlineFunc.getFuncParamList();
+                 List<XPathInlineFunctionParameter> funcParamList = arg2InlineFunc.getFuncParamList();
                  inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), inpArrItem);
                  
                  String sortKeyXPathStr = arg2InlineFunc.getFuncBodyXPathExprStr();

@@ -35,14 +35,14 @@ import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of an XPath 3.1 operator 'to',
- * used for XPath 3.1 range expression.
+ * Implementation of an XPath 3.1 operator 'to', used for 
+ * XPath 3.1 range expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class Range extends XPathOperator
+public class XPathRange extends XPathOperator
 {
     
    private static final long serialVersionUID = 7722428363208837859L;

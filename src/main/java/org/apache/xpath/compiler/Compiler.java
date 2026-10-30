@@ -91,7 +91,7 @@ import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Pos;
-import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.TreatAs;
 import org.apache.xpath.operations.Variable;
@@ -999,13 +999,13 @@ public class Compiler extends XPathOpMap
    * 
    * @param opPos The current position in the m_opMap array
    * 
-   * @return reference to {@link org.apache.xpath.operations.Range} instance.
+   * @return reference to {@link org.apache.xpath.operations.XPathRange} instance.
    * 
    * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression range(int opPos) throws TransformerException
   {
-    return compileXPathOperator(new Range(), opPos);   
+    return compileXPathOperator(new XPathRange(), opPos);   
   }
   
   /**

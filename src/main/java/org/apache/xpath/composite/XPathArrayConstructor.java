@@ -38,7 +38,7 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.XPathRange;
 
 import xml.xpath31.processor.types.XSNumericType;
 
@@ -199,7 +199,7 @@ public class XPathArrayConstructor extends Expression {
                    }
                }
            }
-           else if (expr instanceof Range) {
+           else if (expr instanceof XPathRange) {
         	   XObject xObj = expr.execute(xctxt);
         	   ResultSequence rSeq = (ResultSequence)xObj;
         	   

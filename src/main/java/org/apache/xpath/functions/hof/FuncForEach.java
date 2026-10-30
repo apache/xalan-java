@@ -41,7 +41,7 @@ import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunctionParameter;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
@@ -264,7 +264,7 @@ public class FuncForEach extends Function2Args {
    */
   private void verifyInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
-      List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
+      List<XPathInlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       
       if (funcParamList.size() != 1) {
           throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 function 'for-each' function item argument specifies " + 
@@ -283,7 +283,7 @@ public class FuncForEach extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        List<InlineFunctionParameter> funcParamList = xpathInlineFuncArg.getFuncParamList();
+        List<XPathInlineFunctionParameter> funcParamList = xpathInlineFuncArg.getFuncParamList();
         QName varQname = new QName((funcParamList.get(0)).getParamName());
         
         String funcBodyXPathExprStr = xpathInlineFuncArg.getFuncBodyXPathExprStr();

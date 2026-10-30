@@ -46,6 +46,10 @@ import org.apache.xpath.functions.string.FuncConcat;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
+import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.XPathRange;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSDouble;
@@ -119,12 +123,12 @@ public class XPathLetExpr extends Expression {
 
     		   XObject varBindingEvalResult = null;
 
-    		   Expression expr = letExprVarBindingXPath.getExpression();
+    		   Expression expr1 = letExprVarBindingXPath.getExpression();
 
     		   XPathNamedFunctionReference xpathNamedFuncRef = null;
     		   
-    		   if (expr instanceof XPathSequenceConstructor) {
-    			   XObject xObj = ((XPathSequenceConstructor)expr).execute(xctxt);
+    		   if (expr1 instanceof XPathSequenceConstructor) {
+    			   XObject xObj = ((XPathSequenceConstructor)expr1).execute(xctxt);
     			   
     			   if ((xObj instanceof ResultSequence) && ((ResultSequence)xObj).size() == 1) {
     				   ResultSequence rSeq = (ResultSequence)xObj;
@@ -138,11 +142,15 @@ public class XPathLetExpr extends Expression {
     				   varBindingEvalResult = xObj; 
     			   }
     		   }
-    		   else if (expr instanceof XPathNamedFunctionReference) {
-    			   xpathNamedFuncRef = (XPathNamedFunctionReference)expr; 
+    		   else if (expr1 instanceof XPathNamedFunctionReference) {
+    			   xpathNamedFuncRef = (XPathNamedFunctionReference)expr1; 
+    		   }    		   
+    		   else if (expr1 instanceof Function) {
+    			   varBindingEvalResult = expr1.execute(xctxt);
     		   }
-    		   else if (expr instanceof Function) {
-    			   varBindingEvalResult = expr.execute(xctxt);
+    		   
+    		   if (expr1 instanceof XPathInlineFunction) {
+    			   xpathInlineFunctionTypeCheck(expr1, xctxt, prefixTable, srcLocator);
     		   }
 
     		   if (xpathNamedFuncRef != null) {
@@ -354,6 +362,72 @@ public class XPathLetExpr extends Expression {
 
     public void setReturnExprXPathStr(String returnExprXPathStr) {
         this.m_returnExprXPathStr = returnExprXPathStr;
+    }
+    
+    /**
+     * Method definition, to do XPath 3.1 'inline function' 
+     * expression body type checking. This method does little
+     * bit of XPath expression type checking.
+     * 
+     * @param expr1                        An XPath 3.1 'inline function' 
+     *                                     expression body's compiled expression.
+     * @param xctxt                        An XPath context object instance
+     * @param prefixTable                  An XSL namespace prefix table, object
+     *                                     instance
+     * @param srcLocator                   An XSL SourceLocator object instance 
+     * @throws TransformerException
+     */
+    private void xpathInlineFunctionTypeCheck(Expression expr1, XPathContext xctxt, List<XMLNSDecl> prefixTable, 
+    		                                                                                       SourceLocator srcLocator) throws TransformerException {
+
+    	XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)expr1;
+    	String xpathInlineFuncBodyStr = xpathInlineFunction.getFuncBodyXPathExprStr();
+    	
+    	xpathInlineFuncBodyStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathInlineFuncBodyStr, prefixTable);
+
+    	XPath xpathObj = new XPath(xpathInlineFuncBodyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    	if (m_vars != null) {
+    		xpathObj.fixupVariables(m_vars, m_globals_size);
+    	}
+
+    	Expression expr2 = xpathObj.getExpression();
+
+    	if (expr2 instanceof XPathRange) {
+    		XPathRange xpathRange = (XPathRange)expr2;
+    		Expression expr_a = xpathRange.getLeftOperand();
+    		Expression expr_b = xpathRange.getRightOperand();
+
+    		String str1 = null;
+
+    		if (expr_a instanceof Variable) {
+    			str1 = (((Variable)expr_a).getQName()).getLocalName(); 
+    		}
+
+    		if (expr_b instanceof Variable) {
+    			str1 = (((Variable)expr_b).getQName()).getLocalName();
+    		}
+
+    		List<XPathInlineFunctionParameter> list1 = xpathInlineFunction.getFuncParamList();
+    		int size2 = list1.size();
+
+    		for (int idx2 = 0; idx2 < size2; idx2++) {
+    			XPathInlineFunctionParameter xpathInlineFuncParam = list1.get(idx2);
+    			String paramName = xpathInlineFuncParam.getParamName();
+    			XPathSequenceType paramType = xpathInlineFuncParam.getParamType();
+
+    			if ((str1 != null) && str1.equals(paramName)) {
+    				int xsTypeId = paramType.getBuiltInSequenceType();
+
+    				if ((xsTypeId == XPathSequenceTypeSupport.XS_DOUBLE) || 
+    						                                            (xsTypeId == XPathSequenceTypeSupport.XS_FLOAT)) {
+    					throw new TransformerException("XPTY0004 : An XPath 3.1 range 'to' operator's operand cannot be with XML Schema "
+																							    							            + "type 'double'/'float'. The required XML schema "
+																							    							            + "type is 'integer'.", srcLocator); 
+    				}
+    			}
+    		}
+    	}
     }
 
 }

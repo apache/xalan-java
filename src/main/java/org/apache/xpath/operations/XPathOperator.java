@@ -167,10 +167,10 @@ public class XPathOperator extends Expression implements ExpressionOwner
     XSL3FunctionService xslFunctionService = xctxt.getXSLFunctionService();
     
     if (this instanceof Equals) {
-    	if ((m_left instanceof XNumber) && (m_right instanceof Range)) {
+    	if ((m_left instanceof XNumber) && (m_right instanceof XPathRange)) {
     		XNumber xNumber = (XNumber)m_left;
     		
-    		Range range = (Range)m_right;
+    		XPathRange range = (XPathRange)m_right;
     		Expression lOp = range.getLeftOperand();
     		Expression rOp = range.getRightOperand();
     		

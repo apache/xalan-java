@@ -47,6 +47,8 @@ import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralCompTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InlineFunctionExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InstanceOfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LiteralTests;
+import org.apache.xalan.tests.w3c.xpath3.xs.XPath3XsBase64BinaryTests;
+import org.apache.xalan.tests.w3c.xpath3.xs.XPath3XsHexBinaryTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -67,7 +69,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3FnArrayAppendTests.class, XPath3FnArraySizeTests.class, 
 	            XPath3FnArrayFilterTests.class, XPath3FnArrayFoldLeftTests.class, XPath3FnArrayFoldRightTests.class, XPath3FnArrayForeachTests.class,
 	            XPath3FnNumberTests.class, XPath3FnArrayGetTests.class, XPath3FnArrayHeadTests.class, XPath3XsDurationEqualTests.class, 
-	            XPath3FnAvgTests.class, XPath3FnRandomNumberGeneratorTests.class, XPath3FnEmptyTests.class })
+	            XPath3FnAvgTests.class, XPath3FnRandomNumberGeneratorTests.class, XPath3FnEmptyTests.class, XPath3XsBase64BinaryTests.class, XPath3XsHexBinaryTests.class })
 public class W3CXPath3Tests1 {
 	
 

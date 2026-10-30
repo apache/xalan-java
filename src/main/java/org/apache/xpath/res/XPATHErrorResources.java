@@ -152,6 +152,8 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_EMPTY_EXPRESSION = "ER_EMPTY_EXPRESSION";
   public static final String ER_EXPECTED_BUT_FOUND = "ER_EXPECTED_BUT_FOUND";
   
+  public static final String ER_FUNC_ANNOTATION = "ER_FUNC_ANNOTATION";
+  
   public static final String ER_FOR_EXPR_1 = "ER_FOR_EXPR_IN";
   public static final String ER_FOR_EXPR_2 = "ER_FOR_EXPR_2";
   public static final String ER_FOR_EXPR_3 = "ER_FOR_EXPR_3";
@@ -549,10 +551,13 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "XPST0003 : Misquoted string literal. Expected single quote."},
 
   { ER_EMPTY_EXPRESSION,
-     "Empty expression!"},
+     "XPST0003 : An XPath expression is empty"},
 
   { ER_EXPECTED_BUT_FOUND,
-     "XPST0003 : Expected {0}, but found: {1}"},  
+     "XPST0003 : Expected {0}, but found: {1}"}, 
+  
+  { ER_FUNC_ANNOTATION,
+     "XPST0003 : An XPath 3.1 expression cannot use function annotation syntax."},
   
   { ER_FOR_EXPR_1,
      "XPST0003 : An XPath 3.1 ''for'' expression has multiple ''in'' statements for single variable binding."},

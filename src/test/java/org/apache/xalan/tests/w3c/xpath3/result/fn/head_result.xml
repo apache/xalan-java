@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-17T16:31:53Z" fail="1" name="fn-head" pass="7" run="8" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-30T10:41:12Z" fail="0" name="fn-head" pass="8" run="8" statusUnknown="0">
    <testResult status="pass" testName="head-001"/>
    <testResult status="pass" testName="head-002"/>
-   <testResult status="fail" testName="head-003"/>
+   <testResult status="pass" testName="head-003"/>
    <testResult status="pass" testName="head-004"/>
    <testResult status="pass" testName="head-005"/>
    <testResult status="pass" testName="head-006"/>

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:57Z" fail="1" name="xs-anyURI" pass="8" run="9" statusUnknown="0">
-   <testResult status="fail" testName="cbcl-anyURI-001"/>
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-30T10:41:08Z" fail="0" name="xs-anyURI" pass="9" run="9" statusUnknown="0">
+   <testResult status="pass" testName="cbcl-anyURI-001"/>
    <testResult status="pass" testName="cbcl-anyURI-002"/>
    <testResult status="pass" testName="cbcl-anyURI-003"/>
    <testResult status="pass" testName="cbcl-anyURI-005"/>
