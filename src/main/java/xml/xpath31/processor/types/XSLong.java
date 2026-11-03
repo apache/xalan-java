@@ -6,6 +6,8 @@ package xml.xpath31.processor.types;
 
 import java.math.BigInteger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -25,26 +27,40 @@ public class XSLong extends XSInteger {
 	/*
 	 * Class constructor.
 	 */
-	public XSLong() {
+	public XSLong() throws TransformerException {
 	   this(BigInteger.valueOf(0));
 	}
 	
 	/*
      * Class constructor.
      */
-	public XSLong(BigInteger val) {
+	public XSLong(BigInteger val) throws TransformerException {
 		super(val);
+		
+		if (_value.compareTo(MIN_INCLUSIVE) == -1 || 
+				                                 _value.compareTo(MAX_INCLUSIVE) == 1) {
+			throw new TransformerException("An instance of XML Schema type 'long' cannot be created. The numeric argument "
+																							        + "'" + val.toString() + "' provided is out of range for "
+																							        + "XML Schema type 'long'.");  
+		}
 	}
 	
 	/*
      * Class constructor.
      */
-    public XSLong(String val) {
+    public XSLong(String val) throws TransformerException {
         super(val);
+        
+        if (_value.compareTo(MIN_INCLUSIVE) == -1 || 
+                                                 _value.compareTo(MAX_INCLUSIVE) == 1) {
+           throw new TransformerException("An instance of XML Schema type 'long' cannot be created. The numeric argument "
+        		   																				   + "'" + val + "' provided is out of range for "
+        		   																				   + "XML Schema type 'long'.");
+        }
     }
 	
 	@Override
-    public ResultSequence constructor(ResultSequence arg) throws RuntimeException {
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -58,15 +74,15 @@ public class XSLong extends XSInteger {
 
             if ((bigInt.compareTo(MIN_INCLUSIVE) == -1) || 
                                                        (bigInt.compareTo(MAX_INCLUSIVE) == 1)) {
-                throw new RuntimeException("An instance of XML schema type 'long' cannot be created. The numeric argument "
-                                                                                                    + "'" + xsAnyType.stringValue() 
-                                                                                                    + "' provided is out of range for schema type 'long'.");  
+                throw new TransformerException("An instance of XML Schema type 'long' cannot be created. The numeric argument "
+                                                                                                        + "'" + xsAnyType.stringValue() 
+                                                                                                        + "' provided is out of range for XML Schema type 'long'.");  
             }
             
             resultSeq.add(new XSLong(bigInt));
         } 
         catch (NumberFormatException ex) {
-            throw new RuntimeException(ex.getMessage());
+            throw new TransformerException(ex.getMessage());
         }
         
         return resultSeq;

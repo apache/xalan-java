@@ -135,7 +135,7 @@ public class XalanJavaExtension1 {
      * @param round                       Result double value's round size
      * @return                            The computed result
      */
-    public static XSDouble getAverage(String jsonStr1, int round) {
+    public static XSDouble getAverage(String jsonStr1, int round) throws TransformerException {
     	XSDouble result = null;
     	
     	JSONObject jsonObj = new JSONObject(jsonStr1);
@@ -166,7 +166,7 @@ public class XalanJavaExtension1 {
 	 * @return                           The result value as ResultSequence object 
 	 * @throws TransformerException
 	 */
-    private static ResultSequence squareXObjectArr(XObject[] xObjArr) {
+    private static ResultSequence squareXObjectArr(XObject[] xObjArr) throws TransformerException {
         
     	ResultSequence result = new ResultSequence();
 		

@@ -54,6 +54,7 @@ import org.apache.xpath.composite.XPathIdentityExpr;
 import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.composite.XPathSequenceBinaryOp;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
@@ -91,7 +92,6 @@ import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Pos;
-import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.TreatAs;
 import org.apache.xpath.operations.Variable;
@@ -105,6 +105,7 @@ import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.operations.XPathExcept;
 import org.apache.xpath.operations.XPathIntersect;
 import org.apache.xpath.operations.XPathOperator;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.operations.XPathUnion;
@@ -898,8 +899,14 @@ public class Compiler extends XPathOpMap
    * @throws TransformerException if a error occurs creating the Expression.
    */
   Expression sequenceTypeExpr(int opPos) throws TransformerException
-  {
-      return XPathParser.m_xpathSequenceTypeExpr;
+  {	  	  
+	  /*XPathSequenceTypeExpr result = (XPathParser.m_xpathSequenceTypeExprList).get(0);
+	  
+	  (XPathParser.m_xpathSequenceTypeExprList).remove(0);
+	  
+	  return result;*/
+	  
+	  return XPathParser.m_xpathSequenceTypeExpr; 
   }
   
   /**

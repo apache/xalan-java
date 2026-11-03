@@ -20,16 +20,24 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.Vector;
+
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Base class for functions that accept one argument.
@@ -181,31 +189,63 @@ public class FunctionOneArg extends Function implements ExpressionOwner
   }
   
   /**
-   * Method definition, to get function call argument 
-   * effective value.
+   * Method definition, to evaluate XPath 3.1 function 
+   * argument's effective xdm value.
    *  
-   * @param argExpr                          An XPath compiled expression
-   *                                         object.
+   * @param argExpr                          An XPath compiled expression object, 
+   *                                         corresponding to XPath function argument.
    * @param xctxt                            An XPath context object
-   * @return                                 Run-time value of function argument
+   * @return                                 An XPath 3.1 function's evaluated argument's 
+   *                                         xdm value.
    * @throws TransformerException
    */
   protected XObject getFunctionArgEffectiveValue(Expression argExpr, XPathContext xctxt) throws TransformerException {
 	  
 	  XObject result = null;
+	  
+	  if (argExpr.exprGetParent() instanceof FuncAbs) {	  
+		  if (argExpr instanceof XSL3ConstructorOrExtensionFunction) {
+			  XSL3ConstructorOrExtensionFunction xsl3ConstrExtFunc = (XSL3ConstructorOrExtensionFunction)argExpr;
 
-	  if (argExpr instanceof SelfIteratorNoPredicate) {
-		  XObject contextItem = xctxt.getXPath3ContextItem();
-		  
-		  if (contextItem != null) {
-			  result = contextItem;  
+			  String funcName = xsl3ConstrExtFunc.getFunctionName();
+			  String funcNs = xsl3ConstrExtFunc.getNamespace();
+
+			  Vector vector1 = xsl3ConstrExtFunc.getArgVector();
+			  String xsConsFuncArgStr = null;
+
+			  if ((vector1 != null) && (vector1.size() == 1)) {
+				  Expression expr1 = (Expression)(vector1.get(0));			
+				  XObject xObj = expr1.execute(xctxt); 
+				  xsConsFuncArgStr = XslTransformEvaluationHelper.getStrVal(xObj);
+
+			  }
+
+			  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(funcNs)) {
+				  if ((Keywords.XS_INT).equals(funcName)) {
+					 String xsIntMinInclusive = XPathSequenceTypeSupport.XmlSchemaBuiltinNumericType.Int.MIN_INCLUSIVE + "";					 
+					 
+					 if ((xsConsFuncArgStr != null) && xsIntMinInclusive.equals(xsConsFuncArgStr)) {
+						result = new XSInteger(xsConsFuncArgStr);						
+					 }
+				  }
+			  }		 		 
 		  }
-		  else {
-			  result = argExpr.execute(xctxt); 
+      }
+	  
+	  if (result == null) {
+		  if (argExpr instanceof SelfIteratorNoPredicate) {
+			  XObject contextItem = xctxt.getXPath3ContextItem();
+
+			  if (contextItem != null) {
+				  result = contextItem;  
+			  }
+			  else {
+				  result = argExpr.execute(xctxt); 
+			  }
 		  }
-	  }
-	  else {  
-		  result = argExpr.execute(xctxt);
+		  else {  
+			  result = argExpr.execute(xctxt);
+		  }
 	  }
 	  
 	  return result;

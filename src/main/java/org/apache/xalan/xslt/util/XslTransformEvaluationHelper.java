@@ -75,9 +75,9 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
-import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.DateTimeUtil;
@@ -262,7 +262,7 @@ public class XslTransformEvaluationHelper {
     	  }
        }
        else if (xObj instanceof XSDateTime) {
-    	  result = DateTimeUtil.getXSDateTimeStrValue((XSDateTime)xObj);    	
+     	  result = DateTimeUtil.getXSDateTimeStrValue((XSDateTime)xObj);    	
        }
        else if (xObj instanceof XSAnyType) {
           result = ((XSAnyType)xObj).stringValue();    

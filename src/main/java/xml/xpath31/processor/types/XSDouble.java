@@ -4,6 +4,8 @@
  */
 package xml.xpath31.processor.types;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -26,22 +28,22 @@ public class XSDouble extends XSNumericType {
 	/**
 	 * Class constructor.
 	 */
-	public XSDouble(double val) {
+	public XSDouble(double val) throws TransformerException {
 	    _value = Double.valueOf(val);
 	}
 
 	/**
      * Default constructor.
      */
-	public XSDouble() {
+	public XSDouble() throws TransformerException {
 	    this(0);
 	}
 
 	/**
      * Class constructor.
      */
-	public XSDouble(String strVal) throws javax.xml.transform.TransformerException {
-		try {						 
+	public XSDouble(String strVal) throws javax.xml.transform.TransformerException {		
+		try {						
 			if ((XPath3DecimalFormat.POSITIVE_INF_STR1).equals(strVal) || (XPath3DecimalFormat.POSITIVE_INF_STR2).equals(strVal)) {
 				// Literal string +INF is rejected with XSD 1.0				
 				_value = Double.valueOf(Double.POSITIVE_INFINITY);

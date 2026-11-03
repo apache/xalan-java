@@ -6,6 +6,8 @@ package xml.xpath31.processor.types;
 
 import java.math.BigInteger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -24,26 +26,40 @@ public class XSInt extends XSLong {
 	/*
 	 * Class constructor.
 	 */
-	public XSInt() {
+	public XSInt() throws TransformerException {
 	  this(BigInteger.valueOf(0));
 	}
 	
 	/*
      * Class constructor.
      */
-	public XSInt(BigInteger val) {
+	public XSInt(BigInteger val) throws TransformerException {
 		super(val);
+		
+		if (_value.compareTo(MIN_INCLUSIVE) == -1 || 
+                                                 _value.compareTo(MAX_INCLUSIVE) == 1) {
+            throw new RuntimeException("An instance of XML Schema type 'int' cannot be created. The numeric argument "
+									                                                               + "'" + val.toString() + "' provided is out of range for "
+									                                                               + "XML Schema type 'int'.");  
+        }
 	}
 	
 	/*
      * Class constructor.
      */
-    public XSInt(String val) {
+    public XSInt(String val) throws TransformerException {
         super(val);
+        
+        if (_value.compareTo(MIN_INCLUSIVE) == -1 || 
+        		                                  _value.compareTo(MAX_INCLUSIVE) == 1) {
+        	throw new RuntimeException("An instance of XML Schema type 'int' cannot be created. The numeric argument "
+        			                                                                            + "'" + val + "' provided is out of range for "
+        			                                                                            + "XML Schema type 'int'.");  
+        }
     }
 	
 	@Override
-    public ResultSequence constructor(ResultSequence arg) throws RuntimeException {
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -56,9 +72,10 @@ public class XSInt extends XSLong {
             BigInteger bigInt = new BigInteger(xsAnyType.stringValue());          
 
             if (bigInt.compareTo(MIN_INCLUSIVE) == -1 || 
-                                            bigInt.compareTo(MAX_INCLUSIVE) == 1) {
-                throw new RuntimeException("An instance of type xs:int cannot be created. The numeric argument "
-                                                                           + "'" + xsAnyType.stringValue() + "' provided is out of range for type xs:int.");  
+                                                     bigInt.compareTo(MAX_INCLUSIVE) == 1) {
+            	throw new RuntimeException("An instance of XML Schema type 'int' cannot be created. The numeric argument "
+																			                        + "'" + xsAnyType.stringValue() + "' provided is out of range for "
+																			                        + "XML Schema type 'int'.");  
             }
             
             resultSeq.add(new XSInt(bigInt));

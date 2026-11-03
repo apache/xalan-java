@@ -18,6 +18,7 @@
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -249,7 +250,7 @@ public class FuncMax extends FunctionMultiArgs
 	 * that has maximum numeric value amongst the items of the provided 
 	 * sequence.  
 	 */
-	private XSDouble getMaxValueFromXSDoubleSequence(ResultSequence inpSeq) {
+	private XSDouble getMaxValueFromXSDoubleSequence(ResultSequence inpSeq) throws TransformerException {
 		XSDouble result = new XSDouble(Double.NEGATIVE_INFINITY);
 
 		double maxValue = ((XSDouble)(inpSeq.item(0))).doubleValue();

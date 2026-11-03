@@ -36,7 +36,7 @@ public class XSPositiveInteger extends XSNonNegativeInteger {
 	/**
 	 * Class constructor.
 	 */
-	public XSPositiveInteger() {
+	public XSPositiveInteger() throws TransformerException {
 	   // no op	
 	}
 	

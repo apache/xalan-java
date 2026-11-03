@@ -61,8 +61,6 @@ import org.apache.xpath.XPathStaticContext;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.objects.ElemFunctionItem;
-import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -72,10 +70,10 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XdmAttributeItem;
-import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.types.DateTimeUtil;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
@@ -238,6 +236,8 @@ public class XPathSequenceTypeSupport {
     public static int XS_ID = 72;
     
     public static int XS_IDREF = 73;
+    
+    public static int XS_NUMERIC = 74;
     
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
@@ -500,18 +500,7 @@ public class XPathSequenceTypeSupport {
 
             int expectedType = seqExpectedTypeData.getBuiltInSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
-            XPathSequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
-            
-            /*if (srcValue instanceof ElemFunctionItem) {
-            	InstanceOf instanceOf = new InstanceOf();            				
-            	XObject xObj = instanceOf.operate(srcValue, seqExpectedTypeData);
-
-            	if (xObj.bool()) {
-            		return srcValue;
-            	}
-            	
-            	// to do
-            }*/            
+            XPathSequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();            
             
             if (srcValue instanceof XPathNamedFunctionReference) {
             	XPathNamedFunctionReference xpathNamedFuncRef = (XPathNamedFunctionReference)srcValue; 
@@ -784,14 +773,14 @@ public class XPathSequenceTypeSupport {
 	            					  continue;  
 	            				   }
 	            				   else {
-	            					  throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            					  throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
 	            				   }
 	            			   }
 	            			   else if (xObj instanceof XdmAttributeItem) {
 	            				   continue; 
 	            			   }
 	            			   else {
-	            				   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            				   throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
 	            			   }
 	            		   }
 	            		   
@@ -813,7 +802,7 @@ public class XPathSequenceTypeSupport {
 	            			   return srcValue; 
 	            		   }
 	            		   else {
-	            			   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            			   throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
 	            		   }
 	            	   }
 	            	}
@@ -877,11 +866,11 @@ public class XPathSequenceTypeSupport {
 	            					return nodeSetClone; 
 	            				}
 	            				else {
-	            					throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            					throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
 	            				}
 	            			}
 	            			else {
-	            				throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            				throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
 	            			}
 	            		}
 	            	}
@@ -945,11 +934,11 @@ public class XPathSequenceTypeSupport {
 	            					return nodeSetClone; 
 	            				}
 	            				else {
-	            					throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            					throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
 	            				}
 	            			}
 	            			else {
-	            				throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            				throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
 	            			}
 	            		}
 	            	}
@@ -991,11 +980,11 @@ public class XPathSequenceTypeSupport {
 	            				   return nodeSetClone; 
 	            			   }
 	            			   else {
-	            				   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
+	            				   throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator); 
 	            			   }
 	            		   }
 	            		   else {
-	            			   throw new TransformerException("XPTY0004 : An xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
+	            			   throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't conform to sequence type " + sequenceTypeXPathExprStr + ".", srcLocator);
 	            		   }
 	            	   }
 	            	}	            	
@@ -1091,7 +1080,7 @@ public class XPathSequenceTypeSupport {
                 }
                 else if (sequenceTypeKindTest != null) {
                    result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                    "xs:anyURI", sequenceTypeXPathExprStr);
+                                                                                                       "xs:anyURI", sequenceTypeXPathExprStr);
                 }
             }
             else if (srcValue instanceof XString) {
@@ -1120,6 +1109,9 @@ public class XPathSequenceTypeSupport {
                 else if (expectedType == XS_IDREF) {
                     result = new XSIdRef(XslTransformEvaluationHelper.getStrVal(srcValue));
                 }
+                else if (expectedType == XS_NUMERIC) {
+                    result = new XSNumericType(XslTransformEvaluationHelper.getStrVal(srcValue));
+                }
                 else if (sequenceTypeKindTest != null) {
                    if (sequenceTypeKindTest.getKindVal() == TEXT_KIND) {
                       result = srcValue; 
@@ -1132,12 +1124,25 @@ public class XPathSequenceTypeSupport {
                 else {
                    result = castStringValueToAnExpectedType(srcStrVal, expectedType, sequenceTypeXPathExprStr);
                 }
+                
+                if (result == null) {
+                   throw new TransformerException("XPTY0004 : The supplied xdm value could'nt be cast to the given type.", srcLocator);
+                }
             }
             else if (srcValue instanceof XSString) {           
                String srcStrVal = ((XSString)srcValue).stringValue();
                
                if ((expectedType == STRING) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
                   result = srcValue; 
+               }
+               else if (srcStrVal.equals("NaN") && (expectedType == XS_FLOAT)) {
+                   result = new XSFloat("NaN"); 
+               }
+               else if (srcStrVal.equals("NaN") && (expectedType == XS_DOUBLE)) {
+                   result = new XSDouble("NaN"); 
+               }
+               else if ((srcStrVal.contains("E") || srcStrVal.contains("e")) && (expectedType == XS_DECIMAL)) {
+            	   throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't match with the provided XPath sequence type."); 
                }
                else if (sequenceTypeKindTest != null) {
                   if (sequenceTypeKindTest.getKindVal() == TEXT_KIND) {
@@ -1152,44 +1157,32 @@ public class XPathSequenceTypeSupport {
                   result = castStringValueToAnExpectedType(srcStrVal, expectedType, sequenceTypeXPathExprStr);
                }
             }            
-            else if (srcValue instanceof XNumber) {                              
-               if ((expectedType == XS_DOUBLE) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
-            	  result = srcValue; 
-               }               
-               else if (sequenceTypeKindTest != null) {
-            	  XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
-            	  String srcStrVal = xsDouble.stringValue();
-            	  
-                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                   "xs:double", sequenceTypeXPathExprStr);
+            else if (srcValue instanceof XNumber) {
+               srcValue = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)srcValue);	
+            	
+               if (srcValue instanceof XSNumericType) {
+            	   result = castXsNumericType((XSNumericType)srcValue, sequenceTypeXPathExprStr, expectedType, sequenceTypeKindTest); 
                }
-               else {
-            	  XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
-            	  
-                  result = xpathNumericTypeConversionAndPromotion(xsDouble, expectedType, sequenceTypeXPathExprStr);
+               else if (srcValue instanceof XNumber) {               
+            	   if ((expectedType == XS_DOUBLE) || (expectedType == XS_ANY_ATOMIC_TYPE)) {
+            		   result = srcValue; 
+            	   }               
+            	   else if (sequenceTypeKindTest != null) {
+            		   XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
+            		   String srcStrVal = xsDouble.stringValue();
+
+            		   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+            				   																					"xs:double", sequenceTypeXPathExprStr);
+            	   }
+            	   else {
+            		   XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
+
+            		   result = xpathNumericTypeConversionAndPromotion(xsDouble, expectedType, sequenceTypeXPathExprStr);
+            	   }
                }
-            }
+            }                        
             else if (srcValue instanceof XSNumericType) {
-               XSNumericType xsNumericType = (XSNumericType)srcValue;
-               
-               try {
-                   result = xpathNumericTypeConversionAndPromotion(xsNumericType, expectedType, sequenceTypeXPathExprStr);
-               }
-               catch (TransformerException ex1) {
-                  if (sequenceTypeKindTest != null) {
-                     String srcStrVal = xsNumericType.stringValue();
-                     try {
-                        result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                         xsNumericType.stringType(), sequenceTypeXPathExprStr);
-                     }
-                     catch (TransformerException ex2) {
-                        throw ex2;
-                     }
-                  }
-                  else {
-                     throw ex1;   
-                  }
-               }
+               result = castXsNumericType((XSNumericType)srcValue, sequenceTypeXPathExprStr, expectedType, sequenceTypeKindTest);
             }
             else if (srcValue instanceof XSBase64Binary) {
                 String srcStrVal = ((XSBase64Binary)srcValue).stringValue();
@@ -1355,7 +1348,7 @@ public class XPathSequenceTypeSupport {
                 }
                 else if (sequenceTypeKindTest != null) {
                    result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                     "xs:ID", sequenceTypeXPathExprStr);
+                                                                                                     "xs:IDREF", sequenceTypeXPathExprStr);
                 }
             }
             else if (srcValue instanceof XSQName) {
@@ -1445,6 +1438,7 @@ public class XPathSequenceTypeSupport {
             }
             else if (srcValue instanceof XSUntypedAtomic) {
                String srcStrVal = ((XSUntypedAtomic)srcValue).stringValue();
+               
                result = castXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     expectedSeqTypeData, xctxt);
             }
@@ -1521,7 +1515,7 @@ public class XPathSequenceTypeSupport {
             		       XPathSequenceType sequenceTypeData1 = (XPathSequenceType)evalResult;
             		       XPathSequenceType sequenceTypeData2 = (inlineFuncParameterList.get(idx)).getParamType();
             		       if (!sequenceTypeData1.equal(sequenceTypeData2)) {
-            		    	  throw new TransformerException("XPTY0004 : An xdm value doesn't match with the provided XPath sequence type.");  
+            		    	  throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't match with the provided XPath sequence type.");  
             		       }
             		    }
             		 }
@@ -1542,7 +1536,7 @@ public class XPathSequenceTypeSupport {
                                                                                 null, true);
                      XObject evalResult = functionReturnTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
                      if (!funcReturnType.equal((XPathSequenceType)evalResult)) {
-       		    	    throw new TransformerException("XPTY0004 : An xdm value doesn't match with the provided XPath sequence type.");  
+       		    	    throw new TransformerException("XPTY0004 : An XPath 3.1 xdm value doesn't match with the provided XPath sequence type.");  
        		         }
                      
             		 result = srcValue;
@@ -1781,6 +1775,100 @@ public class XPathSequenceTypeSupport {
     	return seqTypeData;
     }
     
+    /**
+     * Method definition, to get XPath 3.1 type string value from 
+     * the supplied Xalan-J XSL 3 built-in type integer code value.
+     * 
+     * @param sequenceType                    Xalan-J XSL 3 built-in type
+     *                                        integer code value.
+     * @return                                XPath 3.1 type string value
+     */
+    public static String getDataTypeNameFromIntValue(int sequenceType) {
+       
+    	String result = null;
+
+    	if (sequenceType == XS_DECIMAL) {
+    		result = "xs:decimal";
+    	}
+    	else if (sequenceType == XS_INTEGER) {
+    		result = "xs:integer";
+    	}
+    	else if (sequenceType == XS_DOUBLE) {
+    		result = "xs:double"; 
+    	}
+    	else if (sequenceType == XS_FLOAT) {
+    		result = "xs:float"; 
+    	}
+    	else if (sequenceType == XS_NON_POSITIVE_INTEGER) {
+    		result = "xs:nonPositiveInteger";
+    	}
+    	else if (sequenceType == XS_NEGATIVE_INTEGER) {
+    		result = "xs:negativeInteger";
+    	}
+    	else if (sequenceType == XS_NON_NEGATIVE_INTEGER) {
+    		result = "xs:nonNegativeInteger";
+    	}
+    	else if (sequenceType == XS_POSITIVE_INTEGER) {
+    		result = "xs:positiveInteger";
+    	}
+    	else if (sequenceType == XS_LONG) {
+    		result = "xs:long"; 
+    	}
+    	else if (sequenceType == XS_INT) {
+    		result = "xs:int"; 
+    	}
+    	else if (sequenceType == XS_SHORT) {
+    		result = "xs:short"; 
+    	}
+    	else if (sequenceType == XS_BYTE) {
+    		result = "xs:byte"; 
+    	}
+    	else if (sequenceType == XS_UNSIGNED_LONG) {
+    		result = "xs:unsignedLong"; 
+    	}
+    	else if (sequenceType == XS_UNSIGNED_INT) {
+    		result = "xs:unsignedInt"; 
+    	}
+    	else if (sequenceType == XS_UNSIGNED_SHORT) {
+    		result = "xs:unsignedShort"; 
+    	}
+    	else if (sequenceType == XS_UNSIGNED_BYTE) {
+    		result = "xs:unsignedByte"; 
+    	}    	
+    	else if (sequenceType == XS_NUMERIC) {
+    		result = "xs:numeric"; 
+    	}    	
+    	else if (sequenceType == BOOLEAN) {
+    		result = "xs:boolean"; 
+    	}
+    	else if (sequenceType == STRING) {
+    		result = "xs:string"; 
+    	}
+    	else if (sequenceType == XS_DATE) {
+    		result = "xs:date"; 
+    	}
+    	else if (sequenceType == XS_DATETIME) {
+    		result = "xs:dateTime";
+    	}
+    	else if (sequenceType == XS_TIME) {
+    		result = "xs:time"; 
+    	}
+    	else if (sequenceType == XS_DURATION) {
+    		result = "xs:duration"; 
+    	}
+    	else if (sequenceType == XS_DAYTIME_DURATION) {
+    		result = "xs:dayTimeDuration"; 
+    	}
+    	else if (sequenceType == XS_YEARMONTH_DURATION) {
+    		result = "xs:yearMonthDuration"; 
+    	} 
+    	else if (sequenceType == EMPTY_SEQUENCE) {
+    		result = "empty-sequence()";  
+    	}
+
+    	return result;       
+    }
+    
 	/**
 	 * Method definition, to cast a string value to an expected XDM type.
 	 * 
@@ -1895,7 +1983,10 @@ public class XPathSequenceTypeSupport {
                result = XSYearMonthDuration.parseYearMonthDuration(srcStrVal); 
             }
             else if (expectedType == XS_GYEAR_MONTH) {
-               result = new XSGYearMonth(srcStrVal); 
+               if (!("true".equals(srcStrVal) || "false".equals(srcStrVal) 
+            		                          || "1".equals(srcStrVal) || "0".equals(srcStrVal))) {
+                  result = new XSGYearMonth(srcStrVal);
+               }
             }
             else if (expectedType == XS_GYEAR) {
                result = new XSGYear(srcStrVal); 
@@ -2072,108 +2163,21 @@ public class XPathSequenceTypeSupport {
     }
     
     /**
-     * Given a primitive int value for an xdm data type, return the corresponding
-     * data type's name.
-     */
-    private static String getDataTypeNameFromIntValue(int sequenceType) {
-       
-       String dataTypeName = null;
-       
-       if (sequenceType == EMPTY_SEQUENCE) {
-          dataTypeName = "empty-sequence()";  
-       }
-       else if (sequenceType == BOOLEAN) {
-          dataTypeName = "xs:boolean"; 
-       }
-       else if (sequenceType == STRING) {
-          dataTypeName = "xs:string"; 
-       }
-       else if (sequenceType == XS_DATE) {
-          dataTypeName = "xs:date"; 
-       }
-       else if (sequenceType == XS_DATETIME) {
-          dataTypeName = "xs:dateTime";
-       }
-       else if (sequenceType == XS_TIME) {
-          dataTypeName = "xs:time"; 
-       }
-       else if (sequenceType == XS_DURATION) {
-          dataTypeName = "xs:duration"; 
-       }
-       else if (sequenceType == XS_DAYTIME_DURATION) {
-          dataTypeName = "xs:dayTimeDuration"; 
-       }
-       else if (sequenceType == XS_YEARMONTH_DURATION) {
-          dataTypeName = "xs:yearMonthDuration"; 
-       }
-       else if (sequenceType == XS_DECIMAL) {
-          dataTypeName = "xs:decimal";
-       }
-       else if (sequenceType == XS_INTEGER) {
-          dataTypeName = "xs:integer";
-       }
-       else if (sequenceType == XS_NON_POSITIVE_INTEGER) {
-          dataTypeName = "xs:nonPositiveInteger";
-       }
-       else if (sequenceType == XS_NEGATIVE_INTEGER) {
-          dataTypeName = "xs:negativeInteger";
-       }
-       else if (sequenceType == XS_NON_NEGATIVE_INTEGER) {
-          dataTypeName = "xs:nonNegativeInteger";
-       }
-       else if (sequenceType == XS_POSITIVE_INTEGER) {
-          dataTypeName = "xs:positiveInteger";
-       }
-       else if (sequenceType == XS_LONG) {
-          dataTypeName = "xs:long"; 
-       }
-       else if (sequenceType == XS_INT) {
-          dataTypeName = "xs:int"; 
-       }
-       else if (sequenceType == XS_SHORT) {
-          dataTypeName = "xs:short"; 
-       }
-       else if (sequenceType == XS_BYTE) {
-          dataTypeName = "xs:byte"; 
-       }
-       else if (sequenceType == XS_UNSIGNED_LONG) {
-          dataTypeName = "xs:unsignedLong"; 
-       }
-       else if (sequenceType == XS_UNSIGNED_INT) {
-          dataTypeName = "xs:unsignedInt"; 
-       }
-       else if (sequenceType == XS_UNSIGNED_SHORT) {
-          dataTypeName = "xs:unsignedShort"; 
-       }
-       else if (sequenceType == XS_UNSIGNED_BYTE) {
-          dataTypeName = "xs:unsignedByte"; 
-       }
-       else if (sequenceType == XS_DOUBLE) {
-          dataTypeName = "xs:double"; 
-       }
-       else if (sequenceType == XS_FLOAT) {
-          dataTypeName = "xs:float"; 
-       }
-       
-       return dataTypeName;       
-    }
-    
-    /**
      * Given an XObject object instance representing an atomic data value, check whether
      * a sequence type item() type annotation is applicable to the atomic data value.
      */
     private static XObject performXdmItemTypeNormalizationOnAtomicType(XPathSequenceTypeKindTest sequenceTypeKindTest, 
-                                                                                     XObject srcValue, String srcStrVal, 
+                                                                                     XObject xObj, String srcStrVal, 
                                                                                      String srcDataTypeName, 
                                                                                      String sequenceTypeXPathExprStr) throws TransformerException {
-        XObject result = null;
+        XObject result = null;        
         
         if (sequenceTypeKindTest.getKindVal() == ITEM_KIND) {
-           result = srcValue;
+           result = xObj;
         }
         else {
            throw new TransformerException("XTTE0570 : The " + srcDataTypeName + " value '" + srcStrVal + "' cannot be cast to "
-                                                                                                   + "a type " + sequenceTypeXPathExprStr + "."); 
+                                                                                                       + "a type " + sequenceTypeXPathExprStr + "."); 
         }
         
         return result;
@@ -2700,6 +2704,50 @@ public class XPathSequenceTypeSupport {
 		}		
 		
 		return result;
+	}
+    
+    /**
+     * Method definition, to cast the supplied xdm value,
+     * to the specified xdm supplied type. 
+     * 
+     * @param xsNumericType                         The supplied xdm value that
+     *                                              needs to be cast, to the supplied
+     *                                              type.
+     * @param sequenceTypeXPathExprStr              An XPath 3.1 sequence type string value
+     * @param expectedType                          Xalan-J XSL 3 built-in type integer value,
+     *                                              if available.          
+     * @param sequenceTypeKindTest                  Xalan-J XSL 3 complied representation for xdm 
+     *                                              sequence type kind test.
+     * @return                                      An xdm result value after the type case
+     * @throws TransformerException
+     */
+    private static XObject castXsNumericType(XSNumericType xsNumericType, String sequenceTypeXPathExprStr,
+			                                                             int expectedType, XPathSequenceTypeKindTest sequenceTypeKindTest) 
+			                                                		                                                throws TransformerException {
+		
+    	XObject result = null;
+
+    	try {
+    		result = xpathNumericTypeConversionAndPromotion(xsNumericType, expectedType, sequenceTypeXPathExprStr);
+    	}
+    	catch (TransformerException ex1) {
+    		if (sequenceTypeKindTest != null) {
+    			String srcStrVal = xsNumericType.stringValue();
+
+    			try {
+    				result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, xsNumericType, srcStrVal, 
+    																									     xsNumericType.stringType(), sequenceTypeXPathExprStr);
+    			}
+    			catch (TransformerException ex2) {
+    				throw ex2;
+    			}
+    		}
+    		else {
+    			throw ex1;   
+    		}
+    	}
+
+    	return result;
 	}
 
 }

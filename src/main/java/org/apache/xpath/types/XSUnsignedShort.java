@@ -37,7 +37,7 @@ public class XSUnsignedShort extends XSUnsignedInt {
 	/**
 	 * Class constructor.
 	 */
-	public XSUnsignedShort() {
+	public XSUnsignedShort() throws TransformerException {
 	   // no op	
 	}
 	

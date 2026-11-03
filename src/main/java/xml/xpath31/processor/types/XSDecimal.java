@@ -6,6 +6,8 @@ package xml.xpath31.processor.types;
 
 import java.math.BigDecimal;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -25,21 +27,21 @@ public class XSDecimal extends XSNumericType {
     /**
      * Class constructor.
      */
-    public XSDecimal() {
+    public XSDecimal() throws TransformerException {
        this(BigDecimal.valueOf(0));
     }
     
     /**
      * Class constructor.
      */
-    public XSDecimal(BigDecimal bigDecimal) {
+    public XSDecimal(BigDecimal bigDecimal) throws TransformerException {
        _value = bigDecimal; 
     }
     
     /**
      * Class constructor.
      */
-    public XSDecimal(String str) {
+    public XSDecimal(String str) throws TransformerException {
         _value = new BigDecimal(str);
     }
 
@@ -64,7 +66,7 @@ public class XSDecimal extends XSNumericType {
     }
     
     @Override
-    public ResultSequence constructor(ResultSequence arg) {
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -137,7 +139,7 @@ public class XSDecimal extends XSNumericType {
      * Cast an object of type XSAnyType, to an object of type 
      * XSDecimal.  
      */
-    private XSDecimal castToDecimal(XSAnyType xsAnyType) {        
+    private XSDecimal castToDecimal(XSAnyType xsAnyType) throws TransformerException {        
        if (xsAnyType instanceof XSBoolean) {            
           if ((xsAnyType.stringValue()).equals("true")) {
              return new XSDecimal(new BigDecimal("1"));

@@ -282,7 +282,7 @@ public class XPathArithmeticUtil extends XPathOperator {
 	 * @return                               The constructed XNumber object
 	 *                                       instance. 
 	 */
-	protected XNumber getXNumberFromXSNumericType(XSNumericType xsNumericType) {
+	protected XNumber getXNumberFromXSNumericType(XSNumericType xsNumericType) throws TransformerException {
 	   
 	   XNumber result = null;
 	   
@@ -392,7 +392,7 @@ public class XPathArithmeticUtil extends XPathOperator {
 	 * @return                          An xdm result object for an arithmetic 
 	 *                                  division.
 	 */
-	protected XObject doubleDiv(double lDouble, double rDouble) {
+	protected XObject doubleDiv(double lDouble, double rDouble) throws TransformerException {
 
 		XObject result = null;
 

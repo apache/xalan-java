@@ -40,8 +40,8 @@ public class XSNonPositiveInteger extends XSInteger {
 	/**
 	 * Class constructor.
 	 */
-	public XSNonPositiveInteger() {
-	   // no op	
+	public XSNonPositiveInteger() throws TransformerException {
+	   // No op	
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class XSNonPositiveInteger extends XSInteger {
 	   return result;
 	}
 	
-	public XSDouble multiply(XSNumericType val) {
+	public XSDouble multiply(XSNumericType val) throws TransformerException {
 	   XSDouble result = null;
 				   
 	   double resultDbl = ((intValue()).longValue() * getDoubleFromXsNumericType(val));	   

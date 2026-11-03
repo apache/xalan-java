@@ -85,11 +85,13 @@ import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.functions.context.FuncCurrentDateTime;
 import org.apache.xpath.functions.string.FuncConcat;
-import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
+import org.apache.xpath.operations.CastAs;
 import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSGDay;
@@ -138,6 +140,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNormalizedString;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
@@ -305,9 +308,12 @@ public class XSL3FunctionService {
 
     					if ((evalResult instanceof XPathNamedFunctionReference) && (funcExtArgStrList != null)) {
     						XPathNamedFunctionReference xpathNamedFunctionReference = (XPathNamedFunctionReference)evalResult;    					   
+    						
     						String localName = xpathNamedFunctionReference.getFuncName();
     						String fNamespace = xpathNamedFunctionReference.getFuncNamespace();
+    						
     						Short arity = xpathNamedFunctionReference.getArity(); 
+    						
     						int argCount2 = funcExtArgStrList.size();
     						
     						if ((int)arity == argCount2) {    							
@@ -610,6 +616,16 @@ public class XSL3FunctionService {
     						}
     						
     						break;
+    					case Keywords.XS_NUMERIC :
+    						if (funcArgCount == 1) {
+    							evalResult = getXsConstructorFuncResult1(funcObj, xctxt);
+    						}
+
+    						if (evalResult == null) {    				    	
+    							evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNumericType.class, xctxt);
+    						}
+    						
+    						break;
     					case Keywords.XS_GYEAR_MONTH :    					    						    						
     						if (funcArgCount == 1) {
     							evalResult = getXsConstructorFuncResult1(funcObj, xctxt);
@@ -720,6 +736,7 @@ public class XSL3FunctionService {
 
     							if (arg0 instanceof XSL3ConstructorOrExtensionFunction) {
     							   XSL3ConstructorOrExtensionFunction xsl3ConstructorOrExtensionFunc1 = (XSL3ConstructorOrExtensionFunction)arg0;
+    							   
     							   String funcName1 = xsl3ConstructorOrExtensionFunc1.getFunctionName();
     							   String ns1 = xsl3ConstructorOrExtensionFunc1.getNamespace();
 
@@ -1085,6 +1102,10 @@ public class XSL3FunctionService {
     					}
     					else {
     						exceptionMesgStr = (ex.getMessage() != null) ? ex.getMessage() : "";
+    					}
+    					
+    					if (exceptionMesgStr.startsWith("FORG0001 :") && (errCodeStr == null)) {
+    					   errCodeStr = "FORG0001"; 
     					}
 
     					exceptionMesgStr = exceptionMesgStr.equals("") ? "" : (exceptionMesgStr + ".");
@@ -1661,6 +1682,10 @@ public class XSL3FunctionService {
         	  result = true;
         	  
         	  break;
+          case Keywords.XS_NUMERIC :
+        	  result = true;
+        	  
+        	  break;
           case Keywords.XS_DATE :
         	  result = true;
         	  
@@ -1879,8 +1904,24 @@ public class XSL3FunctionService {
     		XPathSequenceType paramType = funcParam.getParamType();
 
     		if (paramType != null) {
-    			try {
-    				argValue = XPathSequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
+    			try {   
+    				if (argValue instanceof XMLNodeCursorImpl) {
+    					argValue = XPathSequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);
+    				}
+    				else {
+    					CastAs castAs = new CastAs();
+    					castAs.setLeftRight(argValue, paramType);
+    					
+    					castAs.setFuncParamResultTypeCheck(true);
+
+    					XObject xObj = castAs.execute(xctxt);
+
+    					if (xObj == null) {
+    						throw new TransformerException("XPTY0004 : An item type for argument at position " + (idx + 1) + ", for parameter '" + funcParamName + "', for the XPath dynamic "
+    								+ "function call $" + xslDynFuncCallVarName + ", "
+    								+ "doesn't match an expected type.", srcLocator);
+    					}
+    				}
     				
     				if (argValue == null) {
     					if (xslDynFuncCallVarName != null) {
@@ -1919,6 +1960,7 @@ public class XSL3FunctionService {
     	}
 
     	XPath inlineFnXPath = new XPath(xpathInlineFnBodyStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    	
     	if (varVector != null) {
     		inlineFnXPath.fixupVariables(varVector, varGlobalSize);
     	}
@@ -1926,9 +1968,15 @@ public class XSL3FunctionService {
     	evalResult = inlineFnXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 
     	XPathSequenceType funcReturnType = xpathInlineFunction.getReturnType();
+    	
     	if (funcReturnType != null) {
-    		try {
-    			evalResult = XPathSequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
+    		try {    			
+    			CastAs castAs = new CastAs();
+    			castAs.setLeftRight(evalResult, funcReturnType);
+    			
+    			castAs.setFuncParamResultTypeCheck(true);
+    			
+    			evalResult = castAs.execute(xctxt); 
     			
     			if (evalResult == null) {
     				if (xslDynFuncCallVarName != null) {

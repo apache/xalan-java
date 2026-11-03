@@ -20,9 +20,16 @@
  */
 package org.apache.xpath.operations;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * The XPath 3.1 "treat as" operation.
@@ -55,7 +62,32 @@ public class TreatAs extends XPathOperator
       
       XPathSequenceType seqTypedData = (XPathSequenceType)right;
       
+      if (left instanceof XNumber) {
+    	 left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);  
+      }
+      
+      if (left instanceof XSNumericType) {
+    	 if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NUMERIC) {
+    		result = left;
+    		
+    		return result;
+    	 }
+      }
+      else if (left instanceof XNumber) {
+    	 if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NUMERIC) {
+    	    result = new XSDouble(((XNumber)left).num());
+    	    
+    	    return result;
+    	 }
+      }
+      
       result = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
+      
+      if (result == null) {
+    	 throw new TransformerException("XPDY0050 : An XPath 3.1 expression 'treat as' first operand value, "
+    	 		                                                                                            + "is not compatible with the sequence "
+    	 		                                                                                            + "type supplied as second operand.");  
+      }
       
       return result;
   }

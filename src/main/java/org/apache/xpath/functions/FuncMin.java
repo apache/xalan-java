@@ -18,6 +18,7 @@
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -248,7 +249,7 @@ public class FuncMin extends FunctionMultiArgs
    * that has minimum numeric value amongst the items of the provided 
    * sequence.  
    */
-  private XSDouble getMinValueFromXSDoubleSequence(ResultSequence inpSeq) {
+  private XSDouble getMinValueFromXSDoubleSequence(ResultSequence inpSeq) throws TransformerException {
      XSDouble result = new XSDouble(Double.NEGATIVE_INFINITY);
      
      double minValue = ((XSDouble)(inpSeq.item(0))).doubleValue();

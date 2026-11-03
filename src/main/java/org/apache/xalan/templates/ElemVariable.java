@@ -83,10 +83,10 @@ import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmCommentItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.apache.xpath.objects.XdmProcessingInstructionItem;
-import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.operations.XPathOperator;
+import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.operations.XPathUnaryOperator;
 import org.apache.xpath.patterns.NodeTest;
@@ -1386,7 +1386,8 @@ public class ElemVariable extends ElemTemplateElement
     }
     
     if (m_asAttr != null) {    	
-    	var = getXslVariableResultWithAsAttribute(var, xctxt, srcLocator, selectExpression, m_asAttr, m_xpath_default_namespace);
+    	var = getXslVariableResultWithAsAttribute(var, xctxt, srcLocator, selectExpression, 
+    			                                                                         m_asAttr, m_xpath_default_namespace);    	
     }
         
     return var;
@@ -1682,7 +1683,7 @@ public class ElemVariable extends ElemTemplateElement
 		if (seqTypeKindTest != null) {
 			seqTypeKindVal = seqTypeKindTest.getKindVal();    		
 			if ((seqTypeKindVal == XPathSequenceTypeSupport.DOCUMENT_KIND) && ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-				                                                          (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY))) {
+				                                                             (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY))) {
 				if (var.equals(XString.EMPTYSTRING)) {
 				   result = var;
 					

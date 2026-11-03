@@ -64,12 +64,12 @@ public class XSDoubleTest {
     }
 
     @Test
-    public void typeName() {
+    public void typeName() throws TransformerException {
         assertEquals("double", new XSDouble().typeName());
     }
 
     @Test
-    public void stringType() {
+    public void stringType() throws TransformerException {
         assertEquals("xs:double", new XSDouble().stringType());
     }
 
@@ -90,7 +90,7 @@ public class XSDoubleTest {
     }
 
     @Test
-    public void nan() {
+    public void nan() throws TransformerException {
         assertTrue(new XSDouble(Double.NaN).nan());
     }
 
@@ -135,7 +135,7 @@ public class XSDoubleTest {
     }
 
     @Test
-    public void getType() {
+    public void getType() throws TransformerException {
         assertEquals(CLASS_XS_DOUBLE, new XSDouble().getType());
     }
 }

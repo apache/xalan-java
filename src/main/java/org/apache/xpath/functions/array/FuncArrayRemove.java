@@ -17,6 +17,7 @@
 package org.apache.xpath.functions.array;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -100,7 +101,7 @@ public class FuncArrayRemove extends Function2Args {
 	 * an xdm value that is known to be a sequence of integer 
 	 * values.
 	 */
-	private ResultSequence getIntegerSeq(XObject xdmVal) {
+	private ResultSequence getIntegerSeq(XObject xdmVal) throws TransformerException {
 		
 		ResultSequence result = new ResultSequence();
 

@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -74,7 +75,7 @@ public class JsonFunction extends FunctionMultiArgs {
 	 * @throws JSONException
 	 */
 	protected XObject parseJsonStringToXdmValue(String jsonStrVal, boolean optionIsLiberal, String optionDuplicatesValStr) 
-																														throws JSONException {
+																														throws JSONException, TransformerException {
 				
 		XObject result = null;
 		
@@ -152,7 +153,7 @@ public class JsonFunction extends FunctionMultiArgs {
 	 * @param jsonArr                The supplied JSONObject object instance
 	 * @return                       An xdm map object instance
 	 */
-	private XPathMap getXdmMapFromJSONObject(JSONObject jsonObj) {
+	private XPathMap getXdmMapFromJSONObject(JSONObject jsonObj) throws TransformerException {
     	
 		XPathMap xpathMapResult = new XPathMap();
 
@@ -224,7 +225,7 @@ public class JsonFunction extends FunctionMultiArgs {
 	 * @param jsonArr                The supplied JSONArray object instance
 	 * @return                       An xdm array object instance
 	 */
-    private XPathArray getXdmArrayFromJSONArray(JSONArray jsonArr) {
+    private XPathArray getXdmArrayFromJSONArray(JSONArray jsonArr) throws TransformerException {
     	
     	XPathArray xpathArrResult = new XPathArray();
 

@@ -10,6 +10,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,18 +46,13 @@ public class XSNumericTypeTest {
     }
 
     @Test
-    public void typeName() {
-        assertNull("XSNumericType always returns null for this method", new XSNumericType().typeName());
+    public void typeName() throws TransformerException {
+    	Assert.assertEquals(new XSNumericType().typeName(), "numeric");
     }
 
     @Test
-    public void stringType() {
-        assertNull("XSNumericType always returns null for this method", new XSNumericType().stringType());
-    }
-
-    @Test
-    public void stringValue() {
-        assertNull("XSNumericType always returns null for this method", new XSNumericType().stringValue());
+    public void stringType() throws TransformerException {
+        Assert.assertEquals(new XSNumericType().stringType(), "xs:numeric");
     }
     
 }

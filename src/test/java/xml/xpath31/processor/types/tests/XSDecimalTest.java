@@ -12,6 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,22 +46,22 @@ public class XSDecimalTest {
 	}
 
     @Test
-    public void stringType() {
+    public void stringType() throws TransformerException {
         assertEquals("xs:decimal", new XSDecimal().stringType());
     }
 
     @Test
-    public void typeName() {
+    public void typeName() throws TransformerException {
         assertEquals("decimal", new XSDecimal().typeName());
     }
 
     @Test
-    public void stringValue() {
+    public void stringValue() throws TransformerException {
         new XSDecimal("1.3").stringValue();
     }
 
     @Test
-    public void constructor() {
+    public void constructor() throws TransformerException {
         final ResultSequence input = new ResultSequence();
         input.add(new XSDecimal("1.3"));
 
@@ -71,22 +73,22 @@ public class XSDecimalTest {
     }
 
     @Test
-    public void zero() {
+    public void zero() throws TransformerException {
         assertFalse(new XSDecimal("1.3").zero());
     }
 
     @Test
-    public void doubleValue() {
+    public void doubleValue() throws TransformerException {
         assertEquals(1.3, new XSDecimal("1.3").doubleValue(), 0);
     }
 
     @Test
-    public void getValue() {
+    public void getValue() throws TransformerException {
         assertEquals(BigDecimal.valueOf(1.3), new XSDecimal("1.3").getValue());
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws TransformerException {
         assertTrue(new XSDecimal("1.3").equals(new XSDecimal("1.3")));
         assertTrue(new XSDecimal("1337.890625").equals(new XSDecimal("1337.890625")));
 
@@ -97,21 +99,21 @@ public class XSDecimalTest {
     }
 
     @Test
-    public void lt() {
+    public void lt() throws TransformerException {
         assertTrue(new XSDecimal("1.3").lt(new XSDecimal("2")));
         assertTrue(new XSDecimal("1.3").lt(new XSDecimal("1.4")));
         assertTrue(new XSDecimal("1.3").lt(new XSDecimal("1.3000000000000000000001")));
     }
 
     @Test
-    public void gt() {
+    public void gt() throws TransformerException {
         assertTrue(new XSDecimal("1.3").gt(new XSDecimal("1")));
         assertTrue(new XSDecimal("1.3").gt(new XSDecimal("1.2")));
         assertTrue(new XSDecimal("1.3").gt(new XSDecimal("1.2999999999999999")));
     }
 
     @Test
-    public void getType() {
+    public void getType() throws TransformerException {
         assertEquals(CLASS_XS_DECIMAL, new XSDecimal().getType());
     }
 }

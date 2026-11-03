@@ -296,6 +296,8 @@ public class XMLSchemaTypeService {
     			xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "dayTimeDuration"), new XSSimpleTypeDecl());
     			xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "yearMonthDuration"), new XSSimpleTypeDecl());
     			
+    			xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "numeric"), new XSSimpleTypeDecl());
+    			
     			xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "anyType"), new XSComplexTypeDecl());
 
     			xctxt.setInScopeSchemaTypes(xslStylesheetInscopeTypeMap);
@@ -353,6 +355,8 @@ public class XMLSchemaTypeService {
 		
 		xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "dayTimeDuration"), new XSSimpleTypeDecl());
 		xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "yearMonthDuration"), new XSSimpleTypeDecl());
+		
+		xslStylesheetInscopeTypeMap.put(new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "numeric"), new XSSimpleTypeDecl());
 
     	XSNamedMap xsNamedMap2 = xsModel.getComponents(XSTypeDefinition.COMPLEX_TYPE);
 

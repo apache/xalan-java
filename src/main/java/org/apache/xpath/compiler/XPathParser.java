@@ -127,9 +127,9 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
-import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.DOMConfiguration;
@@ -306,6 +306,8 @@ public class XPathParser
   static XPathSequenceConsFuncArgs m_xpathSequenceConsFuncArgs = null;
   
   static XPathMapConstructor m_xpathMapConstructor = null;
+  
+  //static List<XPathSequenceTypeExpr> m_xpathSequenceTypeExprList = new ArrayList<XPathSequenceTypeExpr>();
   
   static XPathSequenceTypeExpr m_xpathSequenceTypeExpr = null;
   
@@ -2768,7 +2770,7 @@ public class XPathParser
 	      }
 	  }
 	  else if (m_isSequenceTypeXPathExpr) {
-	      m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
+		  m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
 	  }
       else if (m_isXPathExprBeginParse && tokenIs("map")) {
     	  // XPath parse for map expression string
@@ -5801,9 +5803,10 @@ public class XPathParser
           
           insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_INSTANCE_OF);
           
-          int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
+          int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;           
           
-          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);          
+          m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
+          
           m_ops.setOp(addPos + XPathOpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2;
@@ -5814,15 +5817,91 @@ public class XPathParser
           consumeExpected("cast");
           consumeExpected("as");
           
-          insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_CAST_AS);
-          
-          int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
-          
-          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
-          
-          m_ops.setOp(addPos + XPathOpMap.MAPINDEX_LENGTH, 
-                                                  m_ops.getOp(addPos + op1 + 1) + op1);
-          addPos += 2;
+          if (lookahead("treat", 3)) {
+        	  // An XPath 3.1 'cast as' expression is followed,
+        	  // by an XPath 3.1 'treat as' expression.
+        	  
+        	  Lexer.resetXPathOpMap(m_expression, m_ops);
+        	  
+        	  insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_TREAT_AS);
+        	  
+        	  int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
+        	  
+        	  nextToken();        	  
+        	  nextToken();
+        	  nextToken();
+        	  
+        	  StringBuffer strBuff = new StringBuffer();
+        	  String str1 = null;
+        	  String str2 = null;
+        	  
+        	  ObjectVector tokenQueue = m_ops.getTokenQueue();
+        	  
+        	  int size1 = tokenQueue.size(); 
+        	  
+        	  for (int idx = 0; idx < (m_queueMark - 1); idx++) {
+        		  Object obj1 = tokenQueue.elementAt(idx);
+
+        		  str1 = castTokenObjToStr(obj1);
+
+        		  strBuff.append(str1 + " ");
+        	  }
+        	  
+        	  str1 = (strBuff.toString()).trim(); 
+        	  
+        	  consumeExpected("treat");
+        	  consumeExpected("as");
+        	  
+        	  strBuff = new StringBuffer();
+        	  
+        	  for (int idx = (m_queueMark - 1); idx < size1; idx++) {
+        		  Object obj1 = tokenQueue.elementAt(idx);
+
+        		  str2 = castTokenObjToStr(obj1);
+
+        		  strBuff.append(str2 + " ");
+
+        		  nextToken();
+        		  nextToken();
+        	  }
+        	  
+        	  str2 = (strBuff.toString()).trim();
+        	  
+        	  appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR);
+
+          	  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1); 
+
+          	  XPathIdentityExpr xpathIdentityExpr1 = new XPathIdentityExpr();        					         					         					 
+          	  xpathIdentityExpr1.setXpathExprStr(str1);
+				 
+			  m_xpathIdentityExprList.add(xpathIdentityExpr1);
+			  
+			  appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR);
+
+          	  str2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str2); 
+
+          	  XPathIdentityExpr xpathIdentityExpr2 = new XPathIdentityExpr();        					         					         					 
+          	  xpathIdentityExpr2.setXpathExprStr(str2);          	  
+          	  xpathIdentityExpr2.setIsSequenceType(true);
+				 
+			  m_xpathIdentityExprList.add(xpathIdentityExpr2);
+			  
+			  m_ops.setOp(addPos + XPathOpMap.MAPINDEX_LENGTH, 
+                                                           m_ops.getOp(addPos + op1 + 1) + op1);
+			  
+			  addPos += 2;
+          }
+          else {
+        	  insertOp(addPos, 2, OpCodes.XPath3OpCodes.OP_CAST_AS);
+
+        	  int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
+
+        	  m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
+
+        	  m_ops.setOp(addPos + XPathOpMap.MAPINDEX_LENGTH, 
+        			                                       m_ops.getOp(addPos + op1 + 1) + op1);
+        	  addPos += 2;
+          }
       }
       else if (tokenIs("castable") && lookahead("as", 1)) {
           // XPath parse for "castable as" expression    	  
@@ -5834,7 +5913,7 @@ public class XPathParser
           
           int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;
           
-          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
+          m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
           
           m_ops.setOp(addPos + XPathOpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
@@ -5850,7 +5929,7 @@ public class XPathParser
           
           int op1 = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - addPos;          
           
-          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
+          m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
           
           m_ops.setOp(addPos + XPathOpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
@@ -8764,7 +8843,7 @@ public class XPathParser
     }    
     else if ((m_tokenChar == '\'') || (m_tokenChar == '"') || isNumericLiteral(m_token)) {
        OrExpr();
-    }    
+    }
     else {       
        TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
        
@@ -10812,14 +10891,14 @@ public class XPathParser
     * XPath parse for sequence type expressions.
     */
    private XPathSequenceTypeExpr SequenceTypeExpr(boolean isXPathInlineFunctionParse) 
-		                                                                         throws javax.xml.transform.TransformerException {
+		                                                                            throws javax.xml.transform.TransformerException {
        
 	   int opPos = 0;
        
        if (!isXPathInlineFunctionParse) {
           opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH); 
-          
-          insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_TYPE_EXPR);
+
+          insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_SEQUENCE_TYPE_EXPR);          
        }
        
        XPathSequenceTypeExpr xpathSequenceTypeExpr = new XPathSequenceTypeExpr();
@@ -11257,7 +11336,7 @@ public class XPathParser
     * XPath parse for built-in XML Schema sequence type expressions.
     */
    private void parseXdmBuiltInXmlSchemaSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
-		                                                                  boolean isXPathInlineFunctionParse) throws TransformerException {	  
+		                                                                                         boolean isXPathInlineFunctionParse) throws TransformerException {	  
  	   	   	  
  	  switch (m_token) {
  	     case Keywords.FUNC_BOOLEAN_STRING :
@@ -11340,6 +11419,10 @@ public class XPathParser
  			 xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_UNSIGNED_BYTE);
  			 
  			 break;
+ 	    case Keywords.XS_NUMERIC :
+			 xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_NUMERIC);
+			 
+			 break;
  	     case Keywords.XS_DATE :
  	         xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DATE);
  	         
@@ -11443,10 +11526,10 @@ public class XPathParser
  	  }
  	  
  	  nextToken();
- 	   	  
+ 	  
  	  if ((m_token != null) && (xpathSequenceTypeExpr.getBuiltInSequenceType() > 0)) {
- 		  setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);
- 	  }
+		  setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);
+	  }
    }
    
    /**
@@ -11886,6 +11969,10 @@ public class XPathParser
  	    	seqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_UNSIGNED_BYTE);
  	        
  	    	break;
+ 	   case Keywords.XS_NUMERIC :
+	    	seqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_NUMERIC);
+	        
+	    	break;
  	    case Keywords.XS_DATE :
  	    	seqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_DATE);
  	        
@@ -14414,6 +14501,32 @@ public class XPathParser
     	  xpathIdentityExpr.setXpathExprStr(str1);
     	  
     	  m_xpathIdentityExprList.add(xpathIdentityExpr);
+      }
+      
+      /**
+       * Method definition, to XSL transform the 
+       * token object to a String value.
+       * 
+       * @param obj1                 The supplied token object, 
+       *                             instance.
+       * @return                     The token's corresponding
+       *                             string value.
+       */
+      private String castTokenObjToStr(Object obj1) {
+    	  
+    	  String result = null;
+    	  
+    	  if (obj1 instanceof XString) {
+    		  result = "'" + obj1.toString() + "'";	 
+    	  }
+    	  else if (obj1 instanceof XNumber) {
+    		  result = ((XNumber)obj1).str();	 
+    	  }
+    	  else {
+    		  result = obj1.toString();  
+    	  }
+    	  
+    	  return result;
       }
       
 }

@@ -37,7 +37,7 @@ public class XSUnsignedByte extends XSUnsignedShort {
 	/**
 	 * Class constructor.
 	 */
-	public XSUnsignedByte() {
+	public XSUnsignedByte() throws TransformerException {
 	   // no op	
 	}
 	

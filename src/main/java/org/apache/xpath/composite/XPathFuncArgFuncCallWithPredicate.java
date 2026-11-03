@@ -97,13 +97,13 @@ public class XPathFuncArgFuncCallWithPredicate extends Expression {
 		String funcCallStr1 = m_func_call_str.replaceAll("\\s*", "");
 		
 		if (!((CURRENT_GROUP + "()").equals(funcCallStr1) || (CURRENT_GROUPING_KEY + "()").equals(funcCallStr1))) {
-			XPath funcCallStrXPath = new XPath(m_func_call_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+			XPath xpathFuncCallObj = new XPath(m_func_call_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
 			if (m_vars != null) {
-				funcCallStrXPath.fixupVariables(m_vars, m_globals_size);
+				xpathFuncCallObj.fixupVariables(m_vars, m_globals_size);
 			}
 
-			xObj1 = funcCallStrXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+			xObj1 = xpathFuncCallObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		}
 		else if ((CURRENT_GROUP + "()").equals(funcCallStr1)) {
 			StylesheetRoot stylesheetRoot = XslTransformData.m_stylesheetRoot;
@@ -193,6 +193,27 @@ public class XPathFuncArgFuncCallWithPredicate extends Expression {
 		}
 		else if (xObj1 instanceof XMLNodeCursorImpl) {
 		   xObj2 = predicateXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+		}
+		else {
+		   XObject prevXPathCtxtItem = xctxt.getXPath3ContextItem();
+		   
+		   try {
+			  xctxt.setXPath3ContextItem(xObj1);
+			  
+			  xObj2 = predicateXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+			  
+			  if (xObj2.bool()) {
+				 result = xObj1;  
+			  }
+			  else {
+				 result = new ResultSequence(); 
+			  }
+			  
+			  return result;
+		   }
+		   finally {
+			  xctxt.setXPath3ContextItem(prevXPathCtxtItem); 
+		   }
 		}
 		
 		int idx2 = Integer.MAX_VALUE;

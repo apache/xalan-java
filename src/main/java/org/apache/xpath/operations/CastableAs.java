@@ -27,9 +27,13 @@ import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.types.XSBase64Binary;
+import org.apache.xpath.types.XSHexBinary;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSDuration;
@@ -67,9 +71,13 @@ public class CastableAs extends XPathOperator
   public XObject operate(XObject left, XObject right) 
                                                  throws javax.xml.transform.TransformerException
   {
-	  XObject result = null;
+	  XObject result = null;	  	  
       
       XPathSequenceType seqTypedData = (XPathSequenceType)right;
+      
+      if (left instanceof XNumber) {
+ 		 left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);  
+ 	  }
       
       try {    	  
     	 if ((left instanceof XSAnyAtomicType) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) || 
@@ -113,16 +121,77 @@ public class CastableAs extends XPathOperator
     		 return result; 
          }
     	 else if (((left instanceof XSDecimal) || (left instanceof XSFloat) || (left instanceof XSDouble)) && 
-    			                                                                     (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER)) {
-             result = new XSBoolean(true);
+    			                                                                       (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER)) {
+             
+    		 if (left instanceof XSDecimal) {
+    			 // Precision may be lost but cast to integer is true
+    			 
+    			 result = new XSBoolean(true);
+    		 }    		 
+    		 else if (left instanceof XSFloat) {
+    			 if (!(((XSFloat)left).infinite() || ((XSFloat)left).nan())) {
+    				 // Precision may be lost but cast to integer is true
+    				 
+    				 result = new XSBoolean(true);
+    			 }
+    			 else {
+    				 result = new XSBoolean(false);
+    			 }
+    		 }
+    		 else if (left instanceof XSDouble) {
+    			 if (!(((XSDouble)left).infinite() || ((XSDouble)left).nan())) {
+    				 // Precision may be lost but cast to integer is true
+    				 
+    				 result = new XSBoolean(true);
+    			 }
+    			 else {
+    				 result = new XSBoolean(false);
+    			 }
+    		 }    		 
 
-             return result; 
+    		 return result; 
          }
+    	 else if (((left instanceof XSDecimal) || (left instanceof XSFloat) || (left instanceof XSDouble)) && 
+                                                                           (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.BOOLEAN)) {
+    		 // Precision may be lost but cast to boolean is true
+    		 
+    		 result = new XSBoolean(true);
+    	 }
     	 else if ((left instanceof XSDuration) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DAYTIME_DURATION) || 
                                                    (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_YEARMONTH_DURATION))) {
     		 result = new XSBoolean(true);
     		 
              return result; 
+    	 }
+    	 else if ((left instanceof XSDateTime) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TIME) || 
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATE) ||
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR_MONTH) ||
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR) ||
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH_DAY) ||
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GDAY) ||
+    			                                   (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH))) {    		 
+    		 result = new XSBoolean(true);
+    		 
+             return result; 
+    	 }
+    	 else if ((left instanceof XSDate) && ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR_MONTH) || 
+                                               (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR) ||
+                                               (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH_DAY) ||
+                                               (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GDAY) ||
+                                               (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH))) {    		 
+    		 result = new XSBoolean(true);
+
+    		 return result; 
+         }
+    	 else if ((left instanceof XSBase64Binary) && (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_HEXBINARY)) {
+    		 result = new XSBoolean(true);
+
+    		 return result;
+    	 }
+    	 else if ((left instanceof XSHexBinary) && (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_BASE64BINARY)) {
+    		 result = new XSBoolean(true);
+
+    		 return result;
     	 }
     	 else if (((left instanceof XSUntypedAtomic) && (Constants.ATTRNAME_NAN).equals(((XSUntypedAtomic)left).stringValue())) && 
     			                                                                          ((seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) || 
@@ -138,10 +207,23 @@ public class CastableAs extends XPathOperator
 
     		 return result; 
     	 }
-    	 else { 
+    	 
+    	 if (left instanceof XSUntypedAtomic) {
+    		XSUntypedAtomic xsUntypedAtomic = (XSUntypedAtomic)left;
+    		java.lang.String str1 = xsUntypedAtomic.stringValue();
+    		
+    		if ((str1.contains("E") || str1.contains("e")) && (seqTypedData.getBuiltInSequenceType() 
+    				                                                                              == XPathSequenceTypeSupport.XS_DECIMAL)) {
+    			result = new XSBoolean(false);
+
+       		    return result;
+    		}
+    	 }
+    	  
+    	 if (result == null) {
             result = XPathSequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
     	 }
-         
+    	          
          if (result != null) {
         	result = new XSBoolean(true); 
          }

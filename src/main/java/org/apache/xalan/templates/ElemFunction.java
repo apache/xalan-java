@@ -1918,7 +1918,7 @@ public class ElemFunction extends ElemTemplate
      * @param nodeRef							An XMLNodeCursorImpl node reference
      * @return									An xdm item, produced by this method
      */
-    private XObject xslSequenceTransformTextnode(XPathContext xctxt, XMLNodeCursorImpl nodeRef) {
+    private XObject xslSequenceTransformTextnode(XPathContext xctxt, XMLNodeCursorImpl nodeRef) throws TransformerException {
     	
     	XObject result = null;
 

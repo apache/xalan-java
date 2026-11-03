@@ -27,6 +27,7 @@ import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FnTokenizeTests;
 import org.apache.xalan.tests.w3c.xpath3.fn.XPath3FunctionStringTests;
 import org.apache.xalan.tests.w3c.xpath3.map.XPath3FnMapGetTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsThreePart2;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3CastExprTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -42,7 +43,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ XPath3FnFunction1Tests.class, XPath3OpTestsThreePart2.class, XPath3FnApplyTests.class, XPath3FnAdjustTimeToTimezoneTests.class,
 	            XPath3FunctionStringTests.class, XPath3FnSumTests.class, XPath3FnTokenizeTests.class, XPath3FnFunction2Tests.class, 
-	            XPath3FnSubsequenceTests.class, XPath3FnMapGetTests.class, XPath3FnBaseUriTests.class })
+	            XPath3FnSubsequenceTests.class, XPath3FnMapGetTests.class, XPath3FnBaseUriTests.class, XPath3CastExprTests.class })
 public class W3CXPath3Tests3 {
 
 }

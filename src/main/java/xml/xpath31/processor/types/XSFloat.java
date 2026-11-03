@@ -4,6 +4,8 @@
  */
 package xml.xpath31.processor.types;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -24,14 +26,14 @@ public class XSFloat extends XSNumericType {
 	/**
 	 * Class constructor.
 	 */
-	public XSFloat(float x) {
+	public XSFloat(float x) throws TransformerException {
 		_value = new Float(x);
 	}
 
 	/**
      * Default constructor.
      */
-	public XSFloat() {
+	public XSFloat() throws TransformerException {
 		this(0);
 	}
 
@@ -83,7 +85,7 @@ public class XSFloat extends XSNumericType {
 	}
 	
 	@Override
-    public ResultSequence constructor(ResultSequence arg) {
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {

@@ -95,7 +95,7 @@ public class XPathDynamicContext extends DTMManager {
 	 * Class field, that represents XPath dynamic context's 
 	 * implicit timezone. This value is of XML Schema type xs:dayTimeDuration.
 	 */
-	private XSDuration m_timezone;
+	private static XSDuration m_timezone;
 	
 	/**
 	 * This represents the value returned by XPath 3.1 function 
@@ -313,12 +313,15 @@ public class XPathDynamicContext extends DTMManager {
 			ZoneOffset zoneOffset = zonedDateTime.getOffset();
 			String zoneOffsetStr = zoneOffset.toString();
 			String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
+			
 			int zoneHrs = 0;
 			int zoneMinutes = 0;
+			
 			if (zoneOffsetStrParts.length > 1) {
 				zoneHrs = Integer.valueOf(zoneOffsetStrParts[1]).intValue();
 				zoneMinutes = Integer.valueOf(zoneOffsetStrParts[2]).intValue();
 			}
+			
 			boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
 			
 			m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);

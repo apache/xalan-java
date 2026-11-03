@@ -41,7 +41,7 @@ public class XSShort extends XSInt {
 	/**
 	 * Class constructor.
 	 */
-	public XSShort() {
+	public XSShort() throws TransformerException {
 	   // no op	
 	}
 	
@@ -119,7 +119,7 @@ public class XSShort extends XSInt {
 		return result;
 	}
 		
-	public XSDouble multiply(XSNumericType val) {
+	public XSDouble multiply(XSNumericType val) throws TransformerException {
 		XSDouble result = null;
 					   
 		double resultDbl = ((intValue()).longValue() * getDoubleFromXsNumericType(val));	   

@@ -40,7 +40,7 @@ public class XSByte extends XSShort {
 	/**
 	 * Class constructor.
 	 */
-	public XSByte() {
+	public XSByte() throws TransformerException {
 	   // no op	
 	}
 	
@@ -118,7 +118,7 @@ public class XSByte extends XSShort {
 		return result;
 	}
 		
-	public XSDouble multiply(XSNumericType val) {
+	public XSDouble multiply(XSNumericType val) throws TransformerException {
 		XSDouble result = null;
 					   
 		double resultDbl = ((intValue()).longValue() * getDoubleFromXsNumericType(val));	   

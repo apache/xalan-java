@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
@@ -68,6 +69,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
 		XSDate arg0XsDate = null;
+		
 		XSDuration arg1Timezone = null;
 		
 		if (m_arg0 == null) {
@@ -87,8 +89,8 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 				return result;
 			}
 			else {
-				throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath function adjust-date-to-timezone's first "
-						                                                                                       + "argument is not an XML Schema date value.", srcLocator);
+				throw new TransformerException("XPTY0004 : An XPath 3.1 function adjust-date-to-timezone's first "
+						                                                                                         + "argument is not an XML Schema date value.", srcLocator);
 			}
 		}
 				
@@ -108,28 +110,36 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 				isFnTimeZoneArgEmptySeq = true;
 			}
 			else {
-				throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath function adjust-date-to-timezone's second "
-																											  + "argument is not an XML Schema dayTimeDuration "
-																											  + "value for timezone.", srcLocator);  
+				throw new TransformerException("XPTY0004 : An XPath 3.1 function adjust-date-to-timezone's second "
+																											     + "argument is not an XML Schema dayTimeDuration "
+																											     + "value for timezone.", srcLocator);  
 			}
 		}
 		
 		if (arg1Timezone != null) {
 			int tzHrs = arg1Timezone.hours();
 			int tzMins = arg1Timezone.minutes();
+			
 			double totalTzHrs = (tzHrs + ((double)tzMins / 60)); 
 
 			totalTzHrs = (arg1Timezone.negative() ? (-1 * totalTzHrs) : totalTzHrs);
 
 			if ((totalTzHrs < -14) || (totalTzHrs > 14)) {
-				throw new javax.xml.transform.TransformerException("FODT0003 : An XPath function adjust-date-to-timezone's "
-																								+ "second argument doesn't represent a timezone "
-																								+ "value within valid duration range. Timezone value "
-																								+ "can be within the range -PT14H and PT14H.", srcLocator);
-			} 
+				throw new TransformerException("FODT0003 : An XPath 3.1 function adjust-date-to-timezone's "
+																								    + "second argument doesn't represent a timezone "
+																								    + "value within valid duration range. Timezone value "
+																								    + "can be within the range -PT14H and PT14H.", srcLocator);
+			}
+			
+			if (arg1Timezone.seconds() > 0) {
+			   throw new TransformerException("FODT0003 : An XPath 3.1 function adjust-date-to-timezone is provided with an "
+			   		                                                                                                       + "timezone argument, that doesn't have integral "
+			   		                                                                                                       + "number of minutes.", srcLocator);
+			}
 		}
 				
 		XSDuration arg0XsTimezone = arg0XsDate.getTimezone();
+		
 		if ((arg0XsTimezone == null) && isFnTimeZoneArgEmptySeq) {			
 			result = arg0XsDate;
 		}
@@ -140,6 +150,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			int timeZoneMins = arg1Timezone.minutes();
 			
 			String timeZoneStrValue = null;
+			
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
 			   timeZoneStrValue = "Z";
 			}
@@ -169,7 +180,9 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 		    
 		    int year = calendar.get(Calendar.YEAR);
 		    int month = (calendar.get(Calendar.MONTH) + 1);
+		    
 		    String monthStr = ((month < 10) ? "0" + month : "" + month);
+		    
 		    int day = calendar.get(Calendar.DATE);
 		    String dayStr = ((day < 10) ? "0" + day : "" + day);
 			
@@ -182,6 +195,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			int timeZoneMins = arg0XsTimezone.minutes();						
 			
 			String timeZoneStrValue = null;
+			
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
 			   timeZoneStrValue = "Z";			   			     
 			}
@@ -197,7 +211,9 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			
             int year = arg0XsDate.year();
             int month = arg0XsDate.month();
+            
             String monthStr = ((month < 10) ? "0" + month : "" + month);
+            
             int day = arg0XsDate.day();
             String dayStr = ((day < 10) ? "0" + day : "" + day);
             
@@ -208,12 +224,13 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
             XSDateTime xsDateTime = XSDateTime.parseDateTime(xsDateTimeTempStr1);
             
             FuncAdjustDateTimeToTimezone funcAdjustDateTimeToTimezone = new FuncAdjustDateTimeToTimezone();
+            
             try {
 				funcAdjustDateTimeToTimezone.setArg(xsDateTime, 0);
 				funcAdjustDateTimeToTimezone.setArg(arg1Timezone, 1);
 			} 
             catch (WrongNumberArgsException ex) {
-                // no op
+                // No op
 			}            
             
             XSDateTime xsDateTime2 = (XSDateTime)(funcAdjustDateTimeToTimezone.execute(xctxt));
@@ -231,6 +248,7 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 			timeZoneMins = resultTimeZone.minutes();						
 			
 			timeZoneStrValue = null;
+			
 			if ((timeZoneHours == 0) && (timeZoneMins == 0)) {
 			   timeZoneStrValue = "Z";			   			     
 			}

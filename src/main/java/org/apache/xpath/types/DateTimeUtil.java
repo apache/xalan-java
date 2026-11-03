@@ -31,9 +31,9 @@ import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSTime;
 
 /**
- * This class definition, specifies few utility methods to support 
- * XPath 3.1 data model xs:dateTime, xs:date and xs:time value 
- * comparisons.
+ * Class definition, that specifies few utility methods 
+ * to implement XPath 3.1 data model xs:dateTime, xs:date, 
+ * xs:time requirements.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -55,10 +55,14 @@ public class DateTimeUtil {
        String strValue = xsDateTime.stringValue();           
        
        Calendar calendar = xsDateTime.getCalendar();
+       
        int milliSecs = calendar.get(Calendar.MILLISECOND);
+       
        boolean ms1 = false;
+       
        if ((milliSecs % 100) == 0) {
           milliSecs = (calendar.get(Calendar.MILLISECOND)) / 100;
+          
           ms1 = true;
        }
        
@@ -67,6 +71,7 @@ public class DateTimeUtil {
        }
        else {
     	   String milliSecStr = null;
+    	   
     	   if (ms1) {
     		   milliSecStr = String.valueOf(milliSecs);  
     	   }
@@ -81,15 +86,20 @@ public class DateTimeUtil {
     	   }
 
     	   int idx = strValue.indexOf('T');
+    	   
     	   String prefixStr = strValue.substring(0, idx);
     	   String suffixStr = strValue.substring(idx);
+    	   
     	   int timeZoneIdx = suffixStr.indexOf('+');
+    	   
     	   if (timeZoneIdx == -1) {
     		   timeZoneIdx = suffixStr.indexOf('-'); 
     	   }
+    	   
     	   if (timeZoneIdx == -1) {
     		   timeZoneIdx = suffixStr.indexOf('Z'); 
     	   }        	  
+    	   
     	   if (timeZoneIdx > -1) {
     		   String timeStr = suffixStr.substring(0, timeZoneIdx);
     		   timeStr = timeStr + "." + milliSecStr;
@@ -125,12 +135,14 @@ public class DateTimeUtil {
 
 		int timeZoneIdx = str1.indexOf('T');
 		String str3 = str1.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   str1 = str1 + "Z";
 		}
 
 		timeZoneIdx = str2.indexOf('T');
 		str3 = str2.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   // For comparison purpose, if xs:dateTime value is not in a timezone,
 		   // then its assumed to be in UTC timezone.
@@ -139,7 +151,9 @@ public class DateTimeUtil {
 		
 		int yearIdx = str1.indexOf('-');
 		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		
 		OffsetDateTime odt1 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -153,7 +167,9 @@ public class DateTimeUtil {
 		
 		yearIdx = str2.indexOf('-');
 		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		
 		OffsetDateTime odt2 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -189,12 +205,14 @@ public class DateTimeUtil {
 
 		int timeZoneIdx = str1.indexOf('T');
 		String str3 = str1.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   str1 = str1 + "Z";
 		}
 
 		timeZoneIdx = str2.indexOf('T');
 		str3 = str2.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   // For comparison purpose, if xs:dateTime value is not in a timezone,
 		   // then its assumed to be in UTC timezone.
@@ -203,7 +221,9 @@ public class DateTimeUtil {
 		
 		int yearIdx = str1.indexOf('-');
 		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		
 		OffsetDateTime odt1 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -217,7 +237,9 @@ public class DateTimeUtil {
 		
 		yearIdx = str2.indexOf('-');
 		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		
 		OffsetDateTime odt2 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -253,12 +275,14 @@ public class DateTimeUtil {
 
 		int timeZoneIdx = str1.indexOf('T');
 		String str3 = str1.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   str1 = str1 + "Z";
 		}
 
 		timeZoneIdx = str2.indexOf('T');
 		str3 = str2.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   // For comparison purpose, if xs:dateTime value is not in a timezone,
 		   // then its assumed to be in UTC timezone.
@@ -267,7 +291,9 @@ public class DateTimeUtil {
 		
 		int yearIdx = str1.indexOf('-');
 		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		
 		OffsetDateTime odt1 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -281,7 +307,9 @@ public class DateTimeUtil {
 		
 		yearIdx = str2.indexOf('-');
 		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		
 		OffsetDateTime odt2 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -317,12 +345,14 @@ public class DateTimeUtil {
 
 		int timeZoneIdx = str1.indexOf('T');
 		String str3 = str1.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   str1 = str1 + "Z";
 		}
 
 		timeZoneIdx = str2.indexOf('T');
 		str3 = str2.substring(timeZoneIdx);
+		
 		if (!(str3.contains("+") || str3.contains("-") || str3.endsWith("Z"))) {
 		   // For comparison purpose, if xs:dateTime value is not in a timezone,
 		   // then its assumed to be in UTC timezone.
@@ -331,9 +361,12 @@ public class DateTimeUtil {
 		
 		int yearIdx = str1.indexOf('-');
 		int yearValue = Integer.valueOf(str1.substring(0, yearIdx));
+		
 		OffsetDateTime odt1 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str1.substring(yearIdx);  	
+		   
 		   odt1 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		   odt1 = odt1.plusYears(yearValue - 9999);
 		}
@@ -345,9 +378,12 @@ public class DateTimeUtil {
 		
 		yearIdx = str2.indexOf('-');
 		yearValue = Integer.valueOf(str2.substring(0, yearIdx));
+		
 		OffsetDateTime odt2 = null;
+		
 		if (yearValue > 9999) {
 		   String tempStr1 = "9999" + str2.substring(yearIdx);  	
+		   
 		   odt2 = OffsetDateTime.parse(tempStr1, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 		   odt2 = odt2.plusYears(yearValue - 9999);
 		}
@@ -380,13 +416,16 @@ public class DateTimeUtil {
 		
 		String str1 = date1.stringValue();
 		String[] str1Parts = str1.split("-");
+		
 		if (str1Parts.length == 3) {
 		   String str3 = str1Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			  str1 = str1 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				 str1 = str1Parts[0] + "-" + str1Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -404,13 +443,16 @@ public class DateTimeUtil {
 		
 		String str2 = date2.stringValue();
 		String[] str2Parts = str2.split("-");
+		
 		if (str2Parts.length == 3) {
 		   String str3 = str2Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			   str2 = str2 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				  str2 = str2Parts[0] + "-" + str2Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -450,13 +492,16 @@ public class DateTimeUtil {
 		
 		String str1 = date1.stringValue();
 		String[] str1Parts = str1.split("-");
+		
 		if (str1Parts.length == 3) {
 		   String str3 = str1Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			  str1 = str1 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				 str1 = str1Parts[0] + "-" + str1Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -474,13 +519,16 @@ public class DateTimeUtil {
 		
 		String str2 = date2.stringValue();
 		String[] str2Parts = str2.split("-");
+		
 		if (str2Parts.length == 3) {
 		   String str3 = str2Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			   str2 = str2 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				  str2 = str2Parts[0] + "-" + str2Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -520,13 +568,16 @@ public class DateTimeUtil {
 		
 		String str1 = date1.stringValue();
 		String[] str1Parts = str1.split("-");
+		
 		if (str1Parts.length == 3) {
 		   String str3 = str1Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			  str1 = str1 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				 str1 = str1Parts[0] + "-" + str1Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -544,13 +595,16 @@ public class DateTimeUtil {
 		
 		String str2 = date2.stringValue();
 		String[] str2Parts = str2.split("-");
+		
 		if (str2Parts.length == 3) {
 		   String str3 = str2Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			   str2 = str2 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				  str2 = str2Parts[0] + "-" + str2Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -590,13 +644,16 @@ public class DateTimeUtil {
 		
 		String str1 = date1.stringValue();
 		String[] str1Parts = str1.split("-");
+		
 		if (str1Parts.length == 3) {
 		   String str3 = str1Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			  str1 = str1 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				 str1 = str1Parts[0] + "-" + str1Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -614,13 +671,16 @@ public class DateTimeUtil {
 		
 		String str2 = date2.stringValue();
 		String[] str2Parts = str2.split("-");
+		
 		if (str2Parts.length == 3) {
 		   String str3 = str2Parts[2];
+		   
 		   if (!(str3.contains("+") || str3.endsWith("Z"))) {
 			   str2 = str2 + "T00:00:00Z"; 
 		   }
 		   else {
 			  String[] temp = str3.split("\\+|Z");
+			  
 			  if (str3.contains("+")) {
 				  str2 = str2Parts[0] + "-" + str2Parts[1] + "-" + temp[0] + "T00:00:00" + "+" + temp[1];  
 			  }
@@ -656,21 +716,25 @@ public class DateTimeUtil {
     	boolean result = false;
     	
     	String str1 = time1.stringValue();
+    	
     	if (!(str1.contains("+") || str1.contains("-") || str1.endsWith("Z"))) {
     	   str1 = str1 + "Z"; 
  		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str1 = "2000-01-01T" + str1;
+    	
     	XSDateTime dt1 = XSDateTime.parseDateTime(str1);
     	
     	String str2 = time2.stringValue();
+    	
     	if (!(str2.contains("+") || str2.contains("-") || str2.endsWith("Z"))) {
     	   str2 = str2 + "Z"; 
   		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str2 = "2000-01-01T" + str2;
+    	
     	XSDateTime dt2 = XSDateTime.parseDateTime(str2);
     	
     	result = isEqual(dt1, dt2);
@@ -693,21 +757,25 @@ public class DateTimeUtil {
     	boolean result = false;
     	
     	String str1 = time1.stringValue();
+    	
     	if (!(str1.contains("+") || str1.contains("-") || str1.endsWith("Z"))) {
     	   str1 = str1 + "Z"; 
  		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str1 = "2000-01-01T" + str1;
+    	
     	XSDateTime dt1 = XSDateTime.parseDateTime(str1);
     	
     	String str2 = time2.stringValue();
+    	
     	if (!(str2.contains("+") || str2.contains("-") || str2.endsWith("Z"))) {
     	   str2 = str2 + "Z"; 
   		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str2 = "2000-01-01T" + str2;
+    	
     	XSDateTime dt2 = XSDateTime.parseDateTime(str2);
     	
     	result = isBefore(dt1, dt2);
@@ -730,21 +798,25 @@ public class DateTimeUtil {
     	boolean result = false;
     	
     	String str1 = time1.stringValue();
+    	
     	if (!(str1.contains("+") || str1.contains("-") || str1.endsWith("Z"))) {
     	   str1 = str1 + "Z"; 
  		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str1 = "2000-01-01T" + str1;
+    	
     	XSDateTime dt1 = XSDateTime.parseDateTime(str1);
     	
     	String str2 = time2.stringValue();
+    	
     	if (!(str2.contains("+") || str2.contains("-") || str2.endsWith("Z"))) {
     	   str2 = str2 + "Z"; 
   		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str2 = "2000-01-01T" + str2;
+    	
     	XSDateTime dt2 = XSDateTime.parseDateTime(str2);
     	
     	result = isAfter(dt1, dt2);
@@ -767,12 +839,14 @@ public class DateTimeUtil {
     	boolean result = false;
     	
     	String str1 = time1.stringValue();
+    	
     	if (!(str1.contains("+") || str1.contains("-") || str1.endsWith("Z"))) {
     	   str1 = str1 + "Z"; 
  		}
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str1 = "2000-01-01T" + str1;
+    	
     	XSDateTime dt1 = XSDateTime.parseDateTime(str1);
     	
     	String str2 = time2.stringValue();
@@ -782,6 +856,7 @@ public class DateTimeUtil {
     	
     	// Prefixing with a fixed implementation chosen literal date
     	str2 = "2000-01-01T" + str2;
+    	
     	XSDateTime dt2 = XSDateTime.parseDateTime(str2);
     	
     	result = lessThanOrEqual(dt1, dt2);
@@ -803,13 +878,18 @@ public class DateTimeUtil {
 		String result = null;
 
 		String xsDateTimeStr = xsDateTime.stringValue();
+		
 		int idx2 = xsDateTimeStr.indexOf('T');
+		
 		String prfxStr = xsDateTimeStr.substring(0, idx2);
 		String sffxStr = xsDateTimeStr.substring(idx2 + 1);
+		
 		int zi = sffxStr.indexOf('Z');
 		int pi = sffxStr.indexOf('+');
 		int mi = sffxStr.indexOf('-');
+		
 		String dateStr1 = null; 
+		
 		if (zi != -1) {
 			dateStr1 = prfxStr + "Z";   
 		}
@@ -885,10 +965,13 @@ public class DateTimeUtil {
 
     	String xsDateTimeStr = xsDateTime.stringValue();
     	String[] strArray = xsDateTimeStr.split("-");		   
+    	
     	int idx2 = xsDateTimeStr.indexOf('+');
     	int idx3 = xsDateTimeStr.indexOf('Z');
+    	
     	if (strArray.length == 4) {
     		int idx = xsDateTimeStr.lastIndexOf('-');
+    		
     		result = xsDateTimeStr.substring(idx); 
     	}
     	else if (idx2 != -1) {
@@ -914,10 +997,13 @@ public class DateTimeUtil {
 		
 		String xsDateStr = xsDate.stringValue();
 		String[] strArray = xsDateStr.split("-");		
+		
 		int idx2 = xsDateStr.indexOf('+');
 		int idx3 = xsDateStr.indexOf('Z');
+		
 		if (strArray.length == 4) {
 			int idx = xsDateStr.lastIndexOf('-');
+			
 			result = xsDateStr.substring(idx); 
 		}
 		else if (idx2 != -1) {

@@ -116,6 +116,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNormalizedString;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
@@ -208,6 +209,24 @@ public class InstanceOf extends XPathOperator
       else {
     	  PrefixResolverDefault xmlNsPrefixResolver = (PrefixResolverDefault)(getXMLNsPrefixResolver());
     	  nsPrefixTable = xmlNsPrefixResolver.getPrefixTable();
+      }
+      
+      if (left instanceof XNumber) {
+    	 left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);  
+      }
+      
+      if (left instanceof XSNumericType) {
+    	 XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+    	 
+    	 XSNumericType xsNumericType = (XSNumericType)left;
+    	 Object obj1 = xsNumericType.getValue();
+    	 
+    	 if ((obj1 instanceof XSDouble) && (xpathSeqTypeData.getBuiltInSequenceType() == 
+    			                                                                     XPathSequenceTypeSupport.XS_DOUBLE)) {
+    		result = XBoolean.S_TRUE;
+    		
+    		return result;
+    	 }
       }
       
       if (left.getCastAsType() != null) {
@@ -338,6 +357,12 @@ public class InstanceOf extends XPathOperator
     		   
     		   return result;
     		}
+    	 }
+      }
+      
+      if (xsBuiltInType == XPathSequenceTypeSupport.XS_NUMERIC) {
+    	 if ((left instanceof XSNumericType) || (left instanceof XNumber)) {
+    		return XBoolean.S_TRUE; 
     	 }
       }
       

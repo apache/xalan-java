@@ -51,6 +51,13 @@ public class XPathIdentityExpr extends Expression {
 	 */
 	private String m_xpathExprStr = null;
 	
+	/**
+	 * Boolean value to indicate whether, an XPath 3.1 expression
+	 * represented by this class object is an XPath parse for an 
+	 * xdm sequence type. 
+	 */
+	boolean m_is_seqType = false;
+	
     private Vector m_vars;
     
     private int m_globals_size;
@@ -70,7 +77,14 @@ public class XPathIdentityExpr extends Expression {
 		   m_xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathExprStr, prefixTable); 
 		}
 		
-		XPath xpathObj = new XPath(m_xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		XPath xpathObj = null;
+		
+		if (!m_is_seqType) {
+		   xpathObj = new XPath(m_xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		}
+		else {
+		   xpathObj = new XPath(m_xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+		}
 		
 		if (m_vars != null) {
 			xpathObj.fixupVariables(m_vars, m_globals_size);
@@ -104,6 +118,14 @@ public class XPathIdentityExpr extends Expression {
 
 	public void setXpathExprStr(String xpathExprStr) {
 		this.m_xpathExprStr = xpathExprStr;
+	}
+	
+	public boolean getIsSequenceType() {
+	   return this.m_is_seqType;
+	}
+
+	public void setIsSequenceType(boolean isSeqType) {
+	   this.m_is_seqType = isSeqType; 	
 	}
 
 }

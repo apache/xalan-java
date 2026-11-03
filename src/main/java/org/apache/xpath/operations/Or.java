@@ -91,6 +91,8 @@ public class Or extends XPathOperator
   {
 
 	  XObject xObj0 = m_left.execute(xctxt);
+	  
+	  XObject xObj1 = m_right.execute(xctxt);
 
 	  boolean bool_0 = false;
 
@@ -112,6 +114,16 @@ public class Or extends XPathOperator
 	  else if ((xObj0 instanceof XSBoolean) || (xObj0 instanceof XBoolean) || (xObj0 instanceof XBooleanStatic)) {
 		  if (xObj0.bool()) {
 			  return XBoolean.S_TRUE; 
+		  }
+		  
+		  if ((xObj1 instanceof ResultSequence) && (((ResultSequence)xObj1).size() > 1)) {
+			 XObject xObj = ((ResultSequence)xObj1).item(0);
+			 
+			 if ((xObj instanceof XSNumericType) || (xObj instanceof XNumber)) {
+			    throw new TransformerException("FORG0006 : An XPath 3.1 effective boolean value is not defined for, "
+			 		                                                                                               + "sequence with size greater than "
+			 		                                                                                               + "one with first item as an xdm numeric value.");
+			 }
 		  }
 	  }
 	  else if ((xObj0 instanceof XSString) || (xObj0 instanceof XString)) {
@@ -188,9 +200,7 @@ public class Or extends XPathOperator
 	  }
 
 	  if (!bool_0)
-	  {
-		  XObject xObj1 = m_right.execute(xctxt);
-		  
+	  {		  		  
 		  boolean bool_1 = false;
 
 		  if ((xObj1 instanceof ResultSequence) && (((ResultSequence)xObj1).size() > 0)) {

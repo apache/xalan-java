@@ -35,13 +35,16 @@ import org.apache.xalan.tests.w3c.xpath3.map.XPath3FnMapPutTests;
 import org.apache.xalan.tests.w3c.xpath3.map.XPath3FnMapRemoveTests;
 import org.apache.xalan.tests.w3c.xpath3.map.XPath3FnMapSizeTests;
 import org.apache.xalan.tests.w3c.xpath3.math.XPath3FunctionMathTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3BooleanEqualTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3BooleanGreaterThanTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3BooleanLessThanTests;
+import org.apache.xalan.tests.w3c.xpath3.op.XPath3ConcatTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3IsSameNodeTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFive;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsFour;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsOne;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsSix;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsThreePart1;
-import org.apache.xalan.tests.w3c.xpath3.op.XPath3OpTestsTwo;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3QnameEqualTests;
 import org.apache.xalan.tests.w3c.xpath3.op.XPath3RangeExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3ForClauseTests;
@@ -65,7 +68,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ XPath3IfExprTests.class, XPath3FunctionMathTests.class, XPath3FnTailTests.class, XPath3QuantifiedExprTests.class, XPath3ForClauseTests.class, 
-	            XPath3LetClauseTests.class, XPath3XsType1Tests.class, XPath3OpTestsOne.class, XPath3OpTestsTwo.class, 
+	            XPath3LetClauseTests.class, XPath3XsType1Tests.class, XPath3OpTestsOne.class, XPath3BooleanEqualTests.class,
+	            XPath3BooleanGreaterThanTests.class, XPath3BooleanLessThanTests.class, XPath3ConcatTests.class,
 	            XPath3OpTestsThreePart1.class, XPath3OpTestsFour.class, XPath3IsSameNodeTests.class, XPath3OpTestsFive.class, 
 	            XPath3OpTestsSix.class, XPath3FnFunction3Tests.class, XPath3FnFunction4Tests.class,
 	            XPath3OrExprTests.class, XPath3FnMatchesTests.class, XPath3FnReplaceTests.class, XPath3QnameEqualTests.class,

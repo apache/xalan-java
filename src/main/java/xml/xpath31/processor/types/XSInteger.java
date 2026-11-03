@@ -7,6 +7,8 @@ package xml.xpath31.processor.types;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -25,14 +27,14 @@ public class XSInteger extends XSDecimal {
 	/*
 	 * Class constructor.
 	 */
-	public XSInteger() {
+	public XSInteger() throws TransformerException {
 		this(BigInteger.valueOf(0));
 	}
 
 	/*
      * Class constructor.
      */
-	public XSInteger(BigInteger val) {
+	public XSInteger(BigInteger val) throws TransformerException {
 		super(new BigDecimal(val));
 		_value = val;
 	}
@@ -40,7 +42,7 @@ public class XSInteger extends XSDecimal {
 	/*
      * Class constructor.
      */
-	public XSInteger(String val) {
+	public XSInteger(String val) throws TransformerException {
 		super(new BigDecimal(val));
 		_value = new BigInteger(val);
 	}
@@ -73,7 +75,7 @@ public class XSInteger extends XSDecimal {
 		return (_value.compareTo(BigInteger.ZERO) == 0);
 	}
 
-	public ResultSequence constructor(ResultSequence arg) {
+	public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -124,7 +126,7 @@ public class XSInteger extends XSDecimal {
 	    return (intValue()).compareTo(xsInteger.intValue()) > 0; 
     }
 	
-	public XSInteger multiply(XSInteger xsInteger) {
+	public XSInteger multiply(XSInteger xsInteger) throws TransformerException {
 	    return new XSInteger((intValue()).multiply(xsInteger.intValue()));   
 	}
 	
