@@ -616,6 +616,8 @@ public class XSL3FunctionService {
     						}
     						
     						break;
+    					case Keywords.XS_NOTATION :
+    						throw new TransformerException("XPST0080 : An xdm value with type 'NOTATION' couldn't be constructed.");
     					case Keywords.XS_NUMERIC :
     						if (funcArgCount == 1) {
     							evalResult = getXsConstructorFuncResult1(funcObj, xctxt);

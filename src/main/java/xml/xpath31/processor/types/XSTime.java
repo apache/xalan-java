@@ -97,6 +97,7 @@ public class XSTime extends XSCalendarType {
         String refDate = "1955-07-12T";
         
         XSDateTime xsDateTime = XSDateTime.parseDateTime(refDate + strVal);
+        
         if (xsDateTime == null) {
            throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
                                                                                    + "cannot be parsed to schema type 'time' value.");
@@ -525,7 +526,7 @@ public class XSTime extends XSCalendarType {
      * @return                                  An xs:time value
      * @throws TransformerException
      */
-    private XSTime castToTime(XSAnyType xsAnyType) throws TransformerException {        
+    public static XSTime castToTime(XSAnyType xsAnyType) throws TransformerException {        
         
     	XSTime result = null;
         
@@ -534,6 +535,7 @@ public class XSTime extends XSCalendarType {
         }        
         else if (xsAnyType instanceof XSDateTime) {
            XSDateTime xsDateTime = (XSDateTime)xsAnyType;
+           
            result = new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
         }
         else {

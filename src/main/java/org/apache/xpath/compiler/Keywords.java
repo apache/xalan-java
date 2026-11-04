@@ -510,6 +510,9 @@ public class Keywords
   /** xs:IDREF data type string. */
   public static final String XS_IDREF = "IDREF";
   
+  /** xs:NOTATION data type string. */
+  public static final String XS_NOTATION = "NOTATION";
+  
   /** xs:numeric data type string. */
   public static final String XS_NUMERIC = "numeric";
   

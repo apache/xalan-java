@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-03T13:39:56Z" fail="1869" name="prod-CastExpr" pass="870" run="2739" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-04T11:34:34Z" fail="1759" name="prod-CastExpr" pass="980" run="2739" statusUnknown="0">
    <testResult status="pass" testName="casthc1"/>
    <testResult status="pass" testName="casthc2"/>
    <testResult status="pass" testName="casthc3"/>
@@ -26,25 +26,25 @@
    <testResult status="pass" testName="casthc25"/>
    <testResult status="pass" testName="casthc26"/>
    <testResult status="pass" testName="casthc27"/>
-   <testResult status="fail" testName="casthc28"/>
+   <testResult status="pass" testName="casthc28"/>
    <testResult status="pass" testName="casthc29"/>
-   <testResult status="fail" testName="casthc30"/>
-   <testResult status="fail" testName="casthc31"/>
-   <testResult status="fail" testName="casthc32"/>
+   <testResult status="pass" testName="casthc30"/>
+   <testResult status="pass" testName="casthc31"/>
+   <testResult status="pass" testName="casthc32"/>
    <testResult status="pass" testName="casthc33"/>
    <testResult status="pass" testName="casthc34"/>
-   <testResult status="fail" testName="casthc35"/>
+   <testResult status="pass" testName="casthc35"/>
    <testResult status="pass" testName="casthc36"/>
-   <testResult status="fail" testName="casthc37"/>
+   <testResult status="pass" testName="casthc37"/>
    <testResult status="pass" testName="casthc38"/>
    <testResult status="pass" testName="casthc39"/>
    <testResult status="pass" testName="casthc40"/>
-   <testResult status="fail" testName="casthc41"/>
+   <testResult status="pass" testName="casthc41"/>
    <testResult status="pass" testName="casthc42"/>
-   <testResult status="fail" testName="casthc43"/>
-   <testResult status="fail" testName="CastAs001"/>
-   <testResult status="fail" testName="CastAs002"/>
-   <testResult status="fail" testName="CastAs003"/>
+   <testResult status="pass" testName="casthc43"/>
+   <testResult status="pass" testName="CastAs001"/>
+   <testResult status="pass" testName="CastAs002"/>
+   <testResult status="pass" testName="CastAs003"/>
    <testResult status="pass" testName="CastAs004"/>
    <testResult status="pass" testName="CastAs005"/>
    <testResult status="pass" testName="CastAs006"/>
@@ -52,49 +52,49 @@
    <testResult status="pass" testName="CastAs008"/>
    <testResult status="pass" testName="CastAs009"/>
    <testResult status="pass" testName="CastAs010"/>
-   <testResult status="fail" testName="CastAs011"/>
+   <testResult status="pass" testName="CastAs011"/>
    <testResult status="pass" testName="CastAs012"/>
    <testResult status="pass" testName="CastAs013"/>
    <testResult status="pass" testName="CastAs014"/>
    <testResult status="pass" testName="CastAs015"/>
-   <testResult status="fail" testName="CastAs016"/>
-   <testResult status="fail" testName="CastAs017"/>
-   <testResult status="fail" testName="CastAs018"/>
-   <testResult status="fail" testName="CastAs019"/>
+   <testResult status="pass" testName="CastAs016"/>
+   <testResult status="pass" testName="CastAs017"/>
+   <testResult status="pass" testName="CastAs018"/>
+   <testResult status="pass" testName="CastAs019"/>
    <testResult status="pass" testName="CastAs020"/>
-   <testResult status="fail" testName="CastAs021"/>
-   <testResult status="fail" testName="CastAs022"/>
-   <testResult status="fail" testName="CastAs023"/>
-   <testResult status="fail" testName="CastAs024"/>
-   <testResult status="fail" testName="CastAs025"/>
-   <testResult status="fail" testName="CastAs026"/>
+   <testResult status="pass" testName="CastAs021"/>
+   <testResult status="pass" testName="CastAs022"/>
+   <testResult status="pass" testName="CastAs023"/>
+   <testResult status="pass" testName="CastAs024"/>
+   <testResult status="pass" testName="CastAs025"/>
+   <testResult status="pass" testName="CastAs026"/>
    <testResult status="pass" testName="CastAs027"/>
    <testResult status="pass" testName="CastAs028"/>
-   <testResult status="fail" testName="CastAs029"/>
-   <testResult status="fail" testName="CastAs030"/>
+   <testResult status="pass" testName="CastAs029"/>
+   <testResult status="pass" testName="CastAs030"/>
    <testResult status="pass" testName="CastAs031"/>
    <testResult status="pass" testName="CastAs032"/>
-   <testResult status="fail" testName="CastAs033"/>
-   <testResult status="fail" testName="CastAs034"/>
+   <testResult status="pass" testName="CastAs033"/>
+   <testResult status="pass" testName="CastAs034"/>
    <testResult status="pass" testName="CastAs035"/>
    <testResult status="pass" testName="CastAs036"/>
-   <testResult status="fail" testName="CastAs037"/>
+   <testResult status="pass" testName="CastAs037"/>
    <testResult status="pass" testName="CastAs038"/>
    <testResult status="pass" testName="CastAs039"/>
    <testResult status="pass" testName="CastAs040"/>
-   <testResult status="fail" testName="CastAs041"/>
+   <testResult status="pass" testName="CastAs041"/>
    <testResult status="pass" testName="CastAs042"/>
    <testResult status="pass" testName="CastAs043"/>
    <testResult status="pass" testName="CastAs044"/>
-   <testResult status="fail" testName="CastAs045"/>
+   <testResult status="pass" testName="CastAs045"/>
    <testResult status="pass" testName="CastAs046"/>
    <testResult status="pass" testName="CastAs047"/>
    <testResult status="pass" testName="CastAs048"/>
-   <testResult status="fail" testName="CastAs049"/>
+   <testResult status="pass" testName="CastAs049"/>
    <testResult status="pass" testName="CastAs050"/>
    <testResult status="pass" testName="CastAs051"/>
    <testResult status="pass" testName="CastAs052"/>
-   <testResult status="fail" testName="CastAs053"/>
+   <testResult status="pass" testName="CastAs053"/>
    <testResult status="pass" testName="CastAs054"/>
    <testResult status="pass" testName="CastAs055"/>
    <testResult status="pass" testName="CastAs056"/>
@@ -134,49 +134,49 @@
    <testResult status="pass" testName="CastAs090"/>
    <testResult status="pass" testName="CastAs091"/>
    <testResult status="pass" testName="CastAs092"/>
-   <testResult status="fail" testName="CastAs093"/>
+   <testResult status="pass" testName="CastAs093"/>
    <testResult status="pass" testName="CastAs094"/>
    <testResult status="pass" testName="CastAs095"/>
    <testResult status="pass" testName="CastAs096"/>
    <testResult status="pass" testName="CastAs097"/>
-   <testResult status="fail" testName="CastAs098"/>
-   <testResult status="fail" testName="CastAs099"/>
-   <testResult status="fail" testName="CastAs100"/>
-   <testResult status="fail" testName="CastAs101"/>
+   <testResult status="pass" testName="CastAs098"/>
+   <testResult status="pass" testName="CastAs099"/>
+   <testResult status="pass" testName="CastAs100"/>
+   <testResult status="pass" testName="CastAs101"/>
    <testResult status="pass" testName="CastAs102"/>
-   <testResult status="fail" testName="CastAs103"/>
-   <testResult status="fail" testName="CastAs104"/>
-   <testResult status="fail" testName="CastAs105"/>
-   <testResult status="fail" testName="CastAs106"/>
-   <testResult status="fail" testName="CastAs107"/>
-   <testResult status="fail" testName="CastAs108"/>
+   <testResult status="pass" testName="CastAs103"/>
+   <testResult status="pass" testName="CastAs104"/>
+   <testResult status="pass" testName="CastAs105"/>
+   <testResult status="pass" testName="CastAs106"/>
+   <testResult status="pass" testName="CastAs107"/>
+   <testResult status="pass" testName="CastAs108"/>
    <testResult status="pass" testName="CastAs109"/>
    <testResult status="pass" testName="CastAs110"/>
-   <testResult status="fail" testName="CastAs111"/>
-   <testResult status="fail" testName="CastAs112"/>
+   <testResult status="pass" testName="CastAs111"/>
+   <testResult status="pass" testName="CastAs112"/>
    <testResult status="pass" testName="CastAs113"/>
    <testResult status="pass" testName="CastAs114"/>
-   <testResult status="fail" testName="CastAs115"/>
-   <testResult status="fail" testName="CastAs116"/>
+   <testResult status="pass" testName="CastAs115"/>
+   <testResult status="pass" testName="CastAs116"/>
    <testResult status="pass" testName="CastAs117"/>
    <testResult status="pass" testName="CastAs118"/>
-   <testResult status="fail" testName="CastAs119"/>
+   <testResult status="pass" testName="CastAs119"/>
    <testResult status="pass" testName="CastAs120"/>
    <testResult status="pass" testName="CastAs121"/>
    <testResult status="pass" testName="CastAs122"/>
-   <testResult status="fail" testName="CastAs123"/>
+   <testResult status="pass" testName="CastAs123"/>
    <testResult status="pass" testName="CastAs124"/>
    <testResult status="pass" testName="CastAs125"/>
    <testResult status="pass" testName="CastAs126"/>
-   <testResult status="fail" testName="CastAs127"/>
+   <testResult status="pass" testName="CastAs127"/>
    <testResult status="pass" testName="CastAs128"/>
    <testResult status="pass" testName="CastAs129"/>
    <testResult status="pass" testName="CastAs130"/>
-   <testResult status="fail" testName="CastAs131"/>
+   <testResult status="pass" testName="CastAs131"/>
    <testResult status="pass" testName="CastAs132"/>
    <testResult status="pass" testName="CastAs133"/>
    <testResult status="pass" testName="CastAs134"/>
-   <testResult status="fail" testName="CastAs135"/>
+   <testResult status="pass" testName="CastAs135"/>
    <testResult status="pass" testName="CastAs136"/>
    <testResult status="pass" testName="CastAs137"/>
    <testResult status="pass" testName="CastAs138"/>
@@ -221,7 +221,7 @@
    <testResult status="fail" testName="CastAs177"/>
    <testResult status="pass" testName="CastAs178"/>
    <testResult status="pass" testName="CastAs179"/>
-   <testResult status="pass" testName="CastAs180"/>
+   <testResult status="fail" testName="CastAs180"/>
    <testResult status="fail" testName="CastAs181"/>
    <testResult status="fail" testName="CastAs182"/>
    <testResult status="fail" testName="CastAs183"/>
@@ -258,8 +258,8 @@
    <testResult status="pass" testName="CastAs214"/>
    <testResult status="pass" testName="CastAs215"/>
    <testResult status="fail" testName="CastAs216"/>
-   <testResult status="pass" testName="CastAs217"/>
-   <testResult status="pass" testName="CastAs218"/>
+   <testResult status="fail" testName="CastAs217"/>
+   <testResult status="fail" testName="CastAs218"/>
    <testResult status="fail" testName="CastAs219"/>
    <testResult status="fail" testName="CastAs220"/>
    <testResult status="fail" testName="CastAs221"/>
@@ -318,20 +318,20 @@
    <testResult status="fail" testName="CastAs274"/>
    <testResult status="fail" testName="CastAs275"/>
    <testResult status="fail" testName="CastAs276"/>
-   <testResult status="fail" testName="CastAs277"/>
-   <testResult status="fail" testName="CastAs278"/>
+   <testResult status="pass" testName="CastAs277"/>
+   <testResult status="pass" testName="CastAs278"/>
    <testResult status="fail" testName="CastAs279"/>
    <testResult status="fail" testName="CastAs280"/>
    <testResult status="fail" testName="CastAs281"/>
    <testResult status="fail" testName="CastAs282"/>
    <testResult status="pass" testName="CastAs283"/>
    <testResult status="pass" testName="CastAs284"/>
-   <testResult status="fail" testName="CastAs285"/>
-   <testResult status="fail" testName="CastAs286"/>
-   <testResult status="fail" testName="CastAs287"/>
-   <testResult status="fail" testName="CastAs288"/>
-   <testResult status="fail" testName="CastAs289"/>
-   <testResult status="fail" testName="CastAs290"/>
+   <testResult status="pass" testName="CastAs285"/>
+   <testResult status="pass" testName="CastAs286"/>
+   <testResult status="pass" testName="CastAs287"/>
+   <testResult status="pass" testName="CastAs288"/>
+   <testResult status="pass" testName="CastAs289"/>
+   <testResult status="pass" testName="CastAs290"/>
    <testResult status="fail" testName="CastAs291"/>
    <testResult status="fail" testName="CastAs292"/>
    <testResult status="fail" testName="CastAs293"/>
@@ -344,8 +344,8 @@
    <testResult status="fail" testName="CastAs300"/>
    <testResult status="fail" testName="CastAs301"/>
    <testResult status="fail" testName="CastAs302"/>
-   <testResult status="fail" testName="CastAs303"/>
-   <testResult status="fail" testName="CastAs304"/>
+   <testResult status="pass" testName="CastAs303"/>
+   <testResult status="pass" testName="CastAs304"/>
    <testResult status="fail" testName="CastAs305"/>
    <testResult status="fail" testName="CastAs306"/>
    <testResult status="fail" testName="CastAs307"/>
@@ -353,7 +353,7 @@
    <testResult status="pass" testName="CastAs309"/>
    <testResult status="pass" testName="CastAs310"/>
    <testResult status="pass" testName="CastAs311"/>
-   <testResult status="fail" testName="CastAs312"/>
+   <testResult status="pass" testName="CastAs312"/>
    <testResult status="fail" testName="CastAs313"/>
    <testResult status="fail" testName="CastAs314"/>
    <testResult status="fail" testName="CastAs315"/>
@@ -366,10 +366,10 @@
    <testResult status="fail" testName="CastAs322"/>
    <testResult status="fail" testName="CastAs323"/>
    <testResult status="fail" testName="CastAs324"/>
-   <testResult status="fail" testName="CastAs325"/>
-   <testResult status="fail" testName="CastAs326"/>
-   <testResult status="fail" testName="CastAs327"/>
-   <testResult status="fail" testName="CastAs328"/>
+   <testResult status="pass" testName="CastAs325"/>
+   <testResult status="pass" testName="CastAs326"/>
+   <testResult status="pass" testName="CastAs327"/>
+   <testResult status="pass" testName="CastAs328"/>
    <testResult status="fail" testName="CastAs329"/>
    <testResult status="fail" testName="CastAs330"/>
    <testResult status="fail" testName="CastAs331"/>
@@ -377,7 +377,7 @@
    <testResult status="pass" testName="CastAs333"/>
    <testResult status="pass" testName="CastAs334"/>
    <testResult status="pass" testName="CastAs335"/>
-   <testResult status="fail" testName="CastAs336"/>
+   <testResult status="pass" testName="CastAs336"/>
    <testResult status="pass" testName="CastAs337"/>
    <testResult status="pass" testName="CastAs338"/>
    <testResult status="pass" testName="CastAs339"/>
@@ -393,10 +393,10 @@
    <testResult status="fail" testName="CastAs349"/>
    <testResult status="fail" testName="CastAs350"/>
    <testResult status="fail" testName="CastAs351"/>
-   <testResult status="fail" testName="CastAs352"/>
-   <testResult status="fail" testName="CastAs353"/>
-   <testResult status="fail" testName="CastAs354"/>
-   <testResult status="fail" testName="CastAs355"/>
+   <testResult status="pass" testName="CastAs352"/>
+   <testResult status="pass" testName="CastAs353"/>
+   <testResult status="pass" testName="CastAs354"/>
+   <testResult status="pass" testName="CastAs355"/>
    <testResult status="fail" testName="CastAs356"/>
    <testResult status="fail" testName="CastAs357"/>
    <testResult status="fail" testName="CastAs358"/>
@@ -405,12 +405,12 @@
    <testResult status="fail" testName="CastAs361"/>
    <testResult status="fail" testName="CastAs362"/>
    <testResult status="pass" testName="CastAs363"/>
-   <testResult status="fail" testName="CastAs364"/>
-   <testResult status="fail" testName="CastAs365"/>
-   <testResult status="fail" testName="CastAs366"/>
-   <testResult status="fail" testName="CastAs367"/>
-   <testResult status="fail" testName="CastAs368"/>
-   <testResult status="fail" testName="CastAs369"/>
+   <testResult status="pass" testName="CastAs364"/>
+   <testResult status="pass" testName="CastAs365"/>
+   <testResult status="pass" testName="CastAs366"/>
+   <testResult status="pass" testName="CastAs367"/>
+   <testResult status="pass" testName="CastAs368"/>
+   <testResult status="pass" testName="CastAs369"/>
    <testResult status="fail" testName="CastAs370"/>
    <testResult status="fail" testName="CastAs371"/>
    <testResult status="fail" testName="CastAs372"/>
@@ -423,8 +423,8 @@
    <testResult status="fail" testName="CastAs379"/>
    <testResult status="fail" testName="CastAs380"/>
    <testResult status="fail" testName="CastAs381"/>
-   <testResult status="fail" testName="CastAs382"/>
-   <testResult status="fail" testName="CastAs383"/>
+   <testResult status="pass" testName="CastAs382"/>
+   <testResult status="pass" testName="CastAs383"/>
    <testResult status="fail" testName="CastAs384"/>
    <testResult status="fail" testName="CastAs385"/>
    <testResult status="fail" testName="CastAs386"/>
@@ -446,10 +446,10 @@
    <testResult status="fail" testName="CastAs402"/>
    <testResult status="fail" testName="CastAs403"/>
    <testResult status="fail" testName="CastAs404"/>
-   <testResult status="fail" testName="CastAs405"/>
-   <testResult status="fail" testName="CastAs406"/>
-   <testResult status="fail" testName="CastAs407"/>
-   <testResult status="fail" testName="CastAs408"/>
+   <testResult status="pass" testName="CastAs405"/>
+   <testResult status="pass" testName="CastAs406"/>
+   <testResult status="pass" testName="CastAs407"/>
+   <testResult status="pass" testName="CastAs408"/>
    <testResult status="fail" testName="CastAs409"/>
    <testResult status="fail" testName="CastAs410"/>
    <testResult status="fail" testName="CastAs411"/>
@@ -462,7 +462,7 @@
    <testResult status="pass" testName="CastAs418"/>
    <testResult status="pass" testName="CastAs419"/>
    <testResult status="pass" testName="CastAs420"/>
-   <testResult status="fail" testName="CastAs421"/>
+   <testResult status="pass" testName="CastAs421"/>
    <testResult status="fail" testName="CastAs422"/>
    <testResult status="fail" testName="CastAs423"/>
    <testResult status="fail" testName="CastAs424"/>
@@ -476,8 +476,8 @@
    <testResult status="fail" testName="CastAs432"/>
    <testResult status="fail" testName="CastAs433"/>
    <testResult status="fail" testName="CastAs434"/>
-   <testResult status="fail" testName="CastAs435"/>
-   <testResult status="fail" testName="CastAs436"/>
+   <testResult status="pass" testName="CastAs435"/>
+   <testResult status="pass" testName="CastAs436"/>
    <testResult status="fail" testName="CastAs437"/>
    <testResult status="fail" testName="CastAs438"/>
    <testResult status="fail" testName="CastAs439"/>
@@ -500,8 +500,8 @@
    <testResult status="fail" testName="CastAs456"/>
    <testResult status="fail" testName="CastAs457"/>
    <testResult status="fail" testName="CastAs458"/>
-   <testResult status="fail" testName="CastAs459"/>
-   <testResult status="fail" testName="CastAs460"/>
+   <testResult status="pass" testName="CastAs459"/>
+   <testResult status="pass" testName="CastAs460"/>
    <testResult status="fail" testName="CastAs461"/>
    <testResult status="fail" testName="CastAs462"/>
    <testResult status="fail" testName="CastAs463"/>
@@ -522,8 +522,8 @@
    <testResult status="fail" testName="CastAs478"/>
    <testResult status="fail" testName="CastAs479"/>
    <testResult status="fail" testName="CastAs480"/>
-   <testResult status="fail" testName="CastAs481"/>
-   <testResult status="fail" testName="CastAs482"/>
+   <testResult status="pass" testName="CastAs481"/>
+   <testResult status="pass" testName="CastAs482"/>
    <testResult status="fail" testName="CastAs483"/>
    <testResult status="fail" testName="CastAs484"/>
    <testResult status="fail" testName="CastAs485"/>
@@ -545,8 +545,8 @@
    <testResult status="fail" testName="CastAs501"/>
    <testResult status="fail" testName="CastAs502"/>
    <testResult status="fail" testName="CastAs503"/>
-   <testResult status="fail" testName="CastAs504"/>
-   <testResult status="fail" testName="CastAs505"/>
+   <testResult status="pass" testName="CastAs504"/>
+   <testResult status="pass" testName="CastAs505"/>
    <testResult status="fail" testName="CastAs506"/>
    <testResult status="fail" testName="CastAs507"/>
    <testResult status="fail" testName="CastAs508"/>
@@ -568,8 +568,8 @@
    <testResult status="fail" testName="CastAs524"/>
    <testResult status="fail" testName="CastAs525"/>
    <testResult status="fail" testName="CastAs526"/>
-   <testResult status="fail" testName="CastAs527"/>
-   <testResult status="fail" testName="CastAs528"/>
+   <testResult status="pass" testName="CastAs527"/>
+   <testResult status="pass" testName="CastAs528"/>
    <testResult status="fail" testName="CastAs529"/>
    <testResult status="fail" testName="CastAs530"/>
    <testResult status="fail" testName="CastAs531"/>
@@ -591,8 +591,8 @@
    <testResult status="fail" testName="CastAs547"/>
    <testResult status="fail" testName="CastAs548"/>
    <testResult status="fail" testName="CastAs549"/>
-   <testResult status="fail" testName="CastAs550"/>
-   <testResult status="fail" testName="CastAs551"/>
+   <testResult status="pass" testName="CastAs550"/>
+   <testResult status="pass" testName="CastAs551"/>
    <testResult status="pass" testName="CastAs552"/>
    <testResult status="pass" testName="CastAs553"/>
    <testResult status="pass" testName="CastAs554"/>
@@ -617,10 +617,10 @@
    <testResult status="fail" testName="CastAs573"/>
    <testResult status="fail" testName="CastAs574"/>
    <testResult status="fail" testName="CastAs575"/>
-   <testResult status="fail" testName="CastAs576"/>
-   <testResult status="fail" testName="CastAs577"/>
-   <testResult status="fail" testName="CastAs578"/>
-   <testResult status="fail" testName="CastAs579"/>
+   <testResult status="pass" testName="CastAs576"/>
+   <testResult status="pass" testName="CastAs577"/>
+   <testResult status="pass" testName="CastAs578"/>
+   <testResult status="pass" testName="CastAs579"/>
    <testResult status="fail" testName="CastAs580"/>
    <testResult status="fail" testName="CastAs581"/>
    <testResult status="fail" testName="CastAs582"/>
@@ -644,8 +644,8 @@
    <testResult status="fail" testName="CastAs600"/>
    <testResult status="fail" testName="CastAs601"/>
    <testResult status="fail" testName="CastAs602"/>
-   <testResult status="fail" testName="CastAs603"/>
-   <testResult status="fail" testName="CastAs604"/>
+   <testResult status="pass" testName="CastAs603"/>
+   <testResult status="pass" testName="CastAs604"/>
    <testResult status="fail" testName="CastAs605"/>
    <testResult status="fail" testName="CastAs606"/>
    <testResult status="fail" testName="CastAs607"/>
@@ -667,7 +667,7 @@
    <testResult status="pass" testName="CastAs623"/>
    <testResult status="pass" testName="CastAs624"/>
    <testResult status="fail" testName="CastAs625"/>
-   <testResult status="fail" testName="CastAs626"/>
+   <testResult status="pass" testName="CastAs626"/>
    <testResult status="pass" testName="CastAs627"/>
    <testResult status="fail" testName="CastAs628"/>
    <testResult status="fail" testName="CastAs629"/>
@@ -714,7 +714,7 @@
    <testResult status="fail" testName="CastAs671"/>
    <testResult status="fail" testName="CastAs672"/>
    <testResult status="fail" testName="CastAs673b"/>
-   <testResult status="fail" testName="CastAs676"/>
+   <testResult status="pass" testName="CastAs676"/>
    <testResult status="pass" testName="CastAs677"/>
    <testResult status="fail" testName="CastAs678"/>
    <testResult status="pass" testName="CastAs679"/>
@@ -785,8 +785,8 @@
    <testResult status="fail" testName="K-SeqExprCast-58"/>
    <testResult status="fail" testName="K-SeqExprCast-59"/>
    <testResult status="fail" testName="K-SeqExprCast-60"/>
-   <testResult status="fail" testName="K-SeqExprCast-61"/>
-   <testResult status="fail" testName="K-SeqExprCast-62"/>
+   <testResult status="pass" testName="K-SeqExprCast-61"/>
+   <testResult status="pass" testName="K-SeqExprCast-62"/>
    <testResult status="fail" testName="K-SeqExprCast-63"/>
    <testResult status="fail" testName="K-SeqExprCast-64"/>
    <testResult status="fail" testName="K-SeqExprCast-65"/>
@@ -2694,13 +2694,13 @@
    <testResult status="pass" testName="K2-SeqExprCast-477"/>
    <testResult status="pass" testName="K2-SeqExprCast-478"/>
    <testResult status="fail" testName="K2-SeqExprCast-480"/>
-   <testResult status="fail" testName="K2-SeqExprCast-481"/>
-   <testResult status="fail" testName="K2-SeqExprCast-482"/>
-   <testResult status="fail" testName="K2-SeqExprCast-483"/>
-   <testResult status="fail" testName="K2-SeqExprCast-484"/>
-   <testResult status="fail" testName="K2-SeqExprCast-485"/>
-   <testResult status="fail" testName="K2-SeqExprCast-486"/>
-   <testResult status="fail" testName="K2-SeqExprCast-487"/>
+   <testResult status="pass" testName="K2-SeqExprCast-481"/>
+   <testResult status="pass" testName="K2-SeqExprCast-482"/>
+   <testResult status="pass" testName="K2-SeqExprCast-483"/>
+   <testResult status="pass" testName="K2-SeqExprCast-484"/>
+   <testResult status="pass" testName="K2-SeqExprCast-485"/>
+   <testResult status="pass" testName="K2-SeqExprCast-486"/>
+   <testResult status="pass" testName="K2-SeqExprCast-487"/>
    <testResult status="fail" testName="K2-SeqExprCast-488"/>
    <testResult status="fail" testName="K2-SeqExprCast-489"/>
    <testResult status="fail" testName="K2-SeqExprCast-490"/>

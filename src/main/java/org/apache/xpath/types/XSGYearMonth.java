@@ -26,6 +26,7 @@ import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.Pattern;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
 
@@ -79,7 +80,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 		boolean isXsDate = true;
 		
 		try {
-			// Constructing xs:gYearMonth value, from supplied xs:date lexical value
+			// Construct xs:gYearMonth value, from supplied xs:date lexical value
 			XSDate xsDate = XSDate.parseDate(gYearMonthStrValue);
 			String timeZoneStr = DateTimeUtil.getTimeZoneStrFromXsDateValue(xsDate);
 			
@@ -298,7 +299,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 							m_year = Integer.valueOf(str2.substring(0, minusIdx));
 							m_month = Integer.valueOf(str2.substring(minusIdx + 1));
 							String timeZoneStr = suffixValue.substring(plusIdx + 1);
-							if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+							if (isTimeZoneStrFormatOk(timeZoneStr)) {
 								String[] timeZoneStrParts = timeZoneStr.split(":");
 								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -322,7 +323,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 							else if (strArrLength == 3) {
 								m_year = Integer.valueOf(strParts[0]);
 								m_month = Integer.valueOf(strParts[1]);
-								if (isTimeZoneStrCorrectlyFormatted(strParts[2])) {
+								if (isTimeZoneStrFormatOk(strParts[2])) {
 									String[] timeZoneStrParts = (strParts[2]).split(":");
 									m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 									m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -357,7 +358,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 						m_year = Integer.valueOf(str2.substring(0, minusIdx));
 						m_month = Integer.valueOf(str2.substring(minusIdx + 1));
 						String timeZoneStr = gYearMonthStrValue.substring(plusIdx + 1);
-						if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+						if (isTimeZoneStrFormatOk(timeZoneStr)) {
 							String[] timeZoneStrParts = timeZoneStr.split(":");
 							m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 							m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -381,7 +382,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 						else if (strArrLength == 3) {
 							m_year = Integer.valueOf(strParts[0]);
 							m_month = Integer.valueOf(strParts[1]);
-							if (isTimeZoneStrCorrectlyFormatted(strParts[2])) {
+							if (isTimeZoneStrFormatOk(strParts[2])) {
 								String[] timeZoneStrParts = (strParts[2]).split(":");
 								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -395,6 +396,10 @@ public class XSGYearMonth extends XSAnyAtomicType {
 								throw new TransformerException("FORG0001 : A string value " + gYearMonthStrValue + " cannot be parsed to a "
                                                                                                                  + "value of type xs:gYearMonth.");
 							}
+						}
+						else {
+							throw new TransformerException("FORG0001 : A string value " + gYearMonthStrValue + " cannot be parsed to a "
+                                                                                                             + "value of type xs:gYearMonth.");
 						}
 					}
 				}
@@ -418,7 +423,7 @@ public class XSGYearMonth extends XSAnyAtomicType {
 	 * @param strValue					The supplied string value of timezone
 	 * @return							Boolean true or false
 	 */
-	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
+	private boolean isTimeZoneStrFormatOk(String strValue) {
 		boolean result = false;
 		
 		Pattern pattern = Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");

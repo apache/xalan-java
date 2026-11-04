@@ -390,7 +390,7 @@ public class XSYearMonthDuration extends XSDuration {
      *  
      * @throws TransformerException 
      */
-    private XSDuration castToYearMonthDuration(XSAnyType xsAnyType) throws TransformerException {
+    public static XSDuration castToYearMonthDuration(XSAnyType xsAnyType) throws TransformerException {
         if (xsAnyType instanceof XSDuration) {
            XSDuration xsDuration = (XSDuration) xsAnyType;
            

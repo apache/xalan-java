@@ -239,6 +239,8 @@ public class XPathSequenceTypeSupport {
     
     public static int XS_NUMERIC = 74;
     
+    public static int XS_NOTATION = 75;
+    
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
      * type KindTest expressions.
@@ -1834,7 +1836,10 @@ public class XPathSequenceTypeSupport {
     	}
     	else if (sequenceType == XS_UNSIGNED_BYTE) {
     		result = "xs:unsignedByte"; 
-    	}    	
+    	}
+    	else if (sequenceType == XS_NOTATION) {
+    		result = "xs:notation"; 
+    	} 
     	else if (sequenceType == XS_NUMERIC) {
     		result = "xs:numeric"; 
     	}    	
@@ -2016,8 +2021,15 @@ public class XPathSequenceTypeSupport {
                result = new XSID(srcStrVal);
             }
             else {
-               String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);  	               
-               throw new TransformerException("XTTE0780 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + "."); 
+               String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);
+               
+               String errCodeStr = "XTTE0780";
+               
+               if ("xs:notation".equals(effectiveTypeDefnStr)) {
+            	  errCodeStr = "XPST0080"; 
+               }
+               
+               throw new TransformerException(errCodeStr + " : The supplied value cannot be cast to type " + effectiveTypeDefnStr + "."); 
             }
         }
         catch (TransformerException ex) {
@@ -2025,7 +2037,14 @@ public class XPathSequenceTypeSupport {
         }
         catch (Exception ex) {
         	String effectiveTypeDefnStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : getDataTypeNameFromIntValue(expectedType);        	
-        	throw new TransformerException("XTTE0780 : The supplied value cannot be cast to type " + effectiveTypeDefnStr + ".");
+        	
+        	String errCodeStr = "XTTE0780";
+            
+            if ("xs:notation".equals(effectiveTypeDefnStr)) {
+         	  errCodeStr = "XPST0080"; 
+            }
+            
+            throw new TransformerException(errCodeStr + " : The supplied value cannot be cast to type " + effectiveTypeDefnStr + ".");
         }
         
         return result;

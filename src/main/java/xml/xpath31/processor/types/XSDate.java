@@ -559,7 +559,7 @@ public class XSDate extends XSCalendarType {
      * @return                                  An xs:date value
      * @throws TransformerException
      */
-    private XSDate castToDate(XSAnyType xsAnyType) throws TransformerException {
+    public static XSDate castToDate(XSAnyType xsAnyType) throws TransformerException {
         
     	if (xsAnyType instanceof XSDate) {
             XSDate xsDate = (XSDate)xsAnyType;

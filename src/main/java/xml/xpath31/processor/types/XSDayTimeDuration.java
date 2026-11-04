@@ -422,7 +422,7 @@ public class XSDayTimeDuration extends XSDuration {
      * value. 
 	 * @throws TransformerException 
      */
-	private XSDuration castToDayTimeDuration(XSAnyType xsAnyType) throws TransformerException {        
+	public static XSDuration castToDayTimeDuration(XSAnyType xsAnyType) throws TransformerException {        
 	    if (xsAnyType instanceof XSDuration) {
             XSDuration xsDuration = (XSDuration)xsAnyType;
             

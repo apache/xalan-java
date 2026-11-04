@@ -36,16 +36,24 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSGYearMonth;
 
+import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSUntypedAtomic;
+import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * An implementation of XPath 3.1 "cast as" expression 
@@ -60,6 +68,11 @@ public class CastAs extends XPathOperator
 
    private static final long serialVersionUID = -4194858144694864568L;
    
+   /**
+    * Class field, to denote whether an XPath 3.1 "cast as" expression,
+    * as evaluated by this class object, is for an XPath 3.1 function
+    * item parameter & result type checks.
+    */
    boolean m_func_param_result_type_check = false;
    
    /**
@@ -101,59 +114,124 @@ public class CastAs extends XPathOperator
       }
 
       if (!m_func_param_result_type_check) {
-    	  if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) {
-    		  result = castToXsString(left);
+    	  try {
+    		  if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.STRING) {
+    			  result = castToXsString(left);
 
-    		  if (result != null) {
-    			  return result; 
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC) {
+    			  result = castToXsString(left);
+
+    			  if (result != null) {
+    				  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(result);    	    
+
+    				  result = new XSUntypedAtomic(str1);
+
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) {
+    			  result = castToXsFloat(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE) {
+    			  result = castToXsDouble(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) {
+    			  result = castToXsDecimal(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
+    			  result = castToXsInteger(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  } 
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.BOOLEAN) {
+    			  result = castToXsBoolean(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_YEARMONTH_DURATION) {
+    			  result = castToXsYearMonthDuration(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DAYTIME_DURATION) {
+    			  result = castToXsDaytimeDuration(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DURATION) {
+    			  result = castToXsDuration(left);
+
+    			  if (result != null) {
+    				  return result;
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATETIME) {
+    			  result = castToXsDateTime(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TIME) {
+    			  result = castToXsTime(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATE) {
+    			  result = castToXsDate(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR_MONTH) {
+    			  result = castToXsGYearMonth(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
     		  }
     	  }
-    	  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC) {
-    		  result = castToXsString(left);
-
-    		  if (result != null) {
-    			  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(result);    	    
-
-    			  result = new XSUntypedAtomic(str1);
-
-    			  return result;
-    		  }
-    	  }
-    	  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) {
-    		  result = castToXsFloat(left);
+    	  catch (TransformerException ex) {
+    		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
     		  
-    		  if (result != null) {
-    			  return result;
-    		  }
-    	  }
-    	  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE) {
-    		  result = castToXsDouble(left);
+    		  java.lang.String dataTypeName = XPathSequenceTypeSupport.getDataTypeNameFromIntValue(seqTypedData.getBuiltInSequenceType());
     		  
-    		  if (result != null) {
-    			  return result;
+    		  if (dataTypeName == null) {
+    			 dataTypeName = ""; 
     		  }
-    	  }
-    	  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) {
-    		  result = castToXsDecimal(left);
+    		  else {
+    			 dataTypeName = " " + dataTypeName;  
+    		  }
     		  
-    		  if (result != null) {
-    			  return result;
-    		  }
+    		  throw new TransformerException("FORG0001 : The supplied value '" + str1 + "' couldn't be cast, to the specified type" + dataTypeName + ".");  
     	  }
-    	  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
-    		  result = castToXsInteger(left);
-
-    		  if (result != null) {
-    			  return result;
-    		  }
-    	  } 
-    	  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.BOOLEAN) {
-    		  result = castToXsBoolean(left);
-
-    		  if (result != null) {
-    			  return result;
-    		  }
-    	  }         	      	      	  
       }
       
       if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_NUMERIC) {
@@ -292,12 +370,17 @@ public class CastAs extends XPathOperator
 	  }
 	  else if ((left instanceof XSString) || (left instanceof XString) || (left instanceof XSUntypedAtomic)) {
 		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+		  
+		  if (str1.contains("E") || str1.contains("e")) {
+			 throw new TransformerException("FORG0001 : The supplied xdm string value '" + str1 + "' could'nt be "
+                                                                                                + "cast to an xdm type 'decimal'.");
+		  }
 
 		  try {
 			  result = new XSDecimal(str1);
 		  }
 		  catch (Exception ex) {
-			  throw new TransformerException("FOCA0002 : The supplied xdm string value '" + str1 + "' could'nt be "
+			  throw new TransformerException("FORG0001 : The supplied xdm string value '" + str1 + "' could'nt be "
 					                                                                             + "cast to an xdm type 'decimal'."); 
 		  }
 	  }
@@ -381,7 +464,7 @@ public class CastAs extends XPathOperator
 					                                                                         + "to, an XML Schema type 'integer'"); 
 		  }
 	  }
-	  else if (left instanceof XSBoolean) {
+	  else if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
 		  if (left.bool()) {
 			  result = new XSInteger("1"); 
 		  }
@@ -556,10 +639,13 @@ public class CastAs extends XPathOperator
 			   result = new XSString(xsDecimal.stringValue());
 		   }
 	   }
-	   else if ((xObj instanceof XSFloat) || (xObj instanceof XSDouble)) {
+	   else if (xObj instanceof XSAnyType) {
 		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 
 		   result = new XSString(str1);
+	   }
+	   else if ((xObj instanceof XBoolean) || (xObj instanceof XBooleanStatic)) {
+		   result = new XSString(xObj.str());
 	   }
 
 	   return result; 
@@ -684,6 +770,299 @@ public class CastAs extends XPathOperator
 		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
 
 		   result = new XSDouble(str1);
+	   }
+
+	   return result;
+    }
+   
+   /**
+    * Method definition, to cast the supplied xdm value
+    * to an xdm xs:yearMonthDuration value.
+    * 
+    * @param xObj							 The supplied xdm value 
+    *                                        object instance.
+    * @return                                An xdm value that is the 
+    *                                        result for XPath 3.1 cast 
+    *                                        expression.
+    */
+    private XObject castToXsYearMonthDuration(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSYearMonthDuration) {
+    		result = xObj;  
+    	}
+    	else if ((xObj instanceof XSDuration) && !(xObj instanceof XSDayTimeDuration)) {
+    		result = XSYearMonthDuration.castToYearMonthDuration((XSDuration)xObj);
+    	}
+    	else if (xObj instanceof XSDayTimeDuration) {
+    		result = new XSYearMonthDuration(0);  
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = (XSYearMonthDuration)(XSYearMonthDuration.parseYearMonthDuration(str1));
+    	}
+
+    	return result;
+	}
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:dayTimeDuration value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */
+    private XObject castToXsDaytimeDuration(XObject xObj) throws TransformerException {
+  	  
+    	XObject result = null;
+
+    	if (xObj instanceof XSDayTimeDuration) {
+    		result = xObj;  
+    	}
+    	else if ((xObj instanceof XSDuration) && !(xObj instanceof XSYearMonthDuration)) {
+    		result = XSDayTimeDuration.castToDayTimeDuration((XSDuration)xObj);
+    	}
+    	else if (xObj instanceof XSYearMonthDuration) {
+    		result = new XSDayTimeDuration(0.0);  
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = (XSDayTimeDuration)(XSDayTimeDuration.parseDayTimeDuration(str1));
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:duration value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */
+    private XObject castToXsDuration(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSYearMonthDuration) {
+    		XSYearMonthDuration xsYearMonthDuration = (XSYearMonthDuration)xObj;
+
+    		result = new XSDuration(xsYearMonthDuration.year(), xsYearMonthDuration.month(), 0, 0, 
+    				                                                                        0, 0.0, xsYearMonthDuration.negative()); 
+    	}
+    	else if (xObj instanceof XSDayTimeDuration) {
+    		XSDayTimeDuration xsDayTimeDuration = (XSDayTimeDuration)xObj;
+
+    		result = new XSDuration(0, 0, xsDayTimeDuration.days(), xsDayTimeDuration.hours(), xsDayTimeDuration.minutes(), 
+																			    				xsDayTimeDuration.seconds(), 
+																			    				xsDayTimeDuration.negative());  
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = XSDuration.parseDuration(str1); 
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:dateTime value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */
+    private XObject castToXsDateTime(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSDateTime) {
+    		result = xObj;  
+    	}
+    	else if (xObj instanceof XSDate) {
+    		result = XSDateTime.castToDateTime((XSDate)xObj);
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = XSDateTime.parseDateTime(str1);
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:time value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */
+    private XObject castToXsTime(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSTime) {
+    		result = xObj; 
+    	}
+    	else if (xObj instanceof XSDateTime) {
+    		XSDateTime xsDateTime = (XSDateTime)xObj;    			 
+
+    		result = XSTime.castToTime(xsDateTime);
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = XSTime.parseTime(str1);
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:date value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */
+    private XObject castToXsDate(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSDate) {
+    		result = xObj; 
+    	}
+    	else if (xObj instanceof XSDateTime) {
+    		XSDateTime xsDateTime = (XSDateTime)xObj;    			 
+
+    		result = XSDate.castToDate(xsDateTime);
+    	}
+    	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = XSDate.parseDate(str1);
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:gYearMonth value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToXsGYearMonth(XObject xObj) throws TransformerException {
+    	
+	   XObject result = null;
+
+	   if (xObj instanceof XSGYearMonth) {
+		   result = xObj; 
+	   }
+	   else if (xObj instanceof XSDateTime) {
+		   XSDateTime xsDateTime = (XSDateTime)xObj;    			 
+
+		   int year = xsDateTime.year();
+		   int month = xsDateTime.month();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDateTime.isDateTimeTimezoned()) {
+			   XSDuration tz = xsDateTime.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }
+		   
+		   java.lang.String yearStr = year + "";		   
+		   int size1 = yearStr.length();
+		   
+		   if (size1 == 1) {
+			  yearStr = "000" + yearStr; 
+		   }
+		   else if (size1 == 2) {
+			  yearStr = "00" + yearStr; 
+		   }
+		   else if (size1 == 3) {
+			  yearStr = "0" + yearStr; 
+		   }
+		   
+		   java.lang.String monthStr = month + "";
+		   size1 = monthStr.length();
+		   
+		   if (size1 == 1) {
+			  monthStr = "0" + monthStr; 
+		   }
+
+		   java.lang.String str1 = yearStr + "-" + monthStr;
+		   str1 = (tzStr != null) ? (str1 + tzStr) : str1;
+
+		   result = new XSGYearMonth(str1);
+	   }
+	   else if (xObj instanceof XSDate) {
+		   XSDate xsDate = (XSDate)xObj;    			 
+
+		   int year = xsDate.year();
+		   int month = xsDate.month();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDate.isDateTimezoned()) {
+			   XSDuration tz = xsDate.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString();
+		   }
+		   
+		   java.lang.String yearStr = year + "";		   
+		   int size1 = yearStr.length();
+		   
+		   if (size1 == 1) {
+			  yearStr = "000" + yearStr; 
+		   }
+		   else if (size1 == 2) {
+			  yearStr = "00" + yearStr; 
+		   }
+		   else if (size1 == 3) {
+			  yearStr = "0" + yearStr; 
+		   }
+		   
+		   java.lang.String monthStr = month + "";
+		   size1 = monthStr.length();
+		   
+		   if (size1 == 1) {
+			  monthStr = "0" + monthStr; 
+		   }
+
+		   java.lang.String str1 = yearStr + "-" + monthStr;
+		   str1 = (tzStr != null) ? (str1 + tzStr) : str1;
+
+		   result = new XSGYearMonth(str1);
+	   }
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		   
+		   result = new XSGYearMonth(str1);
 	   }
 
 	   return result;

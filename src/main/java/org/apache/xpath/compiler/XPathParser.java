@@ -11419,6 +11419,10 @@ public class XPathParser
  			 xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_UNSIGNED_BYTE);
  			 
  			 break;
+ 	    case Keywords.XS_NOTATION :
+			 xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_NOTATION);
+			 
+			 break;
  	    case Keywords.XS_NUMERIC :
 			 xpathSequenceTypeExpr.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_NUMERIC);
 			 
@@ -11969,6 +11973,10 @@ public class XPathParser
  	    	seqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_UNSIGNED_BYTE);
  	        
  	    	break;
+ 	   case Keywords.XS_NOTATION :
+	    	seqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_NOTATION);
+	        
+	    	break;
  	   case Keywords.XS_NUMERIC :
 	    	seqTypeData.setBuiltInSequenceType(XPathSequenceTypeSupport.XS_NUMERIC);
 	        

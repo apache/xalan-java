@@ -1040,7 +1040,7 @@ public class XSDateTime extends XSCalendarType {
      * @return                                  An xs:dateTime value
      * @throws TransformerException
      */
-    private XSDateTime castToDateTime(XSAnyType xsAnyType) throws TransformerException {
+    public static XSDateTime castToDateTime(XSAnyType xsAnyType) throws TransformerException {
         
     	if (xsAnyType instanceof XSDate) {
             XSDate xsDate = (XSDate)xsAnyType;

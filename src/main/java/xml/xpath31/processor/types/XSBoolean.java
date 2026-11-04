@@ -67,7 +67,12 @@ public class XSBoolean extends XSCtrType {
 
     @Override
     public String stringValue() {
-        return "" + _value;
+    	
+    	String result = null;
+    	
+    	result = _value ? "true" : "false";
+    	
+    	return result;
     }
     
     /**

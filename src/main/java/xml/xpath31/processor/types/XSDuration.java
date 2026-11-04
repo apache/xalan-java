@@ -128,7 +128,6 @@ public class XSDuration extends XSCtrType {
 		
 		String tret = "";
 
-		//if (negative() && !(days() == 0 && hours() == 0 && seconds() == 0))
 		if (negative())	
 			returnVal += "-";
 
@@ -500,6 +499,41 @@ public class XSDuration extends XSCtrType {
     
     public int getType() {
        return CLASS_XS_DURATION;
+    }
+    
+    /**
+     * Method definition, to get timezone value,
+     * formatted as string from this xs:duration 
+     * object instance.
+     * 
+     * @return      String value corresponding to the
+     *              timezone this xs:duration object
+     *              represents.
+     */
+    public String getTimezoneAsString() {
+    	
+    	String result = null;
+
+    	int hours = hours();
+    	int mins = minutes();
+
+    	if ((hours == 0) && (mins == 0)) {
+    		result = "Z";
+    	}
+    	else {
+    		java.lang.String hrStr = hours < 10 ? ("0" + hours) : (hours + "");
+    		java.lang.String minsStr = mins < 10 ? ("0" + mins) : (mins + "");
+    		result = hrStr + ":" + minsStr;
+
+    		if (negative()) {
+    			result = "-" + result;  
+    		}
+    		else {
+    			result = "+" + result;
+    		}
+    	}
+
+    	return result;
     }
     
     /**
