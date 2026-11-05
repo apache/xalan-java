@@ -169,7 +169,7 @@ public class XPathIfExpr extends Expression {
     		   } 
 
     		   if (!x1 || !x2) {
-    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr 
+    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr.trim() 
     					   																								 + " has syntax error.", srcLocator);
     		   }
     	   }
@@ -205,7 +205,7 @@ public class XPathIfExpr extends Expression {
     			   }
     		   }
     		   catch (Exception ex) {
-    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr 
+    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression branch condition expression " + m_ifBranchConditionXPathStr.trim() 
     					   																								 + " has syntax error.", srcLocator); 
     		   }    	       	   
     	   }
@@ -259,7 +259,7 @@ public class XPathIfExpr extends Expression {
     					   XPath.SELECT, null);
     		   }
     		   catch (Exception ex) {
-    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression then clause " + m_thenExprXPathStr 
+    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression then clause " + m_thenExprXPathStr.trim() 
     					   																	             + " has syntax error.", srcLocator); 
     		   }
 
@@ -296,7 +296,7 @@ public class XPathIfExpr extends Expression {
     					   XPath.SELECT, null);
     		   }
     		   catch (Exception ex) {
-    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression else clause " + m_elseExprXPathStr 
+    			   throw new TransformerException("XPST0003 : An XPath 3.1 'if' expression else clause " + m_elseExprXPathStr.trim() 
     					   																                 + " has syntax error.", srcLocator); 
     		   }
 

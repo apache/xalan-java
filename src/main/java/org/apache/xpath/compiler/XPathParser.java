@@ -4443,6 +4443,137 @@ public class XPathParser
       m_prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
       
       StringBuffer strBuff = new StringBuffer();
+      String branchConditionStr = null;
+      String thenClauseStr = null;
+      String elseClauseStr = null;
+      
+      consumeExpected("if");
+      
+      boolean isXPathExprOk = false;
+      
+      while (m_token != null) {
+    	 strBuff.append(m_token + " ");
+    	 branchConditionStr = (strBuff.toString()).trim();
+    	 
+    	 if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(branchConditionStr, '(', ')')) {
+    		isXPathExprOk = true;
+    		
+    		branchConditionStr = (branchConditionStr.substring(1, branchConditionStr.length() - 1)).trim();
+    		
+    		consumeExpected(')');
+    		
+    		break;
+    	 }
+    	 
+    	 nextToken();
+      }
+      
+      if (isXPathExprOk) {
+    	  isXPathExprOk = false;
+    	  
+    	  strBuff = new StringBuffer(); 
+    	  
+    	  consumeExpected("then");
+    	  
+    	  while (m_token != null) {
+    	     strBuff.append(m_token + " ");
+    	     thenClauseStr = (strBuff.toString()).trim();
+    	     
+    	     if (lookahead("else", 1) && StringUtil.isStrHasBalancedParentheses(thenClauseStr, '(', ')')) {
+    	    	isXPathExprOk = true;
+    	    	
+    	    	if (!"()".equals(thenClauseStr.replaceAll("\\s*", ""))) {    	    	
+    	    		if (thenClauseStr.startsWith("(") && thenClauseStr.endsWith(")")) {
+    	    			thenClauseStr = (thenClauseStr.substring(1, thenClauseStr.length() - 1)).trim();
+    	    		}
+    	    	}
+    	    	
+    	    	nextToken();
+    	    	
+    	    	break;
+    	     }
+    	     
+    	     nextToken();
+    	  }
+    	  
+    	  if (isXPathExprOk) {
+    		 isXPathExprOk = false;
+    		 
+    		 strBuff = new StringBuffer();
+    		  
+    		 consumeExpected("else");
+    		 
+    		 boolean isIfExprPrefix = false;
+    		 
+    		 while (m_token != null) {
+    			 strBuff.append(m_token + " ");
+    			 elseClauseStr = (strBuff.toString()).trim();
+    			     			     			 
+    			 if (tokenIs(']') && StringUtil.isStrHasBalancedParentheses(elseClauseStr.substring(0, elseClauseStr.length() - 1), '(', ')')
+    					          && StringUtil.isStrHasBalancedParentheses(elseClauseStr.substring(0, elseClauseStr.length() - 1), '[', ']')) {
+     				isIfExprPrefix = true;
+     				
+     				elseClauseStr = elseClauseStr.substring(0, elseClauseStr.length() - 1);
+      				elseClauseStr = elseClauseStr.trim();
+      				
+      				break; 
+     			 }
+    			 else if (m_isFunctionArgumentParse && tokenIs(')') && StringUtil.isStrHasBalancedParentheses(elseClauseStr.substring(0, elseClauseStr.length() - 1), '(', ')')) {
+      				isIfExprPrefix = true;     				     				
+      				
+      				elseClauseStr = elseClauseStr.substring(0, elseClauseStr.length() - 1);
+       				elseClauseStr = elseClauseStr.trim();
+       				
+       				break; 
+      			 }
+    			 else if (tokenIs(',') && StringUtil.isStrHasBalancedParentheses(elseClauseStr.substring(0, elseClauseStr.length() - 1), '(', ')')
+    					               && StringUtil.isStrHasBalancedParentheses(elseClauseStr.substring(0, elseClauseStr.length() - 1), '[', ']')) {
+    				isIfExprPrefix = true;
+    				
+    				elseClauseStr = elseClauseStr.substring(0, elseClauseStr.length() - 1);
+    				elseClauseStr = elseClauseStr.trim();
+    				
+    				break;
+    			 }
+    			 
+    			 nextToken();
+    		 }
+    		 
+    		 if (!"()".equals(elseClauseStr.replaceAll("\\s*", ""))) { 
+    			 if (isIfExprPrefix && elseClauseStr.startsWith("(") && elseClauseStr.endsWith(")")) {
+    				 elseClauseStr = (elseClauseStr.substring(1, elseClauseStr.length() - 1)).trim(); 
+    			 }
+    		 }
+    		 
+    		 if ((isIfExprPrefix || !isXPathExprOk) && (StringUtil.isStrHasBalancedParentheses(elseClauseStr, '(', ')') && 
+    				                                                                                           StringUtil.isStrHasBalancedParentheses(elseClauseStr, '[', ']') &&
+    				                                                                                           StringUtil.isStrHasBalancedParentheses(elseClauseStr, '{', '}'))) {
+    			  insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_IF_EXPR);
+    			  
+    			  branchConditionStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(branchConditionStr);
+    			  thenClauseStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(thenClauseStr);
+    			  elseClauseStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(elseClauseStr);
+    		      
+    		      xpathIfExpr.setIfBranchConditionXPathStr(branchConditionStr);
+    		      xpathIfExpr.setThenExprXPathStr(thenClauseStr);
+    		      xpathIfExpr.setElseExprXPathStr(elseClauseStr);
+    		      
+    		      m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+    		                                                  m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+    		      
+    		      return xpathIfExpr; 
+    		 }
+    		 else {
+    			  restoreTokenQueueXPathParsePos(m_prevTokenQueuePos); 
+    		 }
+    	  }
+    	  else {
+    		 restoreTokenQueueXPathParsePos(m_prevTokenQueuePos); 
+    	  }
+      }
+      else {
+    	  restoreTokenQueueXPathParsePos(m_prevTokenQueuePos); 
+      }
       
       boolean ifExprWithinPredicate = false;
       boolean isExtraCheck = false;
@@ -9405,21 +9536,23 @@ public class XPathParser
       if (tokenIs('*') && seenSlash) {
     	 String str1 = getTokenRelative(0);
     	 
-    	 try {
-    		new BigDecimal(str1);
-    		
-    		error(XPATHErrorResources.ER_UNEXPECTED_NUMERIC_LITERAL, new Object[]{ str1 });
-    	 }
-    	 catch (NumberFormatException ex) {
-    	    // No op 
-    	 }
-    	 
-    	 if ((str1.startsWith("'") && str1.endsWith("'")) || (str1.startsWith("\"") && str1.endsWith("\""))) {
-    		error(XPATHErrorResources.ER_UNEXPECTED_STRING_LITERAL, new Object[]{ str1 }); 
-    	 }
-    	 
-    	 if ("$".equals(str1)) {
-    		error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 }); 
+    	 if (str1 != null) {
+    		 try {
+    			 new BigDecimal(str1);
+
+    			 error(XPATHErrorResources.ER_UNEXPECTED_NUMERIC_LITERAL, new Object[]{ str1 });
+    		 }
+    		 catch (NumberFormatException ex) {
+    			 // No op 
+    		 }
+
+    		 if ((str1.startsWith("'") && str1.endsWith("'")) || (str1.startsWith("\"") && str1.endsWith("\""))) {
+    			 error(XPATHErrorResources.ER_UNEXPECTED_STRING_LITERAL, new Object[]{ str1 }); 
+    		 }
+
+    		 if ("$".equals(str1)) {
+    			 error(XPATHErrorResources.ER_UNEXPECTED_TOKEN_1, new Object[]{ str1 }); 
+    		 }
     	 }
       }
     	

@@ -36,6 +36,10 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSGDay;
+import org.apache.xpath.types.XSGMonth;
+import org.apache.xpath.types.XSGMonthDay;
+import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -212,6 +216,34 @@ public class CastAs extends XPathOperator
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR_MONTH) {
     			  result = castToXsGYearMonth(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR) {
+    			  result = castToXsGYear(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH_DAY) {
+    			  result = castToXsGMonthDay(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GDAY) {
+    			  result = castToXsGDay(left);
+
+    			  if (result != null) {
+    				  return result; 
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH) {
+    			  result = castToXsGMonth(left);
 
     			  if (result != null) {
     				  return result; 
@@ -1067,7 +1099,325 @@ public class CastAs extends XPathOperator
 
 	   return result;
     }
-   
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:gYear value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToXsGYear(XObject xObj) throws TransformerException {
+    	
+	   XObject result = null;
+	   
+	   if (xObj instanceof XSGYear) {
+		   result = xObj;  
+	   }
+	   else if (xObj instanceof XSDateTime) {
+		   XSDateTime xsDateTime = (XSDateTime)xObj;
+
+		   int year = xsDateTime.year();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDateTime.isDateTimeTimezoned()) {
+			   XSDuration tz = xsDateTime.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }
+		   
+		   java.lang.String yearStr = year + "";		   
+		   int size1 = yearStr.length();
+		   
+		   if (size1 == 1) {
+			  yearStr = "000" + yearStr; 
+		   }
+		   else if (size1 == 2) {
+			  yearStr = "00" + yearStr; 
+		   }
+		   else if (size1 == 3) {
+			  yearStr = "0" + yearStr; 
+		   }
+           
+		   java.lang.String str1 = (tzStr != null) ? (yearStr + tzStr) : yearStr;
+		   
+		   result = new XSGYear(str1);
+	   }
+	   else if (xObj instanceof XSDate) {
+		   XSDate xsDate = (XSDate)xObj;    			 
+
+		   int year = xsDate.year();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDate.isDateTimezoned()) {
+			   XSDuration tz = xsDate.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString();
+		   }
+		   
+		   java.lang.String yearStr = year + "";		   
+		   int size1 = yearStr.length();
+		   
+		   if (size1 == 1) {
+			  yearStr = "000" + yearStr; 
+		   }
+		   else if (size1 == 2) {
+			  yearStr = "00" + yearStr; 
+		   }
+		   else if (size1 == 3) {
+			  yearStr = "0" + yearStr; 
+		   }
+		   
+           java.lang.String str1 = (tzStr != null) ? (yearStr + tzStr) : yearStr;
+		   
+		   result = new XSGYear(str1);
+	   }
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+           java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		   
+		   result = new XSGYear(str1);
+	   }
+	   
+	   return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:gMonthDay value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToXsGMonthDay(XObject xObj) throws TransformerException {
+    	
+	   XObject result = null;
+
+	   if (xObj instanceof XSGMonthDay) {
+		   result = xObj; 
+	   }
+	   else if (xObj instanceof XSDateTime) {
+		   XSDateTime xsDateTime = (XSDateTime)xObj;    			 
+		   
+		   int month = xsDateTime.month();
+		   int day = xsDateTime.day();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDateTime.isDateTimeTimezoned()) {
+			   XSDuration tz = xsDateTime.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }		   		   
+		   
+		   java.lang.String monthStr = month + "";
+		   int size1 = monthStr.length();
+		   
+		   if (size1 == 1) {
+			  monthStr = "0" + monthStr; 
+		   }
+		   
+		   java.lang.String dayStr = day + "";
+		   size1 = dayStr.length();
+		   
+		   if (size1 == 1) {
+			  dayStr = "0" + dayStr; 
+		   }
+		   
+		   java.lang.String str1 = "--" + monthStr + "-" + dayStr;
+		   str1 = (tzStr != null) ? (str1 + tzStr) : str1;
+		   
+		   result = new XSGMonthDay(str1);
+	   }
+	   else if (xObj instanceof XSDate) {
+		   XSDate xsDate = (XSDate)xObj;    			 
+		   
+		   int month = xsDate.month();
+		   int day = xsDate.day();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDate.isDateTimezoned()) {
+			   XSDuration tz = xsDate.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }		   		   
+		   
+		   java.lang.String monthStr = month + "";
+		   int size1 = monthStr.length();
+		   
+		   if (size1 == 1) {
+			  monthStr = "0" + monthStr; 
+		   }
+		   
+		   java.lang.String dayStr = day + "";
+		   size1 = dayStr.length();
+		   
+		   if (size1 == 1) {
+			  dayStr = "0" + dayStr; 
+		   }
+		   
+		   java.lang.String str1 = "--" + monthStr + "-" + dayStr;
+		   str1 = (tzStr != null) ? (str1 + tzStr) : str1;
+		   
+		   result = new XSGMonthDay(str1);
+	   }
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		   
+		   result = new XSGMonthDay(str1);
+	   }
+
+	   return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:gDay value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToXsGDay(XObject xObj) throws TransformerException {
+    	
+	   XObject result = null;
+	   
+	   if (xObj instanceof XSGDay) {
+		   result = xObj;  
+	   }
+	   else if (xObj instanceof XSDateTime) {
+		   XSDateTime xsDateTime = (XSDateTime)xObj;
+
+		   int day = xsDateTime.day();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDateTime.isDateTimeTimezoned()) {
+			   XSDuration tz = xsDateTime.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }
+		   
+		   java.lang.String dayStr = day + "";		   
+		   int size1 = dayStr.length();
+		   
+		   if (size1 == 1) {
+			  dayStr = "0" + dayStr; 
+		   }
+           
+		   java.lang.String str1 = (tzStr != null) ? ("---" + dayStr + tzStr) : "---" + dayStr;
+		   
+		   result = new XSGDay(str1);
+	   }
+	   else if (xObj instanceof XSDate) {
+		   XSDate xsDate = (XSDate)xObj;
+
+		   int day = xsDate.day();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDate.isDateTimezoned()) {
+			   XSDuration tz = xsDate.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }
+		   
+		   java.lang.String dayStr = day + "";		   
+		   int size1 = dayStr.length();
+		   
+		   if (size1 == 1) {
+			  dayStr = "0" + dayStr; 
+		   }
+           
+		   java.lang.String str1 = (tzStr != null) ? ("---" + dayStr + tzStr) : "---" + dayStr;
+		   
+		   result = new XSGDay(str1);
+	   }
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+           java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		   
+		   result = new XSGDay(str1);
+	   }
+	   
+	   return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:gMonth value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToXsGMonth(XObject xObj) throws TransformerException {
+    	
+	   XObject result = null;
+	   
+	   if (xObj instanceof XSGMonth) {
+		   result = xObj;  
+	   }
+	   else if (xObj instanceof XSDateTime) {
+		   XSDateTime xsDateTime = (XSDateTime)xObj;
+
+		   int month = xsDateTime.month();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDateTime.isDateTimeTimezoned()) {
+			   XSDuration tz = xsDateTime.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }
+		   
+		   java.lang.String monthStr = month + "";		   
+		   int size1 = monthStr.length();
+		   
+		   if (size1 == 1) {
+			  monthStr = "0" + monthStr; 
+		   }
+           
+		   java.lang.String str1 = (tzStr != null) ? ("--" + monthStr + tzStr) : "--" + monthStr;
+		   
+		   result = new XSGMonth(str1);
+	   }
+	   else if (xObj instanceof XSDate) {
+		   XSDate xsDate = (XSDate)xObj;
+
+		   int month = xsDate.month();
+
+		   java.lang.String tzStr = null;
+
+		   if (xsDate.isDateTimezoned()) {
+			   XSDuration tz = xsDate.getTimezone();    		
+			   tzStr = tz.getTimezoneAsString(); 
+		   }
+		   
+		   java.lang.String monthStr = month + "";		   
+		   int size1 = monthStr.length();
+		   
+		   if (size1 == 1) {
+			  monthStr = "0" + monthStr; 
+		   }
+           
+		   java.lang.String str1 = (tzStr != null) ? ("--" + monthStr + tzStr) : "--" + monthStr;
+		   
+		   result = new XSGMonth(str1);
+	   }
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+           java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		   
+		   result = new XSGMonth(str1);
+	   }
+	   
+	   return result;
+    }
+    
     public boolean getFuncParamResultTypeCheck() {
        return m_func_param_result_type_check;
     }

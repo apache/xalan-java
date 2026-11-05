@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-10-19T10:15:52Z" desc="W3C XSLT 3.0 test suite results" fail="844" pass="3990" run="4837" skipped="613" success="82.49%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-11-05T12:14:22Z" desc="W3C XSLT 3.0 test suite results" fail="842" pass="3992" run="4837" skipped="613" success="82.53%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
     <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
@@ -50,9 +50,9 @@
     <apply-templates fail="15" pass="22" run="37" skipped="13" success="59.46%"/>
     <attribute fail="11" pass="11" run="23" skipped="7" success="47.83%"/>
     <call-template fail="3" pass="37" run="40" skipped="2" success="92.5%"/>
-    <choose fail="3" pass="51" run="54" skipped="1" success="94.44%"/>
+    <choose fail="2" pass="52" run="54" skipped="1" success="96.3%"/>
     <construct-node fail="10" pass="24" run="34" skipped="0" success="70.59%"/>
-    <copy fail="49" pass="76" run="125" skipped="23" success="60.8%"/>
+    <copy fail="48" pass="77" run="125" skipped="23" success="61.6%"/>
     <element fail="14" pass="15" run="29" skipped="0" success="51.72%"/>
     <for-each-group fail="4" pass="74" run="78" skipped="7" success="94.87%"/>
     <iterate fail="1" pass="43" run="44" skipped="0" success="97.73%"/>

@@ -243,7 +243,7 @@ public class XSGMonth extends XSAnyAtomicType {
 						String str2 = suffixValue.substring(0, plusIdx);
 						m_month = Integer.valueOf(str2);
 						String timeZoneStr = suffixValue.substring(plusIdx + 1);
-						if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+						if (isTimeZoneStrFormatOk(timeZoneStr)) {
 							String[] timeZoneStrParts = timeZoneStr.split(":");
 							m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 							m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -263,7 +263,7 @@ public class XSGMonth extends XSAnyAtomicType {
 							String str2 = suffixValue.substring(0, minusIdx);
 							m_month = Integer.valueOf(str2);
 							String timeZoneStr = suffixValue.substring(minusIdx + 1);
-							if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+							if (isTimeZoneStrFormatOk(timeZoneStr)) {
 								String[] timeZoneStrParts = timeZoneStr.split(":");
 								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -303,7 +303,7 @@ public class XSGMonth extends XSAnyAtomicType {
 	 * @param strValue					The supplied string value of timezone
 	 * @return							Boolean true or false
 	 */
-	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
+	private boolean isTimeZoneStrFormatOk(String strValue) {
 		boolean result = false;
 		
 		Pattern pattern = Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");

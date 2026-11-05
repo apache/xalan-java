@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:49Z" fail="3" name="choose" pass="51" run="54" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-05T12:13:47Z" fail="2" name="choose" pass="52" run="54" skipped="1" statusUnknown="0">
    <testResult status="pass" testName="choose-0101"/>
    <testResult status="pass" testName="choose-0102"/>
-   <testResult reason="Xalan configured" status="skipped" testName="choose-0103"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="choose-0103"/>
    <testResult status="pass" testName="choose-0104"/>
    <testResult status="fail" testName="choose-0105">
       <outResult/>
@@ -42,7 +42,7 @@
    <testResult status="pass" testName="choose-1502"/>
    <testResult status="pass" testName="choose-1601"/>
    <testResult status="pass" testName="choose-1701"/>
-   <testResult status="fail" testName="choose-1702"/>
+   <testResult status="pass" testName="choose-1702"/>
    <testResult status="pass" testName="choose-1703"/>
    <testResult status="pass" testName="choose-1704"/>
    <testResult status="pass" testName="choose-1705"/>

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:51Z" fail="49" name="copy" pass="76" run="125" skipped="23" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-05T12:13:48Z" fail="48" name="copy" pass="77" run="125" skipped="23" statusUnknown="0">
    <testResult status="pass" testName="copy-0101"/>
    <testResult status="pass" testName="copy-0102"/>
    <testResult status="pass" testName="copy-0103"/>
    <testResult status="fail" testName="copy-0104">
       <outResult>
-         <errTrace>XTSE0010 : An XML element in is not allowed in this position in the stylesheet.</errTrace>
+         <errTrace>XTSE0010 : An XSL stylesheet does not allow, an XML element in at this position within the stylesheet.</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="copy-0105"/>
@@ -82,7 +82,7 @@
          <errTrace>XTTE0570 : The xs:string value 'Boo!' cannot be cast to a type node().</errTrace>
       </outResult>
    </testResult>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-1216"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-1216"/>
    <testResult status="fail" testName="copy-1217">
       <outResult>
          <errTrace>XTTE0570 : An XSL variable var1's evaluation result doesn't match the specified xdm sequence type node().</errTrace>
@@ -106,11 +106,11 @@ java.lang.Exception: Line# : 42, Column# : 129 XPST0003: Expected ,, but found: 
 java.lang.Exception: Line# : 42, Column# : 129 XPST0003: Expected ,, but found: (</errTrace>
       </outResult>
    </testResult>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-1301"/>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-1401"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-1301"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-1401"/>
    <testResult status="pass" testName="copy-1501"/>
    <testResult status="pass" testName="copy-1601"/>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-1602"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-1602"/>
    <testResult status="pass" testName="copy-1701"/>
    <testResult status="pass" testName="copy-1801"/>
    <testResult status="pass" testName="copy-2001"/>
@@ -153,10 +153,10 @@ java.lang.Exception: Line# : 42, Column# : 129 XPST0003: Expected ,, but found: 
    <testResult status="pass" testName="copy-3602"/>
    <testResult status="pass" testName="copy-3603"/>
    <testResult status="pass" testName="copy-3701"/>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-3702"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-3702"/>
    <testResult status="pass" testName="copy-3801"/>
    <testResult status="pass" testName="copy-3802"/>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-3803"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-3803"/>
    <testResult status="fail" testName="copy-3804">
       <outResult/>
    </testResult>
@@ -206,7 +206,7 @@ java.lang.Exception: Line# : 42, Column# : 129 XPST0003: Expected ,, but found: 
    <testResult status="fail" testName="copy-4803"/>
    <testResult status="pass" testName="copy-4804"/>
    <testResult status="pass" testName="copy-4805"/>
-   <testResult reason="Xalan configured" status="skipped" testName="copy-4901"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="copy-4901"/>
    <testResult feature="schema_aware" status="skipped" testName="copy-5001"/>
    <testResult feature="schema_aware" status="skipped" testName="copy-5002"/>
    <testResult feature="schema_aware" status="skipped" testName="copy-5003"/>
@@ -226,7 +226,5 @@ java.lang.Exception: Line# : 42, Column# : 129 XPST0003: Expected ,, but found: 
    <testResult status="fail" testName="copy-5101">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="copy-5201">
-      <outResult/>
-   </testResult>
+   <testResult status="pass" testName="copy-5201"/>
 </testrun>

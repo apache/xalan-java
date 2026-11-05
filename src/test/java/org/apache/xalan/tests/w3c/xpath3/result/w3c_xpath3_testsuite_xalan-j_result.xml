@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-11-04T11:34:46Z" desc="W3C XPath 3.1 test suite results" fail="2373" pass="10045" run="12418" skipped="19" success="80.89%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-11-05T12:11:22Z" desc="W3C XPath 3.1 test suite results" fail="2358" pass="10061" run="12419" skipped="18" success="81.01%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -78,7 +78,7 @@
     <map-for-each fail="2" pass="14" run="16" success="87.5%"/>
     <map-get fail="3" pass="28" run="31" success="90.32%"/>
     <map-keys fail="1" pass="13" run="14" success="92.86%"/>
-    <map-merge fail="14" pass="16" run="30" skipped="1" success="53.33%"/>
+    <map-merge fail="15" pass="16" run="31" success="51.61%"/>
     <map-put fail="8" pass="9" run="17" success="52.94%"/>
     <map-remove fail="8" pass="10" run="18" success="55.56%"/>
     <map-size fail="2" pass="13" run="15" success="86.67%"/>
@@ -182,7 +182,7 @@
     <prod-AxisStep.preceding fail="1" pass="16" run="17" success="94.12%"/>
     <prod-AxisStep fail="28" pass="208" run="236" success="88.14%"/>
     <prod-CastableExpr fail="96" pass="752" run="848" success="88.68%"/>
-    <prod-CastExpr fail="1759" pass="980" run="2739" success="35.78%"/>
+    <prod-CastExpr fail="1743" pass="996" run="2739" success="36.36%"/>
     <prod-ForClause fail="14" pass="61" run="75" success="81.33%"/>
     <prod-GeneralComp.eq fail="6" pass="113" run="119" success="94.96%"/>
     <prod-GeneralComp.ge fail="6" pass="52" run="58" success="89.66%"/>

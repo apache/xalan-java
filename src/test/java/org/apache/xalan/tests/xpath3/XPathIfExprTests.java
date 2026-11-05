@@ -31,9 +31,9 @@ import org.junit.Test;
  */
 public class XPathIfExprTests extends XslTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "if_expr/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLTestConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_if_expr/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "if_expr/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLTestConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xpath_if_expr/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -223,6 +223,16 @@ public class XPathIfExprTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslIfExprTest19() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

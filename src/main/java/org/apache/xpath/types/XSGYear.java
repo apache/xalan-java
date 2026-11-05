@@ -239,7 +239,7 @@ public class XSGYear extends XSAnyAtomicType {
 							String str2 = suffixValue.substring(0, plusIdx);
 							m_year = Integer.valueOf(str2);
 							String timeZoneStr = suffixValue.substring(plusIdx + 1);
-							if (isTimeZoneStrCorrectlyFormatted(timeZoneStr)) {
+							if (isTimeZoneStrFormatOk(timeZoneStr)) {
 								String[] timeZoneStrParts = timeZoneStr.split(":");
 								m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 								m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -260,7 +260,7 @@ public class XSGYear extends XSAnyAtomicType {
 							}
 							else if (strArrLength == 2) {
 								m_year = Integer.valueOf(strParts[0]);
-								if (isTimeZoneStrCorrectlyFormatted(strParts[1])) {
+								if (isTimeZoneStrFormatOk(strParts[1])) {
 									String[] timeZoneStrParts = (strParts[1]).split(":");
 									m_timezone_hrs = Integer.valueOf(timeZoneStrParts[0]); 
 									m_timezone_min = Integer.valueOf(timeZoneStrParts[1]);
@@ -273,6 +273,9 @@ public class XSGYear extends XSAnyAtomicType {
 								else {
 									throw new TransformerException("FORG0001 : A string value " + gYearStrValue + " cannot be parsed to a value of type xs:gYear.");
 								}
+							}
+							else {
+								throw new TransformerException("FORG0001 : A string value " + gYearStrValue + " cannot be parsed to a value of type xs:gYear.");
 							}
 						}
 					}
@@ -314,6 +317,9 @@ public class XSGYear extends XSAnyAtomicType {
 							}
 							m_isTimeZoned = true;
 							m_isTimeZoneNegative = true;
+						}
+						else {
+							throw new TransformerException("FORG0001 : A string value " + gYearStrValue + " cannot be parsed to a value of type xs:gYear.");
 						}
 					}
 				}
@@ -368,7 +374,7 @@ public class XSGYear extends XSAnyAtomicType {
 	 * @param strValue					The supplied string value of timezone
 	 * @return							Boolean true or false
 	 */
-	private boolean isTimeZoneStrCorrectlyFormatted(String strValue) {
+	private boolean isTimeZoneStrFormatOk(String strValue) {
 		boolean result = false;
 		
 		Pattern pattern = Pattern.compile("((0[0-9]|1[0-3]):[0-5][0-9]|14:00)");
