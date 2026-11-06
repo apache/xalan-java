@@ -24,7 +24,7 @@ HOW TO INVOKE TRANSLETS FROM AN ENTERPRISE JAVA BEAN
 
     public class TransformBean implements SessionBean {
         public String transform(String document, String transletName) {
-            // instanciate translet
+            // instantiate translet
             // build internal DOM
             // run transformation
             :
