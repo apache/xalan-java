@@ -3988,7 +3988,7 @@ public class XPathParser
         	  nextToken();
         	  nextToken();              
 
-        	  varBindingName = xpathParseForExprVariableName();
+        	  varBindingName = xpathParseLocalVariableName();
 
         	  nextToken();              
 
@@ -3997,7 +3997,7 @@ public class XPathParser
           else if (tokenIs('$')) {
         	  nextToken();
 
-        	  varBindingName = xpathParseForExprVariableName();
+        	  varBindingName = xpathParseLocalVariableName();
 
         	  nextToken();              
 
@@ -4086,9 +4086,7 @@ public class XPathParser
     	 error(XPATHErrorResources.ER_FOR_EXPR_4, new Object[]{});
       }
       
-      consumeExpected(Keywords.RETURN);
-      
-      String xPathReturnExprStr = null;            
+      consumeExpected(Keywords.RETURN);                        
       
       StringBuffer strBuff = new StringBuffer();      
       String str1 = null;
@@ -4196,7 +4194,7 @@ public class XPathParser
     		  }
     	  }
 
-    	  xPathReturnExprStr = getXPathStrFromComponentParts(xPathReturnExprStrPartsList);
+    	  String xPathReturnExprStr = getXPathStrFromComponentParts(xPathReturnExprStrPartsList);
     	  
     	  if (!(xPathReturnExprStr.startsWith(Keywords.FOR) || xPathReturnExprStr.startsWith(Keywords.LET)
     			                                            || xPathReturnExprStr.startsWith(Keywords.SOME)
@@ -4484,28 +4482,36 @@ public class XPathParser
       
       insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_QUANTIFIED_EXPR);
       
-      XPathQuantifiedExpr quantifiedExpr = new XPathQuantifiedExpr();
-      quantifiedExpr.setCurrentXPathQuantifier(quantifierExprType);
+      XPathQuantifiedExpr xpathQuantifiedExpr = new XPathQuantifiedExpr();
+      xpathQuantifiedExpr.setCurrentXPathQuantifier(quantifierExprType);
       
       List<XPathForAndQuantifiedExprVarBinding> quantifiedExprVarBindingList = new 
                                                            ArrayList<XPathForAndQuantifiedExprVarBinding>();
       
+      TokenQueuePosition prevTokenQueuePos = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
+      
       while (!tokenIs(Keywords.SATISFIES) && m_token != null)
       {
-          String bindingVarName = null;
+          String varBindingName = null;
           
           if ((quantifiedExprVarBindingList.size() > 0) && tokenIs(',') && lookahead('$', 1)) {
-             nextToken();
-             nextToken();              
-             bindingVarName = m_token;              
-             nextToken();              
-             consumeExpected("in");
+        	  nextToken();
+        	  nextToken();              
+
+        	  varBindingName = xpathParseLocalVariableName();
+
+        	  nextToken();              
+
+        	  consumeExpected("in");
           }
           else if (tokenIs('$')) {
-             nextToken();
-             bindingVarName = m_token;              
-             nextToken();              
-             consumeExpected("in");
+        	  nextToken();
+
+        	  varBindingName = xpathParseLocalVariableName();
+
+        	  nextToken();              
+
+        	  consumeExpected("in");
           }
           
           List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
@@ -4526,7 +4532,7 @@ public class XPathParser
                                                                 bindingXPathExprStrPartsList);
           
           XPathForAndQuantifiedExprVarBinding quantifiedExprVarBinding = new XPathForAndQuantifiedExprVarBinding();
-          quantifiedExprVarBinding.setVarName(bindingVarName);
+          quantifiedExprVarBinding.setVarName(varBindingName);
           quantifiedExprVarBinding.setXPathExprStr(varBindingXpathStr);
           
           quantifiedExprVarBindingList.add(quantifiedExprVarBinding);
@@ -4536,38 +4542,115 @@ public class XPathParser
           }
       }      
       
-      consumeExpected(Keywords.SATISFIES);
+      consumeExpected(Keywords.SATISFIES);           
       
-      List<String> xPathTestExprStrPartsList = new ArrayList<String>();
+      StringBuffer strBuff = new StringBuffer();      
+      String str1 = null;
       
-      while (m_token != null) {
-         if (tokenIs(')')) {            
-            if (lookahead(null, 1) && "(".equals(prevTokenStrBeforeQuantifier)) {
-               break;    
-            }
-            else {
-               xPathTestExprStrPartsList.add(m_token);
-               nextToken();
-            }
-         }
-         else if (m_isXPathPredicateParsingActive && tokenIs(']')) {
-            break;    
-         }
-         else {
-            xPathTestExprStrPartsList.add(m_token);
-            nextToken();
-         }
+      int quantifiedExprStartQueueMark = (prevTokenQueuePos.getQueueMark() - 1);
+      
+      boolean isXpathSeqConstr = false;
+      boolean isXpathSeqConstr2 = false;
+      
+      TokenQueuePosition prevTokenQueuePos2 = new TokenQueuePosition(m_queueMark, m_tokenChar, m_token);
+      
+      if (quantifiedExprStartQueueMark == 1) {
+    	  while (m_token != null) {
+    		  strBuff.append(m_token + " ");
+    		  str1 = (strBuff.toString()).trim();
+    		  
+    		  if (tokenIs(',') && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '(', ')')
+    				           && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '[', ']')
+    				           && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '{', '}')
+    				           && !str1.contains(Keywords.LET)) {    			  
+    				 isXpathSeqConstr = true;
+
+    				 consumeExpected(',');
+
+    				 str1 = (str1.substring(0, str1.length() - 1)).trim();
+
+    				 break;
+    		  }
+    		  
+    		  nextToken();
+    	  }
+      }
+      else if (m_isFunctionArgumentParse && tokenIs('(')) {
+    	  while (m_token != null) {
+    		  strBuff.append(m_token + " ");
+    		  str1 = (strBuff.toString()).trim();
+    		  
+    		  if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) 
+    				                                                     && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+    			  isXpathSeqConstr2 = true;
+
+    			  consumeExpected(')');
+
+    			  break;
+    		  }
+    		  
+    		  nextToken();
+    	  }
       }
       
-      String xPathTestExprStr = getXPathStrFromComponentParts(xPathTestExprStrPartsList);
-      
-      quantifiedExpr.setQuantifiedExprVarBindingList(quantifiedExprVarBindingList);
-      quantifiedExpr.setXPathQuantifierTestStr(xPathTestExprStr);
+      if (isXpathSeqConstr) {
+    	  strBuff = new StringBuffer();
+    	  
+    	  while (m_token != null) {
+    		 strBuff.append(m_token + " ");    		 
+    		 
+    		 nextToken();
+    	  }
+    	  
+    	  String str2 = (strBuff.toString()).trim();
+    	      	  
+    	  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
+    	  str2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str2);
+    	  
+    	  xpathQuantifiedExpr.setQuantifiedExprVarBindingList(quantifiedExprVarBindingList);
+    	  xpathQuantifiedExpr.setXPathQuantifierTestStr(str1);
+    	  xpathQuantifiedExpr.setXPathExprSuffixStr(str2);
+      }
+      else if (isXpathSeqConstr2) {
+    	  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
+    	  
+    	  xpathQuantifiedExpr.setQuantifiedExprVarBindingList(quantifiedExprVarBindingList);
+    	  xpathQuantifiedExpr.setXPathQuantifierTestStr(str1); 
+      }
+      else {    	  
+    	  List<String> xPathTestExprStrPartsList = new ArrayList<String>();
+    	  
+    	  restoreTokenQueueXPathParsePos(prevTokenQueuePos2);
+          
+          while (m_token != null) {
+             if (tokenIs(')')) {            
+                if (lookahead(null, 1) && "(".equals(prevTokenStrBeforeQuantifier)) {
+                   break;    
+                }
+                else {
+                   xPathTestExprStrPartsList.add(m_token);
+                   nextToken();
+                }
+             }
+             else if (m_isXPathPredicateParsingActive && tokenIs(']')) {
+                break;    
+             }
+             else {
+                xPathTestExprStrPartsList.add(m_token);
+                nextToken();
+             }
+          }
+          
+          String xPathTestExprStr = getXPathStrFromComponentParts(xPathTestExprStrPartsList);
+          
+          xpathQuantifiedExpr.setQuantifiedExprVarBindingList(quantifiedExprVarBindingList);
+          xpathQuantifiedExpr.setXPathQuantifierTestStr(xPathTestExprStr);    	      	  
+      }
       
       m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
                                                   m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
       
-      return quantifiedExpr;
+      return xpathQuantifiedExpr;
   }
   
   protected XPathIfExpr xpathParseIfExpr() throws javax.xml.transform.TransformerException
@@ -14915,14 +14998,14 @@ public class XPathParser
       }
       
       /**
-       * Method definition, to do XPath parse for the 'for' expression
-       * variable name.
+       * Method definition, to do XPath parse for the 'for', 
+       * 'quantified', 'let' expression variable names.
        * 
-       * @return                               XPath 'for' expression variable name
-       *                                       string. 
+       * @return                               An XPath expression local variable 
+       *                                       name string. 
        * @throws TransformerException
        */
-      private String xpathParseForExprVariableName() throws TransformerException {
+      private String xpathParseLocalVariableName() throws TransformerException {
 
     	  String result = null;
 

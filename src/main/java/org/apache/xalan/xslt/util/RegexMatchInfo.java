@@ -18,8 +18,8 @@
 package org.apache.xalan.xslt.util;
 
 /**
- * This class definition, specifies data structure for Xalan Java 
- * XSLT 3.0 regex processing. An object instance of this class 
+ * Class definition, that encapsulates information for Xalan-J 
+ * XSL 3 regex processing. An object instance of this class, 
  * stores a pair of integer values that specify word match boundary 
  * within another context string.
  * 

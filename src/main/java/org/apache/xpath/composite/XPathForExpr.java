@@ -67,7 +67,7 @@ public class XPathForExpr extends Expression {
     
     /**
      * Class field, that represent an XPath expression suffix string,
-     * after an XPath 'for' expression. This could possibly be null.
+     * after an XPath 'for' expression, which could possibly be null.
      * 
      * For e.g, an XPath expression string,
      * for $x in 1, $y in 2 return 1, $x

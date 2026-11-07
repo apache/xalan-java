@@ -23,8 +23,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class definition, specifies few utility methods for 
- * XSL regex processing.
+ * Class definition, that specifies few utility methods for 
+ * Xalan-J XSL 3 regex processing.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -44,7 +44,7 @@ public class RegexUtil {
 	 */
 	public static List<RegexMatchInfo> getRegexMatchInfoList(String regex, String str) {
 		
-		List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
+		List<RegexMatchInfo> result = new ArrayList<RegexMatchInfo>();
 
 		Pattern pattern = Pattern.compile(regex);
 		Matcher regexMatcher = pattern.matcher(str);   	 
@@ -55,12 +55,12 @@ public class RegexUtil {
 			RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
 			regexMatchInfo.setStartIdx(idx1);
 			regexMatchInfo.setEndIdx(idx2);
-			regexMatchInfoList.add(regexMatchInfo);
+			result.add(regexMatchInfo);
 		}
 
 		regexMatcher.reset();
 
-		return regexMatchInfoList; 
+		return result; 
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class RegexUtil {
 	 */
 	public static List<RegexMatchInfo> getRegexMatchInfoList(org.apache.xpath.regex.Matcher regexMatcher) {
 		
-		List<RegexMatchInfo> regexMatchInfoList = new ArrayList<RegexMatchInfo>();
+		List<RegexMatchInfo> result = new ArrayList<RegexMatchInfo>();
 		
 		while (regexMatcher.find()) {
 			int idx1 = regexMatcher.start();
@@ -80,12 +80,12 @@ public class RegexUtil {
 			RegexMatchInfo regexMatchInfo = new RegexMatchInfo();
 			regexMatchInfo.setStartIdx(idx1);
 			regexMatchInfo.setEndIdx(idx2);
-			regexMatchInfoList.add(regexMatchInfo);
+			result.add(regexMatchInfo);
 		}
 
 		regexMatcher.reset();
 		
-		return regexMatchInfoList;
+		return result;
 	}
 
 }

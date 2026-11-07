@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-11-07T11:18:23Z" desc="W3C XPath 3.1 test suite results" fail="2322" pass="10097" run="12419" skipped="18" success="81.3%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-11-07T16:18:21Z" desc="W3C XPath 3.1 test suite results" fail="2310" pass="10109" run="12419" skipped="18" success="81.4%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -196,7 +196,7 @@
     <prod-LetClause fail="1" pass="22" run="23" success="95.65%"/>
     <prod-Literal fail="7" pass="107" run="114" success="93.86%"/>
     <prod-OrExpr fail="10" pass="319" run="329" success="96.96%"/>
-    <prod-QuantifiedExpr fail="12" pass="149" run="161" success="92.55%"/>
+    <prod-QuantifiedExpr fail="0" pass="161" run="161" success="100.0%"/>
   </prod>
   <xs>
     <xs-anyURI fail="0" pass="9" run="9" success="100.0%"/>

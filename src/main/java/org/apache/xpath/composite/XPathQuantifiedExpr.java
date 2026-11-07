@@ -47,8 +47,8 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * An implementation of XPath 3.1 quantified expressions, 
- * 'some' & 'every'.
+ * Class definition, to implement XPath 3.1 quantified 
+ * expressions 'some', 'every'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -78,14 +78,28 @@ public class XPathQuantifiedExpr extends Expression {
      * A java.util.List object supporting implementation of XPath quantified 
      * expression. 
      */
-    private List<XPathForAndQuantifiedExprVarBinding> m_QuantifiedExprVarBindingList = new 
-                                                        ArrayList<XPathForAndQuantifiedExprVarBinding>();
+    private List<XPathForAndQuantifiedExprVarBinding> m_quantifiedExprVarBindingList = new 
+                                                                                      ArrayList<XPathForAndQuantifiedExprVarBinding>();
 
     /**
      * This class field represents an XPath expression string, that 
      * occurs after XPath quantified expression's 'satisfies' keyword.  
      */
     private String m_xpathQuantifierTestStr = null;
+    
+    /**
+     * Class field, that represent an XPath expression suffix string,
+     * after an XPath quantified expression, which could possibly be null.
+     * 
+     * For e.g, an XPath expression string,
+     * some $x in 1, $y in 2 satisfies 1, $x
+     * 
+     * is an XPath sequence constructor with following two components,
+     * some $x in 1, $y in 2 satisfies 1
+     * &
+     * $x             where the value for this field shall be string, $x
+     */
+    private String m_xpathExprSuffixStr = null;
     
     /**
 	 * This class field is used during, XPath.fixupVariables(..) action 
@@ -107,6 +121,8 @@ public class XPathQuantifiedExpr extends Expression {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
+        final int sourceNode = xctxt.getCurrentNode(); 
+        
         List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
         
         if (prefixTable != null) {
@@ -123,43 +139,87 @@ public class XPathQuantifiedExpr extends Expression {
            throw new TransformerException("FORG0006 : An XPath effective boolean value, is not defined for XML schema type 'QName'.", srcLocator);
         }
         
-        ResultSequence resultSequence = getQuantifiedExpressionEvalResult(m_QuantifiedExprVarBindingList.listIterator(), quantifiedExprXPath, xctxt);
+        ResultSequence rSeq1 = null;
         
-        m_xpathVarList.clear();
+        try {
+        	rSeq1 = getQuantifiedExpressionEvalResult(m_quantifiedExprVarBindingList.listIterator(), quantifiedExprXPath, xctxt);
+        }
+        finally {                	
+        	int size1 = m_quantifiedExprVarBindingList.size();
+        	
+        	Map<QName,XObject> xpathVarMap = xctxt.getXPathVarMap();
+
+        	for (int idx = 0; idx < size1; idx++) {
+        		XPathForAndQuantifiedExprVarBinding xpathForAndQuantifiedExprVarBinding = m_quantifiedExprVarBindingList.get(idx);
+        		String varName = xpathForAndQuantifiedExprVarBinding.getVarName();
+        		
+        		if (prefixTable != null) {
+        		   varName = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varName, prefixTable);
+                }
+        		
+        		QName varQName = new QName(varName, xctxt.getNamespaceContext());
+        		
+        		xpathVarMap.remove(varQName);
+        		m_xpathVarList.remove(varQName);
+        	}
+        }
         
-        boolean isEvalResultDecided = false;
+        boolean isEvalResultOk = false;
         
-        int size1 = resultSequence.size();
+        int size1 = rSeq1.size();
         
         for (int idx = 0; idx < size1; idx++) {
-           XObject xsObject = resultSequence.item(idx);
-           XSBoolean xsBoolean = (XSBoolean)xsObject;
+           XObject xObj = rSeq1.item(idx);
+           XSBoolean xsBoolean = (XSBoolean)xObj;
            
            if (m_xpathQuantifier == SOME) {
               if (xsBoolean.value()) {
-                 result = XBoolean.S_TRUE;
-                 isEvalResultDecided = true;
-                 
-                 break;      
+            	  isEvalResultOk = true;
+            	  
+            	  result = XBoolean.S_TRUE;                                  
+
+            	  break;      
               }
            }
            else {
               if (!xsBoolean.value()) {
-                 result = XBoolean.S_FALSE;
-                 isEvalResultDecided = true;
-                 
-                 break;     
+            	  isEvalResultOk = true;
+
+            	  result = XBoolean.S_FALSE;
+
+            	  break;     
               }   
            }
         }
         
-        if (!isEvalResultDecided) {
+        if (!isEvalResultOk) {
            if (m_xpathQuantifier == SOME) {
               result = XBoolean.S_FALSE;    
            }
            else {
               result = XBoolean.S_TRUE;    
            }
+        }
+        
+        if (m_xpathExprSuffixStr != null) {
+        	if (prefixTable != null) {
+				m_xpathExprSuffixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathExprSuffixStr, 
+    																													     prefixTable);
+    		}
+
+    		XPath xpathExprSuffix = new XPath(m_xpathExprSuffixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+    		
+    		if (m_vars != null) {
+    		   xpathExprSuffix.fixupVariables(m_vars, m_globals_size);
+     		}
+    		
+    		XObject xObj = xpathExprSuffix.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    		
+    		ResultSequence rSeq = new ResultSequence();
+    		rSeq.add(result);
+    		rSeq.add(xObj);
+    		
+    		return rSeq;
         }
         
         return result;
@@ -174,32 +234,7 @@ public class XPathQuantifiedExpr extends Expression {
     @Override
     public boolean deepEquals(Expression expr) {
        return false;
-    }
-
-    public int getCurrentXPathQuantifier() {
-        return m_xpathQuantifier;
-    }
-
-    public void setCurrentXPathQuantifier(int fCurrentXPathQuantifier) {
-        this.m_xpathQuantifier = fCurrentXPathQuantifier;
-    }
-
-    public List<XPathForAndQuantifiedExprVarBinding> getQuantifiedExprVarBindingList() {
-        return m_QuantifiedExprVarBindingList;
-    }
-
-    public void setQuantifiedExprVarBindingList(List<XPathForAndQuantifiedExprVarBinding> 
-                                                                      fQuantifiedExprVarBindingList) {
-        this.m_QuantifiedExprVarBindingList = fQuantifiedExprVarBindingList;
-    }
-
-    public String getXPathQuantifierTestStr() {
-        return m_xpathQuantifierTestStr;
-    }
-
-    public void setXPathQuantifierTestStr(String xpathQuantifierTestStr) {
-        this.m_xpathQuantifierTestStr = xpathQuantifierTestStr;
-    }
+    }   
     
     /**
      * This method, does the evaluations needed to determine the evaluation result 
@@ -223,6 +258,10 @@ public class XPathQuantifiedExpr extends Expression {
            // Evaluate the current, variable binding xpath expression
            
            String varName = quantifiedExprVarBinding.getVarName();
+           varName = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varName, prefixTable);
+           
+           QName varQName = new QName(varName, xctxt.getNamespaceContext());
+           
            String varBindingXPathStr = quantifiedExprVarBinding.getXPathExprStr();                      
            
            if (prefixTable != null) {
@@ -247,8 +286,8 @@ public class XPathQuantifiedExpr extends Expression {
        		    	XPath xpathLhsObj = new XPath(xpathLhsStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
        		    	
        		    	if (m_vars != null) {
-       		    		if (!m_xpathVarList.contains(new QName(varName))) {
-             			   m_xpathVarList.add(new QName(varName));
+       		    		if (!m_xpathVarList.contains(varQName)) {
+             			   m_xpathVarList.add(varQName);
              		    }
        		    		
        		    		xpathLhsObj.fixupVariables(m_vars, m_globals_size);
@@ -279,8 +318,8 @@ public class XPathQuantifiedExpr extends Expression {
         	   XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         	   
         	   if (m_vars != null) {
-        		   if (!m_xpathVarList.contains(new QName(varName))) {
-        			   m_xpathVarList.add(new QName(varName));
+        		   if (!m_xpathVarList.contains(varQName)) {
+        			   m_xpathVarList.add(varQName);
         		   }
         		   
         		   varBindingXPath.fixupVariables(m_vars, m_globals_size);
@@ -329,16 +368,22 @@ public class XPathQuantifiedExpr extends Expression {
             * an XPath quantifier expression's binding variable in turn to that 
             * item.
             */
-           for (int idx = 0; idx < resultSeq2.size(); idx++) {
+           
+           int size2 = resultSeq2.size();
+           
+           for (int idx = 0; idx < size2; idx++) {
                XObject xdmItem = resultSeq2.item(idx);
                              
-               quantifiedExprVarBindingMap.put(new QName(varName), xdmItem);
+               quantifiedExprVarBindingMap.put(varQName, xdmItem);
                
-               ResultSequence res = getQuantifiedExpressionEvalResult(listIter, quantifiedExprXPath, xctxt);
+               ResultSequence rSeq = getQuantifiedExpressionEvalResult(listIter, quantifiedExprXPath, xctxt);
                
-               // Append xdm items of sequence 'res', to the final sequence object 'resultSeq'   
-               for (int idx1 = 0; idx1 < res.size(); idx1++) {
-                  resultSeq.add(res.item(idx1));    
+               // Append xdm items from sequence 'rSeq', to the result sequence object 'resultSeq'
+               
+               int size = rSeq.size();
+               
+               for (int idx1 = 0; idx1 < size; idx1++) {
+                  resultSeq.add(rSeq.item(idx1));    
                }
            }
            
@@ -377,5 +422,38 @@ public class XPathQuantifiedExpr extends Expression {
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
        // no op
     }
+    
+    public int getCurrentXPathQuantifier() {
+        return m_xpathQuantifier;
+    }
+
+    public void setCurrentXPathQuantifier(int fCurrentXPathQuantifier) {
+        this.m_xpathQuantifier = fCurrentXPathQuantifier;
+    }
+
+    public List<XPathForAndQuantifiedExprVarBinding> getQuantifiedExprVarBindingList() {
+        return m_quantifiedExprVarBindingList;
+    }
+
+    public void setQuantifiedExprVarBindingList(List<XPathForAndQuantifiedExprVarBinding> 
+                                                                      fQuantifiedExprVarBindingList) {
+        this.m_quantifiedExprVarBindingList = fQuantifiedExprVarBindingList;
+    }
+
+    public String getXPathQuantifierTestStr() {
+        return m_xpathQuantifierTestStr;
+    }
+
+    public void setXPathQuantifierTestStr(String xpathQuantifierTestStr) {
+        this.m_xpathQuantifierTestStr = xpathQuantifierTestStr;
+    }
+    
+    public String getXPathExprSuffixStr() {
+    	return m_xpathExprSuffixStr;
+    }
+
+	public void setXPathExprSuffixStr(String str1) {
+		this.m_xpathExprSuffixStr = str1;		
+	}
 
 }
