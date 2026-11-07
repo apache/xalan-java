@@ -64,12 +64,12 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3GeneralCompTests.class, XPath3ExceptTests.class, XPath3FnAbsTests.class,
 	            XPath3InlineFunctionExprTests.class, XPath3FnFormatIntegerTests.class, XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, 
-	            XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
+	            XPath3FnEmptyTests.class, XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
 	            XPath3IntersectTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class, 
 	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3FnArrayAppendTests.class, XPath3FnArraySizeTests.class, 
 	            XPath3FnArrayFilterTests.class, XPath3FnArrayFoldLeftTests.class, XPath3FnArrayFoldRightTests.class, XPath3FnArrayForeachTests.class,
 	            XPath3FnNumberTests.class, XPath3FnArrayGetTests.class, XPath3FnArrayHeadTests.class, XPath3XsDurationEqualTests.class, 
-	            XPath3FnAvgTests.class, XPath3FnRandomNumberGeneratorTests.class, XPath3FnEmptyTests.class, XPath3XsBase64BinaryTests.class, XPath3XsHexBinaryTests.class })
+	            XPath3FnAvgTests.class, XPath3FnRandomNumberGeneratorTests.class, XPath3XsBase64BinaryTests.class, XPath3XsHexBinaryTests.class })
 public class W3CXPath3Tests1 {
 	
 

@@ -60,6 +60,7 @@ public class FuncCurrentTime extends Function {
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {    
 
 		XSTime xsCurrentTime = new XSTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+		
 		xsCurrentTime.setPopulatedFromFnCurrentTime(true);
 
 		return xsCurrentTime;

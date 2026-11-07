@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-04T11:33:47Z" fail="49" name="prod-InstanceofExpr" pass="224" run="273" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-07T11:17:27Z" fail="36" name="prod-InstanceofExpr" pass="237" run="273" statusUnknown="0">
    <testResult status="pass" testName="instanceof1"/>
    <testResult status="pass" testName="instanceof2"/>
    <testResult status="pass" testName="instanceof3"/>
@@ -140,16 +140,16 @@
    <testResult status="pass" testName="K-SeqExprInstanceOf-14"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-15"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-16"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-17"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-17"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-18"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-19"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-20"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-21"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-20"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-21"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-22"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-23"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-24"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-25"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-26"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-25"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-26"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-27"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-28"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-29"/>
@@ -166,9 +166,9 @@
    <testResult status="fail" testName="K-SeqExprInstanceOf-40"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-41"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-42"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-43"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-44"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-45"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-43"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-44"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-45"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-46"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-47"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-48"/>
@@ -182,11 +182,11 @@
    <testResult status="pass" testName="K-SeqExprInstanceOf-56"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-57"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-58"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-59"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-60"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-61"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-62"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-63"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-59"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-60"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-61"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-62"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-63"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-64"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-65"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-66"/>

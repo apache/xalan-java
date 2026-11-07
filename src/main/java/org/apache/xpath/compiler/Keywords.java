@@ -863,6 +863,10 @@ public class Keywords
   
   public static final String IF = "if";
   
+  public static final String THEN = "then";
+  
+  public static final String ELSE = "else";
+  
   public static final String NUMBER = "number";
   
   public static final String PERMUTE = "permute";
@@ -889,9 +893,27 @@ public class Keywords
   
   public static final String VC_LE = "le";
   
-  public static final String VC_GE = "ge";
+  public static final String VC_GE = "ge";    
   
   public static final String COLLATION = "collation";
+  
+  public static final String RETURN = "return"; 
+  
+  public static final String SATISFIES = "satisfies";
+  
+  public static final String INSTANCE = "instance";
+  
+  public static final String OF = "of";
+  
+  public static final String CASTABLE = "castable";
+  
+  public static final String CAST = "cast";
+  
+  public static final String TREAT = "treat";
+  
+  public static final String AS = "as";
+  
+  public static final String IDIV = "idiv";
   
   public static final String XPATH_ARROW_OP = "=>";
   

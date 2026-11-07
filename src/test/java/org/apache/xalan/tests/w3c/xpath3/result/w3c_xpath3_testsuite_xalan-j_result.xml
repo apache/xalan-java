@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-11-05T12:11:22Z" desc="W3C XPath 3.1 test suite results" fail="2358" pass="10061" run="12419" skipped="18" success="81.01%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-11-07T11:18:23Z" desc="W3C XPath 3.1 test suite results" fail="2322" pass="10097" run="12419" skipped="18" success="81.3%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <array>
     <array-append fail="0" pass="8" run="8" success="100.0%"/>
     <array-filter fail="0" pass="12" run="12" success="100.0%"/>
@@ -41,14 +41,14 @@
     <fn-false fail="0" pass="25" run="25" success="100.0%"/>
     <fn-floor fail="1" pass="87" run="88" success="98.86%"/>
     <fn-format-integer fail="35" pass="42" run="77" success="54.55%"/>
-    <fn-generate-id fail="10" pass="10" run="20" skipped="1" success="50.0%"/>
+    <fn-generate-id fail="6" pass="14" run="20" skipped="1" success="70.0%"/>
     <fn-head fail="0" pass="8" run="8" success="100.0%"/>
     <fn-hours-from-dateTime fail="3" pass="24" run="27" success="88.89%"/>
     <fn-hours-from-duration fail="3" pass="28" run="31" success="90.32%"/>
     <fn-hours-from-time fail="3" pass="24" run="27" success="88.89%"/>
     <fn-implicit-timezone fail="2" pass="25" run="27" success="92.59%"/>
     <fn-in-scope-prefixes fail="0" pass="12" run="12" success="100.0%"/>
-    <fn-index-of fail="7" pass="46" run="53" success="86.79%"/>
+    <fn-index-of fail="6" pass="47" run="53" success="88.68%"/>
     <fn-lower-case fail="0" pass="28" run="28" success="100.0%"/>
     <fn-matches fail="34" pass="128" run="162" success="79.01%"/>
     <fn-number fail="2" pass="64" run="66" success="96.97%"/>
@@ -71,7 +71,7 @@
     <fn-translate fail="1" pass="43" run="44" success="97.73%"/>
     <fn-true fail="0" pass="25" run="25" success="100.0%"/>
     <fn-upper-case fail="0" pass="29" run="29" success="100.0%"/>
-    <fn-zero-or-one fail="1" pass="48" run="49" success="97.96%"/>
+    <fn-zero-or-one fail="0" pass="49" run="49" success="100.0%"/>
   </fn>
   <map>
     <map-contains fail="1" pass="25" run="26" success="96.15%"/>
@@ -125,7 +125,7 @@
     <op-divide-dayTimeDuration-by-dayTimeDuration fail="1" pass="24" run="25" success="96.0%"/>
     <op-divide-dayTimeDuration fail="1" pass="36" run="37" success="97.3%"/>
     <op-divide-yearMonthDuration-by-yearMonthDuration fail="1" pass="22" run="23" success="95.65%"/>
-    <op-divide-yearMonthDuration fail="2" pass="26" run="28" success="92.86%"/>
+    <op-divide-yearMonthDuration fail="1" pass="27" run="28" success="96.43%"/>
     <op-duration-equal fail="0" pass="144" run="144" success="100.0%"/>
     <op-except fail="4" pass="21" run="25" success="84.0%"/>
     <op-gDay-equal fail="0" pass="45" run="45" success="100.0%"/>
@@ -136,9 +136,9 @@
     <op-intersect fail="4" pass="28" run="32" success="87.5%"/>
     <op-is-same-node fail="4" pass="18" run="22" success="81.82%"/>
     <op-multiply-dayTimeDuration fail="4" pass="29" run="33" success="87.88%"/>
-    <op-multiply-yearMonthDuration fail="8" pass="32" run="40" success="80.0%"/>
-    <op-node-after fail="9" pass="17" run="26" success="65.38%"/>
-    <op-node-before fail="8" pass="18" run="26" success="69.23%"/>
+    <op-multiply-yearMonthDuration fail="7" pass="33" run="40" success="82.5%"/>
+    <op-node-after fail="8" pass="18" run="26" success="69.23%"/>
+    <op-node-before fail="7" pass="19" run="26" success="73.08%"/>
     <op-numeric-add fail="1" pass="130" run="131" skipped="11" success="99.24%"/>
     <op-numeric-divide fail="1" pass="118" run="119" success="99.16%"/>
     <op-numeric-equal fail="0" pass="178" run="178" success="100.0%"/>
@@ -166,7 +166,7 @@
     <op-time-equal fail="0" pass="52" run="52" success="100.0%"/>
     <op-time-greater-than fail="0" pass="38" run="38" success="100.0%"/>
     <op-time-less-than fail="4" pass="34" run="38" success="89.47%"/>
-    <op-to fail="36" pass="130" run="166" success="78.31%"/>
+    <op-to fail="35" pass="131" run="166" success="78.92%"/>
     <op-union fail="2" pass="25" run="27" success="92.59%"/>
     <op-yearMonthDuration-greater-than fail="0" pass="28" run="28" success="100.0%"/>
     <op-yearMonthDuration-less-than fail="0" pass="28" run="28" success="100.0%"/>
@@ -182,8 +182,8 @@
     <prod-AxisStep.preceding fail="1" pass="16" run="17" success="94.12%"/>
     <prod-AxisStep fail="28" pass="208" run="236" success="88.14%"/>
     <prod-CastableExpr fail="96" pass="752" run="848" success="88.68%"/>
-    <prod-CastExpr fail="1743" pass="996" run="2739" success="36.36%"/>
-    <prod-ForClause fail="14" pass="61" run="75" success="81.33%"/>
+    <prod-CastExpr fail="1741" pass="998" run="2739" success="36.44%"/>
+    <prod-ForClause fail="4" pass="71" run="75" success="94.67%"/>
     <prod-GeneralComp.eq fail="6" pass="113" run="119" success="94.96%"/>
     <prod-GeneralComp.ge fail="6" pass="52" run="58" success="89.66%"/>
     <prod-GeneralComp.gt fail="10" pass="57" run="67" success="85.07%"/>
@@ -192,7 +192,7 @@
     <prod-GeneralComp.ne fail="7" pass="82" run="89" success="92.13%"/>
     <prod-IfExpr fail="0" pass="27" run="27" success="100.0%"/>
     <prod-InlineFunctionExpr fail="2" pass="27" run="29" success="93.1%"/>
-    <prod-InstanceofExpr fail="49" pass="224" run="273" success="82.05%"/>
+    <prod-InstanceofExpr fail="36" pass="237" run="273" success="86.81%"/>
     <prod-LetClause fail="1" pass="22" run="23" success="95.65%"/>
     <prod-Literal fail="7" pass="107" run="114" success="93.86%"/>
     <prod-OrExpr fail="10" pass="319" run="329" success="96.96%"/>

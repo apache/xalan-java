@@ -1874,6 +1874,39 @@ public class XPathSequenceTypeSupport {
     	return result;       
     }
     
+    /**
+     * Method definition, to check whether an xdm sequence cardinality
+     * is ok with respect to the supplied XPath sequence type occurrence 
+     * indicator value.
+     * 
+     * @param xdmSeqSize                   An xdm sequence size
+     * @param occrIndicator                An XPath sequence type occurrence 
+     *                                     indicator value.
+     * @return                             Boolean value true or false
+     */
+    public static boolean isXdmSequenceCardinalityOk(int xdmSeqSize, int occrIndicator) {
+    	
+    	boolean result = false;
+
+    	if (xdmSeqSize == 0) {
+    		if ((occrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY) || 
+    				                                     (occrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
+    			result = true;
+    		}
+    	}
+    	else if (xdmSeqSize > 1) {
+    		if ((occrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY) || 
+    				                                     (occrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)) {
+    			result = true;
+    		}
+    	}
+    	else {
+    		result = true;
+    	}
+
+    	return result;
+    }
+    
 	/**
 	 * Method definition, to cast a string value to an expected XDM type.
 	 * 

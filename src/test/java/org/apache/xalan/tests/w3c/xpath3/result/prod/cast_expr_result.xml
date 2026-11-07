@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-05T12:11:11Z" fail="1743" name="prod-CastExpr" pass="996" run="2739" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-07T11:18:09Z" fail="1741" name="prod-CastExpr" pass="998" run="2739" statusUnknown="0">
    <testResult status="pass" testName="casthc1"/>
    <testResult status="pass" testName="casthc2"/>
    <testResult status="pass" testName="casthc3"/>
@@ -111,7 +111,7 @@
    <testResult status="pass" testName="CastAs067"/>
    <testResult status="pass" testName="CastAs068"/>
    <testResult status="pass" testName="CastAs069"/>
-   <testResult status="fail" testName="CastAs070"/>
+   <testResult status="pass" testName="CastAs070"/>
    <testResult status="pass" testName="CastAs071"/>
    <testResult status="pass" testName="CastAs072"/>
    <testResult status="pass" testName="CastAs073"/>
@@ -193,7 +193,7 @@
    <testResult status="pass" testName="CastAs149"/>
    <testResult status="pass" testName="CastAs150"/>
    <testResult status="pass" testName="CastAs151"/>
-   <testResult status="fail" testName="CastAs152"/>
+   <testResult status="pass" testName="CastAs152"/>
    <testResult status="pass" testName="CastAs153"/>
    <testResult status="pass" testName="CastAs154"/>
    <testResult status="pass" testName="CastAs155"/>

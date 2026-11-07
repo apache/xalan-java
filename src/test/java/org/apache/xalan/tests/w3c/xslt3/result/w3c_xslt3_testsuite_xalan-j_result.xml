@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testResult dateTime="2026-11-05T12:14:22Z" desc="W3C XSLT 3.0 test suite results" fail="842" pass="3992" run="4837" skipped="613" success="82.53%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
+<testResult dateTime="2026-11-07T11:21:40Z" desc="W3C XSLT 3.0 test suite results" fail="838" pass="3996" run="4837" skipped="613" success="82.61%" xslt_processor="Apache Xalan-J XSLT 3.0 development code">
   <attr>
-    <as fail="15" pass="90" run="105" skipped="99" success="85.71%"/>
+    <as fail="12" pass="93" run="105" skipped="99" success="88.57%"/>
     <avt fail="0" pass="34" run="34" skipped="1" success="100.0%"/>
     <disable-output-escaping fail="5" pass="22" run="27" skipped="5" success="81.48%"/>
     <expand-text fail="0" pass="59" run="59" skipped="3" success="100.0%"/>
     <match fail="70" pass="112" run="182" skipped="112" success="61.54%"/>
     <mode fail="68" pass="73" run="141" skipped="28" success="51.77%"/>
-    <select fail="17" pass="115" run="132" skipped="26" success="87.12%"/>
+    <select fail="16" pass="116" run="132" skipped="26" success="87.88%"/>
     <tunnel fail="35" pass="23" run="58" skipped="0" success="39.66%"/>
     <xpath-default-namespace fail="2" pass="20" run="22" skipped="4" success="90.91%"/>
   </attr>

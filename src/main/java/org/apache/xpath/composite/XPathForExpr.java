@@ -66,6 +66,20 @@ public class XPathForExpr extends Expression {
     private String m_returnExprXPathStr = null;
     
     /**
+     * Class field, that represent an XPath expression suffix string,
+     * after an XPath 'for' expression. This could possibly be null.
+     * 
+     * For e.g, an XPath expression string,
+     * for $x in 1, $y in 2 return 1, $x
+     * 
+     * is an XPath sequence constructor with following two components,
+     * for $x in 1, $y in 2 return 1
+     * &
+     * $x          where the value for this field shall be string, $x
+     */
+    private String m_xpathExprSuffixStr = null;
+    
+    /**
 	 * This class field is used during, XPath.fixupVariables(..) action 
 	 * as performed within object of this class.  
 	 */   
@@ -85,6 +99,8 @@ public class XPathForExpr extends Expression {
 
     	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
+    	final int sourceNode = xctxt.getCurrentNode();
+    	
     	List<QName> xpathForVarNameList = new ArrayList<QName>();
 
     	try {
@@ -102,12 +118,14 @@ public class XPathForExpr extends Expression {
     		for (int idx = 0; idx < size1; idx++) {
     			XPathForAndQuantifiedExprVarBinding varBinding = (XPathForAndQuantifiedExprVarBinding)(m_forExprVarBindingList.get(idx));
     			
-    			String varName = varBinding.getVarName();
-    			QName qName = new QName(varName);
+    			String varName = varBinding.getVarName();    			
+    			varName = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varName, prefixTable);
     			
-    			m_xpathVarList.add(qName);
+    			QName varQName = new QName(varName, xctxt.getNamespaceContext());
     			
-    			xpathForVarNameList.add(qName);
+    			m_xpathVarList.add(varQName);
+    			
+    			xpathForVarNameList.add(varQName);
     		}
     		
     		if (m_vars != null) {
@@ -117,6 +135,23 @@ public class XPathForExpr extends Expression {
     		ResultSequence resultSeq = getForExpressionEvalResult(m_forExprVarBindingList.listIterator(), 
     																									returnExprXPath, xctxt, prefixTable);       
 
+    		if (m_xpathExprSuffixStr != null) {
+    			if (prefixTable != null) {
+    				m_xpathExprSuffixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathExprSuffixStr, 
+        																													     prefixTable);
+        		}
+
+        		XPath xpathExprSuffix = new XPath(m_xpathExprSuffixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        		
+        		if (m_vars != null) {
+        		   xpathExprSuffix.fixupVariables(m_vars, m_globals_size);
+         		}
+        		
+        		XObject xObj = xpathExprSuffix.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+        		
+        		resultSeq.add(xObj);
+    		}
+    		
     		/**
     		 * An xdm sequence object 'resultSeq', may have items that are themselves sequence
     		 * objects. We need to expand such nested sequence objects, to get a final sequence
@@ -168,6 +203,10 @@ public class XPathForExpr extends Expression {
            String varName = forExprVarBinding.getVarName();
            String varBindingXPathStr = forExprVarBinding.getXPathExprStr();
            
+           varName = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varName, prefixTable); 
+           
+           QName varQName = new QName(varName, xctxt.getNamespaceContext());
+           
            if (prefixTable != null) {
               varBindingXPathStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(
                                                                                             varBindingXPathStr, prefixTable);
@@ -196,8 +235,7 @@ public class XPathForExpr extends Expression {
            }
            
            XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                                 XPath.SELECT, null, xctxt.getFunctionTable());                      
-           QName varQName = new QName(varName);
+                                                                                                 XPath.SELECT, null, xctxt.getFunctionTable());                                 
            m_xpathVarList.add(varQName);
            
            if (m_vars != null) {               
@@ -340,7 +378,7 @@ public class XPathForExpr extends Expression {
            for (int idx = 0; idx < rSeqSize; idx++) {
                XObject xdmItem = resultSeq2.item(idx);
                              
-               forExprVarBindingMap.put(new QName(varName), xdmItem);
+               forExprVarBindingMap.put(varQName, xdmItem);
                
                ResultSequence rSeq = getForExpressionEvalResult(listIter, returnExprXPath, xctxt, prefixTable);
                
@@ -355,7 +393,7 @@ public class XPathForExpr extends Expression {
            }
            
            if (rSeqSize > 0) {
-        	   forExprVarBindingMap.remove(new QName(varName));  
+        	   forExprVarBindingMap.remove(varQName);  
            }
            
            listIter.previous();
@@ -441,5 +479,13 @@ public class XPathForExpr extends Expression {
     public void setReturnExprXPathStr(String returnExprXPathStr) {
     	this.m_returnExprXPathStr = returnExprXPathStr;
     }
+    
+    public String getXPathExprSuffixStr() {
+    	return m_xpathExprSuffixStr;
+    }
+
+	public void setXPathExprSuffixStr(String str1) {
+		this.m_xpathExprSuffixStr = str1;		
+	}
 
 }

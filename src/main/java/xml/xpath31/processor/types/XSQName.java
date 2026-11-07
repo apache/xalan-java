@@ -73,6 +73,7 @@ public class XSQName extends XSCtrType {
         
         if ((xsAnyType instanceof XSString) || (xsAnyType instanceof XSQName)) {
         	XSQName xsQName = parseQName(xsAnyType.stringValue());
+        	
         	if (xsQName != null) {
         	   resultSeq.add(xsQName);
         	}

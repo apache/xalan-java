@@ -117,6 +117,20 @@ public class FuncGenerateId extends FunctionDef1Arg
 				  throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is not an xdm node.", srcLocator);
 			   }
 			}
+			else if (xObj0 instanceof XMLNodeCursorImpl) {
+			   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj0;
+			   
+			   int size1 = xmlNodeCursorImpl.getLength(); 
+			   
+			   if (size1 == 1) {
+			      nodeHandle = (((XMLNodeCursorImpl)xObj0).iter()).nextNode();
+			   }
+			   else if (size1 > 1) {
+				   throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is "
+																	                                            + "an xdm sequence with size "
+																	                                            + "greater than one.", srcLocator);  
+			   }
+			}
 			else if (!(xObj0 instanceof XMLNodeCursorImpl)) {
 				throw new TransformerException("XPTY0004 : An XPath function 'generate-id' first argument is not an xdm node.", srcLocator);
 			}

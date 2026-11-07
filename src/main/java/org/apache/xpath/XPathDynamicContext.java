@@ -93,15 +93,16 @@ public class XPathDynamicContext extends DTMManager {
 	
 	/**
 	 * Class field, that represents XPath dynamic context's 
-	 * implicit timezone. This value is of XML Schema type xs:dayTimeDuration.
+	 * implicit timezone. This value has XML Schema type 
+	 * annotation xs:dayTimeDuration.
 	 */
-	private static XSDuration m_timezone;
+	private XSDuration m_timezone;
 	
 	/**
-	 * This represents the value returned by XPath 3.1 function 
+	 * Class field, that represents value returned by XPath 3.1 function 
 	 * fn:current-dateTime.
 	 */
-	private static GregorianCalendar m_currentDateTime;
+	private GregorianCalendar m_currentDateTime;
 	
 	/**
 	 * We use this java.util.Map object, to store variable binding information 
@@ -147,6 +148,15 @@ public class XPathDynamicContext extends DTMManager {
 	 */
 	protected DTMManager m_dtmManager = DTMManager.newInstance(
 			                                                org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+	
+	/**
+	 * Class constructor.
+	 */
+	public XPathDynamicContext() {
+		setCurrentDateTime();
+		
+		setTimezone();
+	}
 
 	/**
 	 * Get an instance of a DTM, loaded with the content from the
@@ -302,38 +312,6 @@ public class XPathDynamicContext extends DTMManager {
 		return m_dtmManager.getDTMIdentity(dtm);
 	}
 	
-	/**
-	 * Get the value of implicit timezone.
-	 * 
-	 * @return                             Implicit timezone as xs:dayTimeDuration value. 
-	 */
-	public XSDuration getTimezone() {
-		if (m_timezone == null) {
-			ZonedDateTime zonedDateTime = ZonedDateTime.now();
-			ZoneOffset zoneOffset = zonedDateTime.getOffset();
-			String zoneOffsetStr = zoneOffset.toString();
-			String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
-			
-			int zoneHrs = 0;
-			int zoneMinutes = 0;
-			
-			if (zoneOffsetStrParts.length > 1) {
-				zoneHrs = Integer.valueOf(zoneOffsetStrParts[1]).intValue();
-				zoneMinutes = Integer.valueOf(zoneOffsetStrParts[2]).intValue();
-			}
-			
-			boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
-			
-			m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
-		}
-
-		return m_timezone;
-	}
-
-	public void setTimezone(XSDuration timezone) {
-		this.m_timezone = timezone;
-	}
-	
 	public void setPos(int pos) {
 		this.m_pos = pos;
 	}
@@ -374,16 +352,17 @@ public class XPathDynamicContext extends DTMManager {
 		this.m_xpath3ContextSize = xpath3ContextSize;
 	}
 	
-	public GregorianCalendar getCurrentDateTime() {
-		if (m_currentDateTime == null) {
-			m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
-		}
-
+	public GregorianCalendar getCurrentDateTime() {		
 		return m_currentDateTime;
 	}
-
-	public void setCurrentDateTime(GregorianCalendar currentDateTime) {
-		this.m_currentDateTime = currentDateTime;
+	
+	/**
+	 * Get the value of implicit timezone.
+	 * 
+	 * @return                             Implicit timezone as xs:dayTimeDuration value. 
+	 */
+	public XSDuration getTimezone() {		
+		return m_timezone;
 	}
 
 	public Map<QName, XObject> getXPathVarMap() {
@@ -406,4 +385,26 @@ public class XPathDynamicContext extends DTMManager {
 		return m_default_collection;
 	}
 
+	private void setCurrentDateTime() {
+		m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
+	}
+	
+	private void setTimezone() {
+		ZonedDateTime zonedDateTime = ZonedDateTime.now();
+		ZoneOffset zoneOffset = zonedDateTime.getOffset();
+		String zoneOffsetStr = zoneOffset.toString();
+		String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
+
+		int zoneHrs = 0;
+		int zoneMinutes = 0;
+
+		if (zoneOffsetStrParts.length > 1) {
+			zoneHrs = Integer.valueOf(zoneOffsetStrParts[1]).intValue();
+			zoneMinutes = Integer.valueOf(zoneOffsetStrParts[2]).intValue();
+		}
+
+		boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
+
+		m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
+	}
 }

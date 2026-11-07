@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:18Z" fail="15" name="as" pass="90" run="105" skipped="99" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-07T11:20:55Z" fail="12" name="as" pass="93" run="105" skipped="99" statusUnknown="0">
    <testResult status="pass" testName="as-0101"/>
    <testResult status="pass" testName="as-0102"/>
    <testResult status="pass" testName="as-0103"/>
    <testResult status="pass" testName="as-0104"/>
    <testResult status="pass" testName="as-0105"/>
    <testResult status="pass" testName="as-0106"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-0106a"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-0106a"/>
    <testResult status="pass" testName="as-0106b"/>
    <testResult status="pass" testName="as-0107"/>
    <testResult status="pass" testName="as-0108"/>
    <testResult status="pass" testName="as-0109"/>
    <testResult status="pass" testName="as-0110"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-0110a"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-0110a"/>
    <testResult status="pass" testName="as-0110b"/>
    <testResult status="pass" testName="as-0111"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-0111a"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-0111a"/>
    <testResult status="pass" testName="as-0111b"/>
    <testResult status="pass" testName="as-0112"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-0112a"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-0112a"/>
    <testResult status="pass" testName="as-0112b"/>
    <testResult status="pass" testName="as-0113"/>
    <testResult status="pass" testName="as-0114"/>
@@ -59,12 +59,7 @@
    <testResult feature="schema_aware" status="skipped" testName="as-0149"/>
    <testResult feature="schema_aware" status="skipped" testName="as-0150"/>
    <testResult feature="schema_aware" status="skipped" testName="as-0151"/>
-   <testResult status="fail" testName="as-0152">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: XPST0003: Expected ), but found: ,
-javax.xml.transform.TransformerException: XPST0003: Expected ), but found: ,</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="as-0152"/>
    <testResult status="pass" testName="as-0201"/>
    <testResult status="pass" testName="as-0301"/>
    <testResult status="pass" testName="as-0302"/>
@@ -83,7 +78,7 @@ javax.xml.transform.TransformerException: XPST0003: Expected ), but found: ,</er
    <testResult status="pass" testName="as-0703"/>
    <testResult status="pass" testName="as-0801"/>
    <testResult status="fail" testName="as-0801a">
-      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;var1&gt;truetrue&lt;/var1&gt;&lt;var2&gt;truetrue&lt;/var2&gt;&lt;var3&gt;truetrue&lt;/var3&gt;&lt;var4&gt;truetrue&lt;/var4&gt;&lt;var5&gt;truetrue&lt;/var5&gt;&lt;var6&gt;truetrue&lt;/var6&gt;&lt;var7&gt;truetrue&lt;/var7&gt;&lt;var8&gt;truetrue&lt;/var8&gt;&lt;var9&gt;truetrue&lt;/var9&gt;&lt;var10&gt;truetrue&lt;/var10&gt;&lt;var11&gt;truetrue&lt;/var11&gt;&lt;var12&gt;truetrue&lt;/var12&gt;&lt;var13&gt;truetrue&lt;/var13&gt;&lt;var14&gt;truetrue&lt;/var14&gt;&lt;var15&gt;truetrue&lt;/var15&gt;&lt;var16&gt;truetrue&lt;/var16&gt;&lt;var17&gt;truetrue&lt;/var17&gt;&lt;var18&gt;truetrue&lt;/var18&gt;&lt;var19&gt;truetrue&lt;/var19&gt;&lt;var20&gt;truetrue&lt;/var20&gt;&lt;/out&gt;</outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;var1&gt;truefalse&lt;/var1&gt;&lt;var2&gt;truefalse&lt;/var2&gt;&lt;var3&gt;truefalse&lt;/var3&gt;&lt;var4&gt;truefalse&lt;/var4&gt;&lt;var5&gt;truefalse&lt;/var5&gt;&lt;var6&gt;truefalse&lt;/var6&gt;&lt;var7&gt;truefalse&lt;/var7&gt;&lt;var8&gt;truefalse&lt;/var8&gt;&lt;var9&gt;truefalse&lt;/var9&gt;&lt;var10&gt;truefalse&lt;/var10&gt;&lt;var11&gt;truefalse&lt;/var11&gt;&lt;var12&gt;truefalse&lt;/var12&gt;&lt;var13&gt;truefalse&lt;/var13&gt;&lt;var14&gt;truefalse&lt;/var14&gt;&lt;var15&gt;truefalse&lt;/var15&gt;&lt;var16&gt;truefalse&lt;/var16&gt;&lt;var17&gt;truefalse&lt;/var17&gt;&lt;var18&gt;truefalse&lt;/var18&gt;&lt;var19&gt;truefalse&lt;/var19&gt;&lt;var20&gt;truefalse&lt;/var20&gt;&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="as-0801b"/>
    <testResult status="pass" testName="as-0802"/>
@@ -105,7 +100,7 @@ javax.xml.transform.TransformerException: XPST0003: Expected ), but found: ,</er
    <testResult status="pass" testName="as-1207"/>
    <testResult status="pass" testName="as-1208"/>
    <testResult status="pass" testName="as-1209"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-1210"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-1210"/>
    <testResult status="pass" testName="as-1211"/>
    <testResult status="pass" testName="as-1212"/>
    <testResult status="pass" testName="as-1213"/>
@@ -120,13 +115,13 @@ javax.xml.transform.TransformerException: XPST0003: Expected ), but found: ,</er
    <testResult status="pass" testName="as-1222"/>
    <testResult status="fail" testName="as-1301"/>
    <testResult status="pass" testName="as-1302"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-1303"/>
-   <testResult reason="Xalan configured" status="skipped" testName="as-1304"/>
-   <testResult status="fail" testName="as-1401"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-1303"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="as-1304"/>
+   <testResult status="pass" testName="as-1401"/>
    <testResult status="fail" testName="as-1402"/>
    <testResult status="pass" testName="as-1403"/>
    <testResult status="fail" testName="as-1404"/>
-   <testResult status="fail" testName="as-1405"/>
+   <testResult status="pass" testName="as-1405"/>
    <testResult status="fail" testName="as-1501"/>
    <testResult status="fail" testName="as-1601">
       <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;5</outResult>

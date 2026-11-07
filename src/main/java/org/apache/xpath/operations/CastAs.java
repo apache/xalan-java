@@ -609,6 +609,20 @@ public class CastAs extends XPathOperator
 			  result = new XSBoolean(true);
 		  }
 	  }
+	  else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+		  
+		  if ("true".equals(str1) || "1".equals(str1)) {
+			 result = new XSBoolean(true); 
+		  }
+		  else if ("false".equals(str1) || "0".equals(str1)) {
+			 result = new XSBoolean(false); 
+		  }
+		  else {
+			 throw new TransformerException("FORG0001 : The supplied xdm item with string value '" + str1 + "' couldn't be cast "
+			 		                                                                                      + "to XML Schema type boolean."); 
+		  }
+	  }
 
 	  return result;
    }

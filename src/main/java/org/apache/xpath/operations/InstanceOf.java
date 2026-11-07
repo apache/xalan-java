@@ -163,7 +163,7 @@ public class InstanceOf extends XPathOperator
       
       XPathContext xctxt = null;            
       
-      boolean isRawXPathCtxt = false;
+      boolean isXpathCtxtRaw = false;
 	  
       if (XslTransformData.m_stylesheetRoot != null) {
     	  m_stylesheetRoot = XslTransformData.m_stylesheetRoot; 
@@ -176,7 +176,7 @@ public class InstanceOf extends XPathOperator
     	  else {
     		 xctxt = new XPathContext();
       		 
-      		 isRawXPathCtxt = true; 
+      		 isXpathCtxtRaw = true; 
     	  }
       }
       else {
@@ -191,13 +191,13 @@ public class InstanceOf extends XPathOperator
     		  else {
     			  xctxt = new XPathContext();
 
-    			  isRawXPathCtxt = true; 
+    			  isXpathCtxtRaw = true; 
     		  }
      	  }
      	  else {
      		 xctxt = new XPathContext();
      		 
-     		 isRawXPathCtxt = true;
+     		 isXpathCtxtRaw = true;
      	  }  
       }
       
@@ -213,6 +213,69 @@ public class InstanceOf extends XPathOperator
       
       if (left instanceof XNumber) {
     	 left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);  
+      }
+      
+      if (left instanceof ResultSequence) {
+    	 ResultSequence rSeq = (ResultSequence)left;
+    	 
+    	 ResultSequence rSeqNew = new ResultSequence();
+    	 
+    	 int size1 = rSeq.size();    	     	 
+    	 
+    	 for (int idx = 0; idx < size1; idx++) {
+    		XObject xObj = rSeq.item(idx);
+    		
+    		if (xObj instanceof XNumber) {
+    		   xObj = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)xObj);
+    		}
+
+    		rSeqNew.add(xObj);
+    	 }
+    	 
+    	 XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+    	 int occrIndicator = xpathSeqTypeData.getItemTypeOccurrenceIndicator();
+    	 
+         if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.EMPTY_SEQUENCE) {
+        	 result = xdmTypeEmptySequenceCheck(size1);
+        	 
+        	 return result;
+    	 }
+
+    	 boolean isSeqCardinalityOk = XPathSequenceTypeSupport.isXdmSequenceCardinalityOk(size1, occrIndicator);
+    	 
+    	 if (!isSeqCardinalityOk) {
+    		 result = XBoolean.S_FALSE;
+
+    		 return result; 
+    	 }
+    	 
+    	 if (size1 != 1) {    	 
+    	    left = rSeqNew;
+    	 }
+    	 else {
+    		left = rSeqNew.item(0);  
+    	 }
+      }
+      
+      if (left instanceof XMLNodeCursorImpl) {
+    	 int size1 = ((XMLNodeCursorImpl)left).getLength();
+    	 
+    	 XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+    	 int occrIndicator = xpathSeqTypeData.getItemTypeOccurrenceIndicator();
+    	 
+    	 if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.EMPTY_SEQUENCE) {
+    		 result = xdmTypeEmptySequenceCheck(size1);
+    		 
+    		 return result;
+    	 }
+
+    	 boolean isSeqCardinalityOk = XPathSequenceTypeSupport.isXdmSequenceCardinalityOk(size1, occrIndicator);
+    	 
+    	 if (!isSeqCardinalityOk) {
+    		 result = XBoolean.S_FALSE;
+
+    		 return result; 
+    	 }
       }
       
       if (left instanceof XSNumericType) {
@@ -278,7 +341,7 @@ public class InstanceOf extends XPathOperator
     		   XPath xpathObj = null;
     		   XObject xObj = null;
     		   
-    		   if (isRawXPathCtxt) {
+    		   if (isXpathCtxtRaw) {
     		      xpathObj = new XPath(xpathExprStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);
     		      
     		      xObj = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
@@ -297,7 +360,7 @@ public class InstanceOf extends XPathOperator
     		   
     		   funcReturnTypeStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(funcReturnTypeStr, nsPrefixTable);
     		   
-    		   if (isRawXPathCtxt) {
+    		   if (isXpathCtxtRaw) {
      		      xpathObj = new XPath(funcReturnTypeStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);
      		      
      		      xObj = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
@@ -1581,6 +1644,30 @@ public class InstanceOf extends XPathOperator
 	  
 	  return result;
 	  
+  }
+  
+  /**
+   * Method definition, to check whether the supplied
+   * integer value representing an xdm sequence length,
+   * conforms to an xdm empty sequence, or not.
+   * 
+   * @param size1                The supplied xdm sequence
+   *                             size value.
+   * @return                     An xdm item representing boolean
+   *                             value true, or false.
+   */
+  private XObject xdmTypeEmptySequenceCheck(int size1) {
+	  
+	  XObject result = null;
+
+	  if (size1 == 0) {
+		  result = XBoolean.S_TRUE;
+	  }
+	  else {
+		  result = XBoolean.S_FALSE;
+	  }
+
+	  return result;
   }
   
 }

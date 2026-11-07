@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-03T11:44:29Z" fail="17" name="select" pass="115" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-07T11:21:02Z" fail="16" name="select" pass="116" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -56,7 +56,7 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult status="pass" testName="select-2012"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2013"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2014"/>
-   <testResult status="fail" testName="select-2015"/>
+   <testResult status="pass" testName="select-2015"/>
    <testResult status="fail" testName="select-2016"/>
    <testResult status="pass" testName="select-2017"/>
    <testResult status="pass" testName="select-2018"/>
