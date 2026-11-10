@@ -20,12 +20,15 @@ package org.apache.xpath.operations;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.util.HexBin;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.OpCodes;
@@ -36,11 +39,13 @@ import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSBase64Binary;
 import org.apache.xpath.types.XSGDay;
 import org.apache.xpath.types.XSGMonth;
 import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
+import org.apache.xpath.types.XSHexBinary;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSBoolean;
@@ -124,7 +129,7 @@ public class CastAs extends XPathOperator
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC) {
     			  result = castToXsString(left);
@@ -135,118 +140,140 @@ public class CastAs extends XPathOperator
     				  result = new XSUntypedAtomic(str1);
 
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) {
     			  result = castToXsFloat(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE) {
     			  result = castToXsDouble(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) {
     			  result = castToXsDecimal(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
     			  result = castToXsInteger(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  } 
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.BOOLEAN) {
     			  result = castToXsBoolean(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_YEARMONTH_DURATION) {
     			  result = castToXsYearMonthDuration(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DAYTIME_DURATION) {
     			  result = castToXsDaytimeDuration(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DURATION) {
     			  result = castToXsDuration(left);
 
     			  if (result != null) {
     				  return result;
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATETIME) {
     			  result = castToXsDateTime(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_TIME) {
     			  result = castToXsTime(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DATE) {
     			  result = castToXsDate(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR_MONTH) {
     			  result = castToXsGYearMonth(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GYEAR) {
     			  result = castToXsGYear(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH_DAY) {
     			  result = castToXsGMonthDay(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GDAY) {
     			  result = castToXsGDay(left);
 
     			  if (result != null) {
     				  return result; 
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_GMONTH) {
     			  result = castToXsGMonth(left);
 
     			  if (result != null) {
     				  return result; 
+    			  }    			  
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_BASE64BINARY) {
+    			  result = castToBase64Binary(left);
+    			  
+    			  if (result != null) {
+    				 return result;  
+    			  }
+    			  else {
+    				 throw new TransformerException("XPTY0004 : An XPath 3.1 cast is not support from the "
+    				 		                                                                              + "supplied type to schema type 'base64Binary'");
+    			  }
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_HEXBINARY) {
+    			  result = castToHexBinary(left);
+
+    			  if (result != null) {
+    				  return result;  
+    			  }
+    			  else {
+    				  throw new TransformerException("XPTY0004 : An XPath 3.1 cast is not support from the "
+    						                                                                               + "supplied type to schema type 'hexBinary'");
     			  }
     		  }
     	  }
@@ -1430,6 +1457,72 @@ public class CastAs extends XPathOperator
 	   }
 	   
 	   return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:base64Binary value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToBase64Binary(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSBase64Binary) {
+    		result = xObj; 
+    	}
+    	else if (xObj instanceof XSHexBinary) {
+    		java.lang.String str1 = ((XSHexBinary)xObj).stringValue();
+    		byte[] decoded = HexBin.decode(str1);
+
+    		Encoder base64Encoder = Base64.getEncoder();
+    		str1 = base64Encoder.encodeToString(decoded);
+
+    		result = new XSBase64Binary(str1);
+    	}
+    	else if ((xObj instanceof XSUntypedAtomic) || (xObj instanceof XSString) || (xObj instanceof XString)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = new XSBase64Binary(str1);
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xdm value
+     * to an xdm xs:hexBinary value.
+     * 
+     * @param xObj							  The supplied xdm value 
+     *                                        object instance.
+     * @return                                An xdm value that is the 
+     *                                        result for XPath 3.1 cast 
+     *                                        expression.
+     */ 
+    private XObject castToHexBinary(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	if (xObj instanceof XSHexBinary) {
+    		result = xObj; 
+    	}
+    	else if (xObj instanceof XSBase64Binary) {
+    		java.lang.String str1 = ((XSBase64Binary)xObj).stringValue();
+
+    		result = new XSHexBinary(str1);
+    	}
+    	else if ((xObj instanceof XSUntypedAtomic) || (xObj instanceof XSString) || (xObj instanceof XString)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = new XSHexBinary(str1);
+    	}
+
+    	return result;
     }
     
     public boolean getFuncParamResultTypeCheck() {

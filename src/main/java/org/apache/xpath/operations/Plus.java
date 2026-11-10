@@ -59,6 +59,7 @@ import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
@@ -163,6 +164,16 @@ public class Plus extends XPathArithmeticUtil
 		  else if (rSeq.size() == 1) {
 			  right = rSeq.item(0);   
 		  }
+	  }
+	  
+	  if (((left instanceof XSDuration) && !((left instanceof XSYearMonthDuration) || (left instanceof XSDayTimeDuration))) 
+			                            && ((right instanceof XSYearMonthDuration) || (right instanceof XSDayTimeDuration))) {
+		  throw new TransformerException("XPTY0004 : An XML Schema type 'duration' cannot be added with schema subtypes for 'duration'.");
+	  }
+	  
+	  if (((right instanceof XSDuration) && !((right instanceof XSYearMonthDuration) || (right instanceof XSDayTimeDuration))) 
+			                             && ((left instanceof XSYearMonthDuration) || (left instanceof XSDayTimeDuration))) {
+		  throw new TransformerException("XPTY0004 : An XML Schema type 'duration' cannot be added with schema subtypes for 'duration'.");
 	  }
 	  
 	  java.lang.String lNodeStr = null;
@@ -1050,6 +1061,10 @@ public class Plus extends XPathArithmeticUtil
 		  }
 		  else if ((left instanceof XSDayTimeDuration) && (right instanceof XSTime)) {
 			  result = ((XSDayTimeDuration)left).add((XSTime)right);  
+		  }
+		  else if ((left instanceof XSDuration) && (right instanceof XSDuration)) {
+			  //result = ((XSDuration)left).add((XSDuration)right);
+			 // to do
 		  }
 		  else if (left instanceof XSDate) {
 			  result = ((XSDate)left).add(right);  

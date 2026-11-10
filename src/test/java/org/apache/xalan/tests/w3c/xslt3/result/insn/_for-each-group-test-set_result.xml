@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:39Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:59:33Z" fail="3" name="for-each-group" pass="75" run="78" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -25,8 +25,8 @@
    <testResult status="pass" testName="for-each-group-031"/>
    <testResult status="pass" testName="for-each-group-032"/>
    <testResult status="pass" testName="for-each-group-033"/>
-   <testResult reason="Xalan configured" status="skipped" testName="for-each-group-034"/>
-   <testResult reason="Xalan configured" status="skipped" testName="for-each-group-035"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="for-each-group-034"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="for-each-group-035"/>
    <testResult status="pass" testName="for-each-group-036"/>
    <testResult status="pass" testName="for-each-group-037"/>
    <testResult status="pass" testName="for-each-group-038"/>
@@ -49,12 +49,7 @@
    <testResult status="pass" testName="for-each-group-054"/>
    <testResult status="pass" testName="for-each-group-055"/>
    <testResult status="pass" testName="for-each-group-056"/>
-   <testResult status="fail" testName="for-each-group-059">
-      <outResult>
-         <errTrace>Unknown error in XPath.</errTrace>
-         <errTrace>FORG0006 : XPath 3.1 effective boolean value is defined only for xdm items with types boolean, string, number, uri and node.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="for-each-group-059"/>
    <testResult status="fail" testName="for-each-group-060">
       <outResult>
          <errTrace>Unknown error in XPath.</errTrace>
@@ -86,7 +81,7 @@
    <testResult status="pass" testName="for-each-group-081b"/>
    <testResult status="pass" testName="for-each-group-082"/>
    <testResult status="pass" testName="for-each-group-083"/>
-   <testResult reason="Xalan configured" status="skipped" testName="for-each-group-084"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="for-each-group-084"/>
    <testResult status="pass" testName="for-each-group-085"/>
    <testResult status="pass" testName="for-each-group-086"/>
    <testResult status="pass" testName="for-each-group-087"/>

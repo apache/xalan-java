@@ -58,12 +58,15 @@ public class FuncCurrentDate extends Function {
 	 * @throws javax.xml.transform.TransformerException
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-
-		XSDate xsDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());    
 		
-		xsDate.setPopulatedFromFnCurrentDate(true);
+		XObject result = null;
 
-		return xsDate;
+		XSDate xsDate = XSDate.parseDate(xctxt.getCurrentDateStr());    		
+		xsDate.setPopulatedFromFnCurrentDate(true);
+		
+		result = xsDate; 
+
+		return result;
 	}
 
 	/**

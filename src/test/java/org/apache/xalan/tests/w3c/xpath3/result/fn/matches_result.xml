@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:03Z" fail="34" name="fn-matches" pass="128" run="162" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:54:53Z" fail="27" name="fn-matches" pass="135" run="162" statusUnknown="0">
    <testResult status="pass" testName="fn-matches2args-1"/>
    <testResult status="pass" testName="fn-matches2args-2"/>
    <testResult status="pass" testName="fn-matches2args-3"/>
@@ -62,13 +62,13 @@
    <testResult status="pass" testName="fn-matches-52"/>
    <testResult status="pass" testName="fn-matches-53"/>
    <testResult status="fail" testName="fn-matches-54"/>
-   <testResult status="fail" testName="fn-matches-55"/>
-   <testResult status="fail" testName="fn-matches-56"/>
-   <testResult status="fail" testName="fn-matches-57"/>
-   <testResult status="fail" testName="fn-matches-58"/>
-   <testResult status="fail" testName="fn-matches-59"/>
-   <testResult status="fail" testName="fn-matches-60"/>
-   <testResult status="fail" testName="fn-matches-61"/>
+   <testResult status="pass" testName="fn-matches-55"/>
+   <testResult status="pass" testName="fn-matches-56"/>
+   <testResult status="pass" testName="fn-matches-57"/>
+   <testResult status="pass" testName="fn-matches-58"/>
+   <testResult status="pass" testName="fn-matches-59"/>
+   <testResult status="pass" testName="fn-matches-60"/>
+   <testResult status="pass" testName="fn-matches-61"/>
    <testResult status="pass" testName="caselessmatch01"/>
    <testResult status="pass" testName="caselessmatch02"/>
    <testResult status="pass" testName="caselessmatch03"/>

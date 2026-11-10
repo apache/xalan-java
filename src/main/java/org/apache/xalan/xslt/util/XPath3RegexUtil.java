@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * 
  * @xsl.usage general
  */
-public class RegexUtil {
+public class XPath3RegexUtil {
 	
 	/**
 	 * Method definition, to get a list of regex match boundaries
@@ -86,6 +86,26 @@ public class RegexUtil {
 		regexMatcher.reset();
 		
 		return result;
+	}
+	
+	/**
+	 * Method definition, to check whether the supplied string
+	 * value is an XPath function call, string.
+	 * 
+	 * @param str1                      The supplied string value
+	 * @return                          Boolean value true or false
+	 */
+	public static boolean isFuncCallString(String str1) {
+	    
+		boolean result = false;
+		
+		Pattern pattern = Pattern.compile("(.*\\:.*)?(\\w|\\-)+\\(.*\\)");
+		
+		Matcher matcher = pattern.matcher(str1);
+		
+		result = matcher.matches() ;
+	    
+	    return result;
 	}
 
 }

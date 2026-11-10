@@ -86,14 +86,16 @@ public class FuncCurrentGroupingKey extends Function
         TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
         ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();
         
-        Object groupingKeyObj = currElemTemplateElement.getGroupingKey();
+        Object groupingKeyObj = null;        
         
-        while ((groupingKeyObj == null) && (currElemTemplateElement != null)) {            
-           currElemTemplateElement = currElemTemplateElement.getParentElem();
-           
-           if (currElemTemplateElement != null) {
-               groupingKeyObj = currElemTemplateElement.getGroupingKey();
-           }
+        if (currElemTemplateElement != null) {
+        	while ((groupingKeyObj == null) && (currElemTemplateElement != null)) {            
+        		currElemTemplateElement = currElemTemplateElement.getParentElem();
+
+        		if (currElemTemplateElement != null) {
+        			groupingKeyObj = currElemTemplateElement.getGroupingKey();
+        		}
+        	}
         }
         
         if (groupingKeyObj == null) {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:54:57Z" fail="0" name="xs-numeric" pass="19" run="19" skipped="2" statusUnknown="0">
+   <testResult status="pass" testName="xs-numeric-001"/>
+   <testResult status="pass" testName="xs-numeric-002"/>
+   <testResult status="pass" testName="xs-numeric-003"/>
+   <testResult status="pass" testName="xs-numeric-004"/>
+   <testResult status="pass" testName="xs-numeric-005"/>
+   <testResult status="pass" testName="xs-numeric-006"/>
+   <testResult status="pass" testName="xs-numeric-007"/>
+   <testResult status="pass" testName="xs-numeric-008"/>
+   <testResult status="pass" testName="xs-numeric-009"/>
+   <testResult status="pass" testName="xs-numeric-010"/>
+   <testResult status="pass" testName="xs-numeric-011"/>
+   <testResult status="pass" testName="xs-numeric-012"/>
+   <testResult status="pass" testName="xs-numeric-013"/>
+   <testResult status="pass" testName="xs-numeric-014"/>
+   <testResult status="pass" testName="xs-numeric-015"/>
+   <testResult status="pass" testName="xs-numeric-016"/>
+   <testResult status="pass" testName="xs-numeric-017"/>
+   <testResult status="pass" testName="xs-numeric-018"/>
+   <testResult status="pass" testName="xs-numeric-019"/>
+   <testResult reason="schemaValidation" status="skipped" testName="xs-numeric-021"/>
+   <testResult reason="schemaValidation" status="skipped" testName="xs-numeric-022"/>
+</testrun>

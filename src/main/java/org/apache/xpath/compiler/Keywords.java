@@ -881,6 +881,8 @@ public class Keywords
   
   public static final String IS = "is";
   
+  public static final String FUNCTION = "function";
+  
   public static final String EQUAL = "=";
   
   public static final String VC_EQ = "eq";

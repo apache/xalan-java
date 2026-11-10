@@ -451,8 +451,11 @@ public class XSTime extends XSCalendarType {
         			  tzEqual = true;
         		  }
         	  }
-        	  else {
-        		  tz = xctxt.getTimezone();  
+        	  else {        		            		          		          		         		  
+        		  String implicitTzStr = xctxt.getImplicitTimezoneStr();				
+      			  String str1 = XSDuration.getXsDurationStringFromTzString(implicitTzStr);
+      			  
+      			  tz = XSDuration.parseDuration(str1);
         	  }        	         		         		 
 
         	  try {
@@ -534,9 +537,13 @@ public class XSTime extends XSCalendarType {
            result = (XSTime)xsAnyType;
         }        
         else if (xsAnyType instanceof XSDateTime) {
-           XSDateTime xsDateTime = (XSDateTime)xsAnyType;
+           XSDateTime xsDateTime = (XSDateTime)xsAnyType;           
+           String str1 = xsDateTime.stringValue();
            
-           result = new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
+           int idx = str1.indexOf('T');
+           str1 = str1.substring(idx + 1); 
+           
+           result = parseTime(str1);
         }
         else {
            result = parseTime(xsAnyType.stringValue());

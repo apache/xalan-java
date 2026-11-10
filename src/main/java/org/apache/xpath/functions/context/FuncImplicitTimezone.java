@@ -26,6 +26,7 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDuration;
 
 /**
@@ -56,9 +57,15 @@ public class FuncImplicitTimezone extends Function {
 	 */
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 
-		XSDuration timezoneDurationVal = xctxt.getTimezone();
+		XObject result = null;				
 
-		return timezoneDurationVal;
+		String implicitTzStr = xctxt.getImplicitTimezoneStr();		
+		
+		String str1 = XSDuration.getXsDurationStringFromTzString(implicitTzStr); 
+
+		result = XSDayTimeDuration.parseDayTimeDuration(str1);
+
+		return result;
 	}
 
 	/**

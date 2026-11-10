@@ -1466,6 +1466,9 @@ public class W3CXPath3TestsUtil extends XslTransformTestsUtil {
 
 															xpathExpectedObj = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
 														}
+														catch (TransformerException ex) {
+															int ii = 0;
+														}
 														finally {
 															xpathVarMap.remove(new QName(RESULT));
 														}

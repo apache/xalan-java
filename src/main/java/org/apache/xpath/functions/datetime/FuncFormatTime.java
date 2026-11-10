@@ -23,7 +23,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.RegexMatchInfo;
-import org.apache.xalan.xslt.util.RegexUtil;
+import org.apache.xalan.xslt.util.XPath3RegexUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
@@ -164,7 +164,7 @@ public class FuncFormatTime extends FunctionMultiArgs {
 		
 		 String result = null;
 
-		 List<RegexMatchInfo> regexMatchInfoList = RegexUtil.getRegexMatchInfoList("\\[(.*?)\\]", picString);
+		 List<RegexMatchInfo> regexMatchInfoList = XPath3RegexUtil.getRegexMatchInfoList("\\[(.*?)\\]", picString);
 
 		 int hour = xsDateTime.hour();
 		 int min = xsDateTime.minute();

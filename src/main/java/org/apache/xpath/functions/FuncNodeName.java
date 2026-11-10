@@ -61,21 +61,23 @@ public class FuncNodeName extends FunctionDef1Arg {
 	  
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
-	  int nodeHandle = DTM.NULL;
+	  int nextNode = DTM.NULL;
 	  
 	  if (m_arg0 == null) {
 		  XObject xObj = xctxt.getXPath3ContextItem();
+		  
 		  if (xObj != null) {
 			 if (xObj instanceof XMLNodeCursorImpl) {
 				XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-				nodeHandle = xmlNodeCursorImpl.asNode(xctxt);
+				
+				nextNode = (xmlNodeCursorImpl.iter()).nextNode();
 			 }
 			 else {
 				throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's argument is not a node.", srcLocator);
 			 }
 		  }
 		  else {
-			 nodeHandle = xctxt.getCurrentNode(); 
+			 nextNode = xctxt.getCurrentNode(); 
 		  }
 	  }
 	  else {
@@ -84,13 +86,16 @@ public class FuncNodeName extends FunctionDef1Arg {
 			 
 			 if (xObj instanceof XMLNodeCursorImpl) {
 				XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;				
-				nodeHandle = xmlNodeCursorImpl.asNode(xctxt); 
+				
+				nextNode = (xmlNodeCursorImpl.iter()).nextNode(); 
 			 }
 			 else if ((xObj instanceof ResultSequence) && (((ResultSequence)xObj).size() == 1)) {
 				xObj = ((ResultSequence)xObj).item(0);
+				
 				if (xObj instanceof XMLNodeCursorImpl) {
 					XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;				
-					nodeHandle = xmlNodeCursorImpl.asNode(xctxt); 
+					
+					nextNode = (xmlNodeCursorImpl.iter()).nextNode();  
 				}
 				else {
 					throw new TransformerException("XPTY0004 : An XPath 3.1 function node-name's argument is not a node.", srcLocator);
@@ -108,6 +113,7 @@ public class FuncNodeName extends FunctionDef1Arg {
 		  }
 		  catch (TransformerException ex) {
 			 String errMesg = ex.getMessage();
+			 
 			 if (errMesg != null) {
 			    throw new TransformerException("XPTY0004 : " + errMesg, srcLocator);
 			 }
@@ -117,13 +123,21 @@ public class FuncNodeName extends FunctionDef1Arg {
 		  }
 	  }
 	  
-	  if (nodeHandle != DTM.NULL) {
-		  DTM dtm = xctxt.getDTM(nodeHandle);
-		  Node node = dtm.getNode(nodeHandle);
-		  String nodeLocalName = node.getLocalName();
-		  String namespaceUri = node.getNamespaceURI();
-		  String nodeNamePrefix = node.getPrefix();
-		  result = new XSQName(nodeNamePrefix, nodeLocalName, namespaceUri);
+	  if (nextNode != DTM.NULL) {
+		  DTM dtm = xctxt.getDTM(nextNode);
+		  
+		  Node node = dtm.getNode(nextNode);
+		  
+		  String localName = node.getLocalName();
+		  String nsUri = node.getNamespaceURI();
+		  String nsPrefix = node.getPrefix();
+		  
+		  if (!"".equals(localName)) {		  
+		     result = new XSQName(nsPrefix, localName, nsUri);
+		  }
+		  else {
+			 result = new ResultSequence(); 
+		  }
 	  }
 	  else {
 		  result = new ResultSequence();

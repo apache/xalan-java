@@ -59,11 +59,15 @@ public class FuncCurrentDateTime extends Function {
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-    
-	  XSDateTime xsDateTime = new XSDateTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+	  
+	  XObject result = null;
+	  
+	  XSDateTime xsDateTime = XSDateTime.parseDateTime(xctxt.getCurrentDateTimeStr());	  	  
 	  xsDateTime.setPopulatedFromFnCurrentDateTime(true);
+	  
+	  result = xsDateTime; 
 
-	  return xsDateTime;
+	  return result;
   }
 
   /**

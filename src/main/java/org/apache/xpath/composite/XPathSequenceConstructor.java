@@ -156,8 +156,7 @@ public class XPathSequenceConstructor extends Expression {
            String xpathExprStr = m_sequenceConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
-              xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, 
-                                                                                                     prefixTable);
+              xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, prefixTable);
            }
            
            XPath xpathObj = null;
@@ -516,6 +515,9 @@ public class XPathSequenceConstructor extends Expression {
             }
         }
         else if ((m_xpathPrefixStr != null) && (m_xpathSuffixStr != null)) {
+        	m_xpathPrefixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathPrefixStr, prefixTable);
+        	m_xpathSuffixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathSuffixStr, prefixTable);
+        	        	
         	XPath xpathPrefixObj = new XPath(m_xpathPrefixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         	
         	if (m_vars != null) {
@@ -596,7 +598,11 @@ public class XPathSequenceConstructor extends Expression {
         	
         	return result;
         }
-        else if ((Keywords.XPATH_SIMPLE_MAP_OP).equals(m_xpath_op) && (m_xpathSuffixStr != null)) {        	        	
+        else if ((Keywords.XPATH_SIMPLE_MAP_OP).equals(m_xpath_op) && (m_xpathSuffixStr != null)) {
+        	if (prefixTable != null) {
+        	   m_xpathSuffixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathSuffixStr, prefixTable);
+        	}
+        	
         	XPath xpathObj = new XPath(m_xpathSuffixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         	
         	if (m_vars != null) {

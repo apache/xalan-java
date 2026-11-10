@@ -437,15 +437,20 @@ public class XSDate extends XSCalendarType {
         	   // No op	
         	}
         	
-        	XSDuration utcTz = new XSDuration();
+        	XSDuration utcTz = new XSDuration();        	        	
+        	
+            String implicitTzStr = xctxt.getImplicitTimezoneStr();				
+			String str1 = XSDuration.getXsDurationStringFromTzString(implicitTzStr);
+			
+			XSDuration xctxtImplicitTz = XSDuration.parseDuration(str1);
 
         	if (!dtClone1.isDateTimezoned()) {
-        	   dtClone1.setTimezone(xctxt.getTimezone());
+        	   dtClone1.setTimezone(xctxtImplicitTz);
         	   dtClone1.setIsDateTimezoned(true);
         	}
         	
     		if (!dtClone2.isDateTimezoned()) {
-    		   dtClone2.setTimezone(xctxt.getTimezone());
+    		   dtClone2.setTimezone(xctxtImplicitTz);
     		   dtClone2.setIsDateTimezoned(true);
     		}    		    		
         	
@@ -498,13 +503,13 @@ public class XSDate extends XSCalendarType {
         		   result = (XSDayTimeDuration)(XSDayTimeDuration.parseDayTimeDuration(xsDayTimeDurationStr));
         		}
         		else {        			
-        			String str1 = dtClone1.stringValue();
+        			String str2 = dtClone1.stringValue();
                 	
-                	String dateTimeStr1 = getXsDateTimeStrFromXsDateStr(str1);
+                	String dateTimeStr1 = getXsDateTimeStrFromXsDateStr(str2);
                 	XSDateTime xsDateTime1 = XSDateTime.parseDateTime(dateTimeStr1);
 
-                	String str2 = dtClone2.stringValue();
-                	String dateTimeStr2 = getXsDateTimeStrFromXsDateStr(str2);
+                	String str3 = dtClone2.stringValue();
+                	String dateTimeStr2 = getXsDateTimeStrFromXsDateStr(str3);
                 	XSDateTime xsDateTime2 = XSDateTime.parseDateTime(dateTimeStr2);
                 	
                 	result = xsDateTime1.subtract(xsDateTime2);	

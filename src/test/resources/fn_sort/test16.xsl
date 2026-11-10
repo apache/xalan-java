@@ -7,37 +7,20 @@
    <!-- use with test1_g.xml -->
    
    <!-- An XSLT stylesheet to test, XPath 3.1 fn:sort function to sort sequence
-        of XML elements (read from an, XML external document), both in ascending
-        and descending orders. Each XML input node item, represents an XML person
-        element (with sub-element fName as primary sort key, and sub-element lName
-        as secondary sort key).
-        
-        For this stylesheet example, the text data to be sorted, is from an 
-        ASCII English alphabet (with characters codepoint values in range 
-        U+003A to U+007A).
-        
-        Ref : https://en.wikipedia.org/wiki/Basic_Latin_(Unicode_block).
-   -->                            
+        of XML elements (read from an, XML input document), both in ascending
+        and descending orders. Each XML node input item, represents an XML person
+        element (with sub-element fName as sort primary key, and sub-element lName
+        as sort secondary key). -->                            
 
-   <xsl:output method="xml" indent="yes"/>
-   
-   <!-- We use this variable declaration, to help create a sort key for function fn:sort,
-        to sort the data in descending order. This is an unicode codepoint integer
-        value, of the last character of the language alphabet we've chosen (the
-        codepoint hex value of this character is U+007A). -->
-   <xsl:variable name="alphabetLastCodepointValue" select="122"/>
-   
-   <xsl:variable name="fnGetcodepointsForReverseSortKey" select="function($str) { for $idx in (1 to string-length($str)) 
-                                                                                        return ($alphabetLastCodepointValue - string-to-codepoints(substring($str, $idx, 1))) }"/>
+   <xsl:output method="xml" indent="yes"/>      
    
    <xsl:template match="/document">
      <result>
         <sorted1 sortOrder="ascending"><xsl:copy-of select="sort(person, (), function($person) { string($person/fName) || 
                                                                                                         ':' || string($person/lName)  })"/></sorted1>
        
-        <sorted2 sortOrder="descending"><xsl:copy-of select="sort(person, (), function($person) { 
-                                                                                 codepoints-to-string($fnGetcodepointsForReverseSortKey(string($person/fName) || 
-                                                                                                                 ':' || string($person/lName))) })"/></sorted2>
+        <sorted2 sortOrder="descending"><xsl:copy-of select="reverse(sort(person, (), function($person) { string($person/fName) || 
+                                                                                                        ':' || string($person/lName)  }))"/></sorted2>
      </result>
    </xsl:template>
    

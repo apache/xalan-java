@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-25T15:59:34Z" fail="8" name="map-put" pass="9" run="17" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:54:57Z" fail="8" name="map-put" pass="11" run="19" statusUnknown="0">
    <testResult status="pass" testName="map-put-002-hof"/>
    <testResult status="pass" testName="map-put-002"/>
    <testResult status="pass" testName="map-put-003-hof"/>
@@ -7,6 +7,8 @@
    <testResult status="pass" testName="map-put-006"/>
    <testResult status="pass" testName="map-put-007"/>
    <testResult status="fail" testName="map-put-008"/>
+   <testResult status="pass" testName="map-put-010"/>
+   <testResult status="pass" testName="map-put-011"/>
    <testResult status="fail" testName="map-put-012"/>
    <testResult status="fail" testName="map-put-013"/>
    <testResult status="fail" testName="map-put-017"/>

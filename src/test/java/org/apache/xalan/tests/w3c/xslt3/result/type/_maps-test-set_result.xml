@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-19T10:42:53Z" fail="2" name="maps" pass="47" run="49" skipped="1" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:58:37Z" fail="3" name="maps" pass="46" run="49" skipped="1" statusUnknown="0">
    <testResult status="fail" testName="maps-001">
       <outResult>
          <errTrace>XPTY0004 : An index value used with an xdm sequence reference, is not numeric.</errTrace>
@@ -6,10 +6,14 @@
    </testResult>
    <testResult status="fail" testName="maps-002">
       <outResult>
-         <errTrace>XPTY0004 : An index value used with an xdm sequence reference, is not numeric.</errTrace>
+         <errTrace>java.lang.NullPointerException</errTrace>
       </outResult>
    </testResult>
-   <testResult status="pass" testName="maps-003"/>
+   <testResult status="fail" testName="maps-003">
+      <outResult>
+         <errTrace>XTTE0570 : An XSL variable m's evaluation result doesn't match the specified xdm sequence type item().</errTrace>
+      </outResult>
+   </testResult>
    <testResult status="pass" testName="maps-004"/>
    <testResult status="pass" testName="maps-005"/>
    <testResult status="pass" testName="maps-006"/>

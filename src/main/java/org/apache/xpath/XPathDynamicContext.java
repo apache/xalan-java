@@ -36,6 +36,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
+import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDuration;
 
@@ -92,26 +93,37 @@ public class XPathDynamicContext extends DTMManager {
 	private int m_xpath3ContextSize = -1;
 	
 	/**
-	 * Class field, that represents XPath dynamic context's 
-	 * implicit timezone. This value has XML Schema type 
-	 * annotation xs:dayTimeDuration.
+	 * Class field, representing XPath 3.1 function 
+	 * fn:current-dateTime string value. 
 	 */
-	private XSDuration m_timezone;
+	private String m_currentDateTimeStr = null;
 	
 	/**
-	 * Class field, that represents value returned by XPath 3.1 function 
-	 * fn:current-dateTime.
+	 * Class field, representing XPath 3.1 function 
+	 * fn:current-date string value. 
 	 */
-	private GregorianCalendar m_currentDateTime;
+	private String m_currentDateStr = null;
+	
+	/**
+	 * Class field, representing XPath 3.1 function 
+	 * fn:current-time string value. 
+	 */
+	private String m_currentTimeStr = null;
+	
+	/**
+	 * Class field, representing XPath 3.1 function 
+	 * fn:implicit-timezone string value. 
+	 */
+	private String m_implicit_timezone_str = null;
 	
 	/**
 	 * We use this java.util.Map object, to store variable binding information 
-	 * (i.e, mapping from variable name to its value) for implementations of 
-	 * XPath 3.1 'inline function', 'for', 'let' and 'quantified' expressions.
+	 * (i.e, mapping from variable name to its value) for implementations for 
+	 * the XPath 3.1 'inline function', 'for', 'let' & quantified expressions.
 	 * 
-	 * We don't use, Xalan-J xpath variable stack for this purpose.
+	 * We don't use, Xalan-J XPath evaluation variable stack for this purpose.
 	 */
-	private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
+	private Map<QName, XObject> m_xpathVarMap = new HashMap<QName, XObject>();
 	
 	/**
 	 * This data value, represents certain custom data (represented 
@@ -153,9 +165,19 @@ public class XPathDynamicContext extends DTMManager {
 	 * Class constructor.
 	 */
 	public XPathDynamicContext() {
-		setCurrentDateTime();
+		GregorianCalendar grgCalendar1 = getGregorianCalendarXctxtValue();		
 		
-		setTimezone();
+		XSDuration xpathCtxtTz = getTzXsDurationXctxtValue();
+		m_implicit_timezone_str = xpathCtxtTz.getTimezoneAsString();
+		
+		XSDateTime xsDateTime = new XSDateTime(grgCalendar1, xpathCtxtTz);		
+		m_currentDateTimeStr = xsDateTime.stringValue();
+		
+		int idx = m_currentDateTimeStr.indexOf('T');
+		
+		m_currentDateStr = (m_currentDateTimeStr.substring(0, idx) + m_implicit_timezone_str);
+		
+		m_currentTimeStr = m_currentDateTimeStr.substring(idx + 1);
 	}
 
 	/**
@@ -351,26 +373,13 @@ public class XPathDynamicContext extends DTMManager {
 	public void setXPath3ContextSize(int xpath3ContextSize) {
 		this.m_xpath3ContextSize = xpath3ContextSize;
 	}
-	
-	public GregorianCalendar getCurrentDateTime() {		
-		return m_currentDateTime;
-	}
-	
-	/**
-	 * Get the value of implicit timezone.
-	 * 
-	 * @return                             Implicit timezone as xs:dayTimeDuration value. 
-	 */
-	public XSDuration getTimezone() {		
-		return m_timezone;
-	}
 
 	public Map<QName, XObject> getXPathVarMap() {
-		return xpathVarMap;
+		return m_xpathVarMap;
 	}
 
 	public void setXPathVarMap(Map<QName, XObject> xpathVarMap) {
-		this.xpathVarMap = xpathVarMap;
+		this.m_xpathVarMap = xpathVarMap;
 	}
 	
 	public Map<String, String> getCustomDataMap() {
@@ -385,11 +394,65 @@ public class XPathDynamicContext extends DTMManager {
 		return m_default_collection;
 	}
 
-	private void setCurrentDateTime() {
-		m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
+	public String getCurrentDateTimeStr() {
+		return m_currentDateTimeStr;
+	}
+
+	public void setCurrentDateTimeStr(String currentDateTimeStr) {
+		this.m_currentDateTimeStr = currentDateTimeStr;
+	}
+
+	public String getCurrentDateStr() {
+		return m_currentDateStr;
+	}
+
+	public void setCurrentDateStr(String currentDateStr) {
+		this.m_currentDateStr = currentDateStr;
+	}
+
+	public String getCurrentTimeStr() {
+		return m_currentTimeStr;
+	}
+
+	public void setCurrentTimeStr(String currentTimeStr) {
+		this.m_currentTimeStr = currentTimeStr;
+	}
+
+	public String getImplicitTimezoneStr() {
+		return m_implicit_timezone_str;
+	}
+
+	public void setImplicitTimezoneStr(String implicitTimezoneStr) {
+		this.m_implicit_timezone_str = implicitTimezoneStr;
 	}
 	
-	private void setTimezone() {
+	/**
+	 * Method definition, to get java.util.GregorianCalendar object 
+	 * instance.
+	 * 
+	 * @return                           java.util.GregorianCalendar 
+	 *                                   object instance.
+	 */
+	private GregorianCalendar getGregorianCalendarXctxtValue() {		
+		
+		GregorianCalendar result = null;
+		
+		result = new GregorianCalendar(TimeZone.getDefault());
+		
+		return result;
+	}
+	
+	/**
+	 * Get the value of implicit timezone, as an XSDuration 
+	 * object instance.
+	 * 
+	 * @return                             An implicit timezone, as 
+	 *                                     xs:duration value. 
+	 */
+	private XSDuration getTzXsDurationXctxtValue() {		
+		
+		XSDuration result = null;
+		
 		ZonedDateTime zonedDateTime = ZonedDateTime.now();
 		ZoneOffset zoneOffset = zonedDateTime.getOffset();
 		String zoneOffsetStr = zoneOffset.toString();
@@ -404,7 +467,9 @@ public class XPathDynamicContext extends DTMManager {
 		}
 
 		boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
-
-		m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
+		
+		result = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
+		
+		return result;
 	}
 }

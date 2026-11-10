@@ -77,6 +77,20 @@ public class XPathLetExpr extends Expression {
      */
     private String m_returnExprXPathStr = null;
     
+    /**
+     * Class field, that represent an XPath expression suffix string,
+     * after an XPath 'let' expression, which could possibly be null.
+     * 
+     * For e.g, an XPath expression string,
+     * let $x := 5, $y := 20 * $x return $x, $y
+     * 
+     * is an XPath sequence constructor with following two components,
+     * let $x := 5, $y := 20 * $x return $x
+     * &
+     * $y         
+     */
+    private String m_xpathExprSuffixStr = null;
+    
     // Class field, used to resolve variable references
     // within an XPath expression.
     private Vector m_vars;
@@ -106,6 +120,11 @@ public class XPathLetExpr extends Expression {
     	   for (int idx = 0; idx < size1; idx++) {          
     		   XPathLetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
     		   String varName = letExprVarBinding.getVarName();
+    		   
+    		   if (prefixTable != null) {
+    			  varName = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(varName, prefixTable);
+    		   }
+    		   
     		   String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();
     		   
     		   varResultXPathExprStr = StringUtil.xmlNsSeparatorWhitespaceNormalization(varResultXPathExprStr);
@@ -215,12 +234,15 @@ public class XPathLetExpr extends Expression {
     			   }
     			   else if (xpathNamedFuncRef.getXslStylesheetFunction() != null) {
     				   ElemFunction elemFunction = xpathNamedFuncRef.getXslStylesheetFunction();
+    				   
     				   varBindingEvalResult = new XObject(elemFunction);
+    				   
     				   varBindingEvalResult.setXslStylesheetRoot(xpathNamedFuncRef.getXslStylesheetRoot());
     			   }
     			   else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {
     				   XSL3ConstructorOrExtensionFunction funcObj = new XSL3ConstructorOrExtensionFunction(funcNamespace, funcLocalName, null);
     				   funcObj.setArity(new Short[] { funcArity });
+    				   
     				   varBindingEvalResult = new XObject(funcObj);        		  
     			   }
     			   else {
@@ -238,12 +260,12 @@ public class XPathLetExpr extends Expression {
     			   throw new TransformerException("FODC0005 : An XPath 3.1 'let' expression variable binding value doesn't exist.", srcLocator); 
     		   }
 
-    		   QName qNameVar = new QName(varName);
+    		   QName qNameVar = new QName(varName, xctxt.getNamespaceContext());
     		   
     		   m_xpathVarList.add(qNameVar);    		   
     		   qNameVarList.add(qNameVar);
 
-    		   xpathVarMap.put(new QName(varName), varBindingEvalResult);
+    		   xpathVarMap.put(qNameVar, varBindingEvalResult);
     	   }              
 
     	   if (prefixTable != null) {
@@ -327,6 +349,27 @@ public class XPathLetExpr extends Expression {
     		  m_xpathVarList.remove(qName);
     		  xpathVarMap.remove(qName);
     	   }
+       }
+       
+       if (m_xpathExprSuffixStr != null) {
+    	   if (prefixTable != null) {
+    		   m_xpathExprSuffixStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_xpathExprSuffixStr, 
+    				   																								        prefixTable);
+    	   }
+
+    	   XPath xpathExprSuffix = new XPath(m_xpathExprSuffixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    	   if (m_vars != null) {
+    		   xpathExprSuffix.fixupVariables(m_vars, m_globals_size);
+    	   }
+
+    	   XObject xObj = xpathExprSuffix.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    	   
+    	   ResultSequence rSeq = new ResultSequence();
+    	   rSeq.add(evalResult);
+    	   rSeq.add(xObj);
+    	   
+    	   return rSeq;
        }
         
        return evalResult;       
@@ -429,5 +472,13 @@ public class XPathLetExpr extends Expression {
     		}
     	}
     }
+
+    public String getXPathExprSuffixStr() {
+    	return m_xpathExprSuffixStr;
+    }
+
+	public void setXPathExprSuffixStr(String str1) {
+		this.m_xpathExprSuffixStr = str1;		
+	}
 
 }

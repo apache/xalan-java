@@ -97,8 +97,12 @@ public class FuncAdjustDateToTimezone extends FunctionMultiArgs {
 		boolean isFnTimeZoneArgEmptySeq = false;
 		
 		if (m_arg1 == null) {
-			// Get the value of implicit timezone, from XPath context
-			arg1Timezone = xctxt.getTimezone();
+			// Get the value of implicit timezone, from XPath context						
+			
+            String implicitTzStr = xctxt.getImplicitTimezoneStr();				
+			String str1 = XSDuration.getXsDurationStringFromTzString(implicitTzStr);
+			
+			arg1Timezone = XSDuration.parseDuration(str1);
 		}
 		else {
 			XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);

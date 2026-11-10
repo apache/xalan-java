@@ -536,6 +536,42 @@ public class XSDuration extends XSCtrType {
     	return result;
     }
     
+    public static String getXsDurationStringFromTzString(String str) {
+    	
+    	String result = null;
+
+		int hours = 0;
+		int mins = 0;
+		
+		if (str.equals("Z")) {
+			result = "PT0S";
+		}
+		else if (str.startsWith("+")) {
+			result = "PT";				
+			
+			String str1 = str.substring(1);
+			
+			String[] strArr = str1.split(":");
+			hours = Integer.valueOf(strArr[0]);
+			mins = Integer.valueOf(strArr[1]);
+			
+			result = (result + hours + "H" + mins + "M"); 
+		}
+		else if (str.startsWith("-")) {
+			result = "-PT";
+			
+            String str1 = str.substring(1);
+			
+			String[] strArr = str1.split(":");
+			hours = Integer.valueOf(strArr[0]);
+			mins = Integer.valueOf(strArr[1]);
+			
+			result = (result + hours + "H" + mins + "M");
+		}
+		
+		return result; 
+    }
+    
     /**
      * Do a data type cast, of a XSAnyType value to an XSDuration
      * value.

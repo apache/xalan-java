@@ -75,7 +75,7 @@ public class XPathForExpr extends Expression {
      * is an XPath sequence constructor with following two components,
      * for $x in 1, $y in 2 return 1
      * &
-     * $x          where the value for this field shall be string, $x
+     * $x
      */
     private String m_xpathExprSuffixStr = null;
     

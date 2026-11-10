@@ -24,7 +24,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.RegexMatchInfo;
-import org.apache.xalan.xslt.util.RegexUtil;
+import org.apache.xalan.xslt.util.XPath3RegexUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -416,7 +416,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     		   throw new javax.xml.transform.TransformerException(errMesg, srcLocator);
        	   }    	   
     	   
-    	   List<RegexMatchInfo> regexMatchInfoList = RegexUtil.getRegexMatchInfoList(regexMatcher);
+    	   List<RegexMatchInfo> regexMatchInfoList = XPath3RegexUtil.getRegexMatchInfoList(regexMatcher);
     	   
     	   ElemMatchingSubstring matchingXslElem = null;
 		   if ((templateElem1 != null) && (templateElem1 instanceof ElemMatchingSubstring)) {

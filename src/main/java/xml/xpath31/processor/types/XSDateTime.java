@@ -965,8 +965,13 @@ public class XSDateTime extends XSCalendarType {
         		   tzEqual = true;
         		}
         	 }
-        	 else {
-        		tz = xctxt.getTimezone();  
+        	 else {        		
+        		String implicitTzStr = xctxt.getImplicitTimezoneStr();				
+    			String str1 = XSDuration.getXsDurationStringFromTzString(implicitTzStr);
+    			
+    			XSDuration xctxtImplicitTz = XSDuration.parseDuration(str1);
+    			
+    			tz = xctxtImplicitTz; 
         	 }        	         		         		 
 
         	 try {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-07T11:18:09Z" fail="1741" name="prod-CastExpr" pass="998" run="2739" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:55:09Z" fail="1735" name="prod-CastExpr" pass="1004" run="2739" statusUnknown="0">
    <testResult status="pass" testName="casthc1"/>
    <testResult status="pass" testName="casthc2"/>
    <testResult status="pass" testName="casthc3"/>
@@ -117,8 +117,8 @@
    <testResult status="pass" testName="CastAs073"/>
    <testResult status="pass" testName="CastAs074"/>
    <testResult status="pass" testName="CastAs075"/>
-   <testResult status="fail" testName="CastAs076"/>
-   <testResult status="fail" testName="CastAs077"/>
+   <testResult status="pass" testName="CastAs076"/>
+   <testResult status="pass" testName="CastAs077"/>
    <testResult status="pass" testName="CastAs078"/>
    <testResult status="pass" testName="CastAs079"/>
    <testResult status="pass" testName="CastAs080"/>
@@ -199,8 +199,8 @@
    <testResult status="pass" testName="CastAs155"/>
    <testResult status="pass" testName="CastAs156"/>
    <testResult status="pass" testName="CastAs157"/>
-   <testResult status="fail" testName="CastAs158"/>
-   <testResult status="fail" testName="CastAs159"/>
+   <testResult status="pass" testName="CastAs158"/>
+   <testResult status="pass" testName="CastAs159"/>
    <testResult status="pass" testName="CastAs160"/>
    <testResult status="pass" testName="CastAs161"/>
    <testResult status="pass" testName="CastAs162"/>
@@ -662,8 +662,8 @@
    <testResult status="fail" testName="CastAs618"/>
    <testResult status="fail" testName="CastAs619"/>
    <testResult status="fail" testName="CastAs620"/>
-   <testResult status="fail" testName="CastAs621"/>
-   <testResult status="fail" testName="CastAs622"/>
+   <testResult status="pass" testName="CastAs621"/>
+   <testResult status="pass" testName="CastAs622"/>
    <testResult status="pass" testName="CastAs623"/>
    <testResult status="pass" testName="CastAs624"/>
    <testResult status="fail" testName="CastAs625"/>
