@@ -36,6 +36,7 @@ import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
+import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -46,8 +47,10 @@ import org.apache.xpath.types.XSGMonthDay;
 import org.apache.xpath.types.XSGYear;
 import org.apache.xpath.types.XSGYearMonth;
 import org.apache.xpath.types.XSHexBinary;
+import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -130,6 +133,13 @@ public class CastAs extends XPathOperator
     			  if (result != null) {
     				  return result; 
     			  }    			  
+    		  }
+    		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_ANY_URI) {    			      			  
+    			  result = castToXsAnyURI(left);
+    			  
+    			  if (result != null) {
+    				  return result;
+    			  }
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC) {
     			  result = castToXsString(left);
@@ -255,26 +265,18 @@ public class CastAs extends XPathOperator
     			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_BASE64BINARY) {
-    			  result = castToBase64Binary(left);
+    			  result = castToXsBase64Binary(left);
     			  
     			  if (result != null) {
     				 return result;  
-    			  }
-    			  else {
-    				 throw new TransformerException("XPTY0004 : An XPath 3.1 cast is not support from the "
-    				 		                                                                              + "supplied type to schema type 'base64Binary'");
-    			  }
+    			  }    			  
     		  }
     		  else if (seqTypedData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_HEXBINARY) {
-    			  result = castToHexBinary(left);
+    			  result = castToXsHexBinary(left);
 
     			  if (result != null) {
     				  return result;  
-    			  }
-    			  else {
-    				  throw new TransformerException("XPTY0004 : An XPath 3.1 cast is not support from the "
-    						                                                                               + "supplied type to schema type 'hexBinary'");
-    			  }
+    			  }    			  
     		  }
     	  }
     	  catch (TransformerException ex) {
@@ -290,6 +292,11 @@ public class CastAs extends XPathOperator
     		  }
     		  
     		  throw new TransformerException("FORG0001 : The supplied value '" + str1 + "' couldn't be cast, to the specified type" + dataTypeName + ".");  
+    	  }
+    	  catch (SAXException ex) {
+    		  java.lang.String errMesg = ex.getMessage();
+    		  
+    		  throw new TransformerException(errMesg);
     	  }
       }
       
@@ -373,23 +380,23 @@ public class CastAs extends XPathOperator
    * @return                                An xdm value that is the 
    *                                        result for XPath 3.1 cast 
    *                                        expression.
-   * @throws TransformerException
+   * @throws TransformerException, SAXException
    */
-  private XObject castToXsDecimal(XObject left) throws TransformerException {
+  private XObject castToXsDecimal(XObject xObj) throws TransformerException, SAXException {
 	
 	  XObject result = null;
 
-	  if (left instanceof XSDecimal) {
-		  result = left;  
+	  if (xObj instanceof XSDecimal) {
+		  result = xObj;  
 	  }
-	  else if (left instanceof XSInteger) {
-		  XSInteger xsInteger = (XSInteger)left;
+	  else if (xObj instanceof XSInteger) {
+		  XSInteger xsInteger = (XSInteger)xObj;
 		  BigInteger bigInt1 = xsInteger.intValue();
 
 		  result = new XSDecimal(new BigDecimal(bigInt1)); 
 	  }
-	  else if (left instanceof XSFloat) {
-		  XSFloat xsFloat = (XSFloat)left;
+	  else if (xObj instanceof XSFloat) {
+		  XSFloat xsFloat = (XSFloat)xObj;
 
 		  if (!(xsFloat.nan() || xsFloat.infinite())) {
 			  try {
@@ -405,8 +412,8 @@ public class CastAs extends XPathOperator
 					                                                                                         + "cast to an xdm type 'decimal'."); 
 		  }
 	  }
-	  else if (left instanceof XSDouble) {
-		  XSDouble xsDouble = (XSDouble)left;
+	  else if (xObj instanceof XSDouble) {
+		  XSDouble xsDouble = (XSDouble)xObj;
 
 		  if (!(xsDouble.nan() || xsDouble.infinite())) {
 			  try {
@@ -422,13 +429,13 @@ public class CastAs extends XPathOperator
 					                                                                                           + "cast to an xdm type 'decimal'."); 
 		  }
 	  }
-	  else if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
-		  boolean value1 = left.bool();
+	  else if ((xObj instanceof XSBoolean) || (xObj instanceof XBoolean) || (xObj instanceof XBooleanStatic)) {
+		  boolean value1 = xObj.bool();
 
 		  result = value1 ? new XSDecimal("1.0") : new XSDecimal("0.0");
 	  }
-	  else if ((left instanceof XSString) || (left instanceof XString) || (left instanceof XSUntypedAtomic)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+	  else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 		  
 		  if (str1.contains("E") || str1.contains("e")) {
 			 throw new TransformerException("FORG0001 : The supplied xdm string value '" + str1 + "' could'nt be "
@@ -443,6 +450,25 @@ public class CastAs extends XPathOperator
 					                                                                             + "cast to an xdm type 'decimal'."); 
 		  }
 	  }
+	  else if (xObj instanceof XMLNodeCursorImpl) {
+		  java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+		  
+		  if (str1.contains("E") || str1.contains("e")) {
+			  throw new TransformerException("FORG0001 : The supplied xdm string value '" + str1 + "' could'nt be "
+					                                                                             + "cast to an xdm type 'decimal'.");
+		  }
+
+		  try {
+			  result = new XSDecimal(str1);
+		  }
+		  catch (Exception ex) {
+			  throw new TransformerException("FORG0001 : The supplied xdm string value '" + str1 + "' could'nt be "
+					                                                                             + "cast to an xdm type 'decimal'."); 
+		  }
+	  }
+	  else {
+  	      throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'decimal'.");	
+  	  }
 
 	  return result;
   }
@@ -456,17 +482,17 @@ public class CastAs extends XPathOperator
    * @return                                An xdm value that is the 
    *                                        result for XPath 3.1 cast 
    *                                        expression.
-   * @throws TransformerException
+   * @throws TransformerException, SAXException
    */
-  private XObject castToXsInteger(XObject left) throws TransformerException {
+  private XObject castToXsInteger(XObject xObj) throws TransformerException, SAXException {
 	  
 	  XObject result = null;
 
-	  if (left instanceof XSInteger) {
-		  result = left; 
+	  if (xObj instanceof XSInteger) {
+		  result = xObj; 
 	  }
-	  else if (left instanceof XSDecimal) {
-		  XSDecimal xsDecimal = (XSDecimal)left;    		 
+	  else if (xObj instanceof XSDecimal) {
+		  XSDecimal xsDecimal = (XSDecimal)xObj;    		 
 		  BigDecimal bigdecimal = xsDecimal.getValue();
 
 		  BigDecimal bigDecimal1 = null;
@@ -483,8 +509,8 @@ public class CastAs extends XPathOperator
 
 		  result = new XSInteger(bigDecimal1.toBigInteger());
 	  }
-	  else if ((left instanceof XSFloat) || (left instanceof XSDouble)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+	  else if ((xObj instanceof XSFloat) || (xObj instanceof XSDouble)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 
 		  if (!("NaN".equals(str1) || "INF".equals(str1) || "-INF".equals(str1))) {
 			  int idx = str1.indexOf('.');
@@ -506,33 +532,38 @@ public class CastAs extends XPathOperator
 				  double dbl = 0.0;
 
 				  if (longValue1 > 0) {
-					  dbl = Math.floor(longValue1); 
+					  dbl = Math.floor(longValue1);
+					  
+					  result = new XSInteger(dbl + "");
+				  }
+				  else if (longValue1 < 0) {
+					  dbl = Math.ceil(longValue1);
+					  
+					  result = new XSInteger(dbl + "");
 				  }
 				  else {
-					  dbl = Math.ceil(longValue1);
+				      result = new XSInteger("0");
 				  }
-
-				  result = new XSInteger(dbl + "");
 			  }
 			  else {
 				  result = new XSInteger(str1);
 			  }
 		  }
 		  else {
-			  throw new TransformerException("FOCA0002 : An xdm float/double value '" + str1 + "' could'nt be cast "
-					                                                                         + "to, an XML Schema type 'integer'"); 
+			  throw new SAXException("FOCA0002 : An xdm float/double value '" + str1 + "' could'nt be cast "
+					                                                                 + "to, an XML Schema type 'integer'"); 
 		  }
 	  }
-	  else if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
-		  if (left.bool()) {
+	  else if ((xObj instanceof XSBoolean) || (xObj instanceof XBoolean) || (xObj instanceof XBooleanStatic)) {
+		  if (xObj.bool()) {
 			  result = new XSInteger("1"); 
 		  }
 		  else {
 			  result = new XSInteger("0");
 		  }
 	  }
-	  else if ((left instanceof XSString) || (left instanceof XSUntypedAtomic)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+	  else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 
 		  try {
 			  result = new XSInteger(str1); 
@@ -542,6 +573,20 @@ public class CastAs extends XPathOperator
 					                                                                                 + "to, an XML Schema type 'integer'"); 
 		  }
 	  }
+	  else if (xObj instanceof XMLNodeCursorImpl) {
+		  java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+		  
+		  try {
+			  result = new XSInteger(str1); 
+		  }
+		  catch (Exception ex) {
+			  throw new TransformerException("FOCA0002 : An xdm node string value '" + str1 + "' could'nt be cast "
+					                                                                        + "to, an XML Schema type 'integer'"); 
+		  }
+	  }
+	  else {
+  	      throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'integer'.");	
+  	  }
 
 	  return result;
   }
@@ -585,9 +630,9 @@ public class CastAs extends XPathOperator
    * @return                                An xdm value that is the 
    *                                        result for XPath 3.1 cast 
    *                                        expression.
-   * @throws TransformerException
+   * @throws TransformerException, SAXException
    */
-   private XObject castToXsBoolean(XObject xObj) throws TransformerException {
+   private XObject castToXsBoolean(XObject xObj) throws TransformerException, SAXException {
 
 	  XObject result = null;
 
@@ -650,6 +695,25 @@ public class CastAs extends XPathOperator
 			 		                                                                                      + "to XML Schema type boolean."); 
 		  }
 	  }
+	  else if (xObj instanceof XMLNodeCursorImpl) {
+		  java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+		  
+		  if ("true".equals(str1) || "1".equals(str1)) {
+			 result = new XSBoolean(true); 
+		  }
+		  else if ("false".equals(str1) || "0".equals(str1)) {
+			 result = new XSBoolean(false); 
+		  }
+		  else {
+			 throw new TransformerException("FORG0001 : The supplied xdm item with string value '" + str1 + "' couldn't be cast "
+                                                                                                          + "to XML Schema type boolean."); 
+		  }
+		  
+		  return result;
+	  }
+	  else {
+  	      throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'boolean'.");	
+  	  }
 
 	  return result;
    }
@@ -720,9 +784,49 @@ public class CastAs extends XPathOperator
 	   else if ((xObj instanceof XBoolean) || (xObj instanceof XBooleanStatic)) {
 		   result = new XSString(xObj.str());
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+		   
+		   result = new XSString(str1);
+	   }
 
 	   return result; 
 	}
+   
+   /**
+    * Method definition, to cast the supplied xdm value
+    * to an xdm xs:anyURI value.
+    * 
+    * @param xObj							 The supplied xdm value 
+    *                                        object instance.
+    * @return                                An xdm value that is the 
+    *                                        result for XPath 3.1 cast 
+    *                                        expression.
+    * @throws TransformerException, SAXException                                        
+    */
+    private XObject castToXsAnyURI(XObject xObj) throws TransformerException, SAXException {
+	   
+    	XObject result = null;
+
+    	if (xObj instanceof XSAnyURI) {
+    		result = xObj; 
+    	}
+    	else if ((xObj instanceof XSUntypedAtomic) || (xObj instanceof XSString) || (xObj instanceof XString)) {
+    		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    		result = new XSAnyURI(str1);
+    	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+  		    java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+  		  
+  		    result = new XSAnyURI(str1); 
+  	    }
+    	else {
+    		throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'anyURI'."); 
+    	}
+
+    	return result;
+    }
    
    /**
     * Method definition, to cast the supplied xdm value
@@ -733,16 +837,17 @@ public class CastAs extends XPathOperator
     * @return                                An xdm value that is the 
     *                                        result for XPath 3.1 cast 
     *                                        expression.
+    * @throws TransformerException, SAXException                                        
     */
-   private XObject castToXsFloat(XObject left) throws TransformerException {
+   private XObject castToXsFloat(XObject xObj) throws TransformerException, SAXException {
 
 	   XObject result = null;
 
-	   if (left instanceof XSFloat) {
-		   result = left; 
+	   if (xObj instanceof XSFloat) {
+		   result = xObj; 
 	   }
-	   else if (left instanceof XSDouble) {
-		   XSDouble xsDouble = (XSDouble)left;
+	   else if (xObj instanceof XSDouble) {
+		   XSDouble xsDouble = (XSDouble)xObj;
 		   Double dbl = (Double)(xsDouble.doubleValue());
 
 		   if (dbl == Double.POSITIVE_INFINITY) {
@@ -766,22 +871,30 @@ public class CastAs extends XPathOperator
 			   result = new XSFloat(val1);
 		   }
 	   }
-	   else if ((left instanceof XSInteger) || (left instanceof XSDecimal)) {
-		   XObject xObj = castToXsString(left);
+	   else if ((xObj instanceof XSInteger) || (xObj instanceof XSDecimal)) {
+		   XObject xObj1 = castToXsString(xObj);
 
-		   result = new XSFloat(((XSString)xObj).stringValue());
+		   result = new XSFloat(((XSString)xObj1).stringValue());
 	   }
-	   else if ((left instanceof XSBoolean) || (left instanceof XBoolean) 
-			                                || (left instanceof XBooleanStatic)) {
-		   boolean value1 = left.bool();
+	   else if ((xObj instanceof XSBoolean) || (xObj instanceof XBoolean) 
+			                                || (xObj instanceof XBooleanStatic)) {
+		   boolean value1 = xObj.bool();
 
 		   result = value1 ? new XSFloat(1.0E0f) : new XSFloat(0.0E0f);
 	   }
-	   else if ((left instanceof XSString) || (left instanceof XString) || (left instanceof XSUntypedAtomic)) {
-		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 
 		   result = new XSFloat(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSFloat(str1);
+	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'float'.");	
+   	   }
 	   
 	   return result;
     }
@@ -795,16 +908,17 @@ public class CastAs extends XPathOperator
     * @return                                An xdm value that is the 
     *                                        result for XPath 3.1 cast 
     *                                        expression.
+    * @throws TransformerException, SAXException                                        
     */
-   private XObject castToXsDouble(XObject left) throws TransformerException {
+   private XObject castToXsDouble(XObject xObj) throws TransformerException, SAXException {
 
 	   XObject result = null;
 
-	   if (left instanceof XSDouble) {
-		   result = left; 
+	   if (xObj instanceof XSDouble) {
+		   result = xObj; 
 	   }
-	   else if (left instanceof XSFloat) {
-		   XSFloat xsFloat = (XSFloat)left;
+	   else if (xObj instanceof XSFloat) {
+		   XSFloat xsFloat = (XSFloat)xObj;
 		   Float flt = (Float)(xsFloat.floatValue());
 
 		   if (flt == Float.POSITIVE_INFINITY) {
@@ -828,22 +942,30 @@ public class CastAs extends XPathOperator
 			   result = new XSDouble(val1);
 		   }
 	   }
-	   else if ((left instanceof XSInteger) || (left instanceof XSDecimal)) {
-		   XObject xObj = castToXsString(left);
+	   else if ((xObj instanceof XSInteger) || (xObj instanceof XSDecimal)) {
+		   XObject xObj1 = castToXsString(xObj);
 
-		   result = new XSDouble(((XSString)xObj).stringValue());
+		   result = new XSDouble(((XSString)xObj1).stringValue());
 	   }
-	   else if ((left instanceof XSBoolean) || (left instanceof XBoolean) 
-			   || (left instanceof XBooleanStatic)) {
-		   boolean value1 = left.bool();
+	   else if ((xObj instanceof XSBoolean) || (xObj instanceof XBoolean) 
+			                                || (xObj instanceof XBooleanStatic)) {
+		   boolean value1 = xObj.bool();
 
 		   result = value1 ? new XSDouble(1.0E0f) : new XSDouble(0.0E0f);
 	   }
-	   else if ((left instanceof XSString) || (left instanceof XString) || (left instanceof XSUntypedAtomic)) {
-		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+	   else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
+		   java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 
 		   result = new XSDouble(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSDouble(str1);
+	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'double'.");	
+   	   }
 
 	   return result;
     }
@@ -857,8 +979,9 @@ public class CastAs extends XPathOperator
     * @return                                An xdm value that is the 
     *                                        result for XPath 3.1 cast 
     *                                        expression.
+    * @throws TransformerException, SAXException
     */
-    private XObject castToXsYearMonthDuration(XObject xObj) throws TransformerException {
+    private XObject castToXsYearMonthDuration(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
@@ -876,6 +999,14 @@ public class CastAs extends XPathOperator
 
     		result = (XSYearMonthDuration)(XSYearMonthDuration.parseYearMonthDuration(str1));
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+ 		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+ 		   result = (XSYearMonthDuration)(XSYearMonthDuration.parseYearMonthDuration(str1));
+ 	    }
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'yearMonthDuration'.");	
+    	}
 
     	return result;
 	}
@@ -889,8 +1020,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */
-    private XObject castToXsDaytimeDuration(XObject xObj) throws TransformerException {
+    private XObject castToXsDaytimeDuration(XObject xObj) throws TransformerException, SAXException {
   	  
     	XObject result = null;
 
@@ -908,6 +1040,14 @@ public class CastAs extends XPathOperator
 
     		result = (XSDayTimeDuration)(XSDayTimeDuration.parseDayTimeDuration(str1));
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+  		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+  		   result = (XSDayTimeDuration)(XSDayTimeDuration.parseDayTimeDuration(str1));
+  	    }
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'dayTimeDuration'.");	
+    	}
 
     	return result;
     }
@@ -921,8 +1061,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */
-    private XObject castToXsDuration(XObject xObj) throws TransformerException {
+    private XObject castToXsDuration(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
@@ -939,10 +1080,21 @@ public class CastAs extends XPathOperator
 																			    				xsDayTimeDuration.seconds(), 
 																			    				xsDayTimeDuration.negative());  
     	}
+    	else if (xObj instanceof XSDuration) {
+    		result = xObj;
+    	}
     	else if ((xObj instanceof XSString) || (xObj instanceof XString) || (xObj instanceof XSUntypedAtomic)) {
     		java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
 
     		result = XSDuration.parseDuration(str1); 
+    	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+   		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+   		   result = XSDuration.parseDuration(str1); 
+   	    }
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'duration'.");	
     	}
 
     	return result;
@@ -957,8 +1109,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */
-    private XObject castToXsDateTime(XObject xObj) throws TransformerException {
+    private XObject castToXsDateTime(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
@@ -973,6 +1126,14 @@ public class CastAs extends XPathOperator
 
     		result = XSDateTime.parseDateTime(str1);
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+    		java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+    		result = XSDateTime.parseDateTime(str1); 
+    	}
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'dateTime'.");	
+    	}
 
     	return result;
     }
@@ -986,8 +1147,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */
-    private XObject castToXsTime(XObject xObj) throws TransformerException {
+    private XObject castToXsTime(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
@@ -1004,6 +1166,14 @@ public class CastAs extends XPathOperator
 
     		result = XSTime.parseTime(str1);
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+    		java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+    		result = XSTime.parseTime(str1);
+    	}
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'time'.");	
+    	}
 
     	return result;
     }
@@ -1017,8 +1187,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */
-    private XObject castToXsDate(XObject xObj) throws TransformerException {
+    private XObject castToXsDate(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
@@ -1035,6 +1206,14 @@ public class CastAs extends XPathOperator
 
     		result = XSDate.parseDate(str1);
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+    		java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+    		result = XSDate.parseDate(str1);
+    	}
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'date'.");	
+    	}
 
     	return result;
     }
@@ -1048,8 +1227,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */ 
-    private XObject castToXsGYearMonth(XObject xObj) throws TransformerException {
+    private XObject castToXsGYearMonth(XObject xObj) throws TransformerException, SAXException {
     	
 	   XObject result = null;
 
@@ -1137,6 +1317,14 @@ public class CastAs extends XPathOperator
 		   
 		   result = new XSGYearMonth(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSGYearMonth(str1);
+   	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'gYearMonth'.");	
+       }
 
 	   return result;
     }
@@ -1150,8 +1338,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */ 
-    private XObject castToXsGYear(XObject xObj) throws TransformerException {
+    private XObject castToXsGYear(XObject xObj) throws TransformerException, SAXException {
     	
 	   XObject result = null;
 	   
@@ -1199,7 +1388,16 @@ public class CastAs extends XPathOperator
 			   tzStr = tz.getTimezoneAsString();
 		   }
 		   
-		   java.lang.String yearStr = year + "";		   
+		   java.lang.String yearStr = year + "";
+		   
+		   boolean isNegativeYearValue = false;
+		   
+		   if (yearStr.startsWith("-")) {
+			  isNegativeYearValue = true;
+			  
+			  yearStr = yearStr.substring(1); 
+		   }
+		   
 		   int size1 = yearStr.length();
 		   
 		   if (size1 == 1) {
@@ -1212,6 +1410,10 @@ public class CastAs extends XPathOperator
 			  yearStr = "0" + yearStr; 
 		   }
 		   
+		   if (isNegativeYearValue) {
+			  yearStr = "-" + yearStr; 
+		   }
+		   
            java.lang.String str1 = (tzStr != null) ? (yearStr + tzStr) : yearStr;
 		   
 		   result = new XSGYear(str1);
@@ -1221,6 +1423,14 @@ public class CastAs extends XPathOperator
 		   
 		   result = new XSGYear(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSGYear(str1);
+   	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'gYear'.");	
+       }
 	   
 	   return result;
     }
@@ -1234,8 +1444,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */ 
-    private XObject castToXsGMonthDay(XObject xObj) throws TransformerException {
+    private XObject castToXsGMonthDay(XObject xObj) throws TransformerException, SAXException {
     	
 	   XObject result = null;
 
@@ -1311,6 +1522,14 @@ public class CastAs extends XPathOperator
 		   
 		   result = new XSGMonthDay(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSGMonthDay(str1);
+   	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'gMonthDay'.");	
+       }
 
 	   return result;
     }
@@ -1324,8 +1543,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */ 
-    private XObject castToXsGDay(XObject xObj) throws TransformerException {
+    private XObject castToXsGDay(XObject xObj) throws TransformerException, SAXException {
     	
 	   XObject result = null;
 	   
@@ -1383,6 +1603,14 @@ public class CastAs extends XPathOperator
 		   
 		   result = new XSGDay(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSGDay(str1);
+   	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'gDay'.");	
+       }
 	   
 	   return result;
     }
@@ -1396,8 +1624,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */ 
-    private XObject castToXsGMonth(XObject xObj) throws TransformerException {
+    private XObject castToXsGMonth(XObject xObj) throws TransformerException, SAXException {
     	
 	   XObject result = null;
 	   
@@ -1455,6 +1684,14 @@ public class CastAs extends XPathOperator
 		   
 		   result = new XSGMonth(str1);
 	   }
+	   else if (xObj instanceof XMLNodeCursorImpl) {
+		   java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+		   result = new XSGMonth(str1);
+   	   }
+	   else {
+   	       throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'gMonth'.");	
+       }
 	   
 	   return result;
     }
@@ -1468,8 +1705,9 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                       
      */ 
-    private XObject castToBase64Binary(XObject xObj) throws TransformerException {
+    private XObject castToXsBase64Binary(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
@@ -1490,6 +1728,14 @@ public class CastAs extends XPathOperator
 
     		result = new XSBase64Binary(str1);
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+    		java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+    		result = new XSBase64Binary(str1);
+    	}
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'base64Binary'.");	
+        }
 
     	return result;
     }
@@ -1503,16 +1749,27 @@ public class CastAs extends XPathOperator
      * @return                                An xdm value that is the 
      *                                        result for XPath 3.1 cast 
      *                                        expression.
+     * @throws TransformerException, SAXException                                        
      */ 
-    private XObject castToHexBinary(XObject xObj) throws TransformerException {
+    private XObject castToXsHexBinary(XObject xObj) throws TransformerException, SAXException {
     	
     	XObject result = null;
 
     	if (xObj instanceof XSHexBinary) {
     		result = xObj; 
     	}
-    	else if (xObj instanceof XSBase64Binary) {
+    	else if (xObj instanceof XSBase64Binary) {    		    		
     		java.lang.String str1 = ((XSBase64Binary)xObj).stringValue();
+
+    		byte[] decodedBytes = Base64.getDecoder().decode(str1.getBytes());
+
+    		StringBuffer strBuff = new StringBuffer();                        
+
+    		for (int idx = 0; idx < decodedBytes.length; idx++) {
+    			strBuff.append(java.lang.String.format("%02X", decodedBytes[idx]));
+    		}
+
+    		str1 = strBuff.toString();
 
     		result = new XSHexBinary(str1);
     	}
@@ -1521,6 +1778,14 @@ public class CastAs extends XPathOperator
 
     		result = new XSHexBinary(str1);
     	}
+    	else if (xObj instanceof XMLNodeCursorImpl) {
+    		java.lang.String str1 = ((XMLNodeCursorImpl)xObj).str();
+
+    		result = new XSHexBinary(str1);
+    	}
+    	else {
+    	    throw new SAXException("XPTY0004 : The supplied xdm type couldn't be cast to schema type 'hexBinary'.");	
+        }
 
     	return result;
     }

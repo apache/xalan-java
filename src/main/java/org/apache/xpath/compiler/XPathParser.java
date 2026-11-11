@@ -9268,6 +9268,7 @@ public class XPathParser
        strBuff.append(funcName);
        
        boolean isXPathExprOk = false;
+       boolean isXPathExprOk2 = false;
        
        while (m_token != null) {
     	  strBuff.append(m_token + " ");
@@ -9305,6 +9306,26 @@ public class XPathParser
     			   break;	
     			}
     		 }
+    		 else if ((tokenIs(Keywords.CAST) || tokenIs(Keywords.CASTABLE) 
+    				                          || tokenIs(Keywords.INSTANCE) || tokenIs(Keywords.TREAT)) && lookahead(Keywords.AS, 1)) {
+    			while (m_token != null) {
+    				if ((tokenIs(')') || tokenIs(',')) && (StringUtil.isStrHasBalancedParentheses(str1, '(', ')') ||
+    						                               StringUtil.isStrHasBalancedParentheses(str1, '[', ']'))) {
+    					isXPathExprOk2 = true;
+
+    					break;
+    				}
+    				
+    				strBuff.append(m_token + " ");
+					str1 = (strBuff.toString()).trim();
+
+					nextToken();
+    			}
+    			
+    			if (isXPathExprOk2) {
+    			   break;	
+    			}
+    		 }
     		 else {
     			break; 
     		 }
@@ -9327,6 +9348,23 @@ public class XPathParser
                                                       m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
     	  
     	  m_isFunctionArgumentParse = false;
+
+          return;
+       }
+       else if (isXPathExprOk2) {    	  
+    	  appendOp(2, OpCodes.XPath3OpCodes.OP_XPATH_IDENTITY_EXPR);
+
+    	  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1); 
+
+    	  XPathIdentityExpr xpathIdentityExpr = new XPathIdentityExpr();        					         					         					 
+    	  xpathIdentityExpr.setXpathExprStr(str1);
+    	  
+    	  m_xpathIdentityExprList.add(xpathIdentityExpr);
+    	  
+    	  m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
+                                                      m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH) - opPos);
+
+          m_isFunctionArgumentParse = false;
 
           return;
        }
@@ -12170,8 +12208,8 @@ public class XPathParser
  	  nextToken();
  	  
  	  if ((m_token != null) && (xpathSequenceTypeExpr.getBuiltInSequenceType() > 0)) {
-		  setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);
-	  }
+ 		  setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isXPathInlineFunctionParse);
+ 	  }   	   	  
    }
    
    /**
