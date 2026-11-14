@@ -134,6 +134,12 @@ public class Variable extends Expression implements PathComponent
   private XPathDynamicFunctionCall m_dfc_expr = null;
   
   /**
+   * An XSL stylesheet file name used by Xalan-J, for XSL transformation 
+   * implementation.
+   */
+  private static final java.lang.String XSL_DUMMY_FILE_NAME1 = "dummy.xsl";
+  
+  /**
    * This function is used to fixup variables from QNames to stack frame 
    * indexes at stylesheet build time.
    * @param vars List of QNames that correspond to variables.  This list 
@@ -293,8 +299,103 @@ public class Variable extends Expression implements PathComponent
 
 		TransformerImpl transformerImpl = null; 
 		
+		java.lang.String xslSystemId = null;
+		
+		int xslIncludeCount = 0;
+		int xslImportCount = 0;
+		
 		if (stylesheetRoot != null) {
-		    transformerImpl = stylesheetRoot.getTransformerImpl();  
+		    transformerImpl = stylesheetRoot.getTransformerImpl();		    
+		    xslSystemId = stylesheetRoot.getSystemId();
+		    
+		    xslIncludeCount = stylesheetRoot.getIncludeCount();
+			xslImportCount = stylesheetRoot.getImportCount();
+		}		    		
+		
+		Map<QName,XObject> xpathVarMap = xctxt.getXPathVarMap();
+		
+		XObject xslVarValue = xpathVarMap.get(m_qname);		
+		
+		java.lang.String varNs = m_qname.getNamespace();
+		
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("v1_([0-9]{13})");
+   	    java.util.regex.Matcher matcher = pattern.matcher(m_qname.toString());
+   	    
+   	    boolean variableKind2 = false;
+   	    
+   	    if (matcher.matches()) {
+   	       variableKind2 = true;
+   	    }
+		
+		if ((xslSystemId != null) && (xslVarValue == null) && !xslSystemId.endsWith("/" + XSL_DUMMY_FILE_NAME1)
+				                                           && (xslIncludeCount == 0) && (xslImportCount == 0)
+				                                           && !(Constants.XSL_ERROR_NAMESACE).equals(varNs) && !variableKind2) {
+			/**
+			 * Check that, an XSL stylesheet variable is declared, within
+			 * the stylesheet, corresponding to variable reference represented
+			 * by this class object.
+			 */
+			
+			ExpressionNode exprNode = this.getExpressionOwner();
+
+			boolean elemVariableDeclAvailable = false;
+
+			while (exprNode != null) {
+				ElemVariable elemVariable = null;
+
+				if (exprNode instanceof ElemVariable) {
+					elemVariable = (ElemVariable)exprNode;
+					QName qName = elemVariable.getName();
+
+					if (qName.equals(m_qname)) {
+						elemVariableDeclAvailable = true;
+
+						break;
+					}
+					else {
+						ElemTemplateElement elemTemplateElement = (ElemTemplateElement)exprNode;
+						ElemTemplateElement elemTemplateElement1 = elemTemplateElement.getPreviousSiblingElem();
+						exprNode = elemTemplateElement1;
+
+						if (exprNode == null) {
+							exprNode = elemTemplateElement.getParentElem(); 
+						}
+					}
+				}
+				else {
+					ElemTemplateElement elemTemplateElement = (ElemTemplateElement)exprNode;
+					ElemTemplateElement elemTemplateElement1 = elemTemplateElement.getPreviousSiblingElem();
+					exprNode = elemTemplateElement1;
+
+					if (exprNode == null) {
+						exprNode = elemTemplateElement.getParentElem(); 
+					}
+				}
+			}
+
+			if ((this.getExpressionOwner() != null) && !elemVariableDeclAvailable && (stylesheetRoot != null)) {				
+				ElemTemplateElement elemTemplateElement = stylesheetRoot.getFirstChildElem();
+
+				while (elemTemplateElement != null) {
+					if (elemTemplateElement instanceof ElemVariable) {
+						ElemVariable elemVariable = (ElemVariable)elemTemplateElement;
+						QName qName = elemVariable.getName();
+
+						if (qName.equals(m_qname)) {
+							elemVariableDeclAvailable = true;
+
+							break;
+						}
+					}
+
+					elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+				}
+
+				if (!elemVariableDeclAvailable) {
+					throw new TransformerException("XPST0008 : An XSL stylesheet variable $" + m_qname.toString() 
+					                                                                         + " has not been declared.", srcLocator);
+				}
+			}
 		}
 		
 		if ((transformerImpl != null) && isVariableRefDescendantOfXslIterate()) {
@@ -306,17 +407,14 @@ public class Variable extends Expression implements PathComponent
 			    
 			    return result;
 			}
-		}
+		}                
         
-        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
-        XObject varValue = xpathVarMap.get(m_qname);
-        
-        if (varValue != null) {
-        	if (varValue instanceof XMLNodeCursorImpl) {
-        		result = ((XMLNodeCursorImpl)varValue).getFresh();    
+        if (xslVarValue != null) {
+        	if (xslVarValue instanceof XMLNodeCursorImpl) {
+        		result = ((XMLNodeCursorImpl)xslVarValue).getFresh();    
         	}
         	else {
-        		result = varValue;
+        		result = xslVarValue;
         	}
 
         	return result;
@@ -327,11 +425,8 @@ public class Variable extends Expression implements PathComponent
               if (m_isGlobal) {
                  result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOk);
               }
-              else {            	  
-            	 java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("v1_([0-9]{13,13})");
-            	 java.util.regex.Matcher matcher = pattern.matcher(m_qname.toString());
-            	  
-            	 if (!matcher.matches()) {
+              else {            	              	             	  
+            	 if (!variableKind2) {
                     result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOk);
             	 }
             	 else {

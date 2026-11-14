@@ -112,6 +112,7 @@ import org.apache.xalan.tests.xslt3.XslTryCatchTests;
 import org.apache.xalan.tests.xslt3.XslUseAttributeSetsTests;
 import org.apache.xalan.tests.xslt3.XslUseWhenTests;
 import org.apache.xalan.tests.xslt3.XslVariableAttributeAsTests;
+import org.apache.xalan.tests.xslt3.XslVariableTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -166,7 +167,7 @@ import xml.xpath31.processor.types.tests.XSTimeTest;
                 XSDateTimeTest.class, XSDayTimeDurationTest.class, XSDecimalTest.class, XSDoubleTest.class, XSDurationTest.class,
                 XSNumericTypeTest.class, XSTimeTest.class, FnFormatDateTests.class, FnParseIetfDateTests.class, XslSchemaAwareTests.class,
                 FnFunctionLookupTests.class, XPathFunctionCallArgumentTests.class, XPathMiscellaneousTests.class, XPathLetExprTests.class,
-                FnRandomNumberGeneratorTests.class })
+                FnRandomNumberGeneratorTests.class, XslVariableTests.class })
 public class XalanXsl3TestSuite2 {
 
 }
