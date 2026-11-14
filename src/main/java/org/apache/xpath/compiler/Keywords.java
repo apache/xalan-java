@@ -883,6 +883,18 @@ public class Keywords
   
   public static final String FUNCTION = "function";
   
+  public static final String PLUS = "+";
+  
+  public static final String MINUS = "-";
+  
+  public static final String MULT = "*";
+  
+  public static final String DIV = "div";
+  
+  public static final String MOD = "mod";
+  
+  public static final String IDIV = "idiv";
+  
   public static final String EQUAL = "=";
   
   public static final String VC_EQ = "eq";
@@ -895,7 +907,9 @@ public class Keywords
   
   public static final String VC_LE = "le";
   
-  public static final String VC_GE = "ge";    
+  public static final String VC_GE = "ge";
+  
+  public static final String AS = "as";
   
   public static final String COLLATION = "collation";
   
@@ -911,11 +925,7 @@ public class Keywords
   
   public static final String CAST = "cast";
   
-  public static final String TREAT = "treat";
-  
-  public static final String AS = "as";
-  
-  public static final String IDIV = "idiv";
+  public static final String TREAT = "treat";    
   
   public static final String XPATH_ARROW_OP = "=>";
   
