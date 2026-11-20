@@ -171,6 +171,12 @@ public class XPathSequenceConstructor extends Expression {
         	  }
            }
            
+           String str1_a = xpathExprStr.replaceAll("\\s*", "");
+           
+           if (str1_a.startsWith("(") && str1_a.endsWith("))")) {
+        	  xpathExprStr = (xpathExprStr.substring(1, xpathExprStr.length() - 1)).trim();
+           }
+           
            try {
               xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
            }

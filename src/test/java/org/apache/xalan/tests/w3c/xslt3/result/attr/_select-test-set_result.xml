@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-07T11:21:02Z" fail="16" name="select" pass="116" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:28:46Z" fail="11" name="select" pass="121" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -29,17 +29,12 @@
    <testResult status="pass" testName="select-1602"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-1701"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-1702"/>
-   <testResult status="fail" testName="select-1703"/>
-   <testResult status="fail" testName="select-1704"/>
+   <testResult status="pass" testName="select-1703"/>
+   <testResult status="pass" testName="select-1704"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-1705"/>
-   <testResult status="fail" testName="select-1801"/>
+   <testResult status="pass" testName="select-1801"/>
    <testResult status="pass" testName="select-1802"/>
-   <testResult status="fail" testName="select-1803">
-      <outResult>
-         <errTrace>org.xml.sax.SAXException: Line# : 9, Column# : 80 XPST0051 : A sequence type occurence indicator ']', is not recognized.
-java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="select-1803"/>
    <testResult status="pass" testName="select-1804"/>
    <testResult status="pass" testName="select-1901"/>
    <testResult status="pass" testName="select-2001"/>
@@ -68,7 +63,7 @@ java.lang.Exception: Line# : 9, Column# : 80 XPST0051 : A sequence type occurenc
    <testResult status="fail" testName="select-2024"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2025"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2026"/>
-   <testResult status="fail" testName="select-2027"/>
+   <testResult status="pass" testName="select-2027"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2028"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2029"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2030"/>

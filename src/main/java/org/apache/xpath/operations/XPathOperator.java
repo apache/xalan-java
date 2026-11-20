@@ -28,6 +28,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xml.dtm.DTM;
@@ -714,6 +715,51 @@ public class XPathOperator extends Expression implements ExpressionOwner
 
 	  return result;
   }
+  
+  /**
+   * Method definition, to get an XPathContext object,
+   * that may be used to evaluate XPath operator expressions. 
+   * 
+   * @return                    An XPathContext object, instance
+   */
+  protected XPathContext getXPathContext() {
+	  
+	  XPathContext result = null;
+
+	  StylesheetRoot stylesheetRoot = null;
+
+	  if (XslTransformData.m_stylesheetRoot != null) {
+		  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
+		  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+
+		  if (!XslTransformData.m_use_when) {
+			  result = transformerImpl.getXPathContext();
+		  }
+		  else if (m_xctxt != null) {
+			  result = m_xctxt;  
+		  }
+		  else {
+			  result = new XPathContext();
+		  }
+	  }
+	  else {
+		  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
+
+		  if ((stylesheetRoot != null) && !XslTransformData.m_use_when) {
+			  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
+			  
+			  result = transformerImpl.getXPathContext();
+		  }
+		  else if (m_xctxt != null) {
+			  result = m_xctxt;  
+		  }
+		  else {
+			  result = new XPathContext();
+		  } 
+	  }
+
+	  return result;
+   }
   
   /**
    * Method definition, to get an XPath context item, given 

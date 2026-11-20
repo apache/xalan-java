@@ -9,6 +9,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -79,20 +80,31 @@ public class XSUntypedAtomic extends XSCtrType {
     /*
      * Check equality between this XSUntypedAtomic value and an XObject value.  
      */
-    public boolean equals(XObject xObject) {
-        boolean isEquals = false;
+    public boolean equals(XObject xObj2) {
         
-        if (xObject instanceof XSUntypedAtomic) {
-           isEquals = _value.equals(((XSUntypedAtomic)xObject).stringValue()); 
+    	boolean result = false;
+        
+        if (xObj2 instanceof XSUntypedAtomic) {
+           result = _value.equals(((XSUntypedAtomic)xObj2).stringValue()); 
         }
-        else if (xObject instanceof XSUntyped) {
-           isEquals = _value.equals(((XSUntyped)xObject).stringValue());  
+        else if (xObj2 instanceof XSUntyped) {
+           result = _value.equals(((XSUntyped)xObj2).stringValue());  
+        }
+        else if (xObj2 instanceof XSNumericType) {
+           XSNumericType xsNumericType = (XSNumericType)xObj2;
+           String str2 = xsNumericType.stringValue();           
+           XNumber xNumber2 = new XNumber(Double.valueOf(str2));          
+           
+           result = ((XNumber)xNumber2).equals(this);
+        }
+        else if (xObj2 instanceof XNumber) {
+           result = ((XNumber)xObj2).equals(this); 
         }
         else {
-           isEquals = _value.equals(XslTransformEvaluationHelper.getStrVal(xObject)); 
+           result = _value.equals(XslTransformEvaluationHelper.getStrVal(xObj2)); 
         }
         
-        return isEquals;
+        return result;
     }
     
     /*

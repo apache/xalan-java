@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:59:33Z" fail="3" name="for-each-group" pass="75" run="78" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:29:03Z" fail="4" name="for-each-group" pass="74" run="78" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="for-each-group-001"/>
    <testResult status="skipped" testName="for-each-group-002a" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="for-each-group-002"/>
@@ -66,7 +66,7 @@
    <testResult status="pass" testName="for-each-group-068"/>
    <testResult status="pass" testName="for-each-group-069"/>
    <testResult status="pass" testName="for-each-group-070"/>
-   <testResult status="pass" testName="for-each-group-071"/>
+   <testResult status="fail" testName="for-each-group-071"/>
    <testResult status="pass" testName="for-each-group-072"/>
    <testResult status="pass" testName="for-each-group-073"/>
    <testResult status="pass" testName="for-each-group-074"/>

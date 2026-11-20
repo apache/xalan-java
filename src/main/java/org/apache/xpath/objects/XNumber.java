@@ -17,6 +17,9 @@
  */
 package org.apache.xpath.objects;
 
+import java.math.BigDecimal;
+
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
@@ -273,24 +276,64 @@ public class XNumber extends XObject
   public boolean equals(XObject obj2)
   {
     
-    if (obj2 instanceof XSDecimal) {
-       return m_val == ((XSDecimal)obj2).doubleValue();   
-    }
-    
-    int t = obj2.getType();
-    try
-    {
-	    if (t == XObject.CLASS_NODESET)
-	      return obj2.equals(this);
-	    else if (t == XObject.CLASS_BOOLEAN)
-	      return obj2.bool() == bool();
-		else
-	       return m_val == obj2.num();
-    }
-    catch(javax.xml.transform.TransformerException te)
-    {
-      throw new org.apache.xml.utils.WrappedRuntimeException(te);
-    }
+	  XObject xObj1 = XslTransformEvaluationHelper.getXNumberNormalizedValue(this);
+	  
+	  if (obj2 instanceof XNumber) {
+		 obj2 = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)obj2);  
+	  }
+	  
+	  BigDecimal bigDecimal1 = null;
+	  BigDecimal bigDecimal2 = null;
+
+	  String str1 = null;
+
+	  if (xObj1 instanceof XNumber) {
+		  str1 = (((XNumber)xObj1).num()) + "";  
+	  }
+	  else {
+		  str1 = XslTransformEvaluationHelper.getStrVal(xObj1); 
+	  }
+
+	  try {
+		  bigDecimal1 = new BigDecimal(str1);
+
+		  String str2 = null;
+
+		  if (obj2 instanceof XNumber) {
+			  str2 = (((XNumber)obj2).num()) + "";  
+		  }
+		  else {
+			  str2 = XslTransformEvaluationHelper.getStrVal(obj2); 
+		  }
+
+		  bigDecimal2 = new BigDecimal(str2);
+	  }
+	  catch (NumberFormatException ex) {
+		  return false;
+	  }
+	  
+	  if ((bigDecimal1 != null) && (bigDecimal2 != null)) {
+		  if (bigDecimal2.compareTo(bigDecimal1) == 0) {
+			  return true;  
+		  }
+		  else {
+			  return false; 
+		  } 
+	  } 
+
+	  int type1 = obj2.getType();
+
+	  try {
+		  if (type1 == XObject.CLASS_BOOLEAN) {
+			 return obj2.bool() == bool();		
+		  }
+	  }
+	  catch(javax.xml.transform.TransformerException te)
+	  {
+		  throw new org.apache.xml.utils.WrappedRuntimeException(te);
+	  }
+	  
+	  return false;
   }
   
   /**

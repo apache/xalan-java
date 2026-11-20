@@ -28,6 +28,8 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -72,6 +74,21 @@ public class Gte extends XPathOperator
 	  
       XObject result = null;
       
+      XPathContext xctxt = getXPathContext();
+      
+      // An xdm, atomization of both the XPath expression operands,
+      // using XPath 3.1 function fn:data.
+	  
+	  FuncData funcData = new FuncData();
+	  funcData.setArg0(left);
+	  
+	  left = funcData.execute(xctxt);
+	  
+	  funcData = new FuncData();	  
+      funcData.setArg0(right);
+      
+	  right = funcData.execute(xctxt);
+      
       if (left instanceof XPathArray) {
 		  left = ((XPathArray)left).atomize();
 	  }
@@ -83,6 +100,7 @@ public class Gte extends XPathOperator
 	  if ((left instanceof XSString || left instanceof XString) && 
 			  												(right instanceof XSNumericType || right instanceof XNumber)) {
 		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+		  
 		  if (str1.startsWith("0")) { 
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
 		  }
@@ -91,6 +109,7 @@ public class Gte extends XPathOperator
 	  if ((right instanceof XSString || right instanceof XString) && 
 			  												(left instanceof XSNumericType || left instanceof XNumber)) {
 		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+		  
 		  if (str1.startsWith("0")) { 
 			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
 		  }
@@ -106,13 +125,6 @@ public class Gte extends XPathOperator
 		  result = XBoolean.S_FALSE;
 
 		  return result;
-	  }
-	  
-	  if ((right instanceof XNumber) && (left instanceof XSUntypedAtomic)) {
-		  XObject temp1 = right;
-		  
-		  right = left;
-		  left = temp1; 
 	  }
 	  
 	  if ((left instanceof XNumber) && (right instanceof XSUntypedAtomic)) {
@@ -135,6 +147,50 @@ public class Gte extends XPathOperator
 		  catch (NumberFormatException ex) {
 			 throw new TransformerException("FORG0001 : While evaluating XPath operator >=, couldn't transform string '" 
 		                                                                                                              + str2 + "' to a numeric value."); 
+		  }
+	  }	  
+	  else if ((left instanceof XSUntypedAtomic) && (right instanceof XNumber)) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+		  
+		  try {	
+			 BigDecimal bigDecimal1 = new BigDecimal(str1);
+			  
+			 BigDecimal bigDecimal2 = XPathGeneralCmpEqualityOpUtil.getBigdecimalFromXNumber((XNumber)right);			 
+			 			 
+			 if (bigDecimal1.compareTo(bigDecimal2) >= 0) {
+				result = XBoolean.S_TRUE; 
+			 }
+			 else {
+				result = XBoolean.S_FALSE;
+			 }
+			 
+			 return result;
+		  }
+		  catch (NumberFormatException ex) {
+			 throw new TransformerException("FORG0001 : While evaluating XPath operator >=, couldn't transform string '" 
+		                                                                                                              + str1 + "' to a numeric value."); 
+		  }
+	  }	  
+	  else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+		  java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
+		  
+		  try {
+			  BigDecimal bigDecimal1 = new BigDecimal(str1);
+
+			  BigDecimal bigDecimal2 = new BigDecimal(str2);
+			  
+			  if (bigDecimal1.compareTo(bigDecimal2) >= 0) {
+				  result = XBoolean.S_TRUE; 
+			  }
+			  else {
+				  result = XBoolean.S_FALSE;
+			  }
+
+			  return result;
+		  }
+		  catch (NumberFormatException ex) {
+			  throw new TransformerException("FORG0001 : While evaluating XPath operator >=, couldn't transform an operand value to a number."); 
 		  }
 	  }
 	  
@@ -499,6 +555,15 @@ public class Gte extends XPathOperator
 			 
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		 }
+		 else if (left instanceof XSUntypedAtomic) {
+			 java.lang.String str1 = ((XSUntypedAtomic)left).stringValue(); 
+			 
+			 left = new XNumber(Double.valueOf(str1));
+			 
+			 boolean bool = XPathGeneralCmpOpSupport.greaterThan((XNumber)left, (ResultSequence)right, true);
+			 
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+		 }
 		 else if (left instanceof ResultSequence) {
 			 boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, (ResultSequence)right, true);
 			 
@@ -518,6 +583,18 @@ public class Gte extends XPathOperator
 		 }
 	  }
 	  else if (left instanceof ResultSequence) {
+		  if (right instanceof XSUntypedAtomic) {
+			 java.lang.String str1 = ((XSUntypedAtomic)right).stringValue(); 
+			 
+			 try {
+				Double dbl = Double.valueOf(str1);				
+				right = new XNumber(dbl);
+			 }
+			 catch (NumberFormatException ex) {
+				throw new TransformerException("FORG0001 : The string value '" + str1 + "' cannot be converted to a number."); 
+			 }
+		  }		  
+		  
 		  if (right instanceof XNumber) {
 			  boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, (XNumber)right, true);
 				 

@@ -92,7 +92,7 @@ public class XPathSequenceBinaryOp extends Expression {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		final int currentNode = xctxt.getContextNode();
+		final int currentNode = xctxt.getCurrentNode();
 
 		List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 

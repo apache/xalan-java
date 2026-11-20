@@ -58,6 +58,7 @@ public class FuncNot extends FunctionOneArg
 			FuncBoolean fnBoolean = new FuncBoolean();									
 			
 			XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);			
+			
 			fnBoolean.setArg0(xObj);
 			
 			result = fnBoolean.execute(xctxt);
@@ -72,7 +73,7 @@ public class FuncNot extends FunctionOneArg
 		 * argument. 
 		 */
 
-		if (((XSBoolean)result).value()) {
+		if (result.bool()) {
 			result = new XSBoolean(false);  
 		}
 		else {

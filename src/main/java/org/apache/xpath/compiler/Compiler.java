@@ -369,7 +369,10 @@ public class Compiler extends XPathOpMap
         
     	expr = xpathIdentityExpr;
         
-        break;  
+        break;
+    case OpCodes.XPath3OpCodes.OP_XPATH3_STEP_EXPR1:
+        expr = XPathParser.m_xpath3_step_expr;
+        break;
     case OpCodes.OP_QUO:
       if (!m_xpath_ignore_compile_err) {
          error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ m_currentPattern, "quo" });

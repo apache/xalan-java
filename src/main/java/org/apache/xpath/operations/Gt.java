@@ -28,7 +28,8 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xpath.XPathCollationSupport;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -72,6 +73,21 @@ public class Gt extends XPathOperator
 	  
       XObject result = null;
       
+      XPathContext xctxt = getXPathContext();
+      
+      // An xdm, atomization of both the XPath expression operands,
+      // using XPath 3.1 function fn:data.
+	  
+	  FuncData funcData = new FuncData();
+	  funcData.setArg0(left);
+	  
+	  left = funcData.execute(xctxt); 
+	  
+	  funcData = new FuncData();
+      funcData.setArg0(right);
+      
+	  right = funcData.execute(xctxt);
+      
       if (left instanceof XPathArray) {
 		  left = ((XPathArray)left).atomize();
 	  }
@@ -108,13 +124,6 @@ public class Gt extends XPathOperator
 		  return result;
 	  }
 	  
-	  if ((right instanceof XNumber) && (left instanceof XSUntypedAtomic)) {
-		  XObject temp1 = right;
-		  
-		  right = left;
-		  left = temp1; 
-	  }
-	  
 	  if ((left instanceof XNumber) && (right instanceof XSUntypedAtomic)) {
 		  java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
 		  
@@ -135,6 +144,52 @@ public class Gt extends XPathOperator
 		  catch (NumberFormatException ex) {
 			 throw new TransformerException("FORG0001 : While evaluating XPath operator >, couldn't transform string '" 
 		                                                                                                             + str2 + "' to a numeric value."); 
+		  }
+	  }
+	  
+	  if ((left instanceof XSUntypedAtomic) && (right instanceof XNumber)) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+		  
+		  try {			 			 			 
+			 BigDecimal bigDecimal1 = new BigDecimal(str1);
+			 
+			 BigDecimal bigDecimal2 = XPathGeneralCmpEqualityOpUtil.getBigdecimalFromXNumber((XNumber)right);
+			 
+			 if (bigDecimal1.compareTo(bigDecimal2) > 0) {
+				result = XBoolean.S_TRUE; 
+			 }
+			 else {
+				result = XBoolean.S_FALSE;
+			 }
+			 
+			 return result;
+		  }
+		  catch (NumberFormatException ex) {
+			 throw new TransformerException("FORG0001 : While evaluating XPath operator >, couldn't transform string '" 
+		                                                                                                             + str1 + "' to a numeric value."); 
+		  }
+	  }
+	  
+	  if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+		  java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
+		  
+		  try {			 			 			 
+			 BigDecimal bigDecimal1 = new BigDecimal(str1);
+			 
+			 BigDecimal bigDecimal2 = new BigDecimal(str2);
+			 
+			 if (bigDecimal1.compareTo(bigDecimal2) > 0) {
+				result = XBoolean.S_TRUE; 
+			 }
+			 else {
+				result = XBoolean.S_FALSE;
+			 }
+			 
+			 return result;
+		  }
+		  catch (NumberFormatException ex) {
+			 throw new TransformerException("FORG0001 : While evaluating XPath operator >, couldn't transform supplied XPath operator's operand to a number."); 
 		  }
 	  }
 	  
@@ -633,20 +688,10 @@ public class Gt extends XPathOperator
 		  
 		  return XBoolean.S_FALSE;
 	  }
-	  else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
-		  ResultSequence rSeq1 = (ResultSequence)left;
-		  ResultSequence rSeq2 = (ResultSequence)right;
-		  for (int idx1 = 0; idx1 < rSeq1.size(); idx1++) {
-			 XObject xObj1 = rSeq1.item(idx1);
-			 for (int idx2 = 0; idx2 < rSeq2.size(); idx2++) {
-				XObject xObj2 = rSeq2.item(idx2);
-				if (xObj1.vcGreaterThan(xObj2, null, XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI, true)) {
-				   return XBoolean.S_TRUE;
-				}
-			 }
-		  }
-		  
-		  return XBoolean.S_FALSE;
+	  else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {		  
+		  boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, (ResultSequence)right, false);
+			 
+		  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 	  }
 	  else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
 		  java.lang.String lStr = ((XSNumericType)left).stringValue();
@@ -729,10 +774,12 @@ public class Gt extends XPathOperator
 
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
-		  else if (left instanceof XMLNodeCursorImpl) {
-			  java.lang.String lStrVal = ((XMLNodeCursorImpl)left).str();
+		  else if ((left instanceof XMLNodeCursorImpl) || (left instanceof XSUntypedAtomic)) {
+			  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+			  
 			  try {
 				  double lhsDbl = Double.valueOf(lStrVal);
+				  
 				  boolean bool = XPathGeneralCmpOpSupport.greaterThan(new XNumber(lhsDbl), (ResultSequence)right, false);
 
 				  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
@@ -753,8 +800,9 @@ public class Gt extends XPathOperator
 
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
-		  else if (right instanceof XMLNodeCursorImpl) {
-			  java.lang.String rStrVal = ((XMLNodeCursorImpl)right).str();
+		  else if ((right instanceof XMLNodeCursorImpl) || (right instanceof XSUntypedAtomic)) {
+			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+			  
 			  try {
 				  double rhsDbl = Double.valueOf(rStrVal);
 				  boolean bool = XPathGeneralCmpOpSupport.greaterThan((ResultSequence)left, new XNumber(rhsDbl), false);
@@ -763,6 +811,44 @@ public class Gt extends XPathOperator
 			  }
 			  catch (NumberFormatException ex) {
 				  throw new TransformerException("FORG0001 : The string value '" + rStrVal + "' cannot be converted to double.");
+			  }
+		  }
+		  else if ((right instanceof XString) || (right instanceof XSString)) {
+			  ResultSequence rSeq = (ResultSequence)left;
+			  
+			  int size1 = rSeq.size();
+			  
+			  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+			  
+			  boolean result1 = false;
+			  
+			  boolean isDataTypeCompatible = true;
+			  
+			  for (int idx = 0; idx < size1; idx++) {
+				 XObject xObj = rSeq.item(idx);
+				 
+				 if (xObj instanceof XSUntypedAtomic) {
+					XSUntypedAtomic xsUntypedAtomic = (XSUntypedAtomic)xObj;
+					java.lang.String str1 = xsUntypedAtomic.stringValue();
+					
+					if (str1.compareTo(str2) > 0) {
+					   result1 = true;
+					}
+				 }
+				 else {
+					isDataTypeCompatible = false;
+				 }
+			  }
+			  
+			  if (isDataTypeCompatible) {
+				  if (result1) {
+					  result = XBoolean.S_TRUE;  
+				  }
+				  else {
+					  result = XBoolean.S_FALSE; 
+				  }
+				  
+				  return result;
 			  }
 		  }
 	  }

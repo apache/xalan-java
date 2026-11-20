@@ -38,6 +38,8 @@ import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -225,29 +227,54 @@ public class FuncBoolean extends FunctionOneArg
     			result = new XSBoolean(false);
     		}
     	}    	
-        else if (xObj instanceof XSNumericType) {
-        	String str1 = XslTransformEvaluationHelper.getStrVal(xObj);        	
-        	
-        	if ((Constants.ATTRNAME_NAN).equals(str1)) {
-        		result = new XSBoolean(false);
-        	}			
-        	else if ((Constants.POSITIVE_INF_STR).equals(str1) || (Constants.NEGATIVE_INF_STR).equals(str1)) {
-        		result = new XSBoolean(true);
-        	}
-        	else {
-        		BigDecimal bigDecimal = new BigDecimal(str1);
+        else if (xObj instanceof XSNumericType) {        	
+        	if (xObj instanceof XSDouble) {
+        		XSDouble xsDouble = (XSDouble)xObj;
+        		double dbl = xsDouble.doubleValue();
 
-        		int bigDecimalScale = bigDecimal.scale();
-        		BigDecimal bigDecimalZero = BigDecimal.valueOf(0);
-        		bigDecimalZero.setScale(bigDecimalScale);
-
-        		int cmpResult = bigDecimal.compareTo(bigDecimalZero);
-
-        		if (cmpResult != 0) {
-        			result = new XSBoolean(true);				
+        		if ((dbl != 0) && !xsDouble.nan()) {
+        			result = new XSBoolean(true);
         		}
         		else {
         			result = new XSBoolean(false);
+        		}
+        	}
+        	else if (xObj instanceof XSFloat) {
+        		XSFloat xsFloat = (XSFloat)xObj;
+        		double flt = xsFloat.floatValue();
+
+        		if ((flt != 0) && !xsFloat.nan()) {
+        			result = new XSBoolean(true);
+        		}
+        		else {
+        			result = new XSBoolean(false);
+        		}
+        	}
+        	
+        	if (result == null) {        	
+        		String str1 = XslTransformEvaluationHelper.getStrVal(xObj);        	
+
+        		if ((Constants.ATTRNAME_NAN).equals(str1)) {
+        			result = new XSBoolean(false);
+        		}			
+        		else if ((Constants.POSITIVE_INF_STR).equals(str1) || (Constants.NEGATIVE_INF_STR).equals(str1)) {
+        			result = new XSBoolean(true);
+        		}
+        		else {
+        			BigDecimal bigDecimal = new BigDecimal(str1);
+
+        			int bigDecimalScale = bigDecimal.scale();
+        			BigDecimal bigDecimalZero = BigDecimal.valueOf(0);
+        			bigDecimalZero.setScale(bigDecimalScale);
+
+        			int cmpResult = bigDecimal.compareTo(bigDecimalZero);
+
+        			if (cmpResult != 0) {
+        				result = new XSBoolean(true);				
+        			}
+        			else {
+        				result = new XSBoolean(false);
+        			}
         		}
         	}
 		}
@@ -261,11 +288,11 @@ public class FuncBoolean extends FunctionOneArg
         	else if (Double.isInfinite(dbl)) {
         		result = new XSBoolean(true);
         	}
-        	else if (dbl == 0) {
-        		result = new XSBoolean(false);
+        	else if (dbl != 0) {
+        		result = new XSBoolean(true);
         	}
         	else {
-        		result = new XSBoolean(true);
+        		result = new XSBoolean(false);
         	}
         }    	
         else {

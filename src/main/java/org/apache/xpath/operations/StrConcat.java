@@ -17,14 +17,18 @@
  */
 package org.apache.xpath.operations;
 
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * The XPath 3.1 string concatenation "||" operation.
+ * Class definition, to implement an XPath 3.1 operator "||".
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -51,27 +55,50 @@ public class StrConcat extends XPathOperator
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
         
     	XObject result = null;
+    	
+    	SourceLocator srcLocator = xctxt.getSAXLocator(); 
 
     	XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
     	
-    	XObject left = null;    	
+    	XObject xObj0 = null;    	
+    	
     	if ((m_left instanceof SelfIteratorNoPredicate) && (xpath3CtxtItem != null)) {
-    	   left = xpath3CtxtItem; 
+    	   xObj0 = xpath3CtxtItem; 
     	}
     	else {
-    	   left = m_left.execute(xctxt);
+    	   xObj0 = m_left.execute(xctxt);
+    	}
+    	
+    	if (xObj0 instanceof ResultSequence) {
+    	   ResultSequence rSeq = (ResultSequence)xObj0;
+    	   
+    	   if (rSeq.size() > 1) {
+    		  throw new TransformerException("XPTY0004 : An XPath 3.1 operator '||' first argument is a "
+    		  		                                                                                    + "sequence with cardinality greater "
+    		  		                                                                                    + "than 1. Required cardinality is 0, or 1.", srcLocator);   
+    	   }
     	}
 
-    	XObject right = null;
+    	XObject xObj1 = null;
+    	
     	if ((m_right instanceof SelfIteratorNoPredicate) && (xpath3CtxtItem != null)) {
-    	   right = xpath3CtxtItem; 
+    	   xObj1 = xpath3CtxtItem; 
     	}
     	else {
-    	   right = m_right.execute(xctxt);
+    	   xObj1 = m_right.execute(xctxt);
     	}
+    	
+    	if (xObj1 instanceof ResultSequence) {
+     	   ResultSequence rSeq = (ResultSequence)xObj1;
+     	   
+     	   if (rSeq.size() > 1) {
+     		  throw new TransformerException("XPTY0004 : An XPath 3.1 operator '||' second argument is a "
+     		  		                                                                                     + "sequence with cardinality greater "
+     		  		                                                                                     + "than 1. Required cardinality is 0, or 1.", srcLocator);   
+     	   }
+     	}
 
-    	result = new XString(XslTransformEvaluationHelper.getStrVal(left) + 
-    			                                       XslTransformEvaluationHelper.getStrVal(right));
+    	result = new XString(XslTransformEvaluationHelper.getStrVal(xObj0) + XslTransformEvaluationHelper.getStrVal(xObj1));
 
     	return result;
     }
@@ -90,8 +117,11 @@ public class StrConcat extends XPathOperator
      * @throws javax.xml.transform.TransformerException
      */
     public XObject operate(XObject left, XObject right) {
-    	XObject result =  new XString(XslTransformEvaluationHelper.getStrVal(left) + 
-    			                                                XslTransformEvaluationHelper.getStrVal(right));        
+    	
+    	XObject result = null;
+    	
+    	result = new XString(XslTransformEvaluationHelper.getStrVal(left) + XslTransformEvaluationHelper.getStrVal(right));
+    	
     	return result;
     }
 

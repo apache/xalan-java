@@ -58,12 +58,9 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.patterns.NodeTest;
@@ -78,11 +75,9 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
-import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
-import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * This class wraps an XPath expression object and provides 
@@ -715,80 +710,75 @@ public class XPath implements Serializable, ExpressionOwner
             throws javax.xml.transform.TransformerException
   {
 
-    xctxt.pushNamespaceContext(namespaceContext);
+	  boolean result = false;
 
-    xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+	  xctxt.pushNamespaceContext(namespaceContext);
 
-    try
-    {
-    	XObject xObj = m_mainExp.execute(xctxt);
-    	
-    	if (xObj instanceof ResultSequence) {
-    	   ResultSequence rSeq = (ResultSequence)xObj;
-    	   int size1 = rSeq.size();
-    	   for (int idx = 0; idx < size1; idx++) {
-    		  XObject xObj2 = rSeq.item(idx);
-    		  if (!(xObj2 instanceof XSBoolean || xObj2 instanceof XBoolean || xObj2 instanceof XBooleanStatic ||
-    				  xObj2 instanceof XSString || xObj2 instanceof XString || xObj2 instanceof XSNumericType || xObj2 instanceof XNumber ||
-    				  xObj2 instanceof XSAnyURI || xObj2 instanceof XMLNodeCursorImpl || xObj2 instanceof XSUntypedAtomic)) {
-    			  throw new javax.xml.transform.TransformerException("FORG0006 : An XSL effective boolean value is defined only for sequences containing booleans,"
-    			  		                                                                                           + " strings, numbers, URIs, or nodes.");
-    		  }
-    	   }
-    	}
-    	else if (!(xObj instanceof XSBoolean || xObj instanceof XBoolean || xObj instanceof XBooleanStatic ||
-    			   xObj instanceof XSString || xObj instanceof XString || xObj instanceof XSNumericType || xObj instanceof XNumber ||
-    			   xObj instanceof XSAnyURI || xObj instanceof XMLNodeCursorImpl || xObj instanceof XSUntypedAtomic)) {
-    	   throw new javax.xml.transform.TransformerException("FORG0006 : An XSL effective boolean value is defined only for sequences containing booleans,"
-			  		                                                                                               + " strings, numbers, URIs, or nodes.");
-    	}
-    	
-        return m_mainExp.bool(xctxt);
-    }
-    catch (TransformerException te)
-    {
-    	te.setLocator(this.getLocator());
-    	ErrorListener el = xctxt.getErrorListener();
-    	if (null != el)
-    	{
-    		el.error(te);
-    	}
-    	else
-    		throw te;
-    }
-    catch (Exception ex)
-    {
-    	while (ex instanceof org.apache.xml.utils.WrappedRuntimeException)
-    	{
-    		ex = ((org.apache.xml.utils.WrappedRuntimeException)ex).getException();
-    	}
+	  xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
 
-    	String msg = ex.getMessage();
+	  try
+	  {
+		  XObject xObj = m_mainExp.execute(xctxt);
 
-    	if (msg == null || msg.length() == 0) {
-    		msg = XSLMessages.createXPATHMessage(
-    				XPATHErrorResources.ER_XPATH_ERROR, null);
+		  // Finding, XPath 3.1 effective boolean value for an
+		  // xdm item.    	    	
 
-    	}        
+		  FuncBoolean funcBoolean = new FuncBoolean();
+		  funcBoolean.setArg0(xObj);
 
-    	TransformerException te = new TransformerException(msg,
-    			getLocator(), ex);
-    	ErrorListener el = xctxt.getErrorListener();
-    	if (null != el)
-    	{
-    		el.fatalError(te);
-    	}
-    	else
-    		throw te;
-    }
-    finally
-    {
-    	xctxt.popNamespaceContext();
+		  XObject xObj1 = funcBoolean.execute(xctxt);
 
-    	xctxt.popCurrentNodeAndExpression();
-    }
+		  XSBoolean xsBoolean = (XSBoolean)xObj1;
+		  
+		  result = xsBoolean.bool(); 
+	  }
+	  catch (TransformerException te)
+	  {
+		  te.setLocator(this.getLocator());
+		  
+		  ErrorListener errListener = xctxt.getErrorListener();
+		  
+		  if (errListener != null)
+		  {
+			  errListener.error(te);
+		  }
+		  else
+			  throw te;
+	  }
+	  catch (Exception ex)
+	  {
+		  while (ex instanceof org.apache.xml.utils.WrappedRuntimeException)
+		  {
+			  ex = ((org.apache.xml.utils.WrappedRuntimeException)ex).getException();
+		  }
 
-    return false;
+		  String msg = ex.getMessage();
+
+		  if (msg == null || msg.length() == 0) {
+			  msg = XSLMessages.createXPATHMessage(
+					  XPATHErrorResources.ER_XPATH_ERROR, null);
+
+		  }        
+
+		  TransformerException te = new TransformerException(msg, getLocator(), ex);
+		  
+		  ErrorListener errListener = xctxt.getErrorListener();
+		  
+		  if (errListener != null)
+		  {
+			  errListener.fatalError(te);
+		  }
+		  else
+			  throw te;
+	  }
+	  finally
+	  {
+		  xctxt.popNamespaceContext();
+
+		  xctxt.popCurrentNodeAndExpression();
+	  }
+
+	  return result;
   }
 
   /** Set to true to get diagnostic messages about the result of 
@@ -1222,10 +1212,10 @@ public class XPath implements Serializable, ExpressionOwner
 	  if (varEvalResult instanceof ResultSequence) {
 		 rSeq = (ResultSequence)varEvalResult; 
 	  }
-	  else {
+	  /*else {
 		 rSeq = new ResultSequence();
 		 rSeq.add(varEvalResult);
-	  }
+	  }*/
 
 	  if (prefixTable != null) {
 		  xpathExprPredicateStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprPredicateStr, prefixTable);
@@ -1237,7 +1227,7 @@ public class XPath implements Serializable, ExpressionOwner
 		  xpathObj.fixupVariables(m_vars, m_globals_size);  
 	  }    	    	  	
 
-	  if (rSeq instanceof ResultSequence) {
+	  if (rSeq != null) {
 		  ResultSequence resultSeq = (ResultSequence)rSeq;    		    		    		
 
 		  XObject seqIndexEvalResult = null;
@@ -1249,7 +1239,7 @@ public class XPath implements Serializable, ExpressionOwner
 			  seqIndexEvalResult = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		  }
 		  catch (Exception ex) {
-			  // no op 
+			  int ii = 0; 
 		  }
 		  finally {
 			  xctxt.setLast(prevLast1);
@@ -1315,6 +1305,30 @@ public class XPath implements Serializable, ExpressionOwner
 
 				  result = rSeq2; 
 			  }    			    			
+		  }
+	  }
+	  else {		  
+		  XObject prevXctxtItem = xctxt.getXPath3ContextItem();
+
+		  xctxt.setXPath3ContextItem(varEvalResult);
+
+		  try {
+			  XObject xObj = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+
+			  FuncBoolean funcBoolean = new FuncBoolean();
+			  funcBoolean.setArg0(xObj);
+
+			  XObject xObj2 = funcBoolean.execute(xctxt);
+
+			  if (xObj2.bool()) {
+				  result = varEvalResult; 
+			  }
+			  else {
+				  result = new ResultSequence();
+			  }
+		  }
+		  finally {
+			  xctxt.setXPath3ContextItem(prevXctxtItem); 
 		  }
 	  }
 

@@ -27,7 +27,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
@@ -57,6 +56,7 @@ import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -92,7 +92,7 @@ public class VcGt extends XPathRelationalOp
   {      	  
       XObject result = null;
       
-      XPathContext xctxt = null;
+      XPathContext xctxt = getXPathContext();
       
       if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1)) {
  		 left = ((ResultSequence)left).item(0);   
@@ -112,6 +112,26 @@ public class VcGt extends XPathRelationalOp
  		  result = (compareResult > 0) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
  		  
  		  return result;
+ 	  }
+ 	  
+ 	  if (left instanceof XMLNodeCursorImpl) {
+ 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
+
+ 		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
+
+ 		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
+ 			  left = new XSInteger(xmlNodeCursorImpl.str()); 
+ 		  }
+ 	  }
+
+ 	  if (right instanceof XMLNodeCursorImpl) {
+ 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
+
+ 		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
+
+ 		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
+ 			  right = new XSInteger(xmlNodeCursorImpl.str()); 
+ 		  }
  	  }
       
       if (left instanceof XNumber) {
@@ -140,31 +160,6 @@ public class VcGt extends XPathRelationalOp
     	  else if (rXNumber.getXsInteger() != null) {
     		  right = rXNumber.getXsInteger();   
     	  }
-      }
-      
-      StylesheetRoot stylesheetRoot = null;
-	  
-      if (XslTransformData.m_stylesheetRoot != null) {
-    	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
-    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  
-    	  if (!XslTransformData.m_use_when) {
-    	     xctxt = transformerImpl.getXPathContext();
-    	  }
-    	  else {
-    		 xctxt = new XPathContext();
-    	  }
-      }
-      else {
-    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
-    	  
-    	  if ((stylesheetRoot != null) && !XslTransformData.m_use_when) {
-    		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-     	     xctxt = transformerImpl.getXPathContext();
-     	  }
-     	  else {
-     		 xctxt = new XPathContext();
-     	  } 
       }
 
       if ((left instanceof XString) || (left instanceof XSString)) {
@@ -669,7 +664,16 @@ public class VcGt extends XPathRelationalOp
 		  }
 	  }
 	  
-	  List<XMLNSDecl> nsPrefixTable = null;	  
+	  List<XMLNSDecl> nsPrefixTable = null;
+	  
+	  StylesheetRoot stylesheetRoot = null;
+
+	  if (XslTransformData.m_stylesheetRoot != null) {
+		  stylesheetRoot = XslTransformData.m_stylesheetRoot;
+	  }
+	  else {
+		  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this); 
+	  }
 	  
 	  if (stylesheetRoot != null) {
 		  nsPrefixTable = stylesheetRoot.getPrefixTable();

@@ -30,6 +30,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -111,7 +112,32 @@ public class Equals extends XPathOperator
   public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
 	  
-	  XObject result = null;	  
+	  XObject result = null;
+	  
+	  XPathContext xctxt = getXPathContext();
+	  
+	  // An xdm, atomization of both the XPath expression operands,
+      // using XPath 3.1 function fn:data.
+	  
+	  FuncData funcData = new FuncData();
+	  funcData.setArg0(left);
+	  
+	  left = funcData.execute(xctxt);
+	  
+	  funcData = new FuncData();	  
+      funcData.setArg0(right);
+      
+	  right = funcData.execute(xctxt);	  	  
+	  
+	  if (left instanceof XNumber) {
+		  // Normalize XNumber value, to either XNumber or XSNumericType		  
+		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
+	  }
+
+	  if (right instanceof XNumber) {
+		  // Normalize XNumber value, to either XNumber or XSNumericType		  
+		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
+	  }
 	  
 	  if (left instanceof XPathArray) {
 		 left = ((XPathArray)left).atomize();
@@ -121,12 +147,88 @@ public class Equals extends XPathOperator
 		 right = ((XPathArray)right).atomize(); 
 	  }
 	  
+	  if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
+		 ResultSequence rSeq1 = (ResultSequence)left; 
+		 ResultSequence rSeq2 = (ResultSequence)right;
+		 
+		 int size1 = rSeq1.size();
+		 int size2 = rSeq2.size();
+		 
+		 int numericCount1 = 0;
+		 int anyUriCount1 = 0;
+		 int numericCount2 = 0;
+		 int anyUriCount2 = 0;
+		 
+		 for (int idx = 0; idx < size1; idx++) {
+			 XObject xObj = rSeq1.item(idx);
+
+			 if (xObj instanceof XSNumericType || xObj instanceof XNumber) {
+				 numericCount1++;
+			 }
+			 else if (xObj instanceof XSAnyURI) {
+				 anyUriCount1++;
+			 }
+		 }
+
+		 for (int idx = 0; idx < size2; idx++) {
+			 XObject xObj = rSeq2.item(idx);
+
+			 if (xObj instanceof XSNumericType || xObj instanceof XNumber) {
+				 numericCount2++;
+			 }
+			 else if (xObj instanceof XSAnyURI) {
+				 anyUriCount2++;
+			 } 
+		 }
+		 
+		 if ((numericCount1 > 0 && anyUriCount2 > 0) || (anyUriCount1 > 0 && numericCount2 > 0)) {
+			throw new TransformerException("XPTY0004 : A numeric value cannot be compared with 'anyURI' value."); 
+		 }
+	  }
+	  
 	  if ((left instanceof ResultSequence) && !((right instanceof ResultSequence) || (right instanceof XMLNodeCursorImpl))) {
 		 ResultSequence rSeq = (ResultSequence)left;		 
 		 int size1 = rSeq.size();
 		 
 		 if (size1 == 1) {
 		    left = rSeq.item(0);  
+		 }
+		 
+		 if (((right instanceof XSNumericType) || (right instanceof XNumber)) && (XslTransformData.m_stylesheetRoot != null)) {
+			 // xdm value type check within an XSL stylesheet environment
+			 
+			 java.lang.String str1 = null;
+
+			 boolean xslEmptyStrTypeErr = false;
+
+			 if (size1 == 1) {
+				 if (left instanceof XSUntypedAtomic) {
+					 str1 = ((XSUntypedAtomic)left).stringValue();
+
+					 if ("".equals(str1)) {
+						 xslEmptyStrTypeErr = true;
+					 }
+				 }
+			 }
+			 else if (size1 > 1) {
+				 for (int idx = 0; idx < size1; idx++) {
+					 XObject xObj = rSeq.item(idx);
+
+					 if (xObj instanceof XSUntypedAtomic) {
+						 str1 = ((XSUntypedAtomic)xObj).stringValue();
+
+						 if ("".equals(str1)) {
+							 xslEmptyStrTypeErr = true;
+
+							 break;
+						 }
+					 }
+				 }
+			 }
+			 
+			 if (xslEmptyStrTypeErr) {
+				 throw new TransformerException("FORG0001 : An empty string value '' cannot be converted to a number.");
+			 }
 		 }
 	  }
 	  
@@ -137,50 +239,173 @@ public class Equals extends XPathOperator
 		  if (size1 == 1) {
 			 right = rSeq.item(0);  
 		  }
+	  }	        
+      
+      if ((left instanceof ResultSequence) && (((ResultSequence)left).size() > 0)) {
+    	  XMLNodeCursorImpl xmlNodeCursorImpl = getXmlNodeCursorImplFromSequence((ResultSequence)left, xctxt);
+
+    	  if (xmlNodeCursorImpl != null) {
+    		  left = xmlNodeCursorImpl;  
+    	  }
+      }
+
+      if ((right instanceof ResultSequence) && (((ResultSequence)right).size() > 0)) {
+    	  XMLNodeCursorImpl xmlNodeCursorImpl = getXmlNodeCursorImplFromSequence((ResultSequence)right, xctxt);
+
+    	  if (xmlNodeCursorImpl != null) {
+    		  right = xmlNodeCursorImpl;    		 
+    	  }
+      }
+	  
+	  if (left instanceof XNumber) {		  
+		  if ((right instanceof ResultSequence) && !(((ResultSequence)right).getSequenceExpanded())) {
+			 ResultSequence rSeq = (ResultSequence)right;
+			 XSInteger xsInt0 = (XSInteger)(rSeq.item(0));
+			 XSInteger xsInt1 = (XSInteger)(rSeq.item(1));
+			 
+			 if (left instanceof XSInteger) {
+				XSInteger xsIntOne = (XSInteger)left;				
+				
+				VcGe vcGe = new VcGe();
+				vcGe.setLeftRight(xsIntOne, xsInt0);				
+				XObject xObj1 = vcGe.execute(xctxt);
+				
+				VcLe vcLe = new VcLe();
+				vcLe.setLeftRight(xsIntOne, xsInt1);				
+				XObject xObj2 = vcGe.execute(xctxt);
+
+				if (xObj1.bool() && xObj2.bool()) {
+					result = XBoolean.S_TRUE;
+				}
+				else {
+					result = XBoolean.S_FALSE;
+				}
+				
+				return result;
+			 }
+		  }		  
+	  }
+	  
+	  if ((left instanceof XSUntypedAtomic) && (right instanceof XSDayTimeDuration)) {
+		 java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+		 
+		 try {
+		    left = XSDayTimeDuration.parseDayTimeDuration(str1);
+		 }
+		 catch (TransformerException ex) {
+			throw new TransformerException("FORG0001 : The string value '" + str1 + "' cannot be transformed to schema type 'dayTimeDuration'");
+		 }
+	  }
+	  
+	  if ((left instanceof XSYearMonthDuration) && (right instanceof XSUntypedAtomic)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+
+		  try {
+			  right = XSYearMonthDuration.parseYearMonthDuration(str1);
+		  }
+		  catch (TransformerException ex) {
+			  throw new TransformerException("FORG0001 : The string value '" + str1 + "' cannot be transformed to schema type 'yearMonthDuration'");
+		  }
+	  }	  	  
+	  
+	  if ((left instanceof XSUntypedAtomic) || (left instanceof XMLNodeCursorImpl)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+
+		  try {
+			 BigDecimal bigDecimal1 = new BigDecimal(str1);
+			 
+			 java.lang.String str2 = null;
+			 
+			 if (right instanceof XNumber) {
+			    str2 = ((XNumber)right).num() + "";	 
+			 }
+			 else if (right instanceof XSNumericType) {
+				str2 = ((XSNumericType)right).stringValue();
+			 }
+			 
+			 if (str2 != null) {
+				BigDecimal bigDecimal2 = new BigDecimal(str2);				
+				boolean bool = (bigDecimal1.compareTo(bigDecimal2) == 0);
+				
+				result = bool ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+				
+				return result;
+			 }
+		  }
+		  catch (NumberFormatException ex) {
+			 if ((right instanceof XSNumericType) || (right instanceof XNumber)) {
+				 throw new TransformerException("FORG0001 : A string value '" + str1 + "' cannot be transformed to a numeric value."); 
+			 }
+		  }
+	  }
+
+	  if ((right instanceof XSUntypedAtomic) || (right instanceof XMLNodeCursorImpl)) {
+		  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+
+		  try {
+			  BigDecimal bigDecimal2 = new BigDecimal(str2);
+
+			  java.lang.String str1 = null;
+
+			  if (left instanceof XNumber) {
+				  str1 = ((XNumber)left).num() + "";	 
+			  }
+			  else if (left instanceof XSNumericType) {
+				  str1 = ((XSNumericType)left).stringValue();
+			  }
+
+			  if (str1 != null) {
+				  BigDecimal bigDecimal1 = new BigDecimal(str1);				
+				  boolean bool = (bigDecimal1.compareTo(bigDecimal2) == 0);
+
+				  result = bool ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+
+				  return result;
+			  }
+		  }
+		  catch (NumberFormatException ex) {
+			  if ((left instanceof XSNumericType) || (left instanceof XNumber)) {
+				  throw new TransformerException("FORG0001 : A string value '" + str2 + "' cannot be transformed to a numeric value."); 
+			  }
+		  }
 	  }
 	  
 	  if ((left instanceof XSString || left instanceof XString) && 
-			                                            (right instanceof XSNumericType || right instanceof XNumber)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+			                                            (right instanceof XSNumericType || right instanceof XNumber)) {		  		 
+		 // An XPath expression not being used within an XSL stylesheet, has
+		 // stricter type checking.
 		  
-		  if (str1.startsWith("0") && (XslTransformData.m_stylesheetRoot != null)) { 
-		     throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
-		  }
-		  
-		  if (XslTransformData.m_stylesheetRoot == null) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
-		  }
+		 if (XslTransformData.m_stylesheetRoot == null) {
+			throw new TransformerException("XPTY0004 : An xdm string value cannot be compared to a number."); 
+		 }
 	  }
 	  
 	  if ((right instanceof XSString || right instanceof XString) && 
 			                                            (left instanceof XSNumericType || left instanceof XNumber)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
-		  
-		  if (str1.startsWith("0") && (XslTransformData.m_stylesheetRoot != null)) { 
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
-		  }
+		  // An XPath expression not being used within an XSL stylesheet, has
+		  // stricter type checking.
 		  
 		  if (XslTransformData.m_stylesheetRoot == null) {
-			 throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+			 throw new TransformerException("XPTY0004 : An xdm string value cannot be compared to a number."); 
 		  }
 	  }
 	  
 	  if (((left instanceof XSString) || (left instanceof XString)) && 
                                                                    ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic))) {
-		  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value cannot be compared to a boolean.");
+		  throw new TransformerException("XPTY0004 : An xdm string value cannot be compared to a boolean.");
 	  }
 	  
 	  if (((right instanceof XSString) || (right instanceof XString)) && 
                                                                      ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic))) {
-          throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value cannot be compared to a boolean.");
+          throw new TransformerException("XPTY0004 : An xdm string value cannot be compared to a boolean.");
       }
 	  
 	  if ((left instanceof XSAnyURI) && ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic))) {
-		  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm 'anyURI' value cannot be compared to a boolean.");
+		  throw new TransformerException("XPTY0004 : An xdm 'anyURI' value cannot be compared to a boolean.");
 	  }
 
 	  if ((right instanceof XSAnyURI) && ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic))) {
-		  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm 'anyURI' value cannot be compared to a boolean.");
+		  throw new TransformerException("XPTY0004 : An xdm 'anyURI' value cannot be compared to a boolean.");
 	  }
 	  
 	  if ((left instanceof XSUntypedAtomic) && (right instanceof XSDuration)) {
@@ -255,13 +480,6 @@ public class Equals extends XPathOperator
 			 throw new TransformerException("FORG0001 : While evaluating XPath operator =, couldn't transform string '" 
 		                                                                                                             + str2 + "' to a numeric value."); 
 		  }
-	  }
-	  
-	  if ((left instanceof XSUntypedAtomic) && ((right instanceof XString) || (right instanceof XSString))) {
-		  XObject temp1 = left;
-		  
-		  left = right;
-		  right = temp1;
 	  }
 	  
 	  if (((left instanceof XString) || (left instanceof XSString)) && (right instanceof XSUntypedAtomic)) {
@@ -667,18 +885,19 @@ public class Equals extends XPathOperator
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		 }
 		 else if (left instanceof ResultSequence) {
-			 ResultSequence resultSeqLhs = (ResultSequence)left;
-			 ResultSequence resultSeqRhs = (ResultSequence)right;
+			 ResultSequence rSeq1 = (ResultSequence)left;
+			 ResultSequence rSeq2 = (ResultSequence)right;
+			 
 			 boolean isEqual = false;
 			 
-			 int size1 = resultSeqLhs.size();			 
-			 int size2 = resultSeqRhs.size();
+			 int size1 = rSeq1.size();			 
+			 int size2 = rSeq2.size();
 			 
-			 for (int i = 0; i < size1; i++) {
-				 XObject xObj1 = resultSeqLhs.item(i); 
+			 for (int idx1 = 0; idx1 < size1; idx1++) {
+				 XObject xObj1 = rSeq1.item(idx1); 
 				 
-				 for (int j = 0; j < size2; j++) {
-					XObject xObj2 = resultSeqRhs.item(j);
+				 for (int idx2 = 0; idx2 < size2; idx2++) {
+					XObject xObj2 = rSeq2.item(idx2);
 					
 					if (xObj2 instanceof ResultSequence) {
 					   XObject r1 = operate(xObj1, xObj2);
@@ -980,6 +1199,38 @@ public class Equals extends XPathOperator
 
   public void setXPathOpRstr(java.lang.String xpathOpRstr) {
 	  this.m_xpath_op_rstr = xpathOpRstr;
+  }
+  
+  /**
+   * Method definition, to get an XMLNodeCursorImpl object,
+   * from the supplied ResultSequence object instance. 
+   * 
+   * @param rSeq                       An xdm sequence object, instance
+   * @param xctxt                      An XPathContext object, instance 
+   * @return                           An XMLNodeCursorImpl object, instance
+   */
+  private XMLNodeCursorImpl getXmlNodeCursorImplFromSequence(ResultSequence rSeq, XPathContext xctxt) {
+	  
+	  XMLNodeCursorImpl result = null;
+
+	  List<Integer> nodeHandleList = new ArrayList<Integer>();
+
+	  int size1 = rSeq.size();
+
+	  for (int idx = 0; idx < size1; idx++) {
+		  XObject xObj1 = rSeq.item(idx);
+
+		  if (xObj1 instanceof XMLNodeCursorImpl) {
+			  int nextNode = (((XMLNodeCursorImpl)xObj1).iter()).nextNode();
+			  nodeHandleList.add(nextNode);
+		  }
+	  }
+
+	  if (nodeHandleList.size() == size1) {
+		  result = new XMLNodeCursorImpl(nodeHandleList, xctxt); 
+	  }
+
+	  return result;
   }
 
 }

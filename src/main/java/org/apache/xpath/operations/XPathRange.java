@@ -99,6 +99,10 @@ public class XPathRange extends XPathOperator
     	else {
     		xObj0 = m_left.execute(xctxt, true); 
     	}
+    	
+    	if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
+    		return result;
+    	}
           
     	if (m_right instanceof XSL3ConstructorOrExtensionFunction) {
     		XSL3ConstructorOrExtensionFunction xpathFunc = (XSL3ConstructorOrExtensionFunction)m_right;
@@ -112,6 +116,10 @@ public class XPathRange extends XPathOperator
     	}
     	else {
     		xObj1 = m_right.execute(xctxt, true); 
+    	}
+    	
+    	if ((xObj1 instanceof ResultSequence) && (((ResultSequence)xObj1).size() == 0)) {
+    		return result;
     	}
 
     	if (xObj0 instanceof XNumber) {
@@ -140,8 +148,7 @@ public class XPathRange extends XPathOperator
     		rBigInt = getBigIntValue(xObj1, xctxt);
     	}      
 
-    	if (rBigInt.compareTo(lBigInt) >= 0) {
-    		
+    	if (rBigInt.compareTo(lBigInt) >= 0) {    		
     		BigInteger diff1 = rBigInt.subtract(lBigInt);
     		BigInteger const1 = BigInteger.valueOf(MAX_RANGE_SIZE - 1);
     		
@@ -159,8 +166,10 @@ public class XPathRange extends XPathOperator
 
     			if (rBigInt.compareTo(maxIntValue) <= 0) {
     				// Using primitive int value comparisons to produce the result    			
+    				
     				int lInt = lBigInt.intValue();
     				int rInt = rBigInt.intValue();    			
+    				
     				for (int idx = lInt; idx < (rInt + 1); idx++) {
     					XSInteger xsInteger = new XSInteger(idx + "");    				    				
     					result.add(xsInteger); 
@@ -168,8 +177,10 @@ public class XPathRange extends XPathOperator
     			}
     			else if (rBigInt.compareTo(maxLongValue) <= 0) {
     				// Using primitive long value comparisons to produce the result    			
+    				
     				long lLong = lBigInt.longValue();
     				long rLong = rBigInt.longValue();    			
+    				
     				for (long idx = lLong; idx < (rLong + 1); idx++) {
     					XSInteger xsInteger = new XSInteger(idx + "");    				    				
     					result.add(xsInteger); 
@@ -177,6 +188,7 @@ public class XPathRange extends XPathOperator
     			}
     			else {
     				// Using BigInteger value comparisons to produce the result     			
+    				
     				while (lBigInt.compareTo(rBigInt) <= 0) {
     					XSInteger xsInteger = new XSInteger(lBigInt);    				
     					result.add(xsInteger);
@@ -214,9 +226,9 @@ public class XPathRange extends XPathOperator
      	       result = new BigInteger(strVal);
      	    }
      	    catch (NumberFormatException ex) {
-     	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                                                                                                 + "operand value " + strVal 
-                                                                                                 + " is not an integer.", srcLocator);
+     	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 range 'to' operator's "
+                                                                                                                 + "operand value " + strVal 
+                                                                                                                 + " is not an integer.", srcLocator);
      	    }
     	}
     	else if (xObj instanceof XNumber) {    		    		
@@ -226,9 +238,9 @@ public class XPathRange extends XPathOperator
       	       result = new BigInteger(strVal);
       	    }
       	    catch (NumberFormatException ex) {
-      	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                                                                                                 + "operand value " + strVal 
-                                                                                                 + " is not an integer.", srcLocator);
+      	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 range 'to' operator's "
+                                                                                                                 + "operand value " + strVal 
+                                                                                                                 + " is not an integer.", srcLocator);
       	    }
     	}
     	else {
@@ -238,9 +250,9 @@ public class XPathRange extends XPathOperator
     	       result = new BigInteger(strVal);
     	    }
     	    catch (NumberFormatException ex) {
-    	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath range 'to' operator's "
-                        														                + "operand value " + strVal + " "
-                        														                + "is not an integer.", srcLocator);
+    	       throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 range 'to' operator's "
+                        														                                 + "operand value " + strVal + " "
+                        														                                 + "is not an integer.", srcLocator);
     	    }    		    		
     	}    	
 

@@ -24,7 +24,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
@@ -88,7 +87,7 @@ public class VcNotEquals extends XPathRelationalOp
   {
       XObject result = null;
 	  
-      XPathContext xctxt = null;
+      XPathContext xctxt = getXPathContext();
       
       if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1)) {
  		 left = ((ResultSequence)left).item(0);   
@@ -154,31 +153,6 @@ public class VcNotEquals extends XPathRelationalOp
     	  else if (rXNumber.getXsInteger() != null) {
     		  right = rXNumber.getXsInteger();   
     	  }
-      }
-      
-      StylesheetRoot stylesheetRoot = null;
-	  
-      if (XslTransformData.m_stylesheetRoot != null) {
-    	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
-    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  
-    	  if (!XslTransformData.m_use_when) {
-    	     xctxt = transformerImpl.getXPathContext();
-    	  }
-    	  else {
-    		 xctxt = new XPathContext();
-    	  }
-      }
-      else {
-    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
-    	  
-    	  if ((stylesheetRoot != null) && !XslTransformData.m_use_when) {
-    		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-     	     xctxt = transformerImpl.getXPathContext();
-     	  }
-     	  else {
-     		 xctxt = new XPathContext();
-     	  }
       }
       
       if ((left instanceof XString) || (left instanceof XSString)) {
@@ -667,7 +641,16 @@ public class VcNotEquals extends XPathRelationalOp
 		  }
 	  }
 	  
-	  List<XMLNSDecl> nsPrefixTable = null;	  
+	  List<XMLNSDecl> nsPrefixTable = null;
+	  
+	  StylesheetRoot stylesheetRoot = null;
+
+	  if (XslTransformData.m_stylesheetRoot != null) {
+		  stylesheetRoot = XslTransformData.m_stylesheetRoot;
+	  }
+	  else {
+		  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this); 
+	  }
 	  
 	  if (stylesheetRoot != null) {
 		  nsPrefixTable = stylesheetRoot.getPrefixTable();

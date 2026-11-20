@@ -181,8 +181,10 @@ public class FilterExprIteratorSimple extends LocPathIterator
 					  int rSeqLength = rSeq.size();
 					  List<Integer> nodeHandleList = new ArrayList<Integer>();
 					  boolean isSeqNodeAndAtomicValues = true;
+					  
 					  for (int idx = 0; idx < rSeqLength; idx++) {
 						  XObject xObj = rSeq.item(idx);
+						  
 						  if (xObj instanceof XMLNodeCursorImpl) {
 							  int nodeHandle = (((XMLNodeCursorImpl)xObj).iter()).nextNode();
 							  nodeHandleList.add(Integer.valueOf(nodeHandle)); 
@@ -217,6 +219,46 @@ public class FilterExprIteratorSimple extends LocPathIterator
 					  if (isSeqNodeAndAtomicValues) {
 						  result = new XMLNodeCursorImpl(nodeHandleList, xctxt);
 					  }
+				  }
+			  }
+			  else if ((exprEvalResult instanceof XString) || (exprEvalResult instanceof XNumber) || 
+					                                          (exprEvalResult instanceof XBoolean) || 
+					                                          (exprEvalResult instanceof XBooleanStatic) || 
+					                                          (exprEvalResult instanceof XSAnyAtomicType)) {
+				  DTMManager dtmManager = xctxt.getDTMManager();
+				  
+				  ResultSequence rSeq1 = new ResultSequence();
+				  rSeq1.add(exprEvalResult);
+				  
+				  List<Integer> nodeHandleList = new ArrayList<Integer>();
+
+				  // XSL transform of an xdm atomic value to a wrapper text node
+				  DTM dtm = dtmManager.getXmlDTMTreeFromResultSequence(rSeq1);        				
+
+				  int docNodeHandle = dtm.getDocument();
+				  int docElemNodeHandle = dtm.getFirstChild(docNodeHandle);
+				  int node = dtm.getFirstChild(docElemNodeHandle);
+				  int textNodeHandle = dtm.getFirstChild(node);
+				  nodeHandleList.add(Integer.valueOf(textNodeHandle));
+				  
+				  int node2 = dtm.getNextSibling(textNodeHandle);
+				  Node node1 = null;
+				  
+				  int xdmTypeId = XObject.CLASS_UNKNOWN;
+				  
+				  if ((node2 != DTM.NULL) && (dtm.getNodeType(node2) == DTM.COMMENT_NODE)) {
+				     node1 = dtm.getNode(node2);
+				     
+				     String str1 = node1.getNodeValue();
+				     String[] strArray = str1.split(":");
+				     
+				     xdmTypeId = Integer.valueOf((strArray[1]).trim());
+				  }
+				  
+				  result = new XMLNodeCursorImpl(nodeHandleList, xctxt);
+				  
+				  if (xdmTypeId != XObject.CLASS_UNKNOWN) {
+					 result.setXdmTypeId(xdmTypeId); 
 				  }
 			  }
 			  else {

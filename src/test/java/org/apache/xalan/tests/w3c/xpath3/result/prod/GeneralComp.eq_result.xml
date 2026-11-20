@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-27T10:01:25Z" fail="6" name="prod-GeneralComp.eq" pass="113" run="119" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:32:04Z" fail="2" name="prod-GeneralComp.eq" pass="117" run="119" statusUnknown="0">
    <testResult status="pass" testName="generalexpression1"/>
    <testResult status="pass" testName="generalexpression2"/>
    <testResult status="pass" testName="generalexpression3"/>
@@ -41,8 +41,8 @@
    <testResult status="pass" testName="generalexpression88"/>
    <testResult status="pass" testName="generalexpression89"/>
    <testResult status="pass" testName="generalexpression90"/>
-   <testResult status="fail" testName="generalexpression91"/>
-   <testResult status="fail" testName="generalexpression92"/>
+   <testResult status="pass" testName="generalexpression91"/>
+   <testResult status="pass" testName="generalexpression92"/>
    <testResult status="pass" testName="generalexpression93"/>
    <testResult status="pass" testName="generalexpression97"/>
    <testResult status="pass" testName="generalexpression98"/>
@@ -69,7 +69,7 @@
    <testResult status="pass" testName="K-GenCompEq-20"/>
    <testResult status="pass" testName="K-GenCompEq-21"/>
    <testResult status="pass" testName="K-GenCompEq-22"/>
-   <testResult status="fail" testName="K-GenCompEq-23"/>
+   <testResult status="pass" testName="K-GenCompEq-23"/>
    <testResult status="pass" testName="K-GenCompEq-24"/>
    <testResult status="pass" testName="K-GenCompEq-25"/>
    <testResult status="pass" testName="K-GenCompEq-26"/>
@@ -101,7 +101,7 @@
    <testResult status="pass" testName="K-GenCompEq-52"/>
    <testResult status="pass" testName="K-GenCompEq-53"/>
    <testResult status="pass" testName="K-GenCompEq-54"/>
-   <testResult status="fail" testName="K-GenCompEq-55"/>
+   <testResult status="pass" testName="K-GenCompEq-55"/>
    <testResult status="pass" testName="K-GenCompEq-56"/>
    <testResult status="pass" testName="K-GenCompEq-57"/>
    <testResult status="pass" testName="K-GenCompEq-58"/>

@@ -28,6 +28,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.XPathIdentityExpr;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
@@ -116,16 +117,7 @@ public class XPathArrowOp extends XPathOperator
 
     	  XPath xpathObj1 = new XPath(m_xpath_arrowOp_left_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
     	  
-    	  int idx = m_xpath_arrowOp_right_str.indexOf('(');
-    	  java.lang.String str1 = (m_xpath_arrowOp_right_str.substring(0, idx + 1)).trim();
-    	  java.lang.String str2 = (m_xpath_arrowOp_right_str.substring(idx + 1)).trim();
-    	  
-    	  if (")".equals(str2)) {
-    	     m_xpath_arrowOp_right_str = (str1 + "''" + str2);
-    	  }
-    	  else {
-    		 m_xpath_arrowOp_right_str = (str1 + "'', " + str2);
-    	  }
+    	  m_xpath_arrowOp_right_str = addFirstArgToFunction(m_xpath_arrowOp_right_str);
     	  
     	  XPath xpathObj2 = new XPath(m_xpath_arrowOp_right_str, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
@@ -515,83 +507,92 @@ public class XPathArrowOp extends XPathOperator
     	  else if (function instanceof Function3Args) {
     		  Function3Args funcThreeArgs = (Function3Args)function;
     		  
-    		  Expression arg0 = funcThreeArgs.getArg0();
-    		  Expression arg1 = funcThreeArgs.getArg1();
-    		  
+    		  Expression exprArg0 = funcThreeArgs.getArg0();
+    		  Expression exprArg1 = funcThreeArgs.getArg1();
+
     		  if (!(m_left instanceof Function)) {
-    			 funcThreeArgs.setArg0(m_left);  
+    			  funcThreeArgs.setArg0(m_left);  
     		  }
     		  else {
-    			 XObject funcEvalResult = m_left.execute(xctxt);
-    			 funcThreeArgs.setArg0(funcEvalResult);
-    		  }    		  
+    			  XObject funcEvalResult = m_left.execute(xctxt);
+    			  funcThreeArgs.setArg0(funcEvalResult);
+    		  }
     		  
     		  try {
-    			  if (arg0 != null) {
-    				 funcThreeArgs.setArg(arg0, 1);
-    			  }
+    			  funcThreeArgs.setArg(exprArg0, 1);
     			  
-    			  if (arg1 != null) {
-    				 funcThreeArgs.setArg(arg1, 2);
+    			  if (exprArg1 != null) {
+    			     funcThreeArgs.setArg(exprArg1, 2);
     			  }
     		  }
     		  catch (WrongNumberArgsException ex) {
-    			  throw new TransformerException("FORX0003 : An XPath 3.1 operator => evaluation has, an XPath dynamic error.", srcLocator);
+    			  // No op 
     		  }
 
     		  result = funcThreeArgs.execute(xctxt);
     	  }
     	  else if (function instanceof Function2Args) {
     		  Function2Args funcTwoArgs = (Function2Args)function;
-    		  Expression expr1 = funcTwoArgs.getArg1();
+    		  
+    		  Expression exprArg0 = funcTwoArgs.getArg0();
+    		    			  
+    		  if (!(m_left instanceof Function)) {
+    			  funcTwoArgs.setArg0(m_left);  
+    		  }
+    		  else {
+    			  XObject funcEvalResult = m_left.execute(xctxt);
+    			  funcTwoArgs.setArg0(funcEvalResult);
+    		  }
+    		  
+    		  try {
+    			  if (exprArg0 != null) {
+    			     funcTwoArgs.setArg(exprArg0, 1);
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  // No op 
+    		  }
 
-    		  if (expr1 != null) {
-    			  throw new TransformerException("FORX0003 : While evaluating an XPath 3.1 operator '=>', the second function "
-    			  		                                                                                                      + "item argument with arity two, "
-    			  		                                                                                                      + "cannot be supplied with a second argument.", srcLocator); 
-    		  }
-    		  else {     		
-    			  Expression arg0 = funcTwoArgs.getArg0();
-    			  
-    			  if (!(m_left instanceof Function)) {
-    				  funcTwoArgs.setArg0(m_left);  
-    			  }
-    			  else {
-    				  XObject funcEvalResult = m_left.execute(xctxt);
-    				  funcTwoArgs.setArg0(funcEvalResult);
-    			  }
-    			  
-    			  try {     		   
-    				  funcTwoArgs.setArg(arg0, 1);
-    			  } 
-    			  catch (WrongNumberArgsException ex) {
-    				  throw new TransformerException("FORX0003 : An XPath 3.1 operator => evaluation has, an XPath dynamic error.", srcLocator);
-    			  }
-    			  
-    			  result = funcTwoArgs.execute(xctxt);
-    		  }
+    		  result = funcTwoArgs.execute(xctxt);
     	  }
     	  else if (function instanceof FunctionOneArg) {
     		  FunctionOneArg funcOneArg = (FunctionOneArg)function;
-    		  Expression arg0 = funcOneArg.getArg0();
+    		     			  
+    		  if (!(m_left instanceof Function)) {
+    			  funcOneArg.setArg0(m_left);  
+    		  }
+    		  else {
+    			  XObject funcEvalResult = m_left.execute(xctxt);
+    			  funcOneArg.setArg0(funcEvalResult);
+    		  }
 
-    		  if (arg0 != null) {
-    			  throw new TransformerException("FORX0003 : While evaluating an XPath 3.1 operator '=>', the second function "
-																								                              + "item argument with arity one, "
-																								                              + "cannot be supplied with a function argument.", srcLocator); 
-    		  }
-    		  else {    			  
-    			  if (!(m_left instanceof Function)) {
-    				  funcOneArg.setArg0(m_left);  
-    			  }
-    			  else {
-    				  XObject funcEvalResult = m_left.execute(xctxt);
-    				  funcOneArg.setArg0(funcEvalResult);
-    			  }
-    			  
-    			  result = funcOneArg.execute(xctxt);
-    		  }
+    		  result = funcOneArg.execute(xctxt);
     	  }    	  
+      }
+      else if (m_right instanceof XPathIdentityExpr) {
+    	  XPathIdentityExpr xpathIdentityExpr = (XPathIdentityExpr)m_right;
+    	  
+    	  java.lang.String xpathArrowOpRightStr = xpathIdentityExpr.getXpathExprStr();
+    	  
+    	  if (prefixTable != null) {
+    		  xpathArrowOpRightStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathArrowOpRightStr, prefixTable);
+    	  }
+    	  
+    	  xpathArrowOpRightStr = addFirstArgToFunction(xpathArrowOpRightStr);
+    	  
+    	  XPath xpathObj2 = new XPath(xpathArrowOpRightStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+    	  if (m_vars != null) {
+    		  xpathObj2.fixupVariables(m_vars, m_globals_size);
+    	  }
+    	  
+    	  m_right = xpathObj2.getExpression();
+    	  
+    	  if (m_right instanceof Function) {
+    		 ((Function)m_right).setArg0(null);  
+    	  }
+    	  
+    	  result = execute(xctxt);
       }
       
       if ((m_xpath_arrowOpRemainingExprStr != null) && m_xpath_arrowOpRemainingExprStr.contains("=>")) {         
@@ -727,6 +728,35 @@ public class XPathArrowOp extends XPathOperator
        }
        
        return result;       
+    }
+    
+    /**
+     * Method definition, to transform the supplied function call
+     * lexical value, by adding a cosmetic first argument, so that
+     * function call compilation doesn't fail.
+     * 
+     * @param xpathArrowOpRightStr                 The supplied function call
+     *                                             lexical string.
+     * @return                                     The function call transformed
+     *                                             lexical string.
+     */
+    private java.lang.String addFirstArgToFunction(java.lang.String xpathArrowOpRightStr) {
+    	
+    	java.lang.String result = xpathArrowOpRightStr;
+    	
+    	int idx = result.indexOf('(');
+    	
+    	java.lang.String str1 = (result.substring(0, idx + 1)).trim();
+    	java.lang.String str2 = (result.substring(idx + 1)).trim();
+
+    	if (")".equals(str2)) {
+    		result = (str1 + "''" + str2);
+    	}
+    	else {
+    		result = (str1 + "'', " + str2);
+    	}
+    	
+    	return result;
     }
     
 }

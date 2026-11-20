@@ -68,7 +68,9 @@ public class FuncYearFromDate extends FunctionOneArg
 		}
 		else {
 			XSDate xsDateVal = (XSDate)arg0Val;
+			
 			XSInteger xsInteger = new XSInteger(xsDateVal.year() + "");
+			
 			result = xsInteger;
 		}
 

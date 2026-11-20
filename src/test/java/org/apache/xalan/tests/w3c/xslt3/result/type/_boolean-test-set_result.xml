@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:47Z" fail="1" name="boolean" pass="104" run="105" skipped="7" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:29:05Z" fail="3" name="boolean" pass="102" run="105" skipped="7" statusUnknown="0">
    <testResult status="pass" testName="boolean-001"/>
    <testResult status="pass" testName="boolean-002"/>
    <testResult status="pass" testName="boolean-003"/>
@@ -95,7 +95,9 @@
    <testResult status="pass" testName="boolean-094"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="boolean-095"/>
    <testResult feature="backwards_compatibility" status="skipped" testName="boolean-096"/>
-   <testResult status="pass" testName="boolean-097"/>
+   <testResult status="fail" testName="boolean-097">
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;true&lt;/out&gt;</outResult>
+   </testResult>
    <testResult status="pass" testName="boolean-098"/>
    <testResult status="pass" testName="boolean-099"/>
    <testResult status="pass" testName="boolean-100"/>
@@ -103,7 +105,7 @@
    <testResult status="pass" testName="boolean-102"/>
    <testResult status="pass" testName="boolean-103"/>
    <testResult status="pass" testName="boolean-104"/>
-   <testResult status="pass" testName="boolean-105"/>
+   <testResult status="fail" testName="boolean-105"/>
    <testResult status="pass" testName="boolean-106"/>
    <testResult status="pass" testName="boolean-107"/>
    <testResult status="pass" testName="boolean-108"/>

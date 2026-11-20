@@ -1989,8 +1989,21 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  }
 	  else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
 		  String lStr = ((XSNumericType)this).stringValue();
-		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
-		  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)obj2).num());
+		  
+		  BigDecimal lBigDecimal = new BigDecimal(lStr);
+		  
+		  obj2 = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)obj2);
+		  
+		  String str2 = null;
+		  
+		  if (obj2 instanceof XNumber) {
+			 str2 = ((XNumber)obj2).num() + "";
+		  }
+		  else {
+			 str2 = XslTransformEvaluationHelper.getStrVal(obj2);   
+		  }
+		  
+		  BigDecimal rBigDecimal = new BigDecimal(str2);
 		  
 		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
 	  }

@@ -24,11 +24,14 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathCollationSupport;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -71,6 +74,21 @@ public class NotEquals extends XPathOperator
   {	  
 	  
       XObject result = null;
+      
+      XPathContext xctxt = getXPathContext();
+      
+      // An xdm, atomization of both the XPath expression operands,
+      // using XPath 3.1 function fn:data.
+	  
+	  FuncData funcData = new FuncData();
+	  funcData.setArg0(left);
+	  
+	  left = funcData.execute(xctxt); 
+	  
+	  funcData = new FuncData();
+      funcData.setArg0(right);
+      
+	  right = funcData.execute(xctxt);
 	  
 	  if (left instanceof XPathArray) {
 		 left = ((XPathArray)left).atomize();
@@ -81,21 +99,43 @@ public class NotEquals extends XPathOperator
 	  }
 	  
 	  if ((left instanceof XSString || left instanceof XString) && 
-			  												(right instanceof XSNumericType || right instanceof XNumber)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
-		  
-		  if (str1.startsWith("0")) { 
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+			                                                   (right instanceof XSNumericType || right instanceof XNumber)) {		  		 
+		  // An XPath expression not being used within an XSL stylesheet, has
+		  // stricter type checking.
+
+		  if (XslTransformData.m_stylesheetRoot == null) {
+			  throw new TransformerException("XPTY0004 : An xdm string value cannot be compared to a number."); 
 		  }
 	  }
 
 	  if ((right instanceof XSString || right instanceof XString) && 
-			  												(left instanceof XSNumericType || left instanceof XNumber)) {
-		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
-		  
-		  if (str1.startsWith("0")) { 
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An xdm string value '" + str1 + "' cannot be compared to an integer.");
+			                                                     (left instanceof XSNumericType || left instanceof XNumber)) {
+		  // An XPath expression not being used within an XSL stylesheet, has
+		  // stricter type checking.
+
+		  if (XslTransformData.m_stylesheetRoot == null) {
+			  throw new TransformerException("XPTY0004 : An xdm string value cannot be compared to a number."); 
 		  }
+	  }
+	  
+	  if ((left instanceof XSString || left instanceof XString) && 
+			                                                   (right instanceof XSBoolean || right instanceof XBoolean 
+			                                                		                       || right instanceof XBooleanStatic)) {
+		  throw new TransformerException("XPTY0004 : An xdm string value cannot be compared with a boolean.");
+	  }
+
+	  if ((right instanceof XSString || right instanceof XString) && 
+			                                                     (left instanceof XSBoolean || left instanceof XBoolean 
+			                                                    		                    || left instanceof XBooleanStatic)) {
+		  throw new TransformerException("XPTY0004 : An xdm string value cannot be compared with a boolean.");
+	  }
+	  
+	  if ((left instanceof XSAnyURI) && (right instanceof XSBoolean || right instanceof XBoolean || right instanceof XBooleanStatic)) {
+		  throw new TransformerException("XPTY0004 : An xdm anyURI value cannot be compared with a boolean.");
+	  }
+
+	  if ((right instanceof XSAnyURI) && (left instanceof XSBoolean || left instanceof XBoolean || left instanceof XBooleanStatic)) {
+		  throw new TransformerException("XPTY0004 : An xdm anyURI value cannot be compared with a boolean.");
 	  }
 	  
 	  if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 0)) {
@@ -500,13 +540,6 @@ public class NotEquals extends XPathOperator
 		  
 		  return result;
 	  }
-	  
-	  if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
-		 ResultSequence temp1 = (ResultSequence)left;
-		 
-		 left = right;
-		 right = temp1;
-	  }
 	  	  
 	  if (right instanceof ResultSequence) {
 		 if (left instanceof XNumber) {
@@ -530,7 +563,7 @@ public class NotEquals extends XPathOperator
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		 }
 		 else if (left instanceof ResultSequence) {
-			 ResultSequence resultSeqLhs = (ResultSequence)left;
+			 /*ResultSequence resultSeqLhs = (ResultSequence)left;
 			 ResultSequence resultSeqRhs = (ResultSequence)right;
 			 boolean isNotEqual = false;
 			 
@@ -560,14 +593,52 @@ public class NotEquals extends XPathOperator
 				 }
 			 }
 			 
-			 result = (isNotEqual ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+			 result = (isNotEqual ? XBoolean.S_TRUE : XBoolean.S_FALSE);*/
+			 
+             boolean bool = XPathGeneralCmpEqualityOpUtil.equals((ResultSequence)left, (ResultSequence)right, true);
+			 
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		 }
 		 else {
 			 java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);			 
+			 
 			 boolean bool = XPathGeneralCmpEqualityOpUtil.equals(new XSString(lStrVal), (ResultSequence)right, true);
+			 
 			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		 }
 	  }
+	  else if (left instanceof ResultSequence) {
+		 if (right instanceof XNumber) {
+			boolean bool = XPathGeneralCmpEqualityOpUtil.equals((XNumber)right, (ResultSequence)left, true);
+			
+			result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		 }
+		 else if (right instanceof XSString) {
+			 boolean bool = XPathGeneralCmpEqualityOpUtil.equals((XSString)right, (ResultSequence)left, true);
+			 
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		 }
+		 else if (right instanceof XString) {
+			 boolean bool = XPathGeneralCmpEqualityOpUtil.equals((XString)right, (ResultSequence)left, true);
+			 
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		 }
+		 else if ((right instanceof XMLNodeCursorImpl) || (right instanceof XSUntypedAtomic)) {
+			java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
+			
+			try {
+				double dbl = Double.valueOf(str1);
+				
+				boolean bool = XPathGeneralCmpEqualityOpUtil.equals(new XNumber(dbl), (ResultSequence)left, true);
+				
+				result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+			}
+			catch (NumberFormatException ex) {
+				throw new TransformerException("FORG0001 : While evaluating XPath operator !=, couldn't transform string '" 
+                                                                                                                          + str1 + "' to a numeric value.");
+			}
+		 }		 
+	  }	  
 	  else if ((left instanceof XMLNodeCursorImpl) && (right instanceof XMLNodeCursorImpl)) {
 		  lObj = left.getFresh();
 		  rObj = right.getFresh();

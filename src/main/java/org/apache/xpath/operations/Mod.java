@@ -27,7 +27,6 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
@@ -95,25 +94,7 @@ public class Mod extends XPathArithmeticUtil
 	  Object lObj = left.object();
 	  Object rObj = right.object();
 	  
-	  XPathContext xctxt = null;
-      
-      StylesheetRoot stylesheetRoot = null;
-	  
-      if (XslTransformData.m_stylesheetRoot != null) {
-    	  stylesheetRoot = XslTransformData.m_stylesheetRoot; 
-    	  TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-    	  xctxt = transformerImpl.getXPathContext(); 
-      }
-      else {
-    	  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
-    	  if (stylesheetRoot != null) {
-    		 TransformerImpl transformerImpl = stylesheetRoot.getTransformerImpl();
-     	     xctxt = transformerImpl.getXPathContext();
-     	  }
-     	  else {
-     		 xctxt = new XPathContext();
-     	  } 
-      }
+	  XPathContext xctxt = getXPathContext();
 	  
 	  if (left instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'mod', but "
@@ -167,6 +148,15 @@ public class Mod extends XPathArithmeticUtil
 	  
 	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
 		 return new ResultSequence();  
+	  }
+	  
+	  StylesheetRoot stylesheetRoot = null;
+
+	  if (XslTransformData.m_stylesheetRoot != null) {
+		  stylesheetRoot = XslTransformData.m_stylesheetRoot;
+	  }
+	  else {
+		  stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this); 
 	  }
 	  
 	  if (stylesheetRoot == null) {

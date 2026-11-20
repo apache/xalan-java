@@ -21,10 +21,14 @@
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
+import org.apache.xml.utils.Constants;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
@@ -52,78 +56,126 @@ public class FuncLang extends FunctionMultiArgs {
 	    * @param xctxt                        An XPath context object
 	    * @return                             A valid XObject
 	    *
-	    * @throws javax.xml.transform.TransformerException
+	    * @throws TransformerException
 	    */
 	   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 	    
 			SourceLocator srcLocator = xctxt.getSAXLocator();
 		    
 		    if (m_arg0 == null) {
-			    throw new javax.xml.transform.TransformerException("XPDY0002: The function call fn:lang needs to have a mandatory "
-			    		                                                                              + "first argument.", srcLocator);
+			    throw new TransformerException("XPDY0002: An XPath 3.1 function 'lang' needs to have a mandatory first argument.", srcLocator);
 			}
 		    
 		    if (m_arg2 != null) {
-			    throw new javax.xml.transform.TransformerException("XPDY0002: The function call fn:lang cannot have more "
-			    		                                                                 + "than two arguments.", srcLocator);
+			    throw new TransformerException("XPDY0002: An XPath 3.1 function 'lang' cannot have more than two arguments.", srcLocator);
 			}
-			
-		    String langStrToBeTested = (getFunctionArgEffectiveValue(m_arg0, xctxt)).str();
 		    
-		    int nodeHandle = DTM.NULL;
+		    XObject xObj0 = getFunctionArgEffectiveValue(m_arg0, xctxt);
+		    
+		    String langStrToBeTested = null;
+			
+		    if ((xObj0 instanceof ResultSequence) && (((ResultSequence)xObj0).size() == 0)) {
+		       langStrToBeTested = "";
+		    }
+		    else {
+		       langStrToBeTested = XslTransformEvaluationHelper.getStrVal(xObj0);
+		    }
+		    
+		    int xdmNodeHandle = DTM.NULL;
+		    
+		    XObject xpath3CtxtItem = xctxt.getXPath3ContextItem();
 		    
 		    if (m_arg1 != null) {
-		       XObject secondArgEvalResult = getFunctionArgEffectiveValue(m_arg1, xctxt);
+		       XObject xObj1 = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		       
-		       if (secondArgEvalResult instanceof XMLNodeCursorImpl) {
-		    	   XMLNodeCursorImpl xObject = (XMLNodeCursorImpl)secondArgEvalResult;
-		    	   if (xObject.getLength() == 1) {
-		    		   XMLNodeCursorImpl nodeSet = (XMLNodeCursorImpl)xObject;
-				       DTMCursorIterator dtmIter = nodeSet.iterRaw();
-				       nodeHandle = dtmIter.nextNode(); 
+		       if (xObj1 instanceof ResultSequence) {
+		    	   ResultSequence rSeq = (ResultSequence)xObj1;
+
+		    	   if (rSeq.size() == 1) {
+		    		   xObj1 = rSeq.item(0); 
 		    	   }
 		    	   else {
-		    		  throw new javax.xml.transform.TransformerException("XPDY0002: The second argument of function call "
-		    		  		                                        + "fn:lang, is not a nodeset with length one.", srcLocator); 
+		    		   throw new TransformerException("XPTY0004: An XPath 3.1 function 'lang' second argument is not a node, or "
+		    		   		                                                                                 + "a context item is absent.", srcLocator); 
+		    	   }
+		       }
+		       
+		       if (xObj1 instanceof XMLNodeCursorImpl) {
+		    	   XMLNodeCursorImpl xmlNodeCursorImpl1 = (XMLNodeCursorImpl)xObj1;
+		    	   
+		    	   if (xmlNodeCursorImpl1.getLength() == 1) {
+		    		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xmlNodeCursorImpl1;
+				       DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
+				       
+				       xdmNodeHandle = dtmCursorIter.nextNode(); 
+		    	   }
+		    	   else {
+		    		   throw new TransformerException("XPTY0004: An XPath 3.1 function 'lang' second argument is not a node, or "
+                                                                                                             + "a context item is absent.", srcLocator);  
 		    	   }
 		       }
 		       else {
-		    	   throw new javax.xml.transform.TransformerException("XPTY0004: A type error has occured. The "
-		    	   		                                            + "second argument of function call fn:lang is not a node.", srcLocator);  
+		    	   throw new TransformerException("XPTY0004: An XPath 3.1 function 'lang' second argument is not a node, or "
+                                                                                                         + "a context item is absent.", srcLocator); 
+		       }
+		    }
+		    else if (xpath3CtxtItem != null) {
+		       if (xpath3CtxtItem instanceof XMLNodeCursorImpl) {
+		    	  XMLNodeCursorImpl xmlNodeCursorImpl1 = (XMLNodeCursorImpl)xpath3CtxtItem;
+		    	  
+		    	  if (xmlNodeCursorImpl1.getLength() == 1) {
+		    		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xmlNodeCursorImpl1;
+		    		  DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
+
+		    		  xdmNodeHandle = dtmCursorIter.nextNode(); 
+		    	  }
+		    	  else {
+		    		  throw new TransformerException("XPTY0004: An XPath 3.1 function 'lang' second argument is not a node, or "
+                                                                                                            + "a context item is absent.", srcLocator); 
+		    	  }
+		       }
+		       else {
+		    	  throw new TransformerException("XPTY0004: An XPath 3.1 function 'lang' second argument is not a node, or "
+                                                                                                        + "a context item is absent.", srcLocator); 
 		       }
 		    }
 		    else {
-		       nodeHandle = xctxt.getCurrentNode();
-		    }
-		    
-		    if (nodeHandle == DTM.NULL) {
-		       throw new javax.xml.transform.TransformerException("XPDY0002: An XPath node argument (either as an explicit second "
-		       		                                                      + "argument, or an implicit context node if second argument is absent) for "
-		       		                                                      + "function call fn:lang cannot be absent.", srcLocator);
-		    }
+		       xdmNodeHandle = xctxt.getCurrentNode();
+		    }		    
 		    
 		    boolean isLangEquals = false;
 		    
-		    DTM dtm = xctxt.getDTM(nodeHandle);
-		
-		    while (DTM.NULL != nodeHandle) {
-		        if (DTM.ELEMENT_NODE == dtm.getNodeType(nodeHandle)) {        
-		    	   int langAttrNodeHandle = dtm.getAttributeNode(nodeHandle, "http://www.w3.org/XML/1998/namespace", "lang");
-		
-		           if (DTM.NULL != langAttrNodeHandle) {
-		              String langVal = dtm.getNodeValue(langAttrNodeHandle);
-		              if ((langVal.toLowerCase()).startsWith(langStrToBeTested.toLowerCase())) {
-		                 int valLen = langStrToBeTested.length();
-		                 if ((langVal.length() == valLen) || (langVal.charAt(valLen) == '-')) {
-		                    isLangEquals = true;
-		                 }
-		              }
-		
-		              break;
-		           }
-		        }
-		        
-		        nodeHandle = dtm.getParent(nodeHandle);
+		    if (xdmNodeHandle != DTM.NULL) {
+		    	while (xdmNodeHandle != DTM.NULL) {
+		    		DTM dtm = xctxt.getDTM(xdmNodeHandle);
+
+		    		if (dtm.getNodeType(xdmNodeHandle) == DTM.ELEMENT_NODE) {        
+		    			int langAttrNodeHandle = dtm.getAttributeNode(xdmNodeHandle, Constants.S_XMLNAMESPACEURI, 
+		    					                                                                                 org.apache.xalan.templates.Constants.ATTRNAME_LANG);
+
+		    			if (langAttrNodeHandle != DTM.NULL) {
+		    				String langVal = dtm.getNodeValue(langAttrNodeHandle);
+
+		    				if ((langVal.toLowerCase()).startsWith(langStrToBeTested.toLowerCase())) {
+		    					int valLen = langStrToBeTested.length();
+
+		    					if ((langVal.length() == valLen) || (langVal.charAt(valLen) == '-')) {
+		    						isLangEquals = true;
+		    					}
+		    				}
+		    			}
+		    		}
+		    		
+		    		if (isLangEquals) {
+		    		   break;	
+		    		}
+
+		    		xdmNodeHandle = dtm.getParent(xdmNodeHandle);
+		    	}
+		    }
+		    else {
+		    	throw new TransformerException("XPDY0002: An XPath 3.1 function 'lang' second argument is not a node, or "
+                                                                                                                         + "a context item is absent.", srcLocator);
 		    }
 		
 		    return isLangEquals ? new XSBoolean(true) : new XSBoolean(false);

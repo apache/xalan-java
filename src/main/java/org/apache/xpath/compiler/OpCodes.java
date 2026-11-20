@@ -811,8 +811,10 @@ public class OpCodes
 	  
 	  public static final int OP_XPATH_IDENTITY_EXPR = 144;
 	  
+	  public static final int OP_XPATH3_STEP_EXPR1 = 145;
+	  
 	  /** XPath op code's next free id. Please keep this up to date. */
-	  private static final int NEXT_FREE_ID = 145;
+	  private static final int NEXT_FREE_ID = 146;
   }
 
   /** XPath op code's next free id. Please keep this up to date. */

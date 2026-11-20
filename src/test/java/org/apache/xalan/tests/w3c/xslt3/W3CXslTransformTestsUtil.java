@@ -546,7 +546,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     			   }
     		   }    		       		   
     		   
-    		   Source source = null;
+    		   Source xmlSource = null;    		   
 
     		   if (xmlDocInpStr != null) {
     			   if (!m_xslTransformTestSetFilePath.contains("expr/axes/")) {    				   
@@ -556,23 +556,23 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					   
     					   InputStream inpStream = (new URL(m_xml_document_url_str)).openStream();    					      					  
 
-    					   source = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+    					   xmlSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
     					   
     					   inpStream.close();
     				   }
-    				   else {
-    					   StringReader strReader = new StringReader(xmlDocInpStr);
-    					   InputSource inpSrc = new InputSource(strReader);
+    				   else {    					   
+    					   StringReader strReader = new StringReader(xmlDocInpStr);    					   
+    					   InputSource inpSrc = new InputSource(strReader);    					   
     					   XMLReader xmlReader = XMLReaderFactory.createXMLReader();	
     					   
-    					   source = new SAXSource(xmlReader, inpSrc);
+    					   xmlSource = new SAXSource(xmlReader, inpSrc);
     				   }
     			   }
     			   else {    				       				   
     				   byte[] byteArr = xmlDocInpStr.getBytes(StandardCharsets.UTF_8);
     				   InputStream inpStream = new ByteArrayInputStream(byteArr);    		       		   
     				   
-    				   source = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
+    				   xmlSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
     				   
     				   inpStream.close();
     			   }
@@ -592,10 +592,10 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
 				   xslSource = new DOMSource(m_xmlDocumentBuilder.parse(inpStream));
 				   
 				   inpStream.close(); 
-    		   }    		   
+    		   }     		   
     		   
     		   try {
-    		      runW3CXSLTTestSuiteXslTransformAndEmitResult(xslTestCaseName, source, xslSource, xslParamMap, expectedResultElem, elemTestRun, testResultDoc);
+    		      runW3CXSLTTestSuiteXslTransformAndEmitResult(xslTestCaseName, xmlSource, xslSource, xslParamMap, expectedResultElem, elemTestRun, testResultDoc);
     		   }
     		   catch (Exception ex) {
     			  // No op 
@@ -630,6 +630,8 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     					   // No op
     				   }
     			   }
+    			   
+    			   m_xml_document_url_str = null;
     		   }
     	   }    	   
     	}
@@ -695,7 +697,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
      * Method definition, to run a particular W3C XSLT 3.0 
      * test case within an XSL test set.
      */
-    private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String xslTestCaseName, Source source, 
+    private void runW3CXSLTTestSuiteXslTransformAndEmitResult(String xslTestCaseName, Source xmlSource, 
     		                                                  Source xslSource, Map<String, XObject> xslParamMap, 
     		                                                  Element expectedResultElem, Element elemTestRun, Document testResultDoc) throws Exception {    	    	
 
@@ -720,7 +722,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		if (m_initTemplateName != null) {
     		   m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    		   
     		   
-    		   if (source != null) {
+    		   if (xmlSource != null) {
     			  m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
     		   }
     		   else {
@@ -748,7 +750,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     				 
     				 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_TEMPLATE, m_initTemplateName);    				 
     				 
-    				 if (source != null) {
+    				 if (xmlSource != null) {
     					 m_xslTransformerFactory.setAttribute(XalanProperties.INIT_CONTEXT_NODE, Boolean.valueOf(true));
     				 }
     				 else {
@@ -779,7 +781,7 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
         		
         		transformerImpl.setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE);
         		
-        		if (source != null) {
+        		if (xmlSource != null) {
         		   transformerImpl.setInitContextItemAvailable(true);
         		}
         		
@@ -880,13 +882,13 @@ public class W3CXslTransformTestsUtil extends XslTransformTestsUtil {
     		
     		Source xmlInpSrc = null;
     		
-    		if ((m_initTemplateName != null) && (source == null)) {    			
-    			StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_element/>");
+    		if ((m_initTemplateName != null) && (xmlSource == null)) {    			
+    			StringReader strReader = new StringReader("<?xml version=\"1.0\"?><unlikely_xml_elem_name/>");
          	    
     			xmlInpSrc = new StreamSource(strReader);
     		}
     		else {
-    			xmlInpSrc = source; 
+    			xmlInpSrc = xmlSource; 
     		}    		    		
     		
     		transformer.transform(xmlInpSrc, new StreamResult(resultStrWriter));    		    		    

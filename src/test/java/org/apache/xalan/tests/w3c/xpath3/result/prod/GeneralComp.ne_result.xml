@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-30T10:40:49Z" fail="7" name="prod-GeneralComp.ne" pass="82" run="89" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:32:04Z" fail="0" name="prod-GeneralComp.ne" pass="89" run="89" statusUnknown="0">
    <testResult status="pass" testName="generalexpression100"/>
    <testResult status="pass" testName="generalexpression101"/>
    <testResult status="pass" testName="generalexpression102"/>
@@ -79,13 +79,13 @@
    <testResult status="pass" testName="K-GenCompNE-30"/>
    <testResult status="pass" testName="K-GenCompNE-31"/>
    <testResult status="pass" testName="K-GenCompNE-32"/>
-   <testResult status="fail" testName="K-GenCompNE-33"/>
-   <testResult status="fail" testName="K-GenCompNE-34"/>
+   <testResult status="pass" testName="K-GenCompNE-33"/>
+   <testResult status="pass" testName="K-GenCompNE-34"/>
    <testResult status="pass" testName="K-GenCompNE-35"/>
-   <testResult status="fail" testName="K-GenCompNE-36"/>
-   <testResult status="fail" testName="K-GenCompNE-37"/>
-   <testResult status="fail" testName="K-GenCompNE-38"/>
+   <testResult status="pass" testName="K-GenCompNE-36"/>
+   <testResult status="pass" testName="K-GenCompNE-37"/>
+   <testResult status="pass" testName="K-GenCompNE-38"/>
    <testResult status="pass" testName="K-GenCompNE-39"/>
-   <testResult status="fail" testName="K-GenCompNE-40"/>
-   <testResult status="fail" testName="K-GenCompNE-41"/>
+   <testResult status="pass" testName="K-GenCompNE-40"/>
+   <testResult status="pass" testName="K-GenCompNE-41"/>
 </testrun>

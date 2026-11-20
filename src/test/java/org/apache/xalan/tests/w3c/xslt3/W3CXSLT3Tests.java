@@ -91,13 +91,13 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XslFnCopyOfTests.class, XslHigherOrderFunctionTests.class, XslNamespaceTests.class, XslMapsTests.class, XslAttributeSetTests.class, 
+@SuiteClasses({ XslFnCopyOfTests.class, XslSelectAttrTests.class, XslHigherOrderFunctionTests.class, XslNamespaceTests.class, XslMapsTests.class, XslAttributeSetTests.class, 
 	            XslSortTests.class, XslMathTests.class, XslFunctionTests.class, XslContextItemTests.class,
 	            XslDocumentTests.class, XslGlobalContextItemTests.class, XslParamTests.class, XslCallTemplateTests.class, XslVariableTests.class, 
-	            XslAsAttrTests.class, XslAvtAttrTests.class, 
-	            XslDateTests.class, XslFnPositionTests.class, XslSequenceTests.class, XslMatchAttrTests.class, XslSelectAttrTests.class, XslApplyTemplatesTests.class,	            
+	            XslAsAttrTests.class, XslAvtAttrTests.class, XslChooseTests.class, 
+	            XslDateTests.class, XslFnPositionTests.class, XslSequenceTests.class, XslMatchAttrTests.class, XslApplyTemplatesTests.class,	            
 	            XslIterateTests.class, XslForEachGroupTests.class, XslTryTests.class, 
-	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslBooleanTests.class, XslChooseTests.class, XslCopyTests.class, XslElementTests.class, 	             
+	            XslAnalyzeStringTests.class, XslFnRootTests.class, XslBooleanTests.class, XslCopyTests.class, XslElementTests.class, 	             
 	            XslAxesTests.class, XslCastableTests.class, XslExpressionTests.class, XslForTests.class, 
 	            XslNodeTestTests.class, XslPathTests.class, XslPredicateTests.class, XslAttributeTests.class, XslCharacterMapTests.class,
 	            XslNodeTests.class, XslStringTests.class, XslFnDeepEqualTests.class, 

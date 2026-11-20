@@ -28,6 +28,8 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -71,6 +73,21 @@ public class Lte extends XPathOperator
 	  
       XObject result = null;
       
+      XPathContext xctxt = getXPathContext();
+      
+      // An xdm, atomization of both the XPath expression operands,
+      // using XPath 3.1 function fn:data.
+	  
+	  FuncData funcData = new FuncData();
+	  funcData.setArg0(left);
+	  
+	  left = funcData.execute(xctxt); 
+	  
+	  funcData = new FuncData();
+      funcData.setArg0(right);
+      
+	  right = funcData.execute(xctxt);
+      
       if (left instanceof XPathArray) {
 		  left = ((XPathArray)left).atomize();
 	  }
@@ -105,13 +122,6 @@ public class Lte extends XPathOperator
 		  result = XBoolean.S_FALSE;
 
 		  return result;
-	  }
-	  
-	  if ((right instanceof XNumber) && (left instanceof XSUntypedAtomic)) {
-		  XObject temp1 = right;
-		  
-		  right = left;
-		  left = temp1; 
 	  }
 	  
 	  if ((left instanceof XNumber) && (right instanceof XSUntypedAtomic)) {
@@ -497,10 +507,12 @@ public class Lte extends XPathOperator
 
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
-		  else if (left instanceof XMLNodeCursorImpl) {
-			  java.lang.String lStrVal = ((XMLNodeCursorImpl)left).str();
+		  else if ((left instanceof XMLNodeCursorImpl) || (left instanceof XSUntypedAtomic)) {
+			  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+			  
 			  try {
 				  double lhsDbl = Double.valueOf(lStrVal);
+				  
 				  boolean bool = XPathGeneralCmpOpSupport.lessThan(new XNumber(lhsDbl), (ResultSequence)right, true);
 
 				  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
@@ -521,10 +533,12 @@ public class Lte extends XPathOperator
 
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
-		  else if (right instanceof XMLNodeCursorImpl) {
-			  java.lang.String rStrVal = ((XMLNodeCursorImpl)right).str();
+		  else if ((right instanceof XMLNodeCursorImpl) || (right instanceof XSUntypedAtomic)) {
+			  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+			  
 			  try {
 				  double rhsDbl = Double.valueOf(rStrVal);
+				  
 				  boolean bool = XPathGeneralCmpOpSupport.lessThan((ResultSequence)left, new XNumber(rhsDbl), true);
 
 				  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);

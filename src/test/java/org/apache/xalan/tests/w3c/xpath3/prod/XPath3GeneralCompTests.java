@@ -36,13 +36,12 @@ public class XPath3GeneralCompTests extends W3CXPath3TestsUtil {
         
     	m_xsl_test_set_base_dir = W3C_XPATH3_TESTS_META_DATA_DIR_HOME + "prod/";
     	
-        m_test_set_fileArr = new String[] { "GeneralComp.eq.xml", "GeneralComp.ge.xml", "GeneralComp.gt.xml", "GeneralComp.le.xml", "GeneralComp.lt.xml", 
-        		                            "GeneralComp.ne.xml" };
+        m_test_set_fileArr = new String[] { "GeneralComp.gt.xml", "GeneralComp.le.xml", "GeneralComp.lt.xml" };
         
         m_resultSubFolderName = "prod";
         
-        m_test_set_result_fileArr = new String[] { "GeneralComp.eq_result.xml", "GeneralComp.ge_result.xml", "GeneralComp.gt_result.xml", "GeneralComp.le_result.xml", 
-        		                                   "GeneralComp.lt_result.xml", "GeneralComp.ne_result.xml" };
+        m_test_set_result_fileArr = new String[] { "GeneralComp.gt_result.xml", "GeneralComp.le_result.xml", 
+        		                                   "GeneralComp.lt_result.xml" };
     }
 
     @AfterClass

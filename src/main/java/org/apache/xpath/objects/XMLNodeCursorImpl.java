@@ -98,6 +98,8 @@ public class XMLNodeCursorImpl extends NodeCursor
    * this node's conformance with the sequence type kind test.
    */
   private static XPathSequenceTypeKindTest m_seqTypeKindTest = null;
+  
+  private static int m_xdm_type_id = XObject.CLASS_UNKNOWN;
 
   /**
    * Construct a XMLNodeCursorImpl object.
@@ -1047,6 +1049,14 @@ public class XMLNodeCursorImpl extends NodeCursor
   
   public XPathSequenceTypeKindTest getSeqTypeKindTest() {
 	 return m_seqTypeKindTest; 
+  }
+  
+  public int getXdmTypeId() {
+	 return m_xdm_type_id;  
+  }
+
+  public void setXdmTypeId(int xdmTypeId) {
+	 this.m_xdm_type_id = xdmTypeId; 
   }
   
 }

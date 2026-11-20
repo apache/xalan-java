@@ -37,6 +37,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XdmAttributeItem;
 import org.apache.xpath.objects.XdmNamespaceItem;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -347,7 +348,14 @@ public abstract class DTMManager
               String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
               Element elemNode = document.createElement(childElemName);
               Text textNode = document.createTextNode(strVal);
-              elemNode.appendChild(textNode);                                          
+              elemNode.appendChild(textNode);
+              
+              int xdmTypeId = xObj.getType();
+              
+              Comment commNode1 = document.createComment(childElemName);
+              commNode1.setTextContent("xdmTypeId : " + xdmTypeId);
+              elemNode.appendChild(commNode1);
+              
               docElem.appendChild(elemNode);
           }
           

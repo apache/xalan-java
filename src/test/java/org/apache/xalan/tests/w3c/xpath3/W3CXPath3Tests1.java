@@ -44,6 +44,9 @@ import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisStepAbbrTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3AxisTestCollection;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3CastableExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralCompTests;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralcompEqTests;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralcompGeTests;
+import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralcompNeTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InlineFunctionExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InstanceOfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LiteralTests;
@@ -62,7 +65,9 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3GeneralCompTests.class, XPath3ExceptTests.class, XPath3FnAbsTests.class,
+@SuiteClasses({ XPath3ArrowPostfixTests.class, XPath3CastableExprTests.class, XPath3GeneralCompTests.class, 
+	            XPath3GeneralcompEqTests.class, XPath3GeneralcompNeTests.class, XPath3GeneralcompGeTests.class, 
+	            XPath3ExceptTests.class, XPath3FnAbsTests.class,
 	            XPath3InlineFunctionExprTests.class, XPath3FnFormatIntegerTests.class, XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, 
 	            XPath3FnEmptyTests.class, XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
 	            XPath3IntersectTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class, 
