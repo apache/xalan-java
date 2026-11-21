@@ -24,6 +24,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -77,8 +78,10 @@ public class FuncConcat extends FunctionMultiArgs
 				sb.append(inspectXPathSelfAxesExpression(m_args[idx], xctxt));
 			} 
 		}
+		
+		String str1 = sb.toString();
 
-		return new XString(sb.toString());
+		return new XString(str1);
 	}
 
 	/**
@@ -113,31 +116,37 @@ public class FuncConcat extends FunctionMultiArgs
 	 */
 	private String inspectXPathSelfAxesExpression(Expression expr, XPathContext xctxt) 
 																					throws TransformerException {
-		String resultStr = null;
+		String result = null;
 
+		if (expr instanceof XPathNamedFunctionReference) {
+		   throw new TransformerException("FOTY0013 : XPath function 'concat' requires xdm atomic values as "
+		   		                                                                       + "its argument. The supplied "
+		   		                                                                       + "argument value is an xdm function item.");
+		}
+		
 		if (expr instanceof SelfIteratorNoPredicate) {
 			XObject xpath3ContextItem = xctxt.getXPath3ContextItem();    	  
 			if (xpath3ContextItem != null) {
-				resultStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
+				result = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
 			}
 			else {
 				XObject xObj = expr.execute(xctxt);
-				resultStr = XslTransformEvaluationHelper.getStrVal(xObj);   
+				result = XslTransformEvaluationHelper.getStrVal(xObj);   
 			}
 		}
 		else if (expr instanceof Function) {
 			XObject evalResult = ((Function)expr).execute(xctxt);
-			resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);
+			result = XslTransformEvaluationHelper.getStrVal(evalResult);
 		}
 		else if (expr instanceof XSUntyped || expr instanceof XSUntypedAtomic) {
-			resultStr = ((XSAnyType)expr).stringValue();
+			result = ((XSAnyType)expr).stringValue();
 		}
 		else {
 			XObject xObj = expr.execute(xctxt);
-			resultStr = XslTransformEvaluationHelper.getStrVal(xObj);
+			result = XslTransformEvaluationHelper.getStrVal(xObj);
 		}
 
-		return resultStr;      
+		return result;      
 	}
  
 }

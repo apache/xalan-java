@@ -38,6 +38,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathRelationalOp;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -51,14 +52,15 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * An implementation of XPath 3.1 value comparison, 
- * operator 'ne'.
+ * An implementation of XPath 3.1 value comparison, operator 'ne'.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -89,6 +91,57 @@ public class VcNotEquals extends XPathRelationalOp
 	  
       XPathContext xctxt = getXPathContext();
       
+      if (left instanceof XMLNodeCursorImpl) {
+ 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
+
+ 		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
+
+ 		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
+ 			  left = new XSInteger(xmlNodeCursorImpl.str()); 
+ 		  }
+ 		  
+ 		  // More XML Schema data types needs to be considered here.
+ 		  // Revisit
+ 	  }
+
+ 	  if (right instanceof XMLNodeCursorImpl) {
+ 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
+
+ 		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
+
+ 		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
+ 			  right = new XSInteger(xmlNodeCursorImpl.str()); 
+ 		  }
+ 		  
+ 		  // More XML Schema data types needs to be considered here.
+ 		  // Revisit
+ 	  }
+      
+      // An xdm, atomization of both the XPath expression operands,
+      // using XPath 3.1 function fn:data.
+	  
+      FuncData funcData = new FuncData();	  
+	  
+	  if (left.getXsTypeDefinition() == null) {
+		  // The supplied xdm value doesn't have user specified 
+		  // XML Schema type.
+		  
+		  funcData.setArg0(left);
+		  
+	      left = funcData.execute(xctxt);
+	  }
+	  
+	  funcData = new FuncData();	        
+      
+      if (right.getXsTypeDefinition() == null) {
+    	 // The supplied xdm value doesn't have user specified 
+		 // XML Schema type.
+    	  
+    	 funcData.setArg0(right);
+    	 
+	     right = funcData.execute(xctxt);
+      }
+      
       if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1)) {
  		 left = ((ResultSequence)left).item(0);   
  	  }
@@ -97,65 +150,145 @@ public class VcNotEquals extends XPathRelationalOp
  		 right = ((ResultSequence)right).item(0);   
  	  }
  	  
- 	  if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
-		 java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
-		 
-		 java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
-		 
-		 result = (!str1.equals(str2)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-		 
-		 return result;
+ 	  boolean isSeq1Empty = false;
+	  
+	  if (left instanceof ResultSequence) {
+		  if (((ResultSequence)left).size() == 0) {
+			  isSeq1Empty = true;
+		  }
+		  else if (((ResultSequence)left).size() > 1) {
+			  throw new TransformerException("XPTY0004 : An XPath operator ne's first argument cannot be a "
+			  		                                                                                       + "sequence of size greater than one.", this); 
+		  }
 	  }
- 	  
- 	 if ((left instanceof XSUntypedAtomic) && (right instanceof XSAnyURI)) {
-		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+	  else if (left instanceof XMLNodeCursorImpl) {
+		  /**
+		   * There is a possibility that, an XPath operand value is still 
+		   * an xdm node here, if the node has user supplied XML Schema type 
+		   * annotation. Otherwise an xdm node would have been transformed 
+		   * previously to an xs:untypedAtomic value.
+		   */
+		  
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
+		  
+		  if (xmlNodeCursorImpl.getLength() == 0) {
+			  isSeq1Empty = true;
+		  }
+		  else if (xmlNodeCursorImpl.getLength() > 1) {
+			  throw new TransformerException("XPTY0004 : An XPath operator ne's first argument cannot be a "
+			  		                                                                                       + "sequence of size greater than one.", this);
+		  }
+	  }
 
-		  java.lang.String str2 = ((XSAnyURI)right).stringValue();
-
-		  result = (!str1.equals(str2)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  boolean isSeq2Empty = false;
+	  
+	  if (right instanceof ResultSequence) {
+		  if (((ResultSequence)right).size() == 0) {
+			  isSeq2Empty = true;
+		  }
+		  else if (((ResultSequence)right).size() > 1) {
+			  throw new TransformerException("XPTY0004 : An XPath operator ne's second argument cannot be a "
+			  																				                + "sequence of size greater than one.", this);
+		  }
+	  }
+	  else if (right instanceof XMLNodeCursorImpl) {
+		  /**
+		   * There is a possibility that, an XPath operand value is still 
+		   * an xdm node here, if the node has user supplied XML Schema type 
+		   * annotation. Otherwise an xdm node would have been transformed 
+		   * previously to an xs:untypedAtomic value.
+		   */
+		  
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
+		  
+		  if (xmlNodeCursorImpl.getLength() == 0) {
+			  isSeq2Empty = true;
+		  }
+		  else if (xmlNodeCursorImpl.getLength() > 1) {
+			  throw new TransformerException("XPTY0004 : An XPath operator ne's second argument cannot be a "
+			  																							    + "sequence of size greater than one.", this);
+		  }
+	  }
+	  
+	  if (isSeq1Empty || isSeq2Empty) {
+		  // An XPath 3.1 operator 'ne' has one or both of it's operands as empty sequence
+		  
+		  result = new ResultSequence();
 
 		  return result;
 	  }
 	  
-	  if ((left instanceof XSAnyURI) && (right instanceof XSUntypedAtomic)) {
-		  java.lang.String str1 = ((XSAnyURI)left).stringValue();
+	  if (left instanceof XNumber) {
+		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
+	  }
 
-		  java.lang.String str2 = ((XSUntypedAtomic)right).stringValue();
+	  if (right instanceof XNumber) {
+		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
+	  }
+	  
+	  if (left instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)left).stringValue();
+		  
+		  left = new XSString(str1);
+	  }
 
-		  result = (!str1.equals(str2)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  if (right instanceof XSUntypedAtomic) {
+		  java.lang.String str1 = ((XSUntypedAtomic)right).stringValue();
+		  
+		  right = new XSString(str1);
+	  }	  	  
+	  
+	  if ((left instanceof XSAnyAtomicType || left instanceof XNumber || left instanceof XString 
+			                               || left instanceof XBoolean || left instanceof XBooleanStatic) && 
+			                                                          (right instanceof XSAnyAtomicType || right instanceof XNumber || right instanceof XString 
+                                                                                                       || right instanceof XBoolean || right instanceof XBooleanStatic)) {
+		  if (left instanceof XNumber) {
+			 left = new XSDouble(((XNumber)left).num()); 
+		  }
+		  else if (left instanceof XString) {
+			 left = new XSString(((XString)left).str()); 
+		  }
+		  else if (left instanceof XBoolean || left instanceof XBooleanStatic) {
+			 left = new XSBoolean(left.bool()); 
+		  }
+		  
+		  if (right instanceof XNumber) {
+			  right = new XSDouble(((XNumber)right).num()); 
+		  }
+		  else if (right instanceof XString) {
+			  right = new XSString(((XString)right).str()); 
+		  }
+		  else if (right instanceof XBoolean || right instanceof XBooleanStatic) {
+			  right = new XSBoolean(right.bool()); 
+		  }
+		  
+		  if ((left.getType() != right.getType()) && ((left.getXsTypeDefinition() == null) && (right.getXsTypeDefinition() == null))) {
+			  // This is not a complete implementation for, XPath operator's operand cast,
+ 			  // as specified within XPath 3.1 spec (section, 3.7.1 Value Comparisons).
+			  
+			  if (left instanceof XSInteger) {
+				  XSInteger xsInteger = (XSInteger)left;
+				  
+				  left = new XSDecimal(xsInteger.stringValue());
+			  }
 
-		  return result;
+			  if (right instanceof XSInteger) {
+				  XSInteger xsInteger = (XSInteger)right;
+				  
+				  right = new XSDecimal(xsInteger.stringValue());
+			  }
+			  
+			 if ((left instanceof XSString || left instanceof XSAnyURI) && (right instanceof XSString || right instanceof XSAnyURI)) {
+				 java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
+				 java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+				 
+				 left = new XSString(str1);				 
+				 right = new XSString(str2);
+			 }			 			 			 			 
+		  }
 	  }
       
-      if (left instanceof XNumber) {
-    	  XNumber lXNumber = (XNumber)left;
-    	  
-    	  if (lXNumber.getXsDecimal() != null) {
-    		  left = lXNumber.getXsDecimal();  
-    	  }
-    	  else if (lXNumber.getXsDouble() != null) {
-    		  left = lXNumber.getXsDouble();   
-    	  }
-    	  else if (lXNumber.getXsInteger() != null) {
-    		  left = lXNumber.getXsInteger();   
-    	  }
-      }
-
-      if (right instanceof XNumber) {
-    	  XNumber rXNumber = (XNumber)right;
-    	  
-    	  if (rXNumber.getXsDecimal() != null) {
-    		  right = rXNumber.getXsDecimal();  
-    	  }
-    	  else if (rXNumber.getXsDouble() != null) {
-    		  right = rXNumber.getXsDouble();   
-    	  }
-    	  else if (rXNumber.getXsInteger() != null) {
-    		  right = rXNumber.getXsInteger();   
-    	  }
-      }
-      
-      if ((left instanceof XString) || (left instanceof XSString)) {
+      if (left instanceof XSString) {
     	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);
 
     	  if ((Constants.XS_VALID_TRUE).equals(str1)) {
@@ -163,7 +296,7 @@ public class VcNotEquals extends XPathRelationalOp
     	  } 
       }
       
-      if ((right instanceof XString) || (right instanceof XSString)) {
+      if (right instanceof XSString) {
     	  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(right);
 
     	  if ((Constants.XS_VALID_TRUE).equals(str1)) {
@@ -171,100 +304,50 @@ public class VcNotEquals extends XPathRelationalOp
     	  } 
       }
 
-      if (((left instanceof XString) || (left instanceof XSString)) && 
-                                                                   ((right instanceof XNumber) || (right instanceof XSNumericType))) {
-         throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare a numeric value to string."); 
+      if ((left instanceof XSString) && ((right instanceof XNumber) || (right instanceof XSNumericType))) {
+          throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare a numeric value to string."); 
       }
 
-      if (((left instanceof XNumber) || (left instanceof XSNumericType)) && 
-                                                                        ((right instanceof XString) || (right instanceof XSString))) {
-         throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare a numeric value to string."); 
+      if (((left instanceof XNumber) || (left instanceof XSNumericType)) && (right instanceof XSString)) {
+          throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare a numeric value to string."); 
       }
 	  
       if (left instanceof XPathMap) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'ne', but "
-																												  + "the supplied type is a map "
-																												  + "type which cannot be atomized.", this); 
+		  throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'ne', but "
+																												        + "the supplied type is a map "
+																												        + "type which cannot be atomized.", this); 
 	  }
 
 	  if (right instanceof XPathMap) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'ne', but "
-																												  + "the supplied type is a map "
-																												  + "type which cannot be atomized.", this); 
+		  throw new TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'ne', but "
+																												         + "the supplied type is a map "
+																												         + "type which cannot be atomized.", this); 
 	  }
 	  
 	  if (isXPathOperandXdmFunctionItem(left)) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'ne', but "
-																												  + "the supplied type is a function "
-																												  + "type which cannot be atomized.", this); 
+		  throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'ne', but "
+																												        + "the supplied type is a function "
+																												        + "type which cannot be atomized.", this); 
 	  }
 
 	  if (isXPathOperandXdmFunctionItem(right)) {
-		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'ne', but "
-																												  + "the supplied type is a function "
-																												  + "type which cannot be atomized.", this); 
+		  throw new TransformerException("FOTY0013 : An xdm atomic value is required for the second operand of 'ne', but "
+																												         + "the supplied type is a function "
+																												         + "type which cannot be atomized.", this); 
 	  }
 	  
-	  boolean isLEmpty = false;
-	  
-	  if (left instanceof ResultSequence) {
-		  if (((ResultSequence)left).size() == 0) {
-			  isLEmpty = true;
-		  }
-		  else if (((ResultSequence)left).size() > 1) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath operator ne's first operand cannot be a "
-			  		                                                                                                      + "sequence of size greater than one.", this); 
-		  }
-	  }
-	  else if (left instanceof XMLNodeCursorImpl) {
-		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)left;
-		  
-		  if (nodeRef1.getLength() == 0) {
-			  isLEmpty = true;
-		  }
-		  else if (nodeRef1.getLength() > 1) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath operator ne's first operand cannot be a "
-			  		                                                                                                     + "sequence of size greater than one.", this);
-		  }
-	  }
+	  if ((left instanceof XSBoolean) && (right instanceof XSBoolean)) {
+		  boolean bool1 = left.bool(); 
+		  boolean bool2 = right.bool();
 
-	  boolean isREmpty = false;
-	  
-	  if (right instanceof ResultSequence) {
-		  if (((ResultSequence)right).size() == 0) {
-			  isREmpty = true;
-		  }
-		  else if (((ResultSequence)right).size() > 1) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath operator ne's second operand cannot be a "
-			  																											 + "sequence of size greater than one.", this);
-		  }
-	  }
-	  else if (right instanceof XMLNodeCursorImpl) {
-		  XMLNodeCursorImpl nodeRef1 = (XMLNodeCursorImpl)right;
-		  
-		  if (nodeRef1.getLength() == 0) {
-			  isREmpty = true;
-		  }
-		  else if (nodeRef1.getLength() > 1) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath operator ne's second operand cannot be a "
-			  																									         + "sequence of size greater than one.", this);
-		  }
-	  }
-	  
-	  if ((left instanceof XSBoolean) || (left instanceof XBoolean) || (left instanceof XBooleanStatic)) {
-		  if ((right instanceof XSBoolean) || (right instanceof XBoolean) || (right instanceof XBooleanStatic)) {
-			  boolean bool1 = left.bool(); 
-			  boolean bool2 = right.bool();
+		  int a = bool1 ? 1 : 0;
+		  int b = bool2 ? 1 : 0;
 
-			  int a = bool1 ? 1 : 0;
-			  int b = bool2 ? 1 : 0;
-
-			  if (a != b) {
-				  return XBoolean.S_TRUE;
-			  }
-			  else {
-				  return XBoolean.S_FALSE;
-			  }
+		  if (a != b) {
+			  return XBoolean.S_TRUE;
+		  }
+		  else {
+			  return XBoolean.S_FALSE;
 		  }
 	  }
 	  
@@ -289,8 +372,8 @@ public class VcNotEquals extends XPathRelationalOp
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
 				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
-					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' operand, cannot be a "
-							  																							+ "node validated with schema complex type.");				  
+					  throw new TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' operand, cannot be a "
+							  																					 + "node validated with schema complex type.");				  
 				  }
 				  else {
 					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
@@ -430,8 +513,8 @@ public class VcNotEquals extends XPathRelationalOp
 				  XSTypeDefinition typeDefn = elementPsvi.getTypeDefinition();
 				  
 				  if (typeDefn instanceof XSComplexTypeDefinition) {
-					  throw new javax.xml.transform.TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' operand, cannot be a "
-							  																							+ "node validated with schema complex type.");
+					  throw new TransformerException("FOTY0013 : An XPath 3.1 operator 'ne' operand, cannot be a "
+							  																					 + "node validated with schema complex type.");
 				  }
 				  else {
 					  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
@@ -572,72 +655,72 @@ public class VcNotEquals extends XPathRelationalOp
 	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs1) && (XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNs2)) {
 		  if ((isXsBuiltInTypeNumeric(typeName1) && !isXsBuiltInTypeNumeric(typeName2)) || 
 				                                                                       (isXsBuiltInTypeNumeric(typeName2) && !isXsBuiltInTypeNumeric(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-					                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+					                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("boolean".equals(typeName1) && !"boolean".equals(typeName2)) || ("boolean".equals(typeName2) && !"boolean".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("string".equals(typeName1) && !"string".equals(typeName2)) || ("string".equals(typeName2) && !"string".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("date".equals(typeName1) && !"date".equals(typeName2)) || ("date".equals(typeName2) && !"date".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("time".equals(typeName1) && !"time".equals(typeName2)) || ("time".equals(typeName2) && !"time".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("dateTime".equals(typeName1) && !"dateTime".equals(typeName2)) || ("dateTime".equals(typeName2) && !"dateTime".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if ("duration".equals(typeName1) && !("duration".equals(typeName2) || "dayTimeDuration".equals(typeName2) || "yearMonthDuration".equals(typeName2))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-                                                                                                                         + "types " + typeName1 + " and " + typeName2 + "."); 
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+                                                                                                                     + "types " + typeName1 + " and " + typeName2 + "."); 
 		  }
           else if ("dayTimeDuration".equals(typeName1) && !("duration".equals(typeName2) || "dayTimeDuration".equals(typeName2) || "yearMonthDuration".equals(typeName2))) {
-        	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-                                                                                                                         + "types " + typeName1 + " and " + typeName2 + ".");
+        	  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+                                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
           else if ("yearMonthDuration".equals(typeName1) && !("duration".equals(typeName2) || "dayTimeDuration".equals(typeName2) || "yearMonthDuration".equals(typeName2))) {
-        	  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-                                                                                                                         + "types " + typeName1 + " and " + typeName2 + ".");
+        	  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+                                                                                                                     + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gYearMonth".equals(typeName1) && !"gYearMonth".equals(typeName2)) || ("gYearMonth".equals(typeName2) && !"gYearMonth".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gYear".equals(typeName1) && !"gYear".equals(typeName2)) || ("gYear".equals(typeName2) && !"gYear".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gMonthDay".equals(typeName1) && !"gMonthDay".equals(typeName2)) || ("gMonthDay".equals(typeName2) && !"gMonthDay".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gDay".equals(typeName1) && !"gDay".equals(typeName2)) || ("gDay".equals(typeName2) && !"gDay".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("gMonth".equals(typeName1) && !"gMonth".equals(typeName2)) || ("gMonth".equals(typeName2) && !"gMonth".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("hexBinary".equals(typeName1) && !"hexBinary".equals(typeName2)) || ("hexBinary".equals(typeName2) && !"hexBinary".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("base64Binary".equals(typeName1) && !"base64Binary".equals(typeName2)) || ("base64Binary".equals(typeName2) && !"base64Binary".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 		  else if (("QName".equals(typeName1) && !"QName".equals(typeName2)) || ("QName".equals(typeName2) && !"QName".equals(typeName1))) {
-			  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
-				 		                                                                                                 + "types " + typeName1 + " and " + typeName2 + ".");
+			  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'ne' cannot, compare values of schema "
+				 		                                                                                             + "types " + typeName1 + " and " + typeName2 + ".");
 		  }
 	  }
 	  
@@ -698,13 +781,7 @@ public class VcNotEquals extends XPathRelationalOp
 		  right = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
 	  }
 	  
-	  if (isLEmpty || isREmpty) {
-		 // An XPath 3.1 operator 'ne' has one or both of it's operands as empty sequence
-		 result = new ResultSequence(); 
-	  }
-	  else {
-		 result = left.vcEquals(right, getExpressionOwner(), null, false) ? XBoolean.S_TRUE : XBoolean.S_FALSE;  
-	  }
+	  result = left.vcEquals(right, getExpressionOwner(), null, false) ? XBoolean.S_TRUE : XBoolean.S_FALSE;  
 	  
       return result;
   }

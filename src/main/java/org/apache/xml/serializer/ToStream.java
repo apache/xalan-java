@@ -1493,7 +1493,7 @@ abstract public class ToStream extends SerializerBase
                         break;
                     case CharInfo.S_CARRIAGERETURN:
                         writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-                        writer.write("&#13;");
+                        writer.write("&#xD;");
                         lastDirtyCharProcessed = i;
                         i++;
                         break;
@@ -1558,7 +1558,7 @@ abstract public class ToStream extends SerializerBase
                             break;
                         case CharInfo.S_CARRIAGERETURN:
                         	writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-                        	writer.write("&#13;");
+                        	writer.write("&#xD;");
                         	lastDirtyCharProcessed = i;
                             // Leave whitespace carriage return as a real character
                             break;
@@ -2144,10 +2144,10 @@ abstract public class ToStream extends SerializerBase
                         writer.write("&#9;");
                         break;
                     case CharInfo.S_LINEFEED:
-                        writer.write("&#10;");
+                        writer.write("&#xA;");
                         break;
                     case CharInfo.S_CARRIAGERETURN:
-                        writer.write("&#13;");
+                        writer.write("&#xD;");
                         break;
                     default:
                         writer.write("&#");

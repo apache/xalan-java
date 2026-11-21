@@ -693,9 +693,9 @@ public class InstanceOf extends XPathOperator
       
       boolean isXdmValueString = ((xdmValue instanceof XString) || (xdmValue instanceof XSString));  
       
-      if (isXdmValueString && "".equals(XslTransformEvaluationHelper.getStrVal(xdmValue)) && ((sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND) && 
-    		                                                                                  ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
-    		                                                                                   (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)))) {
+      if (isXdmValueString && "".equals(XslTransformEvaluationHelper.getStrVal(xdmValue)) && (((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.DOCUMENT_KIND)) 
+    		                                                                              && ((seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE) || 
+    		                                                                                  (seqTypeOccrIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_MANY)))) {
     	  isInstanceOf = true;
       }      
       else if ((xdmValue instanceof XSUntypedAtomic) && (seqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
@@ -1007,7 +1007,7 @@ public class InstanceOf extends XPathOperator
     		  }
     	  }
       }
-      else if (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND) {
+      else if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     	  if (xdmValue instanceof ResultSequence) {
     		 ResultSequence rSeq = (ResultSequence)xdmValue;
     		 int rSeqSize = rSeq.size();

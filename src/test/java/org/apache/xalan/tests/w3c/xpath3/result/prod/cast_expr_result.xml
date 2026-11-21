@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-11T14:59:16Z" fail="762" name="prod-CastExpr" pass="1977" run="2739" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-21T17:02:04Z" fail="757" name="prod-CastExpr" pass="1982" run="2739" statusUnknown="0">
    <testResult status="pass" testName="casthc1"/>
    <testResult status="pass" testName="casthc2"/>
    <testResult status="pass" testName="casthc3"/>
@@ -780,11 +780,11 @@
    <testResult status="fail" testName="K-SeqExprCast-53"/>
    <testResult status="pass" testName="K-SeqExprCast-54"/>
    <testResult status="pass" testName="K-SeqExprCast-55"/>
-   <testResult status="fail" testName="K-SeqExprCast-56"/>
-   <testResult status="fail" testName="K-SeqExprCast-57"/>
-   <testResult status="fail" testName="K-SeqExprCast-58"/>
-   <testResult status="fail" testName="K-SeqExprCast-59"/>
-   <testResult status="fail" testName="K-SeqExprCast-60"/>
+   <testResult status="pass" testName="K-SeqExprCast-56"/>
+   <testResult status="pass" testName="K-SeqExprCast-57"/>
+   <testResult status="pass" testName="K-SeqExprCast-58"/>
+   <testResult status="pass" testName="K-SeqExprCast-59"/>
+   <testResult status="pass" testName="K-SeqExprCast-60"/>
    <testResult status="pass" testName="K-SeqExprCast-61"/>
    <testResult status="pass" testName="K-SeqExprCast-62"/>
    <testResult status="fail" testName="K-SeqExprCast-63"/>
