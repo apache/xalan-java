@@ -760,7 +760,7 @@ public class ElemValueOf extends ElemTemplateElement {
                 	 
                 	 if (expr instanceof Div) {
                 		 if (evalResult == null) {
-                			 strValue = "NaN";
+                			 strValue = Constants.ATTRNAME_NAN;
                 		 }
                 		 else {
                 			 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
@@ -775,7 +775,26 @@ public class ElemValueOf extends ElemTemplateElement {
                 	 } 
                 	 else if (evalResult instanceof ResultSequence) {                         
                          strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult, separatorStrValue);
-                     }                     
+                     }
+                	 else if (evalResult instanceof XMLNodeCursorImpl) {
+                		 XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;                		 
+                		 DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+                		 
+                		 int nextNode = DTM.NULL;
+                		 
+                		 StringBuffer strBuff = new StringBuffer(); 
+                		 
+                		 while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+                			XMLNodeCursorImpl xmlNodeCursorImpl1 = new XMLNodeCursorImpl(nextNode, xctxt);
+                			strBuff.append(xmlNodeCursorImpl1.str() + " ");
+                		 }
+                		 
+                		 strValue = (strBuff.toString()).trim();
+                		 
+                		 if (separatorStrValue != null) {
+                            strValue = strValue.replace(" ", separatorStrValue);
+                         }
+                	 }
                      else {
                          strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                          

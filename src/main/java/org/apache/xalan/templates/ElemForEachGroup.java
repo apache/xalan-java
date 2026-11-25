@@ -728,7 +728,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         		m_groupAdjacentExpression = new XPath(m_groupAdjacentExpression.getPatternString(), srcLocator, 
         																							xctxt.getNamespaceContext(), XPath.SELECT, null, false, m_xpath_default_namespace); 
         	}
-        }
+        }        
         
         final int currentNode = xctxt.getCurrentNode();
         

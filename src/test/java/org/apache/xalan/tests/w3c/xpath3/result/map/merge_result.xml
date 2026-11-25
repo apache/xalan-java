@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-10T16:54:55Z" fail="12" name="map-merge" pass="20" run="32" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-25T10:11:36Z" fail="10" name="map-merge" pass="22" run="32" statusUnknown="0">
    <testResult status="pass" testName="map-merge-001"/>
    <testResult status="pass" testName="map-merge-002"/>
    <testResult status="pass" testName="map-merge-003-hof"/>
    <testResult status="pass" testName="map-merge-003"/>
    <testResult status="pass" testName="map-merge-004"/>
-   <testResult status="fail" testName="map-merge-005"/>
+   <testResult status="pass" testName="map-merge-005"/>
    <testResult status="pass" testName="map-merge-006"/>
    <testResult status="pass" testName="map-merge-006b"/>
    <testResult status="pass" testName="map-merge-006c"/>
@@ -30,5 +30,5 @@
    <testResult status="pass" testName="map-merge-024"/>
    <testResult status="fail" testName="map-merge-025"/>
    <testResult status="fail" testName="map-merge-026"/>
-   <testResult status="fail" testName="map-merge-027"/>
+   <testResult status="pass" testName="map-merge-027"/>
 </testrun>

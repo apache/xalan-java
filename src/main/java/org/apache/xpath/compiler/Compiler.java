@@ -73,12 +73,12 @@ import org.apache.xpath.operations.CastAs;
 import org.apache.xpath.operations.CastableAs;
 import org.apache.xpath.operations.Div;
 import org.apache.xpath.operations.Equals;
-import org.apache.xpath.operations.Except;
+import org.apache.xpath.operations.XPathExceptImpl1;
 import org.apache.xpath.operations.Gt;
 import org.apache.xpath.operations.Gte;
 import org.apache.xpath.operations.IDiv;
 import org.apache.xpath.operations.InstanceOf;
-import org.apache.xpath.operations.Intersect;
+import org.apache.xpath.operations.XPathIntersectImpl1;
 import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.Lte;
 import org.apache.xpath.operations.Minus;
@@ -102,13 +102,13 @@ import org.apache.xpath.operations.VcLe;
 import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.operations.XPathArrowOp;
-import org.apache.xpath.operations.XPathExcept;
-import org.apache.xpath.operations.XPathIntersect;
+import org.apache.xpath.operations.XPathExceptImpl2;
+import org.apache.xpath.operations.XPathIntersectImpl2;
 import org.apache.xpath.operations.XPathOperator;
 import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.operations.XPathUnaryOperator;
-import org.apache.xpath.operations.XPathUnion;
+import org.apache.xpath.operations.XPathUnionImpl;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -1355,7 +1355,7 @@ public class Compiler extends XPathOpMap
 				  XPathParser.m_xpath_union_lstr = null;
 				  XPathParser.m_xpath_union_rstr = null;
 
-				  return new XPathUnion(lStr, rStr);
+				  return new XPathUnionImpl(lStr, rStr);
 			  }
 			  else {
 				  String errMesg = ex.getMessage();
@@ -1415,7 +1415,7 @@ public class Compiler extends XPathOpMap
 	  }
 	  
 	  try {
-	     result = compileXPathOperator(new Intersect(), opPos);
+	     result = compileXPathOperator(new XPathIntersectImpl1(), opPos);
 	  }
 	  catch (Exception ex) {
 		  /**
@@ -1432,7 +1432,7 @@ public class Compiler extends XPathOpMap
 				  XPathParser.m_xpath_intersect_lstr = null;
 				  XPathParser.m_xpath_intersect_rstr = null;
 
-				  return new XPathIntersect(lStr, rStr);
+				  return new XPathIntersectImpl2(lStr, rStr);
 			  }
 			  else {
 				  String errMesg = ex.getMessage();
@@ -1493,7 +1493,7 @@ public class Compiler extends XPathOpMap
 	  }
 	  
 	  try {
-	     result = compileXPathOperator(new Except(), opPos);
+	     result = compileXPathOperator(new XPathExceptImpl1(), opPos);
 	  }
 	  catch (Exception ex) {
 		  /**
@@ -1510,7 +1510,7 @@ public class Compiler extends XPathOpMap
 				  XPathParser.m_xpath_except_lstr = null;
 				  XPathParser.m_xpath_except_rstr = null;
 
-				  return new XPathExcept(lStr, rStr);
+				  return new XPathExceptImpl2(lStr, rStr);
 			  }
 			  else {
 				  String errMesg = ex.getMessage();

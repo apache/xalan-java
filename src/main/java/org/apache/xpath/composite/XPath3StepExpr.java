@@ -37,9 +37,9 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Class definition, to implement an XPath 3.1 expression with
- * syntax like, 1) /a/b/(for ...)
- *              2) /a/b/(let ...) etc     
+ * Class definition, to implement an XPath 3.1 expression like, 
+ *    1) /a/b/(for ...)
+ *    2) /a/b/(let ...) etc     
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -104,10 +104,14 @@ public class XPath3StepExpr extends Expression {
 		   int nextNode = DTM.NULL;
 		   
 		   while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
-			  xctxt.pushCurrentNode(nextNode);			  
+			  xctxt.pushCurrentNode(nextNode);
+			  
+			  DTM dtm = xctxt.getDTM(nextNode);
+			  String nodeName = dtm.getNodeName(nextNode);
 			  
 			  try {
 				  XObject xObj2 = xpathObj2.execute(xctxt, nextNode, xctxt.getNamespaceContext());
+				  
 				  rSeq.add(xObj2);
 			  }
 			  finally {

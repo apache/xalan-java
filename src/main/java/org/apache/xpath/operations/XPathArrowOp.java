@@ -31,9 +31,11 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathIdentityExpr;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.functions.FuncDistinctValues;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -44,6 +46,7 @@ import org.apache.xpath.functions.json.FuncJsonDoc;
 import org.apache.xpath.functions.json.FuncJsonToXml;
 import org.apache.xpath.functions.json.FuncParseJson;
 import org.apache.xpath.functions.json.FuncXmlToJson;
+import org.apache.xpath.functions.string.XSL3StringCollationAwareFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -503,6 +506,57 @@ public class XPathArrowOp extends XPathOperator
     		  }
     		  
     		  result = fnXmlToJson.execute(xctxt);
+    	  }
+    	  else if (function instanceof FunctionMultiArgs) {
+    		  FunctionMultiArgs funcMultiArgs = (FunctionMultiArgs)function;
+
+    		  Expression exprArg0 = funcMultiArgs.getArg0();    		      		      		      		  
+    		  Expression exprArg1 = funcMultiArgs.getArg1();
+    		  Expression exprArg2 = funcMultiArgs.getArg2();
+    		  
+              if (funcMultiArgs instanceof FuncDistinctValues) {
+    			 if (exprArg1 == null) {
+    				exprArg0 = null; 
+    			 }
+    		  }
+
+    		  Expression[] exprArr = funcMultiArgs.getArgs();
+
+    		  if (!(m_left instanceof Function)) {
+    			  funcMultiArgs.setArg0(m_left);  
+    		  }
+    		  else {
+    			  XObject funcEvalResult = m_left.execute(xctxt);
+    			  funcMultiArgs.setArg0(funcEvalResult);
+    		  }
+
+    		  try {    			  
+    			  if (exprArg0 != null) {
+    				  funcMultiArgs.setArg(exprArg0, 1);
+    			  }
+
+    			  if (exprArg1 != null) {
+    				  funcMultiArgs.setArg(exprArg1, 2);
+    			  }
+    			  
+    			  if (exprArg2 != null) {
+    				  funcMultiArgs.setArg(exprArg2, 3);
+    			  }
+
+    			  if (exprArr != null) {
+    				  int size1 = exprArr.length;
+    				  int argIdx_1 = 4;
+
+    				  for (int idx = 0; idx < size1; idx++) {
+    					  funcMultiArgs.setArg(exprArr[idx], argIdx_1++); 
+    				  }
+    			  }
+    		  }
+    		  catch (WrongNumberArgsException ex) {
+    			  // No op 
+    		  }
+
+    		  result = funcMultiArgs.execute(xctxt);
     	  }
     	  else if (function instanceof Function3Args) {
     		  Function3Args funcThreeArgs = (Function3Args)function;

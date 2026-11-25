@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:37:26Z" fail="70" name="match" pass="112" run="182" skipped="112" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-25T10:17:05Z" fail="61" name="match" pass="121" run="182" skipped="112" statusUnknown="0">
    <testResult status="pass" testName="match-001"/>
    <testResult status="pass" testName="match-002"/>
    <testResult status="pass" testName="match-003"/>
@@ -68,10 +68,8 @@
    <testResult status="pass" testName="match-059"/>
    <testResult status="fail" testName="match-060">
       <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', 'doc', ')'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', 'foo', ')', '|', '.', '[', '.', 'instance', 'of', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 18, Column# : 36 XPST0003: Expected ), but found: doc
+java.lang.Exception: Line# : 18, Column# : 36 XPST0003: Expected ), but found: doc</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-061"/>
@@ -145,7 +143,7 @@
    <testResult status="skipped" testName="match-087" xsltVersion="XSLT 2.0/1.0 only test case"/>
    <testResult status="pass" testName="match-088"/>
    <testResult status="pass" testName="match-089"/>
-   <testResult status="fail" testName="match-090"/>
+   <testResult status="pass" testName="match-090"/>
    <testResult status="fail" testName="match-091">
       <outResult>
          <errTrace>org.xml.sax.SAXException: Line# : 12, Column# : 61 XPST0003 : A location path was expected, but the following token was encountered [.
@@ -160,14 +158,13 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    <testResult status="pass" testName="match-097"/>
    <testResult status="fail" testName="match-098">
       <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>Extra illegal tokens: ')'</errTrace>
          <errTrace>Extra illegal tokens: '1', 'to', '1', ']'</errTrace>
       </outResult>
    </testResult>
    <testResult status="pass" testName="match-099"/>
    <testResult status="pass" testName="match-100"/>
-   <testResult status="fail" testName="match-101"/>
+   <testResult status="pass" testName="match-101"/>
    <testResult status="pass" testName="match-102"/>
    <testResult status="pass" testName="match-103"/>
    <testResult status="pass" testName="match-104"/>
@@ -175,7 +172,7 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    <testResult status="fail" testName="match-106">
       <outResult/>
    </testResult>
-   <testResult status="fail" testName="match-107"/>
+   <testResult status="pass" testName="match-107"/>
    <testResult status="pass" testName="match-108"/>
    <testResult status="pass" testName="match-109"/>
    <testResult status="pass" testName="match-110"/>
@@ -203,79 +200,30 @@ java.lang.Exception: Line# : 12, Column# : 61 XPST0003 : A location path was exp
    </testResult>
    <testResult status="fail" testName="match-119">
       <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'for', '$', 't', 'in', '*', 'return', '$', 't', '/', '*', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>org.xml.sax.SAXException: Line# : 11, Column# : 93 XPST0003: Expected ], but found: null
+java.lang.Exception: Line# : 11, Column# : 93 XPST0003: Expected ], but found: null</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-120">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'some', '$', 'v', 'in', '.', '/', '/', '*', 'satisfies', '(', 'string', '(', '$', 'v', ')', 'ne', '''', ')', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-120"/>
    <testResult status="fail" testName="match-121">
       <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'if', '(', 'count', '(', '/', '*', ')', 'le', '1', ')', 'then', 'last', '(', ')', 'else', '1', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
+         <errTrace>Extra illegal tokens: ')'</errTrace>
       </outResult>
    </testResult>
-   <testResult status="fail" testName="match-122">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', 'inner2', 'is', '/', 'doc', '/', '/', 'inner2', '[', '1', ']', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="match-123">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '/', '*', '=', '(', '1', 'to', '40', ')', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="match-124">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'data', '(', '.', ')', 'castable', 'as', 'http://www.w3.org/2001/XMLSchema', ':', 'integer', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="match-125">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', '.', '/', '*', 'intersect', '/', 'doc', '/', 'child', '::', '*', '/', 'child', '::', '*', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
-   <testResult status="fail" testName="match-126">
-      <outResult>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')', '[', 'current', '(', ')', '/', '*', ']'</errTrace>
-         <errTrace>Unknown nodetype: element</errTrace>
-         <errTrace>Extra illegal tokens: 'element', '(', ')'</errTrace>
-      </outResult>
-   </testResult>
+   <testResult status="pass" testName="match-122"/>
+   <testResult status="pass" testName="match-123"/>
+   <testResult status="pass" testName="match-124"/>
+   <testResult status="pass" testName="match-125"/>
+   <testResult status="pass" testName="match-126"/>
    <testResult status="pass" testName="match-127"/>
    <testResult status="pass" testName="match-128"/>
    <testResult status="fail" testName="match-129">
-      <outResult>
-         <errTrace>XPST0051 : A sequence type occurence indicator ']', is not recognized.</errTrace>
-      </outResult>
+      <outResult>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;out&gt;&lt;n&gt;1&lt;/n&gt;&lt;n&gt;2&lt;/n&gt;&lt;a&gt;30000&lt;/a&gt;&lt;a&gt;abc&lt;/a&gt;&lt;d&gt;2010-10-10&lt;/d&gt;&lt;/out&gt;</outResult>
    </testResult>
    <testResult status="pass" testName="match-130"/>
    <testResult status="fail" testName="match-131"/>
    <testResult status="fail" testName="match-132"/>
-   <testResult reason="Xalan configured" status="skipped" testName="match-133"/>
+   <testResult reason="Xalan-J configured" status="skipped" testName="match-133"/>
    <testResult status="pass" testName="match-134"/>
    <testResult status="pass" testName="match-135"/>
    <testResult feature="schema_aware" status="skipped" testName="match-136"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:28:46Z" fail="11" name="select" pass="121" run="132" skipped="26" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-25T10:16:39Z" fail="7" name="select" pass="125" run="132" skipped="26" statusUnknown="0">
    <testResult status="pass" testName="select-0101"/>
    <testResult status="pass" testName="select-0102"/>
    <testResult status="pass" testName="select-0201"/>
@@ -46,21 +46,21 @@
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2007"/>
    <testResult status="pass" testName="select-2008"/>
    <testResult status="pass" testName="select-2009"/>
-   <testResult status="fail" testName="select-2010"/>
+   <testResult status="pass" testName="select-2010"/>
    <testResult status="pass" testName="select-2011"/>
    <testResult status="pass" testName="select-2012"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2013"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2014"/>
    <testResult status="pass" testName="select-2015"/>
-   <testResult status="fail" testName="select-2016"/>
+   <testResult status="pass" testName="select-2016"/>
    <testResult status="pass" testName="select-2017"/>
    <testResult status="pass" testName="select-2018"/>
    <testResult status="pass" testName="select-2019"/>
    <testResult status="pass" testName="select-2020"/>
    <testResult status="pass" testName="select-2021"/>
    <testResult status="pass" testName="select-2022"/>
-   <testResult status="fail" testName="select-2023"/>
-   <testResult status="fail" testName="select-2024"/>
+   <testResult status="pass" testName="select-2023"/>
+   <testResult status="pass" testName="select-2024"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2025"/>
    <testResult reason="Xalan-J configured" status="skipped" testName="select-2026"/>
    <testResult status="pass" testName="select-2027"/>

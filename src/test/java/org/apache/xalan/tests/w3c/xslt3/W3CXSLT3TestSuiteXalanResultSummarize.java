@@ -43,10 +43,14 @@ import org.w3c.dom.Element;
  * 
  * Following are sequence of steps to use this class:
  * 
- * 1) Run W3C XSLT 3.0 test suite for Xalan-J implementation using class 
- *    org.apache.xalan.tests.w3c.xslt3.W3CXSLT3Tests.
- * 2) Run this class to produce final aggregated results for W3C XSLT 3.0 
- *    test suite for Xalan-J. 
+ * 1) Run W3C XSLT 3.0 test suite for Xalan-J implementation using following 
+ *    classes, with the specified sequence:
+ *    org.apache.xalan.tests.w3c.xslt3.W3CXSLT3Tests1,
+ *    org.apache.xalan.tests.w3c.xslt3.W3CXSLT3Tests2,
+ *    org.apache.xalan.tests.w3c.xslt3.W3CXSLT3Tests3
+ *    
+ * 2) Run this class, to produce Xalan-J, W3C XSLT 3.0 test suite 
+ *    aggregate results. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

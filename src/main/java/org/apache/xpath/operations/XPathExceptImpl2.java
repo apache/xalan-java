@@ -37,31 +37,33 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Class definition, supporting implementation for XPath 3.1 
- * operator 'intersect'. 
+ * An implementation for XPath 3.1 operator 'except'.
  * 
- * This class, evaluates XPath operator 'intersect', by using 
- * XPath expression string values for operator 'intersect' first 
- * and second operands.
+ * An XPath 3.1 operator 'except', represents set difference 
+ * between two xdm node sets, by node identity.
+ * 
+ * This class gets, XPath 3.1 operator 'except' operands from,
+ * XPath 3.1 'except' first and second operand XPath expression 
+ * string values.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathIntersect extends Expression
+public class XPathExceptImpl2 extends Expression
 {
-  
-  private static final long serialVersionUID = 8981837059372769069L;
+
+  private static final long serialVersionUID = 878464622772924593L;
 
   /**
    * Class field, representing XPath expression string,
-   * which is XPath operator 'intersect' first operand.
+   * which is XPath operator 'except' first operand.
    */
   private java.lang.String m_lstr = null;
   
   /**
    * Class field, representing XPath expression string,
-   * which is XPath operator 'intersect' second operand.
+   * which is XPath operator 'except' second operand.
    */
   private java.lang.String m_rstr = null;
   
@@ -76,20 +78,20 @@ public class XPathIntersect extends Expression
   /**
    * Default constructor.
    */
-  public XPathIntersect() {
+  public XPathExceptImpl2() {
 	 // no op  
   }
   
   /**
    * Class constructor.
    */
-  public XPathIntersect(java.lang.String lStr, java.lang.String rStr) {
+  public XPathExceptImpl2(java.lang.String lStr, java.lang.String rStr) {
 	  m_lstr = lStr;
 	  m_rstr = rStr;
   }
 
   /**
-   * Method definition, to get XPath operator 'intersect' 
+   * Method definition, to get XPath operator 'except' 
    * evaluation result.
    *  
    * @throws javax.xml.transform.TransformerException
@@ -106,9 +108,9 @@ public class XPathIntersect extends Expression
 	  
 	  m_rstr = normalizeStrBoundaryParens(m_rstr.trim());
 	  
-      List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
+	  List<XMLNSDecl> prefixTable = XslTransformEvaluationHelper.getXSLNsPrefixTable(xctxt);
 	  
-      if (prefixTable != null) {
+	  if (prefixTable != null) {
     	  m_lstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_lstr, prefixTable); 
 
     	  m_rstr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(m_rstr, prefixTable);
@@ -132,7 +134,7 @@ public class XPathIntersect extends Expression
 		 while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
 			nodeHandleLstFirst.add(nextNode); 
 		 }		 
-	  }
+	  }	  	  
 	  
       XPath xpath2 = new XPath(m_rstr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 	  
@@ -155,39 +157,23 @@ public class XPathIntersect extends Expression
 	  }
 	  	  	  
 	  /**
-	   * An XPath 3.1 operator 'intersect' evaluation result,
+	   * An XPath 3.1 operator 'except' evaluation result,
 	   * doesn't contain duplicate nodes and the result nodes are 
 	   * sorted in XML document order, as specified by XPath 3.1 
 	   * spec.
 	   */
 	  
 	  // A java.util.List object, that shall contain list of
-	  // XML node handles for result of XPath 3.1 operator 'intersect'.
+	  // XML node handles for result of XPath 3.1 operator 'except'.
 	  
 	  List<Integer> nodeHandleResultLst = new ArrayList<Integer>();
 	  
 	  int size1 = nodeHandleLstFirst.size();
 	  for (int idx = 0; idx < size1; idx++) {
-		 int nodeHandle1 = nodeHandleLstFirst.get(idx);
-		 int size2 = nodeHandleLstSecond.size();
-		 for (int idx2 = 0; idx2 < size2; idx2++) {
-			int nodeHandle2 = nodeHandleLstSecond.get(idx2);
-			if ((nodeHandle1 == nodeHandle2) && !nodeHandleResultLst.contains(nodeHandle1)) {
-				nodeHandleResultLst.add(nodeHandle1);
-			}
-		 }
-	  }
-	  
-	  int size2 = nodeHandleLstSecond.size();
-	  for (int idx2 = 0; idx2 < size2; idx2++) {
-		 int nodeHandle2 = nodeHandleLstSecond.get(idx2);
-		 size1 = nodeHandleLstFirst.size();
-		 for (int idx = 0; idx < size1; idx++) {
-			int nodeHandle1 = nodeHandleLstFirst.get(idx);
-			if ((nodeHandle1 == nodeHandle2) && !nodeHandleResultLst.contains(nodeHandle1)) {
-				nodeHandleResultLst.add(nodeHandle1);
-			}
-		 }
+		  int nodeHandle1 = nodeHandleLstFirst.get(idx);
+		  if (!nodeHandleLstSecond.contains(nodeHandle1)) {
+			  nodeHandleResultLst.add(nodeHandle1);
+		  }
 	  }
 	  
 	  nodeHandleResultLst.sort(null);

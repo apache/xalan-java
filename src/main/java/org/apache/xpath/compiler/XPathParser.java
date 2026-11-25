@@ -82,6 +82,7 @@ import org.apache.xalan.xslt.util.RegexMatchInfo;
 import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XPath3RegexUtil;
 import org.apache.xalan.xslt.util.XslTransformData;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.DOMInputImpl;
 import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
@@ -129,6 +130,7 @@ import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.objects.XString;
@@ -988,50 +990,40 @@ public class XPathParser
   /**
    * Retrieve a token relative to the current token.
    * 
-   * @param i Position relative to current token.
+   * @param posOffset Position relative to current token.
    *
    * @return The string at the given index, or null if the index is out 
    *         of range.
    */
-  private final String getTokenRelative(int i)
+  private final String getTokenRelative(int posOffset)
   {
 
-    String tok;
-    int relative = m_queueMark + i;
+	  String result = null;
 
-    if ((relative > 0) && (relative < m_ops.getTokenQueueSize()))
-    {
-    	Object token = m_ops.m_tokenQueue.elementAt(relative);
+	  int relative = m_queueMark + posOffset;
 
-    	if (!(token instanceof XNumber)) {
-    		tok = (String)token;
-    	}
-    	else {
-    		XNumber xNumber = (XNumber)token;
+	  if ((relative > 0) && (relative < m_ops.getTokenQueueSize())) {
+		  Object tokenObj1 = m_ops.m_tokenQueue.elementAt(relative);
 
-    		if (xNumber.getXsDecimal() != null) {
-    			XSDecimal xsDecimal = xNumber.getXsDecimal();
-    			tok = xsDecimal.stringValue(); 
-    		}
-    		else if (xNumber.getXsDouble() != null) {
-    			XSDouble xsDouble = xNumber.getXsDouble();
-    			tok = xsDouble.stringValue();
-    		}
-    		else if (xNumber.getXsInteger() != null) {
-    			XSInteger xsInteger = xNumber.getXsInteger();
-    			tok = xsInteger.stringValue();
-    		}
-    		else {
-    			tok = xNumber.num() + "";  
-    		}
-    	}
-    }
-    else
-    {
-      tok = null;
-    }
+		  if (tokenObj1 instanceof XString) {
+			  result = ((XString)tokenObj1).str();
+		  }
+		  else if (tokenObj1 instanceof XNumber) {
+			  XObject xobj1 = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)tokenObj1);
 
-    return tok;
+			  if (xobj1 instanceof XNumber) {
+				  result = ((XNumber)xobj1).num() + "";
+			  }
+			  else {
+				  result = XslTransformEvaluationHelper.getStrVal(xobj1);  
+			  }
+		  }
+		  else {
+			  result = (String)tokenObj1;
+		  }
+	  }
+
+	  return result;
   }
 
   /**
@@ -1840,16 +1832,29 @@ public class XPathParser
 
         		 strBuff = new StringBuffer();
         		 String str2 = null;
+        		 
+        		 boolean isXpathArrowOp = false;
 
         		 while (m_token != null) {
         			 strBuff.append(m_token + " ");
+        			 str2 = (strBuff.toString()).trim();
+        			 
+        			 if (tokenIs("=>") && StringUtil.isStrHasBalancedParentheses(str2, '(', ')')
+        					           && StringUtil.isStrHasBalancedParentheses(str2, '[', ']')
+        					           && StringUtil.isStrHasBalancedParentheses(str2, '{', '}')) {
+        				isXpathArrowOp = true;
+        				
+        				int idx = str2.indexOf("=>");
+        				str2 = (str2.substring(0, idx)).trim();
+        				
+        				break;
+        			 }
         			 
         			 nextToken();
         		 }
         		 
         		 str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
 
-        		 str2 = (strBuff.toString()).trim();
         		 str2 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str2);
         		 
         		 int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
@@ -1868,6 +1873,14 @@ public class XPathParser
         		 
         		 if (str2.length() > 0) {
         			m_xpathSequenceConstructor.setXPathSuffixStr(str2); 
+        		 }
+        		 
+        		 if (isXpathArrowOp) {
+        			 consumeExpected("=>");
+
+        			 insertOp(opPos, 2, OpCodes.XPath3OpCodes.OP_ARROW);
+
+        			 FunctionCall();
         		 }
 
         		 m_ops.setOp(opPos + XPathOpMap.MAPINDEX_LENGTH,
@@ -4311,21 +4324,50 @@ public class XPathParser
     		  nextToken();
     	  }
       }
-      else if (m_isFunctionArgumentParse && tokenIs('(')) {
-    	  while (m_token != null) {
-    		  strBuff.append(m_token + " ");
-    		  str1 = (strBuff.toString()).trim();
-    		  
-    		  if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) 
-    				                                                     && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
-    			  isXpathSeqConstr2 = true;
+      else if (m_isFunctionArgumentParse) {
+    	  if (tokenIs('(')) {
+    		  while (m_token != null) {
+    			  strBuff.append(m_token + " ");
+    			  str1 = (strBuff.toString()).trim();
 
-    			  consumeExpected(')');
+    			  if (tokenIs(')') && (lookahead(')', 1) || lookahead(',', 1)) 
+    					                                   && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
+    				  isXpathSeqConstr2 = true;
 
-    			  break;
+    				  consumeExpected(')');
+
+    				  break;
+    			  }
+
+    			  nextToken();
     		  }
-    		  
-    		  nextToken();
+    	  }
+    	  else {
+              while (m_token != null) {
+            	  strBuff.append(m_token + " ");
+    			  str1 = (strBuff.toString()).trim();    			  
+    			  
+    			  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '(', ')')
+			                       && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '[', ']')
+			                       && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '{', '}')) {
+    				 isXpathSeqConstr2 = true;
+    				 
+    				 str1 = (str1.substring(0, str1.length() - 1)).trim();
+    				 
+    				 break;
+    			  }
+    			  else if (tokenIs(',') && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '(', ')')
+    					                && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '[', ']')
+    					                && StringUtil.isStrHasBalancedParentheses(str1.substring(0, str1.length() - 1), '{', '}')) {
+    				  isXpathSeqConstr2 = true;
+
+    				  str1 = (str1.substring(0, str1.length() - 1)).trim();
+
+    				  break;
+    			  }
+    			  
+            	  nextToken();
+              }
     	  }
       }
       
@@ -4351,7 +4393,7 @@ public class XPathParser
     	  str1 = StringUtil.xmlNsSeparatorWhitespaceNormalization(str1);
     	  
     	  xpathForExpr.setForExprVarBindingList(forExprVarBindingList);
-    	  xpathForExpr.setReturnExprXPathStr(str1); 
+    	  xpathForExpr.setReturnExprXPathStr(str1);    	  
       }
       else {    	  
     	  List<String> xPathReturnExprStrPartsList = new ArrayList<String>();
@@ -7885,6 +7927,7 @@ public class XPathParser
     }
     else if ((m_tokenChar == '$') && lookahead(Keywords.XPATH_SIMPLE_MAP_OP, 2)) {    	    	    	
     	StringBuffer strBuff = new StringBuffer();
+    	
     	String str1 = null;
     	String str2 = null;
     	    	
@@ -7894,6 +7937,7 @@ public class XPathParser
     	   
     	   if (tokenIs(Keywords.XPATH_ARROW_OP)) {    		       		       		       		  
     		  str1 = str1.substring(0, str1.length() - 2);    		  
+    		  
     		  consumeExpected(Keywords.XPATH_ARROW_OP);
     		  
     		  matchFound = true;
@@ -9660,7 +9704,7 @@ public class XPathParser
     	  
     	  if (tokenIs(')') && StringUtil.isStrHasBalancedParentheses(str1, '(', ')')) {
     		 consumeExpected(')');
-    		 
+    		     		 
     		 if (tokenIs('[')) {
     			strBuff = new StringBuffer();    			
     			
@@ -9709,9 +9753,9 @@ public class XPathParser
     			if (isXPathExprOk2) {
     			   break;	
     			}
-    		 }
+    		 }    		 
     		 else {
-    			break; 
+    			 break;
     		 }
     	  }
     	  
@@ -10578,16 +10622,58 @@ public class XPathParser
   protected boolean Step() throws javax.xml.transform.TransformerException
   {
     int opPos = m_ops.getOp(XPathOpMap.MAPINDEX_LENGTH);
-
-    boolean doubleSlash = tokenIs('/');
+	
+	boolean doubleSlashCheck1 = false;		
+    
+    ObjectVector objectVector = m_ops.getTokenQueue();
+    int size1 = objectVector.size();        
+    
+    if ((m_queueMark <= size1) && (m_queueMark >= 4)) {
+       // Check, whether an XPath sub expression is $var/....
+    	
+       Object obj1 = objectVector.elementAt(m_queueMark - 4);
+       Object obj2 = objectVector.elementAt(m_queueMark - 2);
+       
+       String str1 = getStrFromTokenObj(obj1);
+       String str2 = getStrFromTokenObj(obj2);
+       
+       if ("$".equals(str1) && "/".equals(str2)) {
+    	  doubleSlashCheck1 = true; 
+       }
+    }
+    
+    // String value, for the previous token
+    String prevToken1 = getTokenRelative(-2);
+    
+    // String value, for the token previous to the previous token
+    String prevToken2 = getTokenRelative(-3);
+    
+    boolean doubleSlash = false;
+    
+    if (!doubleSlashCheck1 && "/".equals(prevToken1) && !"..".equals(prevToken2)
+    		                                         && (tokenIs(Keywords.FROM_DESCENDANTS_STRING)) 
+    		                                         && lookahead("::", 1) && lookahead('*', 2)) {
+       /**
+        * An XPath sub expression /descendant::* is equivalent to //* ,
+        * provided that an XPath sub expression is not like, $var/descendant:: etc.  
+        */
+    	
+       consumeExpected(Keywords.FROM_DESCENDANTS_STRING);
+       
+       doubleSlash = true;
+    }
+    
+    if (!doubleSlash) {
+       doubleSlash = tokenIs('/');
+    }
 
     // At most a single '/' before each Step is consumed by caller; if the
     // first thing is a '/', that means we had '//' and the Step must not
     // be empty.
     if (doubleSlash)
     {
-      nextToken();
-
+      nextToken();      
+      
       appendOp(2, OpCodes.FROM_DESCENDANTS_OR_SELF);
 
       // Have to fix up for patterns such as '//@foo' or '//attribute::foo',
@@ -10795,7 +10881,7 @@ public class XPathParser
     	
     	nextToken();            
     }
-    else if (tokenIs("attribute") && lookahead('(', 1))
+    else if (tokenIs(Keywords.NODETYPE_ATTRIBUTE_STRING) && lookahead('(', 1))
     {    	    	    	    	
     	// Added for XSLT 3.0
     	
@@ -10803,7 +10889,7 @@ public class XPathParser
 
     	appendOp(2, axesType);
     	
-    	consumeExpected("attribute");    	
+    	consumeExpected(Keywords.NODETYPE_ATTRIBUTE_STRING);    	
     	consumeExpected('(');
     	    	
     	if (lookahead(')', 1)) {
@@ -11017,8 +11103,21 @@ public class XPathParser
    */
   protected void NodeTest(int axesType) throws javax.xml.transform.TransformerException
   {
+	  if (tokenIs(Keywords.NODETYPE_ELEMENT_STRING) && lookahead('(', 1)) {
+		  // An XPath node test, string value element() is 
+		  // equivalent to '*'.
+		  
+		  consumeExpected(Keywords.NODETYPE_ELEMENT_STRING);
+		  consumeExpected('(');
+		  consumeExpected(')');
+		  
+		  m_queueMark--;
+		  m_token = "*";
+		  m_tokenChar = '*';
+	  }
+	  
 	  if (lookahead('(', 1))
-	  {
+	  {		  		  		  		  
 		  Object nodeTestOp = Keywords.getNodeType(m_token);
 
 		  if (null == nodeTestOp)
@@ -11655,7 +11754,7 @@ public class XPathParser
 
     	nextToken();
     }
-    else if (tokenIs("attribute") && lookahead('(', 1) && lookahead(')', 2))
+    else if (tokenIs(Keywords.NODETYPE_ATTRIBUTE_STRING) && lookahead('(', 1) && lookahead(')', 2))
     {    	    	    	    	
     	// Added for XSLT 3.0
     	
@@ -11663,7 +11762,7 @@ public class XPathParser
 
     	appendOp(2, axesType);
     	
-    	consumeExpected("attribute");    	
+    	consumeExpected(Keywords.NODETYPE_ATTRIBUTE_STRING);    	
     	consumeExpected('(');
     	consumeExpected(')');
 
@@ -11672,7 +11771,7 @@ public class XPathParser
     }
     else if (this.lookahead("::", 1))
     {
-    	if (tokenIs("attribute"))
+    	if (tokenIs(Keywords.NODETYPE_ATTRIBUTE_STRING))
     	{
     		axesType = OpCodes.MATCH_ATTRIBUTE;
 
@@ -12045,13 +12144,13 @@ public class XPathParser
            consumeExpected('(');
            consumeExpected(')');
        }      
-       else if (tokenIs("element")) {
+       else if (tokenIs(Keywords.NODETYPE_ELEMENT_STRING)) {
            sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
                                                                                          XPathSequenceTypeSupport.ELEMENT_KIND, 
                                                                                          isXPathInlineFunctionParse, false);          
            xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
        }
-       else if (tokenIs("attribute")) {
+       else if (tokenIs(Keywords.NODETYPE_ATTRIBUTE_STRING)) {
            sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
                                                                                          XPathSequenceTypeSupport.ATTRIBUTE_KIND, 
                                                                                          isXPathInlineFunctionParse, false);          
@@ -12209,7 +12308,7 @@ public class XPathParser
            nextToken();
            consumeExpected('(');           
            
-           if (tokenIs("element")) {
+           if (tokenIs(Keywords.NODETYPE_ELEMENT_STRING)) {
         	   XPathSequenceTypeExpr xpathSequenceTypeExpr2 = new XPathSequenceTypeExpr();
         	   XPathSequenceTypeKindTest sequenceTypeKindTest2 = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr2, 
                        														                         XPathSequenceTypeSupport.ELEMENT_KIND, 
@@ -12895,7 +12994,7 @@ public class XPathParser
 					  consumeExpected('+');
 				  }
  			  }
- 			  else if (tokenIs("element")) {
+ 			  else if (tokenIs(Keywords.NODETYPE_ELEMENT_STRING)) {
 				  nextToken();
 				  
 				  XPathSequenceTypeKindTest sequenceTypeKindTest = new XPathSequenceTypeKindTest();
@@ -15111,9 +15210,6 @@ public class XPathParser
     	 String xpathExprStr = expression;
     	 
     	 xpathExprStr = xpathExprStr.replaceAll("child::element()", "child::*");
-    	 
-    	 // An XPath expression //descendant::* is equivalent to //*
-    	 xpathExprStr = xpathExprStr.replaceAll("/(\\s*)/(\\s*)descendant(\\s*)\\:\\:(\\s*)\\*", "//*");
     	 
     	 Pattern pattern1 = Pattern.compile("(\\*|\\w+)\\:\\(\\:\\w+\\:\\)(\\*|\\w+)");
     	 Matcher matcher1 = pattern1.matcher(xpathExprStr);

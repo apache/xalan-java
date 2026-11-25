@@ -63,8 +63,12 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
+import org.apache.xpath.functions.datetime.FuncAdjustDateTimeToTimezone;
+import org.apache.xpath.functions.datetime.FuncAdjustDateToTimezone;
+import org.apache.xpath.functions.datetime.FuncAdjustTimeToTimezone;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -81,11 +85,6 @@ import org.apache.xpath.operations.XPathRange;
 import org.apache.xpath.operations.XPathSimpleMapOperator;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.types.DateTimeUtil;
-import org.apache.xpath.types.XSGDay;
-import org.apache.xpath.types.XSGMonth;
-import org.apache.xpath.types.XSGMonthDay;
-import org.apache.xpath.types.XSGYear;
-import org.apache.xpath.types.XSGYearMonth;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
@@ -102,6 +101,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDayTimeDuration;
 import xml.xpath31.processor.types.XSDecimal;
@@ -109,9 +109,8 @@ import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
-import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSUntypedAtomic;
-import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * A class definition, that has few utility methods that provide 
@@ -564,196 +563,80 @@ public class XslTransformEvaluationHelper {
     	
     	for (int idx = 0; idx < size1; idx++) {
     		XObject resultSeqItem = resultSeq.item(idx);
-    		
-    		if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntyped)) {
-    			if (((XSUntyped)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
-    				result = true;
-    				
-    				break;    
-    			}
-    		}
-    		else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntypedAtomic)) {
-    			if (((XSUntypedAtomic)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
-    				result = true;
-    				
-    				break;    
-    			} 
-    		}
-    		else if ((resultSeqItem instanceof XSUntyped) && (srch instanceof XSUntypedAtomic)) {
-    			if (((XSUntyped)resultSeqItem).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
-    				result = true;
-    				
-    				break;    
-    			} 
-    		}
-    		else if ((resultSeqItem instanceof XSUntypedAtomic) && (srch instanceof XSUntyped)) {
-    			if (((XSUntypedAtomic)resultSeqItem).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
-    				result = true;
-    				
-    				break;    
-    			}
-    		}
-    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XSNumericType)) {   			
-    			VcEquals vcEquals = new VcEquals();
-        		vcEquals.setLeftRight(resultSeqItem, srch);
-        		
-        		try {
-        			XObject xObj1 = vcEquals.execute(xctxt);
-        			if (xObj1.bool()) {
-        				result = true;
 
-        				break;    			
-        			}
-        		}
-        		catch (TransformerException ex) {
-        		   // No op
-        		}
-    		}
-    		else if ((resultSeqItem instanceof XSNumericType) && (srch instanceof XNumber)) {    			
-    			VcEquals vcEquals = new VcEquals();
-        		vcEquals.setLeftRight(resultSeqItem, srch);
-        		
-        		try {
-        			XObject xObj1 = vcEquals.execute(xctxt);
-        			
-        			if (xObj1.bool()) {
-        				result = true;
-
-        				break;    			
-        			}
-        		}
-        		catch (TransformerException ex) {
-        		   // No op
-        		}
-    		}
-    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XSNumericType)) {    			
-    			VcEquals vcEquals = new VcEquals();
-        		vcEquals.setLeftRight(resultSeqItem, srch);
-        		
-        		try {
-        			XObject xObj1 = vcEquals.execute(xctxt);
-        			
-        			if (xObj1.bool()) {
-        				result = true;
-
-        				break;    			
-        			}
-        		}
-        		catch (TransformerException ex) {
-        		   // No op
-        		}
-    		}
-    		else if ((resultSeqItem instanceof XNumber) && (srch instanceof XNumber)) {    			
-    			VcEquals vcEquals = new VcEquals();
-        		vcEquals.setLeftRight(resultSeqItem, srch);
-        		
-        		try {
-        			XObject xObj1 = vcEquals.execute(xctxt);
-        			
-        			if (xObj1.bool()) {
-        				result = true;
-
-        				break;    			
-        			}
-        		}
-        		catch (TransformerException ex) {
-        		   // No op
-        		}
-    		}
-    		else if ((resultSeqItem instanceof XSYearMonthDuration) && (srch instanceof XSDayTimeDuration)) {
-    			if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
-    			   XSDuration xsDayTimeDurationRef = XSDayTimeDuration.parseDayTimeDuration("P0D"); 	
-    			   
-    			   if (((XSDayTimeDuration)srch).equals(xsDayTimeDurationRef)) {
-    				   result = true;
-       				   
-    				   break; 
-    			   }
-    			}
+    		if (collationUri != null) {    			    			
+    			String str1 = XslTransformEvaluationHelper.getStrVal(resultSeqItem);
+    			String str2 = XslTransformEvaluationHelper.getStrVal(srch);
+    					
+    			int cmpResult = xpathCollationSupport.compareStringsUsingCollation(str1, str2, collationUri);
     			
-    			result = false;
-    		}
-            else if ((resultSeqItem instanceof XSDayTimeDuration) && (srch instanceof XSYearMonthDuration)) {
-            	if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
-     			   XSDuration xsDayTimeDurationRef = XSDayTimeDuration.parseDayTimeDuration("P0D"); 	
-     			   
-     			   if (((XSDayTimeDuration)resultSeqItem).equals(xsDayTimeDurationRef)) {
-     				   result = true;
-        			   
-     				   break; 
-     			   }
-     			}
-     			
-     			result = false;
-    		}
-            else if (resultSeqItem instanceof XSGYearMonth) {
-            	if (srch instanceof XSGYearMonth) {
-            		result = ((XSGYearMonth)resultSeqItem).eq((XSGYearMonth)srch);
+    			if (cmpResult == 0) {
+					result = true;
 
-            		if (result) {
-            			break;	
-            		}
-            	}
-            }
-            else if (resultSeqItem instanceof XSGYear) {
-            	if (srch instanceof XSGYear) {
-            		result = ((XSGYear)resultSeqItem).eq((XSGYear)srch);
-
-            		if (result) {
-            			break;	
-            		}
-            	}
-            }
-            else if (resultSeqItem instanceof XSGMonthDay) {
-            	if (srch instanceof XSGMonthDay) {
-            		result = ((XSGMonthDay)resultSeqItem).eq((XSGMonthDay)srch);
-
-            		if (result) {
-            			break;	
-            		}
-            	}
-            }
-            else if (resultSeqItem instanceof XSGDay) {
-            	if (srch instanceof XSGDay) {
-            		result = ((XSGDay)resultSeqItem).eq((XSGDay)srch);
-
-            		if (result) {
-            			break;	
-            		}
-            	}
-            }
-            else if (resultSeqItem instanceof XSGMonth) {
-            	if (srch instanceof XSGMonth) {
-            		result = ((XSGMonth)resultSeqItem).eq((XSGMonth)srch);
-
-            		if (result) {
-            			break;	
-            		}
-            	}
-            }
-    		else if ((resultSeqItem instanceof XSAnyType) && (srch instanceof XSAnyType)) {
-    			if (((XSAnyType)resultSeqItem).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
-    				result = true;
-    				
-    				break;    
-    			}   
+					break;    			
+				}
     		}
     		else {
     			VcEquals vcEquals = new VcEquals();
-        		vcEquals.setLeftRight(resultSeqItem, srch);
-        		
-        		try {
-        			XObject xObj1 = vcEquals.execute(xctxt);
-        			
-        			if (xObj1.bool()) {
-        				result = true;
+    			
+    			if (resultSeqItem instanceof XSDateTime) {
+    			   XSDateTime xsDateTime = (XSDateTime)resultSeqItem;
+    			   
+    			   if (!xsDateTime.isDateTimeTimezoned()) {
+    				  resultSeqItem = adjustXsDateTimeToImplicitTimezone(xsDateTime, xctxt);
+    			   }
+    			}
+    			else if (resultSeqItem instanceof XSDate) {
+    				XSDate xsDate = (XSDate)resultSeqItem;
 
-        				break;    			
-        			}
-        		}
-        		catch (TransformerException ex) {
-        		   // No op
-        		}
+    				if (!xsDate.isDateTimezoned()) {
+    				   resultSeqItem = adjustXsDateToImplicitTimezone(xsDate, xctxt); 
+    				}
+    			}
+    			else if (resultSeqItem instanceof XSTime) {
+    				XSTime xsTime = (XSTime)resultSeqItem;
+
+    				if (!xsTime.isTimetimezoned()) {
+    				   resultSeqItem = adjustXsTimeToImplicitTimezone(xsTime, xctxt); 
+    				}
+    			}
+    			
+    			if (srch instanceof XSDateTime) {
+     			   XSDateTime xsDateTime = (XSDateTime)srch;
+     			   
+     			   if (!xsDateTime.isDateTimeTimezoned()) {
+     				  srch = adjustXsDateTimeToImplicitTimezone(xsDateTime, xctxt);
+     			   }
+     			}
+     			else if (srch instanceof XSDate) {
+     				XSDate xsDate = (XSDate)srch;
+
+     				if (!xsDate.isDateTimezoned()) {
+     					srch = adjustXsDateToImplicitTimezone(xsDate, xctxt); 
+     				}
+     			}
+     			else if (srch instanceof XSTime) {
+     				XSTime xsTime = (XSTime)srch;
+
+     				if (!xsTime.isTimetimezoned()) {
+     					srch = adjustXsTimeToImplicitTimezone(xsTime, xctxt); 
+     				}
+     			}
+    			
+    			vcEquals.setLeftRight(resultSeqItem, srch);
+
+    			try {
+    				XObject xObj1 = vcEquals.execute(xctxt);
+
+    				if ((xObj1 != null) && xObj1.bool()) {
+    					result = true;
+
+    					break;    			
+    				}
+    			}
+    			catch (TransformerException ex) {
+    				// No op
+    			}
     		}
     	}
 
@@ -1459,5 +1342,104 @@ public class XslTransformEvaluationHelper {
     	
     	return result;
     }
+    
+    /**
+     * Method definition, to XSL transform the supplied xs:dateTime value
+     * to XPath dynamic context's implicit timezone.
+     * 
+     * @param xsDateTime                          The supplied xs:dateTime value
+     * @param xctxt                               An XPath context object
+     * @return                                    The result xs:dateTime value 
+     * @throws TransformerException
+     */
+    private static XObject adjustXsDateTimeToImplicitTimezone(XSDateTime xsDateTime, XPathContext xctxt) 
+    		                                                                                           throws TransformerException {
+    	
+    	XObject result = null;
+
+    	FuncAdjustDateTimeToTimezone funcAdjustDateTimeToTimezone = new FuncAdjustDateTimeToTimezone();
+    	funcAdjustDateTimeToTimezone.setArg0(xsDateTime);
+
+    	String tzStr = xctxt.getImplicitTimezoneStr();
+    	String str1 = XSDuration.getXsDurationStringFromTzString(tzStr);
+    	XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(str1);
+
+    	try {
+    		funcAdjustDateTimeToTimezone.setArg(xsDuration, 1);
+
+    		result = funcAdjustDateTimeToTimezone.execute(xctxt); 
+    	} 
+    	catch (WrongNumberArgsException ex) {
+    		// No op
+    	}
+
+    	return result;
+	}
+    
+    /**
+     * Method definition, to XSL transform the supplied xs:date value
+     * to XPath dynamic context's implicit timezone.
+     * 
+     * @param xsDate                              The supplied xs:date value
+     * @param xctxt                               An XPath context object
+     * @return                                    The result xs:date value 
+     * @throws TransformerException
+     */
+    private static XObject adjustXsDateToImplicitTimezone(XSDate xsDate, XPathContext xctxt) 
+    		                                                                               throws TransformerException {
+    	
+    	XObject result = null;
+    	
+		FuncAdjustDateToTimezone funcAdjustDateToTimezone = new FuncAdjustDateToTimezone();
+		funcAdjustDateToTimezone.setArg0(xsDate);
+
+		String tzStr = xctxt.getImplicitTimezoneStr();
+		String str1 = XSDuration.getXsDurationStringFromTzString(tzStr);
+		XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(str1);
+
+		try {
+			funcAdjustDateToTimezone.setArg(xsDuration, 1);
+
+			result = funcAdjustDateToTimezone.execute(xctxt); 
+		} 
+		catch (WrongNumberArgsException ex) {
+			// No op
+		}
+		
+		return result;
+	}
+    
+    /**
+     * Method definition, to XSL transform the supplied xs:time value
+     * to XPath dynamic context's implicit timezone.
+     * 
+     * @param xsTime                              The supplied xs:time value
+     * @param xctxt                               An XPath context object
+     * @return                                    The result xs:time value 
+     * @throws TransformerException
+     */
+    private static XObject adjustXsTimeToImplicitTimezone(XSTime xsTime, XPathContext xctxt) 
+    		                                                                               throws TransformerException {
+		
+    	XObject result = null;
+    	
+    	FuncAdjustTimeToTimezone funcAdjustTimeToTimezone = new FuncAdjustTimeToTimezone();
+		funcAdjustTimeToTimezone.setArg0(xsTime);
+
+		String tzStr = xctxt.getImplicitTimezoneStr();
+		String str1 = XSDuration.getXsDurationStringFromTzString(tzStr);
+		XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(str1);
+
+		try {
+			funcAdjustTimeToTimezone.setArg(xsDuration, 1);
+
+			result = funcAdjustTimeToTimezone.execute(xctxt); 
+		} 
+		catch (WrongNumberArgsException ex) {
+			// No op
+		}
+		
+		return result;
+	}
 
 }

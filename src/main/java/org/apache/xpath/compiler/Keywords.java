@@ -107,8 +107,11 @@ public class Keywords
   /** Document node test string. Added for XSLT 3.0. */
   private static final String NODETYPE_DOCUMENT_STRING = "document-node";
   
+  /** Element node test string. Added for XSLT 3.0. */
+  static final String NODETYPE_ELEMENT_STRING = "element";
+  
   /** Attribute node test string. Added for XSLT 3.0. */
-  private static final String NODETYPE_ATTRIBUTE_STRING = "attribute";
+  static final String NODETYPE_ATTRIBUTE_STRING = "attribute";
 
   /** Wildcard element string. */
   private static final String NODETYPE_ANYELEMENT_STRING = "*";
@@ -927,7 +930,7 @@ public class Keywords
   
   public static final String CAST = "cast";
   
-  public static final String TREAT = "treat";    
+  public static final String TREAT = "treat";
   
   public static final String XPATH_ARROW_OP = "=>";
   

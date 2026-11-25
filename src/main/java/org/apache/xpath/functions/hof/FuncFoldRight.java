@@ -79,23 +79,29 @@ public class FuncFoldRight extends XPathHigherOrderBuiltinFunction {
         
         int contextNode = xctxt.getContextNode();
         
-        ResultSequence foldRightFirstArgSeq = null;
+        ResultSequence foldRightFirstArgSeq = new ResultSequence(); 
         
-        if (m_arg0 instanceof LocPathIterator) {
-        	foldRightFirstArgSeq = new ResultSequence();         	
+        XObject xObj = getFunctionArgEffectiveValue(m_arg0, xctxt);
+        
+        if (xObj instanceof XMLNodeCursorImpl) {
+        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
         	
-        	XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(getFunctionArgEffectiveValue(m_arg0, xctxt));
+        	DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
         	
-        	DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.asIterator(xctxt, contextNode);
-        	int nextNode;
-        	while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
-        	   XMLNodeCursorImpl xdmNode = new XMLNodeCursorImpl(nextNode, xctxt);
-        	   foldRightFirstArgSeq.add(xdmNode);
+        	int nextNode = DTM.NULL;
+        	
+        	while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+        	   XMLNodeCursorImpl xmlNodeCursorImpl1 = new XMLNodeCursorImpl(nextNode, xctxt);
+        	   foldRightFirstArgSeq.add(xmlNodeCursorImpl1);
         	}
         }
-        else {
-        	foldRightFirstArgSeq = constructSequenceFromXPathExpression(m_arg0, xctxt);
+        else if (xObj instanceof ResultSequence) {
+        	foldRightFirstArgSeq = (ResultSequence)xObj; 
         }
+        else {
+        	foldRightFirstArgSeq.add(xObj);
+        }
+        
         
         XObject foldRightBaseVal = getFunctionArgEffectiveValue(m_arg1, xctxt);
         

@@ -18,20 +18,18 @@
 package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.string.XSL3StringCollationAwareFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 
-import xml.xpath31.processor.types.XSAnyType;
-import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
@@ -41,7 +39,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * 
  * @xsl.usage advanced
  */
-public class FuncDistinctValues extends FunctionMultiArgs {
+public class FuncDistinctValues extends XSL3StringCollationAwareFunction {
     
    private static final long serialVersionUID = -1637800188441824456L;
    
@@ -68,7 +66,7 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 	   SourceLocator srcLocator = xctxt.getSAXLocator();
 
 	   if (m_arg0 == null) {
-		   throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'distinct-values', may have one or two arguments.", srcLocator);  
+		   throw new TransformerException("XPST0017 : An XPath 3.1 function 'distinct-values', may have one or two arguments.", srcLocator);  
 	   }
 
 	   XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
@@ -76,76 +74,47 @@ public class FuncDistinctValues extends FunctionMultiArgs {
 	   String collationUri = null;
 
 	   if (m_arg1 != null) {
-		   // A collation uri was, explicitly provided during the function call fn:distinct-values
+		   // A collation uri has been, explicitly provided during the function call fn:distinct-values
+		   
 		   XObject collationXObj = getFunctionArgEffectiveValue(m_arg1, xctxt);
 		   
 		   collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
-	   }
-	   else {
-		   collationUri = xctxt.getDefaultCollation(); 
-	   }
+	   }	   
 
 	   XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
-
-	   if (arg0Obj instanceof XMLNodeCursorImpl) {
-		   DTMManager dtmMgr = (DTMManager)xctxt;
-
-		   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Obj;           
-		   DTMCursorIterator sourceNodes = xNodeSet.iter();
-
-		   int nextNodeDtmHandle;
-
-		   while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-			   XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);
-			   String nodeStrValue = xNodeSetItem.str();
-
-			   DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
-
-			   if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
-				   XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntyped, true, collationUri, xpathCollationSupport, xctxt);
-			   }
-			   else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
-				   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport, xctxt);
-			   }
-			   else {
-				   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport, xctxt);
-			   }
-		   }
-	   }
-	   else if (arg0Obj instanceof ResultSequence) {
+	   
+	   if (arg0Obj instanceof ResultSequence) {
 		   ResultSequence inpResultSeq = (ResultSequence)arg0Obj;
 		   int size1 = inpResultSeq.size();
 		   
 		   for (int idx = 0; idx < size1; idx++) {
 			   XObject xObj = inpResultSeq.item(idx);
 			   
-			   if (xObj instanceof XSAnyType) {
-				   XSAnyType xsAnyType = (XSAnyType)xObj;
-				   
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, true, collationUri, xpathCollationSupport, xctxt);
-			   }
-			   else {
-				   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xObj, true, collationUri, xpathCollationSupport, xctxt);
-			   }
+			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xObj, true, collationUri, xpathCollationSupport, xctxt);
 		   }
 	   }
+	   else if (arg0Obj instanceof XMLNodeCursorImpl) {
+		   XMLNodeCursorImpl xNodeSet = (XMLNodeCursorImpl)arg0Obj;           
+		   DTMCursorIterator dtmCursorIterator = xNodeSet.iter();
+
+		   int nextNode = DTM.NULL;
+
+		   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+			   XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+			   String nodeStrValue = xmlNodeCursorImpl.str();
+
+			   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
+			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsUntypedAtomic, true, collationUri, xpathCollationSupport, xctxt);
+		   }
+	   }	   
 	   else {
-		   // We're assuming here that, an input value is an 
-		   // xdm singleton item.
-		   
-		   if (arg0Obj instanceof XSAnyType) {
-			   XSAnyType xsAnyType = (XSAnyType)arg0Obj;
-			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, xsAnyType, false, collationUri, xpathCollationSupport, xctxt);
-		   }
-		   else {
-			   String seqItemStrValue = arg0Obj.str();
-			   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, new XString(seqItemStrValue), 
-					                                                false, collationUri, xpathCollationSupport, xctxt);
-		   }
+		   resultSeq.add(arg0Obj);
 	   }
+	   ResultSequence rSeq2 = new ResultSequence(); 
+	   
+	   XslTransformEvaluationHelper.expandResultSequence(resultSeq, rSeq2);
+	   
+	   resultSeq = rSeq2;
 
 	   return resultSeq;
    }

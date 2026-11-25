@@ -18,12 +18,10 @@
 package org.apache.xpath.operations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMCursorIterator;
@@ -33,23 +31,23 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * An implementation of XPath 3.1 operator 'intersect'.
+ * An implementation for XPath 3.1 operator 'except'.
  * 
- * An XPath 3.1 operator 'intersect', represents set intersection 
- * of two node sets, by node identity.
+ * An XPath 3.1 operator 'except', represents set difference 
+ * between two xdm node sets, by node identity.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class Intersect extends XPathOperator
+public class XPathExceptImpl1 extends XPathOperator
 {
     
-  private static final long serialVersionUID = 5559048164177617210L;
+  private static final long serialVersionUID = 4245891832019437588L;
 
   /**
    * Method definition, to find result of XPath 3.1 operator 
-   * 'intersect'.
+   * 'except'.
    *  
    * @throws javax.xml.transform.TransformerException
    */
@@ -61,126 +59,149 @@ public class Intersect extends XPathOperator
 	SourceLocator srcLocator = xctxt.getSAXLocator();
 	
     XObject expr1 = m_left.execute(xctxt);
+    
     XObject expr2 = m_right.execute(xctxt);
     
     if ((expr1 instanceof XMLNodeCursorImpl) && (expr2 instanceof XMLNodeCursorImpl)) {
-    	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr1).iterRaw();
-        int nextNode;
+    	DTMCursorIterator dtmcursorIterator1 = ((XMLNodeCursorImpl)expr1).iter();
+        
+    	int nextNode = DTM.NULL;
+        
         List<Integer> nodeHandleList1 = new ArrayList<Integer>();
-        while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+        
+        while ((nextNode = dtmcursorIterator1.nextNode()) != DTM.NULL) {
         	nodeHandleList1.add(Integer.valueOf(nextNode)); 
         }
         
-        dtmIter = ((XMLNodeCursorImpl)expr2).iterRaw();
+        DTMCursorIterator dtmcursorIterator2 = ((XMLNodeCursorImpl)expr2).iter();
+        
         List<Integer> nodeHandleList2 = new ArrayList<Integer>();
-        while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+        
+        while ((nextNode = dtmcursorIterator2.nextNode()) != DTM.NULL) {
         	nodeHandleList2.add(Integer.valueOf(nextNode)); 
         }
 
-		Set<Integer> intersectResultSet = nodeHandleList1.stream()
-														 .distinct().filter(nodeHandleList2::contains)
-                										 .collect(Collectors.toSet());
-		List<Integer> list = Arrays.asList(intersectResultSet.toArray(new Integer[0]));
+		nodeHandleList1.removeAll(nodeHandleList2);
 		
-		list.sort(null);
-		result = new XMLNodeCursorImpl(list, xctxt.getDTMManager());
+		nodeHandleList1.sort(null);
+		
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt);
     }
     else if ((expr1 instanceof ResultSequence) && (expr2 instanceof ResultSequence)) {
-    	ResultSequence seq1 = (ResultSequence)expr1;
-    	ResultSequence seq2 = (ResultSequence)expr2;
+    	ResultSequence rSeq1 = (ResultSequence)expr1;
+    	ResultSequence rSeq2 = (ResultSequence)expr2;
+    	
     	List<Integer> nodeHandleList1 = new ArrayList<Integer>();
     	List<Integer> nodeHandleList2 = new ArrayList<Integer>();
-    	for (int idx = 0; idx < seq1.size(); idx++) {
-    	   XObject xObj = seq1.item(idx);
+    	
+    	int size1 = rSeq1.size();
+    	
+    	for (int idx = 0; idx < size1; idx++) {
+    	   XObject xObj = rSeq1.item(idx);
+    	   
     	   if (xObj instanceof XMLNodeCursorImpl) {
     		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
+    		  
     		  nodeHandleList1.add(Integer.valueOf(nodeDtmHandle));
     	   }
     	   else {
-    		  throw new javax.xml.transform.TransformerException("XPTY0004 : An item in left operand of XPath 'intersect' "
-    		  		                                                                                + "operation evaluation is not a node.", srcLocator);
+    		  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'except' first operand "
+                                                                                                      + "contains an item that is not a node.", srcLocator);
     	   }
     	}
     	
-    	for (int idx = 0; idx < seq2.size(); idx++) {
-     	   XObject xObj = seq2.item(idx);
+    	int size2 = rSeq2.size();
+    	
+    	for (int idx = 0; idx < size2; idx++) {
+     	   XObject xObj = rSeq2.item(idx);
+     	   
      	   if (xObj instanceof XMLNodeCursorImpl) {
      		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
+     		  
      		  nodeHandleList2.add(Integer.valueOf(nodeDtmHandle));
      	   }
      	   else {
-     		  throw new javax.xml.transform.TransformerException("XPTY0004 : An item in left operand of XPath 'intersect' "
-                                                                                                    + "operation evaluation is not a node.", srcLocator);
+     		  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'except' second operand "
+                                                                                                       + "contains an item that is not a node.", srcLocator);
      	   }
      	}
     	
-    	Set<Integer> intersectResultSet = nodeHandleList1.stream()
-    													 .distinct().filter(nodeHandleList2::contains)
-    													 .collect(Collectors.toSet());
-    	List<Integer> list = Arrays.asList(intersectResultSet.toArray(new Integer[0]));
-
-    	list.sort(null);
-    	result = new XMLNodeCursorImpl(list, xctxt.getDTMManager());
+        nodeHandleList1.removeAll(nodeHandleList2);
+		
+		nodeHandleList1.sort(null);
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt);
     }
     else if ((expr1 instanceof XMLNodeCursorImpl) && (expr2 instanceof ResultSequence)) {    	
     	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr1).iterRaw();
-        int nextNode;
-        List<Integer> nodeHandleList1 = new ArrayList<Integer>();
-        while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
-        	nodeHandleList1.add(Integer.valueOf(nextNode)); 
+    	
+    	int nextNode = DTM.NULL;
+        
+    	List<Integer> nodeHandleList1 = new ArrayList<Integer>();
+        
+    	while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+           nodeHandleList1.add(Integer.valueOf(nextNode)); 
         }
     	
         ResultSequence seq2 = (ResultSequence)expr2;
         List<Integer> nodeHandleList2 = new ArrayList<Integer>();
-    	for (int idx = 0; idx < seq2.size(); idx++) {
+        
+        int size2 = seq2.size();
+        
+    	for (int idx = 0; idx < size2; idx++) {
      	   XObject xObj = seq2.item(idx);
+     	   
      	   if (xObj instanceof XMLNodeCursorImpl) {
      		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
+     		  
      		  nodeHandleList2.add(Integer.valueOf(nodeDtmHandle));
      	   }
      	   else {
-     		  throw new javax.xml.transform.TransformerException("XPTY0004 : An item in left operand of XPath 'intersect' "
-                                                                                                    + "operation evaluation is not a node.", srcLocator);
+     		  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'except' second operand "
+                                                                                                       + "contains an item that is not a node.", srcLocator);
      	   }
      	}
     	
-    	Set<Integer> intersectResultSet = nodeHandleList1.stream()
-    													 .distinct().filter(nodeHandleList2::contains)
-    													 .collect(Collectors.toSet());
-    	List<Integer> list = Arrays.asList(intersectResultSet.toArray(new Integer[0]));
-
-    	list.sort(null);
-    	result = new XMLNodeCursorImpl(list, xctxt.getDTMManager());
+        nodeHandleList1.removeAll(nodeHandleList2);
+		
+		nodeHandleList1.sort(null);
+		
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt);
     }
     else if ((expr1 instanceof ResultSequence) && (expr2 instanceof XMLNodeCursorImpl)) {    	
         ResultSequence seq1 = (ResultSequence)expr1;
         List<Integer> nodeHandleList1 = new ArrayList<Integer>();
-    	for (int idx = 0; idx < seq1.size(); idx++) {
+        
+        int size1 = seq1.size();
+        
+    	for (int idx = 0; idx < size1; idx++) {
      	   XObject xObj = seq1.item(idx);
+     	   
      	   if (xObj instanceof XMLNodeCursorImpl) {
-     		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();
+     		  int nodeDtmHandle = ((XMLNodeCursorImpl)xObj).nextNode();     		  
+     		  
      		  nodeHandleList1.add(Integer.valueOf(nodeDtmHandle));
      	   }
      	   else {
-     		  throw new javax.xml.transform.TransformerException("XPTY0004 : An item in left operand of XPath 'intersect' "
-     		  		                                                                                + "operation evaluation is not a node.", srcLocator);
+     		  throw new TransformerException("XPTY0004 : An XPath 3.1 operator 'except' first operand "
+                                                                                                      + "contains an item that is not a node.", srcLocator);
      	   }
      	}
     	
     	DTMCursorIterator dtmIter = ((XMLNodeCursorImpl)expr2).iterRaw();
-        int nextNode;
-        List<Integer> nodeHandleList2 = new ArrayList<Integer>();
+    	
+    	int nextNode = DTM.NULL;
+        
+    	List<Integer> nodeHandleList2 = new ArrayList<Integer>();
+        
         while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
         	nodeHandleList2.add(Integer.valueOf(nextNode)); 
         }
     	
-    	Set<Integer> intersectResultSet = nodeHandleList1.stream()
-    													 .distinct().filter(nodeHandleList2::contains)
-    													 .collect(Collectors.toSet());
-    	List<Integer> list = Arrays.asList(intersectResultSet.toArray(new Integer[0]));
-
-    	list.sort(null);
-    	result = new XMLNodeCursorImpl(list, xctxt.getDTMManager());
+        nodeHandleList1.removeAll(nodeHandleList2);
+		
+		nodeHandleList1.sort(null);
+		
+		result = new XMLNodeCursorImpl(nodeHandleList1, xctxt);
     }
     
     return result;

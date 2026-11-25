@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-09-30T10:21:38Z" fail="12" name="fn-subsequence" pass="93" run="105" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-25T10:12:02Z" fail="8" name="fn-subsequence" pass="97" run="105" statusUnknown="0">
    <testResult status="pass" testName="fn-subsequence-mix-args-001"/>
    <testResult status="pass" testName="fn-subsequence-mix-args-002"/>
    <testResult status="pass" testName="fn-subsequence-mix-args-003"/>
@@ -93,14 +93,14 @@
    <testResult status="fail" testName="cbcl-subsequence-013"/>
    <testResult status="fail" testName="cbcl-subsequence-014"/>
    <testResult status="pass" testName="cbcl-subsequence-015"/>
-   <testResult status="fail" testName="cbcl-subsequence-016"/>
+   <testResult status="pass" testName="cbcl-subsequence-016"/>
    <testResult status="pass" testName="cbcl-subsequence-017"/>
    <testResult status="pass" testName="cbcl-subsequence-018"/>
    <testResult status="fail" testName="cbcl-subsequence-019"/>
-   <testResult status="fail" testName="cbcl-subsequence-020"/>
-   <testResult status="fail" testName="cbcl-subsequence-021"/>
+   <testResult status="pass" testName="cbcl-subsequence-020"/>
+   <testResult status="pass" testName="cbcl-subsequence-021"/>
    <testResult status="fail" testName="cbcl-subsequence-022"/>
-   <testResult status="fail" testName="cbcl-subsequence-023"/>
+   <testResult status="pass" testName="cbcl-subsequence-023"/>
    <testResult status="pass" testName="cbcl-subsequence-024"/>
    <testResult status="pass" testName="cbcl-subsequence-026"/>
    <testResult status="pass" testName="cbcl-subsequence-027"/>

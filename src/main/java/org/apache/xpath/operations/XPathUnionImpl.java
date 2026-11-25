@@ -37,21 +37,19 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Class definition, implementing XPath 3.1 operators '|' 
- * & 'union', which are synonyms of each other.
+ * Class definition, to implement XPath 3.1 operators '|' 
+ * & 'union', which are synonyms for each other for union
+ * between two xdm node sets, by node identity.
  * 
  * This class, augments functionality provided by class method 
  * UnionPathIterator.createUnionIterator(..), that has been
- * part of Xalan-J XSLT 1.0 implementation.
- * 
- * An XPath 3.1 operators '|' & 'union', represents set union 
- * of two node sets, by node identity.
+ * available since Xalan-J XSLT 1.0 implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathUnion extends Expression
+public class XPathUnionImpl extends Expression
 {
     
   private static final long serialVersionUID = 5559048164177617210L;
@@ -79,14 +77,14 @@ public class XPathUnion extends Expression
   /**
    * Default constructor.
    */
-  public XPathUnion() {
+  public XPathUnionImpl() {
 	 // no op  
   }
   
   /**
    * Class constructor.
    */
-  public XPathUnion(java.lang.String lStr, java.lang.String rStr) {
+  public XPathUnionImpl(java.lang.String lStr, java.lang.String rStr) {
 	  m_lstr = lStr;
 	  m_rstr = rStr;
   }

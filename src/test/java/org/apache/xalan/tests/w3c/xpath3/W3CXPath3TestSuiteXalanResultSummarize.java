@@ -42,12 +42,14 @@ import org.w3c.dom.Element;
  * 
  * Following are sequence of steps to use this class:
  * 
- * 1) Run W3C XPath 3.1 test suite for Xalan-J implementation using the classes: 
+ * 1) Run W3C XPath 3.1 test suite for Xalan-J implementation using following 
+ *    classes, with the specified sequence:
  *    org.apache.xalan.tests.w3c.xpath3.W3CXPath3Tests1,
  *    org.apache.xalan.tests.w3c.xpath3.W3CXPath3Tests2,
  *    org.apache.xalan.tests.w3c.xpath3.W3CXPath3Tests3
  *    
- * 2) Run this class, to produce Xalan-J, W3C XPath 3.1 test suite aggregate results. 
+ * 2) Run this class, to produce Xalan-J, W3C XPath 3.1 test suite 
+ *    aggregate results. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
