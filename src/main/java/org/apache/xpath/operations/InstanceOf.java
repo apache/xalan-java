@@ -36,7 +36,6 @@ import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.StringUtil;
 import org.apache.xalan.xslt.util.XslTransformData;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -55,6 +54,10 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathStaticContext;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeArrayTest;
 import org.apache.xpath.composite.XPathSequenceTypeFunctionTest;
@@ -62,6 +65,8 @@ import org.apache.xpath.composite.XPathSequenceTypeKindTest;
 import org.apache.xpath.composite.XPathSequenceTypeMapTest;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ElemFunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -140,7 +145,7 @@ public class InstanceOf extends XPathOperator
    /**
     * An XSL StylesheetRoot object instance.
     */
-   private StylesheetRoot m_stylesheetRoot = null;
+   private StylesheetRoot m_stylesheetRoot = XslTransformData.m_stylesheetRoot;
 
    /**
     * Apply an XPath operator to its two operands, and return the result.
@@ -161,58 +166,55 @@ public class InstanceOf extends XPathOperator
             
       XObject result = null;
       
-      XPathContext xctxt = null;            
+      XPathContext xctxt = getXPathContext();            
       
-      boolean isXpathCtxtRaw = false;
-	  
-      if (XslTransformData.m_stylesheetRoot != null) {
-    	  m_stylesheetRoot = XslTransformData.m_stylesheetRoot; 
-    	  
-    	  TransformerImpl transformerImpl = m_stylesheetRoot.getTransformerImpl();
-    	  
-    	  if (transformerImpl != null) {
-    	     xctxt = transformerImpl.getXPathContext();
-    	  }
-    	  else {
-    		 xctxt = new XPathContext();
-      		 
-      		 isXpathCtxtRaw = true; 
-    	  }
-      }
-      else {
-    	  m_stylesheetRoot = XslTransformEvaluationHelper.getXslStylesheetRootFromXslElementRef(this);    	  
-    	  
-    	  if (m_stylesheetRoot != null) {
-    		  TransformerImpl transformerImpl = m_stylesheetRoot.getTransformerImpl();
-
-    		  if (transformerImpl != null) {
-    			  xctxt = transformerImpl.getXPathContext();
-    		  }
-    		  else {
-    			  xctxt = new XPathContext();
-
-    			  isXpathCtxtRaw = true; 
-    		  }
-     	  }
-     	  else {
-     		 xctxt = new XPathContext();
-     		 
-     		 isXpathCtxtRaw = true;
-     	  }  
+      List<XMLNSDecl> nsPrefixTable = null;	  		       
+      
+      PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+      
+      if (prefixResolver == null) {
+    	  prefixResolver = getXMLNsPrefixResolver();
       }
       
-      List<XMLNSDecl> nsPrefixTable = null;	  
-		 
       if (m_stylesheetRoot != null) {
     	  nsPrefixTable = m_stylesheetRoot.getPrefixTable();
       }
       else {
     	  PrefixResolverDefault xmlNsPrefixResolver = (PrefixResolverDefault)(getXMLNsPrefixResolver());
     	  nsPrefixTable = xmlNsPrefixResolver.getPrefixTable();
+      } 
+      
+      if (left.getCastAsType() != null) {
+    	  XPathSequenceType xpathSeqTypeData1 = left.getCastAsType();    	 
+    	  XPathSequenceType xpathSeqTypeData2 = (XPathSequenceType)right;
+
+    	  int builtInSeqType1 = xpathSeqTypeData1.getBuiltInSequenceType();
+    	  int builtInSeqType2 = xpathSeqTypeData2.getBuiltInSequenceType();
+
+    	  if (builtInSeqType1 != 0) {
+    		  if (builtInSeqType1 == builtInSeqType2) {
+    			  result = XBoolean.S_TRUE;
+    		  }
+    		  else {
+    			  result = XBoolean.S_FALSE;
+    		  }
+
+    		  return result;
+    	  }
       }
       
       if (left instanceof XNumber) {
     	 left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);  
+      }
+      
+      if (left instanceof XSNumericType) {
+    	  XSNumericType xsNumericType = (XSNumericType)left;
+
+    	  XObject xObj = xsNumericType.getXObject();
+
+    	  if (xObj != null) {
+    		  left = xObj;  
+    	  }
       }
       
       if (left instanceof ResultSequence) {
@@ -278,38 +280,70 @@ public class InstanceOf extends XPathOperator
     	 }
       }
       
-      if (left instanceof XSNumericType) {
-    	 XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
-    	 
-    	 XSNumericType xsNumericType = (XSNumericType)left;
-    	 Object obj1 = xsNumericType.getValue();
-    	 
-    	 if ((obj1 instanceof XSDouble) && (xpathSeqTypeData.getBuiltInSequenceType() == 
-    			                                                                     XPathSequenceTypeSupport.XS_DOUBLE)) {
-    		result = XBoolean.S_TRUE;
-    		
-    		return result;
-    	 }
+      if (left instanceof XSInteger) {
+    	  XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+
+    	  if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
+    		  result = XBoolean.S_TRUE;
+
+    		  return result;
+    	  }
       }
       
-      if (left.getCastAsType() != null) {
-    	 XPathSequenceType xpathSeqTypeData1 = left.getCastAsType();    	 
-    	 XPathSequenceType xpathSeqTypeData2 = (XPathSequenceType)right;
-    	 
-    	 int builtInSeqType1 = xpathSeqTypeData1.getBuiltInSequenceType();
-    	 int builtInSeqType2 = xpathSeqTypeData2.getBuiltInSequenceType();
-    	 
-    	 if (builtInSeqType1 != 0) {
-    		if (builtInSeqType1 == builtInSeqType2) {
-    			result = XBoolean.S_TRUE;
-    		}
-    		else {
-    			result = XBoolean.S_FALSE;
-    		}
-    		
-    		return result;
-    	 }
+      if (left instanceof XSDecimal) {
+    	  XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+
+    	  if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) {
+    		  result = XBoolean.S_TRUE;
+
+    		  return result;
+    	  }    	  
+    	  else if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
+    		  result = XBoolean.S_FALSE;
+
+    		  return result;
+    	  }
       }
+      
+      if (left instanceof XSFloat) {
+    	  XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+
+    	  if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_FLOAT) {
+    		  result = XBoolean.S_TRUE;
+
+    		  return result;
+    	  }
+    	  else if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) {
+    		  result = XBoolean.S_FALSE;
+
+    		  return result;
+    	  }    	  
+    	  else if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
+    		  result = XBoolean.S_FALSE;
+
+    		  return result;
+    	  }
+      }
+      
+      if (left instanceof XSDouble) {
+    	 XPathSequenceType xpathSeqTypeData = (XPathSequenceType)right;
+    	 
+    	 if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DOUBLE) {
+    		 result = XBoolean.S_TRUE;
+
+    		 return result;
+    	 }
+    	 else if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_DECIMAL) {
+    		 result = XBoolean.S_FALSE;
+
+    		 return result;
+    	 }    	  
+    	 else if (xpathSeqTypeData.getBuiltInSequenceType() == XPathSequenceTypeSupport.XS_INTEGER) {
+    		 result = XBoolean.S_FALSE;
+
+    		 return result;
+    	 }
+      }            
       
       if (left instanceof XPathMap) {
     	 /**
@@ -338,19 +372,9 @@ public class InstanceOf extends XPathOperator
     		   
     		   xpathExprStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprStr, nsPrefixTable);
     		   
-    		   XPath xpathObj = null;
-    		   XObject xObj = null;
+    		   XPath xpathObj = new XPath(xpathExprStr, this, prefixResolver, XPath.SELECT, null, true);
     		   
-    		   if (isXpathCtxtRaw) {
-    		      xpathObj = new XPath(xpathExprStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);
-    		      
-    		      xObj = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
-    		   }
-    		   else {
-    			  xpathObj = new XPath(xpathExprStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
-    			  
-    			  xObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
-    		   }    		       		   
+    		   XObject xObj = xpathObj.execute(xctxt, DTM.NULL, prefixResolver);    		       		       		       		  
     		   
     		   XPathSequenceType xpathSeqTypeData1 = (XPathSequenceType)xObj;
     		   
@@ -360,15 +384,15 @@ public class InstanceOf extends XPathOperator
     		   
     		   funcReturnTypeStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(funcReturnTypeStr, nsPrefixTable);
     		   
-    		   if (isXpathCtxtRaw) {
+    		   if (prefixResolver == null) {
      		      xpathObj = new XPath(funcReturnTypeStr, this, getXMLNsPrefixResolver(), XPath.SELECT, null, true);
      		      
      		      xObj = xpathObj.execute(xctxt, DTM.NULL, getXMLNsPrefixResolver());
      		   }
      		   else {
-     			  xpathObj = new XPath(funcReturnTypeStr, this, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+     			  xpathObj = new XPath(funcReturnTypeStr, this, prefixResolver, XPath.SELECT, null, true);
      			  
-     			  xObj = xpathObj.execute(xctxt, DTM.NULL, xctxt.getNamespaceContext());
+     			  xObj = xpathObj.execute(xctxt, DTM.NULL, prefixResolver);
      		   } 
     		   
     		   XPathSequenceType xpathSeqTypeData2 = (XPathSequenceType)xObj;
@@ -387,8 +411,6 @@ public class InstanceOf extends XPathOperator
     		}
     	 }
       }
-	  	  
-	  PrefixResolver xmlNsPrefixResolver = xctxt.getNamespaceContext();
 	  
       XPathSequenceType seqTypedData = null;      
       XPathSequenceType castAsType = left.getCastAsType();
@@ -489,58 +511,9 @@ public class InstanceOf extends XPathOperator
     	  if ((left instanceof XNumber) || (left instanceof XSDouble) || (left instanceof XSFloat)) {
     		 return XBoolean.S_TRUE; 
     	  }
-      }
+      }            
       
-      if (left instanceof ElemFunctionItem) {
-    	  /**
-    	   * Converting, xsl:function declaration signature, to an 
-    	   * equivalent XPath inline function declaration whose
-    	   * function body is not specified.
-    	   */
-    	  
-    	  java.lang.String xpathInlineFuncDefnStr = "function(";
-    	  
-    	  ElemFunctionItem elemFunctionItem = (ElemFunctionItem)left;
-    	  ElemFunction elemFunction = elemFunctionItem.getElemFunction();
-    	  ElemTemplateElement elemTemplateElement = elemFunction.getFirstChildElem();
-    	  
-    	  int paramCount = 0;
-    	  
-    	  while (elemTemplateElement != null) {
-    		 if (elemTemplateElement instanceof ElemParam) {
-    			paramCount++; 
-    			
-    			ElemParam elemParam = (ElemParam)elemTemplateElement;
-    			java.lang.String paramAsStr = elemParam.getAs();
-    			
-    			xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + "$a" + paramCount + " as " + paramAsStr + ",";
-    		 }
-    		 
-    		 elemTemplateElement = elemTemplateElement.getNextSiblingElem();
-    	  }
-    	  
-    	  if (xpathInlineFuncDefnStr.endsWith(",")) {
-    		  int strLength1 = xpathInlineFuncDefnStr.length();
-    		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr.substring(0, strLength1 - 1);
-    		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + ")";
-    	  }
-    	  else {
-    		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + ")"; 
-    	  }
-    	  
-    	  java.lang.String funcReturnTypeAsStr = elemFunction.getAs();
-    	  
-    	  if (funcReturnTypeAsStr != null) {
-    		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " as " + funcReturnTypeAsStr; 
-    	  }
-    	  
-    	  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " { 'no_op' }";
-    	      	  
-    	  XPath xpathObj = new XPath(xpathInlineFuncDefnStr, this, xmlNsPrefixResolver, XPath.SELECT, null);
-    	  
-    	  left = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
-      }
-      else if (left instanceof XdmAttributeItem) {
+      if (left instanceof XdmAttributeItem) {
     	  if ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ATTRIBUTE_KIND) ||
     			                                (sequenceTypeKindTest.getKindVal() == XPathSequenceTypeSupport.ITEM_KIND)) {
     		  result = XBoolean.S_TRUE;
@@ -548,6 +521,15 @@ public class InstanceOf extends XPathOperator
     	  else {
     		  result = XBoolean.S_FALSE;
     	  }
+    	  
+    	  return result;
+      }
+      else if (left instanceof ElemFunctionItem) {    	      	  
+    	  left = xslTrfElemFunctionItemToInlineFuncExpr((ElemFunctionItem)left, prefixResolver, xctxt);
+      }
+      else if (left instanceof XPathNamedFunctionReference) {
+    	  result = xslInstanceOfCheckNamedFuncRef((XPathNamedFunctionReference)left, nsPrefixTable, prefixResolver, 
+    			                                                                                                  seqTypedData, xctxt);
     	  
     	  return result;
       }
@@ -1269,7 +1251,11 @@ public class InstanceOf extends XPathOperator
 					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
                               																	&& (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
                               																				seqTypeKindTest.getNodeNsUri()))) {
-						  XSModel xsModel = m_stylesheetRoot.getXsModel();
+						  XSModel xsModel = null;
+						  
+						  if (m_stylesheetRoot != null) {
+						     xsModel = m_stylesheetRoot.getXsModel();
+						  }
 						  
 						  if (xsModel != null) {
 							  XSElementDeclaration elemDecl = xsModel.getElementDeclaration(elemNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
@@ -1406,7 +1392,11 @@ public class InstanceOf extends XPathOperator
 					  else if ((seqTypeKindTest.getKindVal() == XPathSequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
 																								  && (XPathSequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
 																										  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
-						  XSModel xsModel = m_stylesheetRoot.getXsModel();
+						  XSModel xsModel = null;
+						  
+						  if (m_stylesheetRoot != null) {
+						     xsModel = m_stylesheetRoot.getXsModel();
+						  }
 						  
 						  if (xsModel != null) {
 							  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
@@ -1669,5 +1659,204 @@ public class InstanceOf extends XPathOperator
 
 	  return result;
   }
+  
+  /**
+   * Method definition, to XSL transform an ElemFunctionItem object instance
+   * to an XPath inline function expression object. 
+   * 
+   * @param elemFunctionItem                  The supplied ElemFunctionItem object
+   * @param xmlNsPrefixResolver               XML namespace PrefixResolver object
+   * @param xctxt                             An XPath context object
+   * @return                                  An XPath inline function expression 
+   *                                          object.
+   * @throws TransformerException
+   */
+  private XObject xslTrfElemFunctionItemToInlineFuncExpr(ElemFunctionItem elemFunctionItem, PrefixResolver xmlNsPrefixResolver, 
+		                                                                                    XPathContext xctxt) throws TransformerException {
+	  
+	  XObject result = null;
+
+	  java.lang.String xpathInlineFuncDefnStr = "function(";
+
+	  ElemFunction elemFunction = elemFunctionItem.getElemFunction();
+	  ElemTemplateElement elemTemplateElement = elemFunction.getFirstChildElem();
+
+	  int paramCount = 0;
+
+	  while (elemTemplateElement != null) {
+		  if (elemTemplateElement instanceof ElemParam) {
+			  paramCount++; 
+
+			  ElemParam elemParam = (ElemParam)elemTemplateElement;
+			  java.lang.String paramAsStr = elemParam.getAs();
+
+			  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + "$a" + paramCount + " as " + paramAsStr + ",";
+		  }
+
+		  elemTemplateElement = elemTemplateElement.getNextSiblingElem();
+	  }
+
+	  if (xpathInlineFuncDefnStr.endsWith(",")) {
+		  int strLength1 = xpathInlineFuncDefnStr.length();
+		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr.substring(0, strLength1 - 1);
+		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + ")";
+	  }
+	  else {
+		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + ")"; 
+	  }
+
+	  java.lang.String funcReturnTypeAsStr = elemFunction.getAs();
+
+	  if (funcReturnTypeAsStr != null) {
+		  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " as " + funcReturnTypeAsStr; 
+	  }
+
+	  xpathInlineFuncDefnStr = xpathInlineFuncDefnStr + " { 'no_op' }";
+
+	  XPath xpathObj = new XPath(xpathInlineFuncDefnStr, this, xmlNsPrefixResolver, XPath.SELECT, null);
+
+	  result = xpathObj.execute(xctxt, DTM.NULL, xmlNsPrefixResolver);
+
+	  return result;
+   }
+  
+   /**
+    * Method definition, to check whether the supplied XPathNamedFunctionReference
+    * object instance, conforms to the supplied XPath sequence type object instance. 
+    * 
+    * @param xpathNamedFunctionReference              The supplied, XPath named function
+    *                                                 reference object instance.
+    * @param nsPrefixTable                            An XML namespace prefix table
+    * @param xmlNsPrefixResolver                      An XML namespace prefix resolver object
+    * @param seqTypedData                             An XPath sequence type data object, corresponding
+    *                                                 to XPath 'instance of' second operand.
+    * @param xctxt                                    An XPath context object
+    * @return                                         An xdm true or false result
+    * @throws TransformerException
+    */
+   private XObject xslInstanceOfCheckNamedFuncRef(XPathNamedFunctionReference xpathNamedFunctionReference,
+		                                          List<XMLNSDecl> nsPrefixTable, PrefixResolver xmlNsPrefixResolver, 
+		                                          XPathSequenceType seqTypedData, XPathContext xctxt) throws TransformerException {
+	
+	   XObject result = XBoolean.S_FALSE;
+
+	   java.lang.String funcLocalName = xpathNamedFunctionReference.getFuncName();
+	   java.lang.String funcNamespace = xpathNamedFunctionReference.getFuncNamespace();
+
+	   Short arity = xpathNamedFunctionReference.getArity();
+	   int fnConcatArity = xpathNamedFunctionReference.getConcatArity();
+
+	   XPathSequenceTypeFunctionTest seqTypeFuncTest = seqTypedData.getSequenceTypeFunctionTest();
+
+	   if (seqTypeFuncTest != null) {
+		   if (seqTypeFuncTest.isAnyFunctionTest()) {
+			   result = XBoolean.S_TRUE;
+		   }
+		   else if ((XPathStaticContext.XPATH_BUILT_IN_FUNCS_NS_URI).equals(funcNamespace) ||
+				    (XPathStaticContext.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(funcNamespace) ||
+				    (XPathStaticContext.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(funcNamespace) ||    			  
+				    (XPathStaticContext.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(funcNamespace)) {
+
+			   int funcTok = XPathParser.getFunctionToken(funcLocalName, funcNamespace);
+
+			   int runTimeArity = 0;
+
+			   if (funcTok >= 0) {
+				   FunctionTable funcTable = new FunctionTable();
+				   Function function = funcTable.getFunction(funcTok);
+
+				   Short[] arityArr = function.getArity();							
+
+				   boolean funcRefAritySpecOk = false;
+
+				   runTimeArity = (fnConcatArity != 0) ? fnConcatArity : arity;  
+
+				   if (arityArr != null) {										
+					   for (int idx2 = 0; idx2 < arityArr.length; idx2++) {
+						   short definedArity = arityArr[idx2];
+
+						   if (runTimeArity == definedArity) {
+							   funcRefAritySpecOk = true;
+
+							   break;
+						   }
+					   }
+				   }
+				   else {
+					   int minArity = function.getMinArity();
+					   int maxArity = function.getMaxArity();
+
+					   if ((runTimeArity >= minArity) && (runTimeArity <= maxArity)) {
+						   funcRefAritySpecOk = true;
+					   }
+				   }
+
+				   if (funcRefAritySpecOk) {
+					   java.lang.String xdmSeqTypeStr2 = seqTypeFuncTest.getTypedFunctionTestReturnType();
+					   List<java.lang.String> funcParamSpecList = seqTypeFuncTest.getTypedFunctionTestParamSpecList();
+
+					   int arity2 = 0;
+
+					   if (funcParamSpecList != null) {
+						   arity2 = funcParamSpecList.size();  
+					   }
+
+					   if (xdmSeqTypeStr2 != null) {
+						   java.lang.String xdmExpectedSeqTypeStr = function.getReturnSeqTypeStr();
+						   xdmSeqTypeStr2 = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xdmSeqTypeStr2, nsPrefixTable);
+
+						   XPath xpathObj1 = new XPath(xdmExpectedSeqTypeStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+						   XPath xpathObj2 = new XPath(xdmSeqTypeStr2, null, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+
+						   XPathSequenceType xpathSequenceType1 = (XPathSequenceType)(xpathObj1.execute(xctxt, DTM.NULL, xmlNsPrefixResolver));
+						   XPathSequenceType xpathSequenceType2 = (XPathSequenceType)(xpathObj2.execute(xctxt, DTM.NULL, xmlNsPrefixResolver));
+
+						   if (xpathSequenceType1.equal(xpathSequenceType2)) {
+							   if (runTimeArity == arity2) {								   
+								   if (arity2 == 1 && (function instanceof FunctionOneArg)) {
+									  java.lang.String xpathExprStr = funcParamSpecList.get(0);
+									  java.lang.String xpathArgTypeStr = ((FunctionOneArg)function).getArgTypeStr();
+									  
+									  if (xpathExprStr.equals(xpathArgTypeStr)) {
+										 result = XBoolean.S_TRUE; 
+									  }
+									  else {
+										  XPath xpathObj_a = new XPath(xpathExprStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+										  XPath xpathObj_b = new XPath(xpathArgTypeStr, null, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+
+										  XPathSequenceType xpathSequenceType_a = (XPathSequenceType)(xpathObj_a.execute(xctxt, DTM.NULL, xmlNsPrefixResolver));
+										  XPathSequenceType xpathSequenceType_b = (XPathSequenceType)(xpathObj_b.execute(xctxt, DTM.NULL, xmlNsPrefixResolver));
+
+										  if (xpathSequenceType_a.equal(xpathSequenceType_b)) {
+											  result = XBoolean.S_TRUE; 
+										  }
+										  else {
+											  result = XBoolean.S_FALSE;
+										  }
+									  }
+								   }								   
+								   else {
+								      result = XBoolean.S_TRUE;
+								   }
+							   }
+							   else {
+								   result = XBoolean.S_FALSE;
+							   }
+						   }
+						   else {
+						       result = XBoolean.S_FALSE;
+						   }
+					   }
+				   }
+				   else {
+					   throw new TransformerException("XPST0017 : An XPath 3.1 function Q{" + funcNamespace + "}" 
+							                                                                + funcLocalName + "#" + runTimeArity + " is not defined."); 
+				   }
+			   }
+		   }
+	   }
+
+	   return result;
+   }
   
 }

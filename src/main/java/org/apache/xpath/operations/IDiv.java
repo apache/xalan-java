@@ -41,7 +41,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticUtil;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.OpCodes;
@@ -67,7 +67,7 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class IDiv extends XPathArithmeticUtil
+public class IDiv extends XPathArithmeticOp
 {
 
   private static final long serialVersionUID = 5138215729063791579L;
@@ -88,10 +88,31 @@ public class IDiv extends XPathArithmeticUtil
 	  
 	  XObject result = null;
 	  
-	  Object lObj = left.object();
-	  Object rObj = right.object();
+      Object lObj = left.object();  // used for FuncArgPlaceholder
+	  
+	  Object rObj = right.object(); // used for FuncArgPlaceholder
 	  
 	  XPathContext xctxt = getXPathContext();
+	  
+      left = XObject.xdmAtomize(left, xctxt);
+	  
+	  right = XObject.xdmAtomize(right, xctxt);
+	  
+	  if (left instanceof XSUntypedAtomic) {
+		  left = castXsUntypedAtomicToXsDouble(left);
+		  
+		  if ((XslTransformData.m_stylesheetRoot != null) && ((right instanceof XSString) || (right instanceof XString))) {
+			 right = castXsStringToXsDouble(right);  
+		  }
+	  }
+
+	  if (right instanceof XSUntypedAtomic) {
+		  right = castXsUntypedAtomicToXsDouble(right);
+		  
+		  if ((XslTransformData.m_stylesheetRoot != null) && ((left instanceof XSString) || (left instanceof XString))) {
+			 left = castXsStringToXsDouble(left);  
+		  }
+	  }
 	  
 	  if (left instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'idiv', but "
@@ -126,6 +147,11 @@ public class IDiv extends XPathArithmeticUtil
 		  else if (rSeq.size() == 1) {
 			  left = rSeq.item(0);   
 		  }
+		  else {
+              result = new ResultSequence();
+			  
+			  return result;
+		  }
 	  }
 
 	  if (right instanceof ResultSequence) {
@@ -137,6 +163,11 @@ public class IDiv extends XPathArithmeticUtil
 		  else if (rSeq.size() == 1) {
 			  right = rSeq.item(0);   
 		  }
+		  else {
+              result = new ResultSequence();
+			  
+			  return result;
+		  }
 	  }
 	  
 	  if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 0)) {
@@ -145,7 +176,7 @@ public class IDiv extends XPathArithmeticUtil
 
 	  if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
 		  return new ResultSequence();  
-	  }
+	  }	  	  
 	  
 	  StylesheetRoot stylesheetRoot = null;
 
@@ -166,6 +197,14 @@ public class IDiv extends XPathArithmeticUtil
 		  if ((right instanceof XSString) || (right instanceof XString)) {		  
 			  throw new TransformerException("XPTY0004 : An XPath operator 'idiv' cannot have a string valued operand.");  
 		  }
+	  }
+	  
+	  if (left instanceof XNumber) {
+		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
+	  }
+
+	  if (right instanceof XNumber) {
+		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
 	  }
 	  
 	  java.lang.String lNodeStr = null;
@@ -488,26 +527,38 @@ public class IDiv extends XPathArithmeticUtil
 	  }
 	  
 	  Expression leftOperandExpr = getLeftOperand();	  
+	  
 	  if (leftOperandExpr instanceof SelfIteratorNoPredicate) {
 		  left = getModifiedOperandValue(left, (SelfIteratorNoPredicate)leftOperandExpr);
 	  }
 
 	  Expression rightOperandExpr = getRightOperand();	  
+	  
 	  if (rightOperandExpr instanceof SelfIteratorNoPredicate) {
 		  right = getModifiedOperandValue(right, (SelfIteratorNoPredicate)rightOperandExpr);
 	  }
 	  
 	  java.lang.String arg0Str = null;
+	  java.lang.String arg1Str = null;
 	  
-	  if ((left instanceof XSInteger) || (left instanceof XSDecimal) || 
-			                                                      (left instanceof XSFloat) || 
-			                                                      (left instanceof XSDouble) || 
-	                                                              (left instanceof XNumber) ||
-	                                                              (left instanceof XSString)) {
-		  arg0Str = XslTransformEvaluationHelper.getStrVal(left);		 
+	  if ((left instanceof XSUntypedAtomic || left instanceof XSString) && (right instanceof XSUntypedAtomic || right instanceof XSString)) {
+		  arg0Str = XslTransformEvaluationHelper.getStrVal(left);		  
+		  arg1Str = XslTransformEvaluationHelper.getStrVal(right);
+	  }
+	  	  	  
+	  if (arg0Str == null) {
+		  if ((left instanceof XSInteger) || (left instanceof XSDecimal) || 
+											 (left instanceof XSFloat) || 
+											 (left instanceof XSDouble) || 
+											 (left instanceof XNumber) ||
+											 (left instanceof XSString)) {
+			  arg0Str = XslTransformEvaluationHelper.getStrVal(left);		 
+		  }
 	  }
 	  
-	  java.lang.String arg1Str = XslTransformEvaluationHelper.getStrVal(right);
+	  if (arg1Str == null) {
+	     arg1Str = XslTransformEvaluationHelper.getStrVal(right);
+	  }
 
 	  java.lang.String xpathCastAsStr = "(" + arg0Str + " div " + arg1Str + ") cast as xs:integer";
 

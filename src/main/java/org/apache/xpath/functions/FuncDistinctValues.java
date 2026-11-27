@@ -110,6 +110,7 @@ public class FuncDistinctValues extends XSL3StringCollationAwareFunction {
 	   else {
 		   resultSeq.add(arg0Obj);
 	   }
+	   
 	   ResultSequence rSeq2 = new ResultSequence(); 
 	   
 	   XslTransformEvaluationHelper.expandResultSequence(resultSeq, rSeq2);

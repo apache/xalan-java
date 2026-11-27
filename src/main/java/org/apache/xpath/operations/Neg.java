@@ -54,8 +54,7 @@ public class Neg extends XPathUnaryOperator
     
 	  XObject result = null;
 
-	  if (right instanceof XSNumericType) {
-		  
+	  if (right instanceof XSNumericType) {		  
 		  java.lang.String str1 = ((XSNumericType)right).stringValue();
 		  
 		  if (right instanceof XSInteger) {

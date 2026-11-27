@@ -60,7 +60,9 @@ public class FuncData extends FunctionDef1Arg
    * Class constructor.
    */
   public FuncData() {
-	  m_arity = new Short[] {0, 1}; 
+	  m_arity = new Short[] {0, 1};
+	  m_arg_type_str = "item()*";
+	  m_return_seq_type_str = "xs:anyAtomicType*";
   }
 
   /**
@@ -144,18 +146,13 @@ public class FuncData extends FunctionDef1Arg
       if (argObj instanceof XMLNodeCursorImpl) {    	 
          XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)argObj;                           
          
-         //XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(xmlNodeCursorImpl.str());
-         
-         //rSeq.add(xsUntypedAtomic);
-         
-         DTMCursorIterator dtmCursorIter = xmlNodeCursorImpl.iter();
+         DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
          
          int nextNode = DTM.NULL;
          
-         while ((nextNode = dtmCursorIter.nextNode()) != DTM.NULL) {
+         while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
         	XMLNodeCursorImpl xmlNodeCursorImpl1 = new XMLNodeCursorImpl(nextNode, xctxt);
         	DTM dtm = xctxt.getDTM(nextNode);
-        	short nodeType = dtm.getNodeType(nextNode);
         	
         	String str1 = xmlNodeCursorImpl1.str();
         	
@@ -214,7 +211,7 @@ public class FuncData extends FunctionDef1Arg
       }
       else if ((m_arg0 instanceof Function) || (argObj instanceof XPathInlineFunction) 
     		                                || (argObj instanceof XPathMap)) {
-    	 throw new TransformerException("FOTY0013 : An XPath 3.1 function 'data' cannot atomize an xdm function item, or a map.", srcLocator); 
+    	  throw new TransformerException("FOTY0013 : An XPath 3.1 function 'data' cannot atomize an xdm function item, or a map.", srcLocator); 
       }
       else {
     	  rSeq.add(argObj); 

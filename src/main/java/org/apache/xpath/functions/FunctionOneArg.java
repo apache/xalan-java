@@ -34,7 +34,6 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
@@ -46,7 +45,9 @@ import xml.xpath31.processor.types.XSInteger;
  */
 public class FunctionOneArg extends Function implements ExpressionOwner
 {
-  static final long serialVersionUID = -5180174180765609758L;
+  static final long serialVersionUID = -5180174180765609758L;    
+  
+  protected String m_arg_type_str = null;
   
   private boolean m_arg_count_err = false;
 
@@ -303,6 +304,14 @@ public class FunctionOneArg extends Function implements ExpressionOwner
  	  }
 
  	  return result;
+   }
+
+   public String getArgTypeStr() {
+	   return m_arg_type_str;
+   }
+
+   public void setArgTypeStr(String argTypeStr) {
+	   this.m_arg_type_str = argTypeStr;
    }
 
 }

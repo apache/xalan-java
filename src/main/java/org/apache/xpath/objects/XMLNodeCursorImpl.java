@@ -99,6 +99,11 @@ public class XMLNodeCursorImpl extends NodeCursor
    */
   private static XPathSequenceTypeKindTest m_seqTypeKindTest = null;
   
+  /**
+   * A possible xdm type annotation for this xdm node, represented by 
+   * this integer value (specific to Xalan-J XSL 3 processor) referring 
+   * to a xdm sequence type.
+   */
   private static int m_xdm_type_id = XObject.CLASS_UNKNOWN;
 
   /**

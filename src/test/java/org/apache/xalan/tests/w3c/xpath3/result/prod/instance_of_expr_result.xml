@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-20T16:32:06Z" fail="35" name="prod-InstanceofExpr" pass="238" run="273" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-27T14:37:56Z" fail="21" name="prod-InstanceofExpr" pass="252" run="273" statusUnknown="0">
    <testResult status="pass" testName="instanceof1"/>
    <testResult status="pass" testName="instanceof2"/>
    <testResult status="pass" testName="instanceof3"/>
@@ -51,7 +51,7 @@
    <testResult status="pass" testName="instanceof50"/>
    <testResult status="pass" testName="instanceof51"/>
    <testResult status="pass" testName="instanceof52"/>
-   <testResult status="fail" testName="instanceof53"/>
+   <testResult status="pass" testName="instanceof53"/>
    <testResult status="pass" testName="instanceof54"/>
    <testResult status="pass" testName="instanceof55"/>
    <testResult status="pass" testName="instanceof56"/>
@@ -62,7 +62,7 @@
    <testResult status="pass" testName="instanceof61"/>
    <testResult status="pass" testName="instanceof62"/>
    <testResult status="pass" testName="instanceof63"/>
-   <testResult status="fail" testName="instanceof64"/>
+   <testResult status="pass" testName="instanceof64"/>
    <testResult status="pass" testName="instanceof65"/>
    <testResult status="pass" testName="instanceof66"/>
    <testResult status="pass" testName="instanceof67"/>
@@ -110,17 +110,17 @@
    <testResult status="pass" testName="instanceof109"/>
    <testResult status="pass" testName="instanceof110"/>
    <testResult status="pass" testName="instanceof111"/>
-   <testResult status="fail" testName="instanceof121"/>
-   <testResult status="fail" testName="instanceof122"/>
-   <testResult status="fail" testName="instanceof123"/>
-   <testResult status="fail" testName="instanceof124"/>
-   <testResult status="fail" testName="instanceof125"/>
-   <testResult status="fail" testName="instanceof126"/>
-   <testResult status="fail" testName="instanceof127"/>
-   <testResult status="fail" testName="instanceof128"/>
-   <testResult status="fail" testName="instanceof129"/>
-   <testResult status="fail" testName="instanceof130"/>
-   <testResult status="fail" testName="instanceof131"/>
+   <testResult status="pass" testName="instanceof121"/>
+   <testResult status="pass" testName="instanceof122"/>
+   <testResult status="pass" testName="instanceof123"/>
+   <testResult status="pass" testName="instanceof124"/>
+   <testResult status="pass" testName="instanceof125"/>
+   <testResult status="pass" testName="instanceof126"/>
+   <testResult status="pass" testName="instanceof127"/>
+   <testResult status="pass" testName="instanceof128"/>
+   <testResult status="pass" testName="instanceof129"/>
+   <testResult status="pass" testName="instanceof130"/>
+   <testResult status="pass" testName="instanceof131"/>
    <testResult status="fail" testName="instanceof132"/>
    <testResult status="fail" testName="instanceof133"/>
    <testResult status="fail" testName="instanceof134"/>
@@ -165,7 +165,7 @@
    <testResult status="fail" testName="K-SeqExprInstanceOf-39"/>
    <testResult status="fail" testName="K-SeqExprInstanceOf-40"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-41"/>
-   <testResult status="fail" testName="K-SeqExprInstanceOf-42"/>
+   <testResult status="pass" testName="K-SeqExprInstanceOf-42"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-43"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-44"/>
    <testResult status="pass" testName="K-SeqExprInstanceOf-45"/>

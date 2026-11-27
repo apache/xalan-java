@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:34:02Z" fail="1" name="fn-floor" pass="87" run="88" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-27T14:37:02Z" fail="0" name="fn-floor" pass="88" run="88" statusUnknown="0">
    <testResult status="pass" testName="fn-floorint1args-1"/>
    <testResult status="pass" testName="fn-floorint1args-2"/>
    <testResult status="pass" testName="fn-floorint1args-3"/>
@@ -57,7 +57,7 @@
    <testResult status="pass" testName="K2-FloorFunc-11"/>
    <testResult status="pass" testName="K2-FloorFunc-12"/>
    <testResult status="pass" testName="K2-FloorFunc-13"/>
-   <testResult status="fail" testName="fn-floor-1"/>
+   <testResult status="pass" testName="fn-floor-1"/>
    <testResult status="pass" testName="fn-floor-decimal-1"/>
    <testResult status="pass" testName="fn-floor-decimal-2"/>
    <testResult status="pass" testName="fn-floor-decimal-3"/>

@@ -38,6 +38,7 @@ public class FuncTrue extends Function
 	 */
 	public FuncTrue() {
 		m_arity = new Short[] { 0 };
+ 	    m_return_seq_type_str = "xs:boolean";
 	}
 
 	/**

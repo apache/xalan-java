@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-08-17T10:33:41Z" fail="1" name="fn-ceiling" pass="86" run="87" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-27T14:36:32Z" fail="0" name="fn-ceiling" pass="87" run="87" statusUnknown="0">
    <testResult status="pass" testName="fn-ceilingint1args-1"/>
    <testResult status="pass" testName="fn-ceilingint1args-2"/>
    <testResult status="pass" testName="fn-ceilingint1args-3"/>
@@ -56,7 +56,7 @@
    <testResult status="pass" testName="K2-CeilingFunc-10"/>
    <testResult status="pass" testName="K2-CeilingFunc-11"/>
    <testResult status="pass" testName="K2-CeilingFunc-12"/>
-   <testResult status="fail" testName="fn-ceiling-1"/>
+   <testResult status="pass" testName="fn-ceiling-1"/>
    <testResult status="pass" testName="fn-ceiling-decimal-1"/>
    <testResult status="pass" testName="fn-ceiling-decimal-2"/>
    <testResult status="pass" testName="fn-ceiling-decimal-3"/>

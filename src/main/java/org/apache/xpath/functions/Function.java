@@ -63,6 +63,8 @@ public abstract class Function extends Expression
 
    protected int m_max_arity = -1;
    
+   protected String m_return_seq_type_str = null;
+   
    // This class field represents, function call's 
    // run-time argument count.
    protected int m_arg_count = -1;
@@ -241,6 +243,14 @@ public abstract class Function extends Expression
 
   public void setFuncLookupArg(String funcLookupStr) {
 	  this.m_func_lookup_arg = funcLookupStr;
+  }
+
+  public String getReturnSeqTypeStr() {
+	  return m_return_seq_type_str;
+  }
+
+  public void setReturnSeqTypeStr(String returnSeqTypeStr) {
+	  this.m_return_seq_type_str = returnSeqTypeStr;
   }
   
 }

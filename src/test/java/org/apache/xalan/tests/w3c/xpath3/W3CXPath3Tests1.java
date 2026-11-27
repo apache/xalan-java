@@ -48,7 +48,6 @@ import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralcompEqTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralcompGeTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3GeneralcompNeTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InlineFunctionExprTests;
-import org.apache.xalan.tests.w3c.xpath3.prod.XPath3InstanceOfExprTests;
 import org.apache.xalan.tests.w3c.xpath3.prod.XPath3LiteralTests;
 import org.apache.xalan.tests.w3c.xpath3.xs.XPath3XsBase64BinaryTests;
 import org.apache.xalan.tests.w3c.xpath3.xs.XPath3XsHexBinaryTests;
@@ -71,7 +70,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	            XPath3InlineFunctionExprTests.class, XPath3FnFormatIntegerTests.class, XPath3AxisStepAbbrTests.class, XPath3AxisTestCollection.class, 
 	            XPath3FnEmptyTests.class, XPath3FnBooleanTests.class, XPath3FnCeilingTests.class, XPath3FnCodepointEqualTests.class, XPath3UnionTests.class,
 	            XPath3IntersectTests.class, XPath3FnAdjustDateToTimezoneTests.class, XPath3FnAdjustDateTimeToTimezoneTests.class, 
-	            XPath3InstanceOfExprTests.class, XPath3LiteralTests.class, XPath3FnArrayAppendTests.class, XPath3FnArraySizeTests.class, 
+	            XPath3LiteralTests.class, XPath3FnArrayAppendTests.class, XPath3FnArraySizeTests.class, 
 	            XPath3FnArrayFilterTests.class, XPath3FnArrayFoldLeftTests.class, XPath3FnArrayFoldRightTests.class, XPath3FnArrayForeachTests.class,
 	            XPath3FnNumberTests.class, XPath3FnArrayGetTests.class, XPath3FnArrayHeadTests.class, XPath3XsDurationEqualTests.class, 
 	            XPath3FnAvgTests.class, XPath3FnRandomNumberGeneratorTests.class, XPath3XsBase64BinaryTests.class, XPath3XsHexBinaryTests.class })

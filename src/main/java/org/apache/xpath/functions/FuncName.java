@@ -55,7 +55,9 @@ public class FuncName extends FunctionMultiArgs {
    * Class constructor.
    */
   public FuncName() {
-	  m_arity = new Short[] { 0, 1 };
+	  m_arity = new Short[] { 0, 1 };	  
+	  m_arg_type_str = "node()?";
+	  m_return_seq_type_str = "xs:string";
   }
 
   /**

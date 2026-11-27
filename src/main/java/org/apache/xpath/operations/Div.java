@@ -38,7 +38,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticUtil;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -71,7 +71,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Div extends XPathArithmeticUtil
+public class Div extends XPathArithmeticOp
 {
    
   static final long serialVersionUID = 6220756595959798135L;
@@ -92,10 +92,31 @@ public class Div extends XPathArithmeticUtil
      
 	 XObject result = null;
      
-     Object lObj = left.object();
-	 Object rObj = right.object();
+	 Object lObj = left.object();  // used for FuncArgPlaceholder
+	  
+	 Object rObj = right.object(); // used for FuncArgPlaceholder
 	 
-	 XPathContext xctxt = getXPathContext();        
+	 XPathContext xctxt = getXPathContext();
+	 
+	 left = XObject.xdmAtomize(left, xctxt);
+	  
+	 right = XObject.xdmAtomize(right, xctxt);
+	 
+	 if (left instanceof XSUntypedAtomic) {
+		 left = castXsUntypedAtomicToXsDouble(left);
+
+		 if ((XslTransformData.m_stylesheetRoot != null) && ((right instanceof XSString) || (right instanceof XString))) {
+			 right = castXsStringToXsDouble(right);  
+		 }
+	 }
+
+	 if (right instanceof XSUntypedAtomic) {
+		 right = castXsUntypedAtomicToXsDouble(right);
+
+		 if ((XslTransformData.m_stylesheetRoot != null) && ((left instanceof XSString) || (left instanceof XString))) {
+			 left = castXsStringToXsDouble(left);  
+		 }
+	 }
      
      if (left instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'div', but "
@@ -130,6 +151,11 @@ public class Div extends XPathArithmeticUtil
 		 else if (rSeq.size() == 1) {
 			 left = rSeq.item(0);   
 		 }
+		 else {
+             result = new ResultSequence();
+			  
+			 return result;
+		 }
 	 }
 
 	 if (right instanceof ResultSequence) {
@@ -141,6 +167,11 @@ public class Div extends XPathArithmeticUtil
 		 else if (rSeq.size() == 1) {
 			 right = rSeq.item(0);   
 		 }
+		 else {
+             result = new ResultSequence();
+			  
+			 return result;
+		 }
 	 }
 	 
 	 if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 0)) {
@@ -149,6 +180,25 @@ public class Div extends XPathArithmeticUtil
 
 	 if ((right instanceof ResultSequence) && (((ResultSequence)right).size() == 0)) {
 		 return new ResultSequence();  
+	 }
+	 
+	 if ((left instanceof XSUntypedAtomic || left instanceof XSString) && (right instanceof XSUntypedAtomic || right instanceof XSString)) {
+		 java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);		  
+		 java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+
+		 try {
+			 BigDecimal bigDecimal1 = new BigDecimal(str1);  			  
+			 BigDecimal bigDecimal2 = new BigDecimal(str2);
+
+			 BigDecimal bigDecimalResult = bigDecimal1.divide(bigDecimal2);
+
+			 result = new XSDecimal(bigDecimalResult);
+		 }
+		 catch (Exception ex) {
+			 // No op  
+		 }
+
+		 return result;
 	 }
 	 
 	 StylesheetRoot stylesheetRoot = null;
@@ -173,31 +223,11 @@ public class Div extends XPathArithmeticUtil
 	 }
 	 
 	 if (left instanceof XNumber) {
-		 XNumber xNumber = (XNumber)left;		 
-		 
-		 if (xNumber.getXsDecimal() != null) {
-		    left = xNumber.getXsDecimal(); 
-		 }
-		 else if (xNumber.getXsDouble() != null) {
-			left = xNumber.getXsDouble();  
-		 }
-		 else if (xNumber.getXsInteger() != null) {
-		    left = xNumber.getXsInteger();  
-		 }
+		 left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
 	 }
-	 
+
 	 if (right instanceof XNumber) {
-		 XNumber xNumber = (XNumber)right;		 
-		 
-		 if (xNumber.getXsDecimal() != null) {
-			 right = xNumber.getXsDecimal(); 
-		 }
-		 else if (xNumber.getXsDouble() != null) {
-			 right = xNumber.getXsDouble();  
-		 }
-		 else if (xNumber.getXsInteger() != null) {
-			 right = xNumber.getXsInteger();  
-		 }
+		 right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
 	 }
 	 
 	 XPathSequenceType xpathSeqTypeResultData = getXdmSequenceTypeResultData(left, right);

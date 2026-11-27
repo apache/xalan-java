@@ -39,7 +39,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticUtil;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -57,6 +57,7 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
@@ -71,7 +72,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XSLT 3 specific changes, to this class)
  */
-public class Mod extends XPathArithmeticUtil
+public class Mod extends XPathArithmeticOp
 {
    static final long serialVersionUID = 5009471154238918201L;
 
@@ -90,11 +91,32 @@ public class Mod extends XPathArithmeticUtil
   {
 	  
 	  XObject result = null;
+	  	  
+	  Object lObj = left.object();  // used for FuncArgPlaceholder
 	  
-	  Object lObj = left.object();
-	  Object rObj = right.object();
+	  Object rObj = right.object(); // used for FuncArgPlaceholder
 	  
 	  XPathContext xctxt = getXPathContext();
+	  
+      left = XObject.xdmAtomize(left, xctxt);
+	  
+	  right = XObject.xdmAtomize(right, xctxt);
+	  
+	  if (left instanceof XSUntypedAtomic) {
+		  left = castXsUntypedAtomicToXsDouble(left);
+		  
+		  if ((XslTransformData.m_stylesheetRoot != null) && ((right instanceof XSString) || (right instanceof XString))) {
+			 right = castXsStringToXsDouble(right);  
+		  }
+	  }
+
+	  if (right instanceof XSUntypedAtomic) {
+		  right = castXsUntypedAtomicToXsDouble(right);
+		  
+		  if ((XslTransformData.m_stylesheetRoot != null) && ((left instanceof XSString) || (left instanceof XString))) {
+			 left = castXsStringToXsDouble(left);  
+		  }
+	  }
 	  
 	  if (left instanceof XPathMap) {
 		  throw new javax.xml.transform.TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of 'mod', but "
@@ -129,6 +151,11 @@ public class Mod extends XPathArithmeticUtil
 		  else if (rSeq.size() == 1) {
 			  left = rSeq.item(0);   
 		  }
+		  else {
+              result = new ResultSequence();
+			  
+			  return result;
+		  }
 	  }
 
 	  if (right instanceof ResultSequence) {
@@ -139,6 +166,11 @@ public class Mod extends XPathArithmeticUtil
 		  }
 		  else if (rSeq.size() == 1) {
 			  right = rSeq.item(0);   
+		  }
+		  else {
+              result = new ResultSequence();
+			  
+			  return result;
 		  }
 	  }
 	  
@@ -172,31 +204,11 @@ public class Mod extends XPathArithmeticUtil
 	  }
 	  
 	  if (left instanceof XNumber) {
-		  XNumber xNumber = (XNumber)left;		 
-
-		  if (xNumber.getXsDecimal() != null) {
-			  left = xNumber.getXsDecimal(); 
-		  }
-		  else if (xNumber.getXsDouble() != null) {
-			  left = xNumber.getXsDouble();  
-		  }
-		  else if (xNumber.getXsInteger() != null) {
-			  left = xNumber.getXsInteger();  
-		  }
+		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
 	  }
 
 	  if (right instanceof XNumber) {
-		  XNumber xNumber = (XNumber)right;		 
-
-		  if (xNumber.getXsDecimal() != null) {
-			  right = xNumber.getXsDecimal(); 
-		  }
-		  else if (xNumber.getXsDouble() != null) {
-			  right = xNumber.getXsDouble();  
-		  }
-		  else if (xNumber.getXsInteger() != null) {
-			  right = xNumber.getXsInteger();  
-		  }
+		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
 	  }
 	  
 	  if ((left instanceof XSNumericType) && !((left instanceof XSFloat) || (left instanceof XSDouble))) {
@@ -727,6 +739,19 @@ public class Mod extends XPathArithmeticUtil
     	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
     	  
     	  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_MOD, elemTemplateElement);
+    	  
+    	  if ((left instanceof XSInteger) && (right instanceof XSInteger)) {
+    		 if (result instanceof XSDecimal) {
+    			XSDecimal xsDecimal = (XSDecimal)result;
+    			
+    			try {
+    			   result = new XSInteger(xsDecimal.stringValue());
+    			}
+    			catch (NumberFormatException ex) {
+    			   // No op
+    			}
+    		 }
+    	  }
 	  }
 	  else if ((left instanceof XNumber) && (right instanceof XNumber)) {
 		  XNumber lNumber = (XNumber)left;

@@ -15,11 +15,11 @@
 	<xsl:template match="info">
 	   <result>
 	      <xsl:variable name="val1" select="item[1]/a - item[1]/b"/>
-		  <one isInteger="{$val1 instance of xs:integer}" isDecimal="{$val1 instance of xs:decimal}">
+		  <one isInteger="{$val1 instance of xs:integer}" isDouble="{$val1 instance of xs:double}">
 		     <xsl:value-of select="$val1"/>
 		  </one>
 		  <xsl:variable name="val2" select="item[2]/a - item[2]/b"/>
-		  <two isInteger="{$val2 instance of xs:integer}" isDecimal="{$val2 instance of xs:decimal}">
+		  <two isInteger="{$val2 instance of xs:integer}" isDouble="{$val2 instance of xs:double}">
 		     <xsl:value-of select="$val2"/>
 		  </two>
 	   </result>

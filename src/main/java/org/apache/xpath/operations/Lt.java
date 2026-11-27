@@ -23,14 +23,12 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
@@ -66,28 +64,9 @@ public class Lt extends XPathOperator
 	  
       XPathContext xctxt = getXPathContext();
       
-      //java.lang.String str1_a = XslTransformEvaluationHelper.getStrVal(right);
-      
-      // An xdm, atomization of both the XPath expression operands,
-      // using XPath 3.1 function fn:data.
+      left = XObject.xdmAtomize(left, xctxt);
 	  
-	  FuncData funcData = new FuncData();
-	  funcData.setArg0(left);
-	  
-	  left = funcData.execute(xctxt); 
-	  
-	  funcData = new FuncData();
-      funcData.setArg0(right);
-      
-	  right = funcData.execute(xctxt);
-	  
-	  if (left instanceof XPathArray) {
-		  left = ((XPathArray)left).atomize();
-	  }
-
-	  if (right instanceof XPathArray) {
-		  right = ((XPathArray)right).atomize(); 
-	  }
+	  right = XObject.xdmAtomize(right, xctxt);
 	  
 	  if ((left instanceof XSString || left instanceof XString) && 
 			  												      (right instanceof XSNumericType || right instanceof XNumber)) {

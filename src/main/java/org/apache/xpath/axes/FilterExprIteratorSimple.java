@@ -144,20 +144,28 @@ public class FilterExprIteratorSimple extends LocPathIterator
 			  vars.setStackFrame(stackFrame);
 
 			  XObject exprEvalResult = expr.execute(xctxt);
+			  
 			  Object obj1 = null;
 			  
 			  if (exprEvalResult instanceof ResultSequence) {
 				  if (XslTransformEvaluationHelper.isXdmSequenceContainsAtomicValues((ResultSequence)exprEvalResult)) {
 					  DTMManager dtmManager = xctxt.getDTMManager();
+					  
 					  DTM dtm = dtmManager.getXmlDTMTreeFromResultSequence((ResultSequence)exprEvalResult);
+					  
 					  int docNodeHandle = dtm.getDocument();
 					  int docElemHandle = dtm.getFirstChild(docNodeHandle);
 					  int nextNode = dtm.getFirstChild(docElemHandle);
+					  
 					  List<Integer> nodeHandleList = new ArrayList<Integer>();
+					  
 					  while (nextNode != DTM.NULL) {
 						  nodeHandleList.add(nextNode);        	   
+						  
 						  XMLNodeCursorImpl xmlNodeCursorImpl = new XMLNodeCursorImpl(nextNode, xctxt);
+						  
 						  xmlNodeCursorImpl.setIsTransformedAtomicValue(true);         	  
+						  
 						  nextNode = dtm.getNextSibling(nextNode);        	   
 					  }
 
@@ -165,8 +173,11 @@ public class FilterExprIteratorSimple extends LocPathIterator
 				  }
 				  else if (XslTransformEvaluationHelper.isSequenceContainsAllXdmNodes((ResultSequence)exprEvalResult)) {
 					  ResultSequence rSeq = (ResultSequence)exprEvalResult;
+					  
 					  int rSeqLength = rSeq.size();
+					  
 					  List<Integer> nodeHandleList = new ArrayList<Integer>();
+					  
 					  for (int idx = 0; idx < rSeqLength; idx++) {
 						  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)(rSeq.item(idx));
 						  int nodeHandle = (xmlNodeCursorImpl.iter()).nextNode();
@@ -177,9 +188,13 @@ public class FilterExprIteratorSimple extends LocPathIterator
 				  }
 				  else {        		
 					  DTMManager dtmManager = xctxt.getDTMManager();        		
+					  
 					  ResultSequence rSeq = (ResultSequence)exprEvalResult;
+					  
 					  int rSeqLength = rSeq.size();
+					  
 					  List<Integer> nodeHandleList = new ArrayList<Integer>();
+					  
 					  boolean isSeqNodeAndAtomicValues = true;
 					  
 					  for (int idx = 0; idx < rSeqLength; idx++) {
@@ -200,8 +215,11 @@ public class FilterExprIteratorSimple extends LocPathIterator
 
 							  int docNodeHandle = dtm.getDocument();
 							  int docElemNodeHandle = dtm.getFirstChild(docNodeHandle);
+							  
 							  int node = dtm.getFirstChild(docElemNodeHandle);
+							  
 							  int textNodeHandle = dtm.getFirstChild(node);
+							  
 							  nodeHandleList.add(Integer.valueOf(textNodeHandle)); 
 						  }
 						  else {
@@ -237,11 +255,15 @@ public class FilterExprIteratorSimple extends LocPathIterator
 
 				  int docNodeHandle = dtm.getDocument();
 				  int docElemNodeHandle = dtm.getFirstChild(docNodeHandle);
+				  
 				  int node = dtm.getFirstChild(docElemNodeHandle);
+				  
 				  int textNodeHandle = dtm.getFirstChild(node);
+				  
 				  nodeHandleList.add(Integer.valueOf(textNodeHandle));
 				  
 				  int node2 = dtm.getNextSibling(textNodeHandle);
+				  
 				  Node node1 = null;
 				  
 				  int xdmTypeId = XObject.CLASS_UNKNOWN;
@@ -268,7 +290,9 @@ public class FilterExprIteratorSimple extends LocPathIterator
 			  if (result == null) {
 				  if (obj1 instanceof XslForEachGroupCompositeGroupingKey) {        		
 					  XslForEachGroupCompositeGroupingKey forEachGroupCompositeGroupingKeyObj = (XslForEachGroupCompositeGroupingKey)obj1;
+					  
 					  ResultSequence groupingKeySeq = forEachGroupCompositeGroupingKeyObj.getValue();
+					  
 					  result = getCompositeGroupingKeyNodeset(groupingKeySeq, xctxt);
 				  }
 				  else {

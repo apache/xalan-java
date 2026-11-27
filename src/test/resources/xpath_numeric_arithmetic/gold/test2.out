@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
-  <one isDecimal="true" isInteger="false">5</one>
-  <two isDecimal="true" isInteger="false">6.5</two>
+  <one isDouble="true" isInteger="false">5</one>
+  <two isDouble="true" isInteger="false">6.5</two>
 </result>

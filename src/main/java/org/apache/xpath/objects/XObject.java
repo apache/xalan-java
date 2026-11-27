@@ -42,6 +42,7 @@ import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.composite.XPathSequenceType;
+import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.types.DateTimeUtil;
 import org.apache.xpath.types.XSGDay;
@@ -3020,6 +3021,52 @@ public class XObject extends Expression implements Serializable, Cloneable
 
   public void setSeqNo(int seqNo) {
 	  this.m_seqNo = seqNo;
+  }
+  
+  /**
+   * Method definition, to do an XPath 3.1 atomization for
+   * the supplied xdm item.
+   * 
+   * @param xObj                       The supplied xdm item
+   * @param xctxt                      An XPath context object
+   * @return                           The supplied xdm item's atomized 
+   *                                   result. 
+   * @throws TransformerException
+   */
+  public static XObject xdmAtomize(XObject xObj, XPathContext xctxt) throws TransformerException {
+	  
+	  XObject result = null;
+
+	  if (xObj instanceof XMLNodeCursorImpl) {		  
+		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+
+		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
+
+		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
+			  result = new XSInteger(xmlNodeCursorImpl.str()); 
+		  }
+
+		  // More XML Schema data types may need to be considered here.
+		  // REVISIT
+	  }
+
+	  if (result == null) {
+		  FuncData funcData = new FuncData();	  
+
+		  if (xObj.getXsTypeDefinition() == null) {
+			  // The supplied xdm value doesn't have user specified 
+			  // XML Schema type.
+
+			  funcData.setArg0(xObj);
+
+			  result = funcData.execute(xctxt);
+		  }
+		  else {
+			  result = xObj;  
+		  }
+	  }
+
+	  return result;
   }
 
 }

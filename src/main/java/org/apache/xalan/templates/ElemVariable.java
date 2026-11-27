@@ -684,12 +684,46 @@ public class ElemVariable extends ElemTemplateElement
         }
         else if (selectExpression instanceof XPathOperator) {
         	XPathOperator xpathOp = (XPathOperator)selectExpression;            
-            XObject leftOperand = (xpathOp.getLeftOperand()).execute(xctxt);
-            XObject rightOperand = (xpathOp.getRightOperand()).execute(xctxt);
+        	
+        	XObject xObj1 = null;
+        	XObject xObj2 = null;
+        	
+        	Expression expr1 = xpathOp.getLeftOperand();
+        	Expression expr2 = xpathOp.getRightOperand();
+
+        	if (expr1 instanceof SelfIteratorNoPredicate) {
+        		XObject contextItem = xctxt.getXPath3ContextItem();
+
+        		if (contextItem != null) {
+        			xObj1 = contextItem;  
+        		}
+        		else {
+        			xObj1 = expr1.execute(xctxt); 
+        		}
+        	}
+        	else {  
+        		xObj1 = expr1.execute(xctxt);
+        	}
+        	
+        	if (expr2 instanceof SelfIteratorNoPredicate) {
+        		XObject contextItem = xctxt.getXPath3ContextItem();
+
+        		if (contextItem != null) {
+        			xObj2 = contextItem;  
+        		}
+        		else {
+        			xObj2 = expr2.execute(xctxt); 
+        		}
+        	}
+        	else {  
+        		xObj2 = expr2.execute(xctxt);
+        	}
             
             XObject evalResult = null;
+            
             try {
-               evalResult = xpathOp.operate(leftOperand, rightOperand);
+               evalResult = xpathOp.operate(xObj1, xObj2);
+               
                if (evalResult == null) {
             	  evalResult = xpathOp.execute(xctxt);   
                }

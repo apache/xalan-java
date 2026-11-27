@@ -90,16 +90,16 @@ public class Keywords
   static final String FROM_SELF_ABBREVIATED_STRING = ".";
 
   /** comment node test string. */
-  private static final String NODETYPE_COMMENT_STRING = "comment";
+  static final String NODETYPE_COMMENT_STRING = "comment";
 
   /** text node test string. */
-  private static final String NODETYPE_TEXT_STRING = "text";
+  static final String NODETYPE_TEXT_STRING = "text";
 
   /** processing-instruction node test string. */
   private static final String NODETYPE_PI_STRING = "processing-instruction";
 
   /** Any node test string. */
-  private static final String NODETYPE_NODE_STRING = "node";
+  static final String NODETYPE_NODE_STRING = "node";
   
   /** Context item node test string. Added for XSLT 3.0. */
   private static final String NODETYPE_CONTEXT_ITEM_STRING = ".";
@@ -114,7 +114,7 @@ public class Keywords
   static final String NODETYPE_ATTRIBUTE_STRING = "attribute";
 
   /** Wildcard element string. */
-  private static final String NODETYPE_ANYELEMENT_STRING = "*";
+  static final String NODETYPE_ANYELEMENT_STRING = "*";
 
   /** current function string. */
   public static final String FUNC_CURRENT_STRING = "current";
@@ -854,7 +854,11 @@ public class Keywords
    * XPath 3.1 language keywords, 'operator' names, and other 
    * symbols. This is a subset of XPath 3.1 language all 
    * such information.
-   */    
+   */
+  
+  public static final String MAP = "map";
+  
+  public static final String ARRAY = "array";
   
   public static final String LET = "let";
   
@@ -931,6 +935,10 @@ public class Keywords
   public static final String CAST = "cast";
   
   public static final String TREAT = "treat";
+  
+  public static final String ITEM = "item";
+  
+  public static final String EMPTY_SEQUENCE = "empty-sequence";
   
   public static final String XPATH_ARROW_OP = "=>";
   

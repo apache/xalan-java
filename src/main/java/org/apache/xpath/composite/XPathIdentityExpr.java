@@ -80,7 +80,7 @@ public class XPathIdentityExpr extends Expression {
 		XPath xpathObj = null;
 		
 		if (!m_is_seqType) {
-		   xpathObj = new XPath(m_xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+		   xpathObj = new XPath(m_xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);		  
 		}
 		else {
 		   xpathObj = new XPath(m_xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);

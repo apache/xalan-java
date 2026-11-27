@@ -41,7 +41,6 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathRelationalOp;
-import org.apache.xpath.functions.FuncData;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -95,56 +94,9 @@ public class VcLt extends XPathRelationalOp
 	  
       XPathContext xctxt = getXPathContext();
       
-      if (left instanceof XMLNodeCursorImpl) {
- 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)left;
-
- 		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
-
- 		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
- 			  left = new XSInteger(xmlNodeCursorImpl.str()); 
- 		  }
- 		  
- 		  // More XML Schema data types needs to be considered here.
- 		  // Revisit
- 	  }
-
- 	  if (right instanceof XMLNodeCursorImpl) {
- 		  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)right;
-
- 		  int xdmTypeId = xmlNodeCursorImpl.getXdmTypeId();
-
- 		  if (xdmTypeId == XObject.CLASS_XS_INTEGER) {
- 			  right = new XSInteger(xmlNodeCursorImpl.str()); 
- 		  }
- 		  
- 		  // More XML Schema data types needs to be considered here.
- 		  // Revisit
- 	  }
-      
-      // An xdm, atomization of both the XPath expression operands,
-      // using XPath 3.1 function fn:data.
+      left = XObject.xdmAtomize(left, xctxt);
 	  
-      FuncData funcData = new FuncData();	  
-	  
-	  if (left.getXsTypeDefinition() == null) {
-		  // The supplied xdm value doesn't have user specified 
-		  // XML Schema type.
-		  
-		  funcData.setArg0(left);
-		  
-	      left = funcData.execute(xctxt);
-	  }
-	  
-	  funcData = new FuncData();	        
-      
-      if (right.getXsTypeDefinition() == null) {
-    	 // The supplied xdm value doesn't have user specified 
-		 // XML Schema type.
-    	  
-    	 funcData.setArg0(right);
-    	 
-	     right = funcData.execute(xctxt);
-      }
+	  right = XObject.xdmAtomize(right, xctxt);
       
       if ((left instanceof ResultSequence) && (((ResultSequence)left).size() == 1)) {
  		 left = ((ResultSequence)left).item(0);   

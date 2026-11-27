@@ -53,6 +53,7 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.XPathExprFunctionSuffix;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.functions.FuncBoolean;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -1028,65 +1029,66 @@ public class XPath implements Serializable, ExpressionOwner
 	  try {    	
 		  if (isProcessAsNodeset) {
 			  if (m_mainExp instanceof NodeTest) {
-				 // Check for the possibility of XPath named function reference				  
-				 
-				 result = evaluateXPathNamedFunctionReference((NodeTest)m_mainExp, xctxt);				 
+				  // Check for the possibility of XPath named function reference				  
+
+				  result = evaluateXPathNamedFunctionReference((NodeTest)m_mainExp, xctxt);				 
 			  }
-			  else {			     
-			     if (m_mainExp instanceof Variable) {
-			    	Variable variable = (Variable)m_mainExp;			    				    	
-		        	
-		        	XObject xObj = m_mainExp.execute(xctxt);
-		        	
-		        	if (xObj instanceof XMLNodeCursorImpl) {
-		        		Function func = variable.getFuncExpr();
-			        	XPathDynamicFunctionCall dfc = variable.getDynamicFuncCallExpr();
-			        	
-		        		if (func != null) {
-		        			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-		        			DTMCursorIterator dtmIter = xmlNodeCursorImpl.iter();
-		        			
-		        			ResultSequence rSeq = new ResultSequence();
-		        			int nextNode;
+			  else if (m_mainExp instanceof Variable) {
+				  Variable variable = (Variable)m_mainExp;			    				    	
 
-		        			while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
-		        			{
-		        				XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+				  XObject xObj = m_mainExp.execute(xctxt);
 
-		        				XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+				  if (xObj instanceof XMLNodeCursorImpl) {
+					  Function func = variable.getFuncExpr();
+					  XPathDynamicFunctionCall dfc = variable.getDynamicFuncCallExpr();
 
-		        				rSeq.add(evalResult);
-		        			}
-		        			
-		        			result = rSeq; 
-		        		}
-		        		else if (dfc != null) {
-		        			XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
-		        			DTMCursorIterator dtmIter = xmlNodeCursorImpl.iter();
-		        			
-		        			ResultSequence rSeq = new ResultSequence();
-		            		int nextNode;
-		            		
-		            		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
-		            		{
-		            			XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
-        			
-		            			XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
-		            			
-		            			rSeq.add(evalResult);
-		            		}
-		        		}
-		        		else {
-		        		    result = xObj;
-		        		}
-		        	}
-		        	else {
-		        		result = xObj;
-		        	}
-			     }
-			     else {
-			    	result = m_mainExp.execute(xctxt);
-			     }
+					  if (func != null) {
+						  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+						  DTMCursorIterator dtmIter = xmlNodeCursorImpl.iter();
+
+						  ResultSequence rSeq = new ResultSequence();
+						  int nextNode;
+
+						  while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+						  {
+							  XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+
+							  XObject evalResult = evaluateXPathSuffixFunction(xctxt, srcLocator, func, xdmNodeObj);
+
+							  rSeq.add(evalResult);
+						  }
+
+						  result = rSeq; 
+					  }
+					  else if (dfc != null) {
+						  XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)xObj;
+						  DTMCursorIterator dtmIter = xmlNodeCursorImpl.iter();
+
+						  ResultSequence rSeq = new ResultSequence();
+						  int nextNode;
+
+						  while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+						  {
+							  XMLNodeCursorImpl xdmNodeObj = new XMLNodeCursorImpl(nextNode, xctxt);
+
+							  XObject evalResult = evaluateXPathSuffixDfc(xctxt, dfc, xdmNodeObj);
+
+							  rSeq.add(evalResult);
+						  }
+					  }
+					  else {
+						  result = xObj;
+					  }
+				  }
+				  else {
+					  result = xObj;
+				  }
+			  }
+			  else if (m_mainExp instanceof XPathNamedFunctionReference) {
+				  result = (XPathNamedFunctionReference)m_mainExp;  
+			  }
+			  else {
+				  result = m_mainExp.execute(xctxt);
 			  }
 		  }
 		  else {
@@ -1201,6 +1203,7 @@ public class XPath implements Serializable, ExpressionOwner
 	  }
 
 	  XPath xpathObj = new XPath(xpathExprPrefixStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);            
+	  
 	  if (m_vars != null) {
 		  xpathObj.fixupVariables(m_vars, m_globals_size);  
 	  }
@@ -1211,17 +1214,13 @@ public class XPath implements Serializable, ExpressionOwner
 	  
 	  if (varEvalResult instanceof ResultSequence) {
 		 rSeq = (ResultSequence)varEvalResult; 
-	  }
-	  /*else {
-		 rSeq = new ResultSequence();
-		 rSeq.add(varEvalResult);
-	  }*/
+	  }	  
 
 	  if (prefixTable != null) {
 		  xpathExprPredicateStr = XslTransformEvaluationHelper.replaceXmlNsUrisWithPrefixesXPathStr(xpathExprPredicateStr, prefixTable);
 	  }
 
-	  xpathObj = new XPath(xpathExprPredicateStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	  xpathObj = new XPath(xpathExprPredicateStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);	  	  
 
 	  if (m_vars != null) {
 		  xpathObj.fixupVariables(m_vars, m_globals_size);  
@@ -1232,6 +1231,7 @@ public class XPath implements Serializable, ExpressionOwner
 
 		  XObject seqIndexEvalResult = null;
 		  int prevLast1 = xctxt.getLast();
+		  
 		  try {
 			  int size1 = resultSeq.size();    		
 			  xctxt.setLast(size1);
@@ -1239,56 +1239,84 @@ public class XPath implements Serializable, ExpressionOwner
 			  seqIndexEvalResult = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
 		  }
 		  catch (Exception ex) {
-			  int ii = 0; 
+			  // No op 
 		  }
 		  finally {
 			  xctxt.setLast(prevLast1);
-		  }    		
+		  }
+		  
+		  if (seqIndexEvalResult instanceof ResultSequence) {
+			  ResultSequence rSeq_a = (ResultSequence)seqIndexEvalResult;
+			 
+			 if (rSeq_a.size() == 1) {
+				seqIndexEvalResult = rSeq_a.item(0);  
+			 }
+		  }
 
-		  if (seqIndexEvalResult != null) {
+		  if ((seqIndexEvalResult != null) && !(seqIndexEvalResult instanceof ResultSequence)) {
 			  if (seqIndexEvalResult instanceof XNumber) {
-				  double dValIndex = ((XNumber)seqIndexEvalResult).num();
+				  seqIndexEvalResult = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)seqIndexEvalResult);
+				  
+				  double dValIndex = 0.0;
+				  
+				  if (seqIndexEvalResult instanceof XNumber) {
+				     dValIndex = ((XNumber)seqIndexEvalResult).num();
+				  }
+				  else {
+					 String str1 = XslTransformEvaluationHelper.getStrVal(seqIndexEvalResult);
+					 
+					 dValIndex = Double.valueOf(str1); 
+				  }
+				  
 				  if (dValIndex == (int)dValIndex) {
 					  result = resultSeq.item((int)dValIndex - 1);
 				  }
 				  else {
-					  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with an xdm sequence reference, is not an integer.", srcLocator); 
+					  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath predicate position value used with an xdm sequence reference, is not an integer.", srcLocator); 
 				  }  
 			  }
 			  else if (seqIndexEvalResult instanceof XSNumericType) {
 				  String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
 				  double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+				  
 				  if (dValIndex == (int)dValIndex) {
 					  result = resultSeq.item((int)dValIndex - 1);                                  
 				  }
 				  else {
-					  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with an xdm sequence reference, is not an integer.", srcLocator); 
+					  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath predicate position value used with an xdm sequence reference, is not an integer.", srcLocator); 
 				  } 
 			  }
 			  else {
-				  throw new javax.xml.transform.TransformerException("XPTY0004 : An index value used with an xdm sequence reference, is not numeric.", srcLocator);  
+				  throw new javax.xml.transform.TransformerException("XPTY0004 : An XPath predicate position value used with an xdm sequence reference, is not numeric.", srcLocator);  
 			  }
 		  }
 		  else {
 			  int size1 = resultSeq.size();
+			  
 			  ResultSequence rSeq2 = null; 
+			  
 			  if (size1 > 0) {
 				  rSeq2 = new ResultSequence();
 
 				  for (int idx = 0; idx < size1; idx++) {
 					  XObject xObj = resultSeq.item(idx);
 					  XObject prevCtxtItem = xctxt.getXPath3ContextItem();
+					  
 					  int prevCtxtPos = xctxt.getXPath3ContextPosition();
 					  int prevCtxtSize = xctxt.getXPath3ContextSize();
+					  
 					  try {
 						  xctxt.setXPath3ContextItem(xObj);
 						  xctxt.setXPath3ContextPosition(idx + 1);
 						  xctxt.setXPath3ContextSize(size1);
 
 						  XObject xObj2 = xpathObj.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+						  
 						  FuncBoolean funcBoolean = new FuncBoolean();
 						  funcBoolean.setArg0(xObj2);
+						  
 						  XObject x1 = funcBoolean.execute(xctxt);
+						  
 						  if (x1.bool()) {
 							  rSeq2.add(xObj);
 						  }

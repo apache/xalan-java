@@ -50,6 +50,8 @@ public class FuncMathLog10 extends FunctionOneArg
 	 */
 	public FuncMathLog10() {
 		m_arity = new Short[] { 1 };
+		m_arg_type_str = "xs:double?";
+		m_return_seq_type_str = "xs:double?";
 	}
 
 	/**

@@ -22,15 +22,11 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.utils.Constants;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
@@ -38,14 +34,13 @@ import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.XPathOperator;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Class definition, providing utility methods to support 
@@ -53,7 +48,7 @@ import xml.xpath31.processor.types.XSNumericType;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
-public class XPathArithmeticUtil extends XPathOperator {
+public class XPathArithmeticOp extends XPathOperator {
 	
 	private static final long serialVersionUID = 7567257906066639674L;
 
@@ -542,6 +537,56 @@ public class XPathArithmeticUtil extends XPathOperator {
 
     	return result;
   	}
+    
+    /**
+     * Method definition, to cast the supplied xs:untypedAtomic
+     * value to xs:double.
+     * 
+     * @param xObj                         The supplied xs:untypedAtomic
+     *                                     xdm value.
+     * @return                             An xs:double value
+     * @throws TransformerException
+     */
+    protected XObject castXsUntypedAtomicToXsDouble(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	java.lang.String str1 = ((XSUntypedAtomic)xObj).stringValue();
+
+    	try {
+    		result = new XSDouble(str1); 
+    	}
+    	catch (Exception ex) {
+    		throw new TransformerException("FORG0001 : The string value '" + str1 + "' couldn't be cast to double.");
+    	}
+
+    	return result;
+    }
+    
+    /**
+     * Method definition, to cast the supplied xs:string
+     * value to xs:double.
+     * 
+     * @param xObj                         The supplied xs:string
+     *                                     xdm value.
+     * @return                             An xs:double value
+     * @throws TransformerException
+     */
+    protected XObject castXsStringToXsDouble(XObject xObj) throws TransformerException {
+    	
+    	XObject result = null;
+
+    	java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(xObj);
+
+    	try {
+    		result = new XSDouble(str1); 
+    	}
+    	catch (Exception ex) {
+    		throw new TransformerException("FORG0001 : The string value '" + str1 + "' couldn't be cast to double.");
+    	}
+
+    	return result;
+    }
     
     /**
      * Method definition, to do arithmetic operation on two java.math.BigDecimal 

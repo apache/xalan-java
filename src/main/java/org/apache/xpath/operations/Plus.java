@@ -18,7 +18,6 @@
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -39,7 +38,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
-import org.apache.xpath.XPathArithmeticUtil;
+import org.apache.xpath.XPathArithmeticOp;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
@@ -76,7 +75,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3.1 specific changes, to this class)
  */
-public class Plus extends XPathArithmeticUtil
+public class Plus extends XPathArithmeticOp
 {
    static final long serialVersionUID = -4492072861616504256L;
 
@@ -95,10 +94,31 @@ public class Plus extends XPathArithmeticUtil
       
 	  XObject result = null;
 	  
-	  Object lObj = left.object();
-	  Object rObj = right.object();
+      Object lObj = left.object();  // used for FuncArgPlaceholder
+	  
+	  Object rObj = right.object(); // used for FuncArgPlaceholder
 	  
 	  XPathContext xctxt = getXPathContext();
+	  
+      left = XObject.xdmAtomize(left, xctxt);
+	  
+	  right = XObject.xdmAtomize(right, xctxt);
+	  
+	  if (left instanceof XSUntypedAtomic) {
+		  left = castXsUntypedAtomicToXsDouble(left);
+		  
+		  if ((XslTransformData.m_stylesheetRoot != null) && ((right instanceof XSString) || (right instanceof XString))) {
+			 right = castXsStringToXsDouble(right);  
+		  }
+	  }
+
+	  if (right instanceof XSUntypedAtomic) {
+		  right = castXsUntypedAtomicToXsDouble(right);
+		  
+		  if ((XslTransformData.m_stylesheetRoot != null) && ((left instanceof XSString) || (left instanceof XString))) {
+			 left = castXsStringToXsDouble(left);  
+		  }
+	  }
 	  
 	  if (left instanceof XPathMap) {
 		 throw new TransformerException("FOTY0013 : An xdm atomic value is required for the first operand of '+', but "
@@ -133,6 +153,11 @@ public class Plus extends XPathArithmeticUtil
 		  else if (rSeq.size() == 1) {
 			  left = rSeq.item(0);   
 		  }
+		  else {
+              result = new ResultSequence();
+			  
+			  return result;
+		  }
 	  }
 
 	  if (right instanceof ResultSequence) {
@@ -144,6 +169,30 @@ public class Plus extends XPathArithmeticUtil
 		  else if (rSeq.size() == 1) {
 			  right = rSeq.item(0);   
 		  }
+		  else {
+              result = new ResultSequence();
+			  
+			  return result;
+		  }
+	  }
+	  
+	  if ((left instanceof XSUntypedAtomic || left instanceof XSString) && (right instanceof XSUntypedAtomic || right instanceof XSString)) {
+		  java.lang.String str1 = XslTransformEvaluationHelper.getStrVal(left);		  
+		  java.lang.String str2 = XslTransformEvaluationHelper.getStrVal(right);
+		  
+		  try {
+			  BigDecimal bigDecimal1 = new BigDecimal(str1);  			  
+			  BigDecimal bigDecimal2 = new BigDecimal(str2);
+			  
+			  BigDecimal bigDecimalResult = bigDecimal1.add(bigDecimal2);
+			  
+			  result = new XSDecimal(bigDecimalResult);
+		  }
+		  catch (Exception ex) {
+			 // No op  
+		  }
+		  
+		  return result;
 	  }
 	  
 	  if (((left instanceof XSDuration) && !((left instanceof XSYearMonthDuration) || (left instanceof XSDayTimeDuration))) 
@@ -154,6 +203,14 @@ public class Plus extends XPathArithmeticUtil
 	  if (((right instanceof XSDuration) && !((right instanceof XSYearMonthDuration) || (right instanceof XSDayTimeDuration))) 
 			                             && ((left instanceof XSYearMonthDuration) || (left instanceof XSDayTimeDuration))) {
 		  throw new TransformerException("XPTY0004 : An XML Schema type 'duration' cannot be added with schema subtypes for 'duration'.");
+	  }
+	  
+	  if (left instanceof XNumber) {
+		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
+	  }
+
+	  if (right instanceof XNumber) {
+		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
 	  }
 	  
 	  java.lang.String lNodeStr = null;
@@ -207,59 +264,25 @@ public class Plus extends XPathArithmeticUtil
 	  }
 	  
 	  if ((left instanceof XSInteger) && (right instanceof XNumber)) {		  
-		  right = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)right);
-		  
-		  java.lang.String str_a = XslTransformEvaluationHelper.getStrVal(right);
-		  
-		  boolean isRNumberInt = true;
-		  
-		  try {
-			 Integer.valueOf(str_a); 
-		  }
-		  catch (NumberFormatException ex) {
-			 isRNumberInt = false; 
-		  }
-		  
-		  if (isRNumberInt) {
-			  java.lang.String str1 = ((XSInteger)left).stringValue(); 			 			
-			  BigInteger bigInt1 = new BigInteger(str1);
+		  java.lang.String str1 = ((XSInteger)left).stringValue();
 
-			  BigInteger bigInt2 = new BigInteger(str_a);
+		  double dbl1 = Double.valueOf(str1);
+		  double dbl2 = Double.valueOf(((XNumber)right).num());
 
-			  BigInteger bigIntResult = bigInt1.add(bigInt2);
+		  result = new XSDouble(dbl1 + dbl2);
 
-			  result = new XSInteger(bigIntResult);
-
-			  return result;
-		  }
+		  return result;
 	  }
 	  
 	  if ((right instanceof XSInteger) && (left instanceof XNumber)) {
-		  left = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)left);
-		  
-		  java.lang.String str_a = XslTransformEvaluationHelper.getStrVal(left);
-		  
-		  boolean isLNumberInt = true;
-		  
-		  try {
-			 Integer.valueOf(str_a); 
-		  }
-		  catch (NumberFormatException ex) {
-			 isLNumberInt = false; 
-		  }
-		  
-		  if (isLNumberInt) {
-			  java.lang.String str1 = ((XSInteger)right).stringValue(); 			 			
-			  BigInteger bigInt1 = new BigInteger(str1);
+		  java.lang.String str1 = ((XSInteger)right).stringValue();
 
-			  BigInteger bigInt2 = new BigInteger(str_a);
+		  double dbl1 = Double.valueOf(str1);
+		  double dbl2 = Double.valueOf(((XNumber)left).num());
 
-			  BigInteger bigIntResult = bigInt1.add(bigInt2);
+		  result = new XSDouble(dbl1 + dbl2);
 
-			  result = new XSInteger(bigIntResult);
-
-			  return result;
-		  }
+		  return result;
 	  }
 	  
 	  if ((left instanceof XSFloat) && (right instanceof XSFloat)) {

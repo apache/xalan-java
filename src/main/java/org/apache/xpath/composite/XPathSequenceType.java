@@ -148,8 +148,7 @@ public class XPathSequenceType extends XObject {
 												    		     (builtInseqType2 == XPathSequenceTypeSupport.XS_TOKEN) || 
 												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_NMTOKEN) || 
 												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_LANGUAGE) ||
-												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_NAME) ||
-												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_NCNAME) ||
+												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_NAME) ||												    			 
 												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_ID) ||
 												    			 (builtInseqType2 == XPathSequenceTypeSupport.XS_IDREF)) {
 	    			 isTypeCompatible = true; 
@@ -357,6 +356,12 @@ public class XPathSequenceType extends XObject {
 						                                                   (this.itemTypeOccurrenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE))) {
 			result = true;
 		}
+		else if (((occrInd == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) && 
+                                                                                  (this.itemTypeOccurrenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY)) ||
+                                                                                   ((this.itemTypeOccurrenceIndicator == XPathSequenceTypeSupport.OccurrenceIndicator.ABSENT) && 
+                                                                                    (occrInd == XPathSequenceTypeSupport.OccurrenceIndicator.ONE_OR_MANY))) {
+            result = true;
+        }
 		else if (this.itemTypeOccurrenceIndicator == occrInd) {
 			result = true;
 		}

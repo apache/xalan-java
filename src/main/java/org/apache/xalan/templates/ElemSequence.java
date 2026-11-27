@@ -624,6 +624,7 @@ public class ElemSequence extends ElemTemplateElement
 	  try {        
 		  if (m_selectPattern != null) {
 			  ElemTemplateElement xslSeqChildElem = getFirstChildElem();
+			  
 			  while (xslSeqChildElem != null) {
 				  if (!(xslSeqChildElem instanceof ElemFallback)) {
 					  throw new javax.xml.transform.TransformerException("XTSE3185 : An XSL 'sequence' element cannot "
@@ -755,11 +756,53 @@ public class ElemSequence extends ElemTemplateElement
 					 return;
 				  }
 			  }			  
-			  else if (selectExpression instanceof XPathOperator) {
-				  XPathOperator xpathOperation = (XPathOperator)selectExpression;            
-				  XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
-				  XObject rightOperand = (xpathOperation.getRightOperand()).execute(xctxt);
-				  result = xpathOperation.operate(leftOperand, rightOperand);
+			  else if (selectExpression instanceof XPathOperator) {				  
+				  XPathOperator xpathOp = (XPathOperator)selectExpression;            
+
+				  XObject xObj1 = null;
+				  XObject xObj2 = null;
+
+				  Expression expr1 = xpathOp.getLeftOperand();
+				  Expression expr2 = xpathOp.getRightOperand();
+
+				  if (expr1 instanceof SelfIteratorNoPredicate) {
+					  XObject contextItem = xctxt.getXPath3ContextItem();
+
+					  if (contextItem != null) {
+						  xObj1 = contextItem;  
+					  }
+					  else {
+						  xObj1 = expr1.execute(xctxt); 
+					  }
+				  }
+				  else {  
+					  xObj1 = expr1.execute(xctxt);
+				  }
+
+				  if (expr2 instanceof SelfIteratorNoPredicate) {
+					  XObject contextItem = xctxt.getXPath3ContextItem();
+
+					  if (contextItem != null) {
+						  xObj2 = contextItem;  
+					  }
+					  else {
+						  xObj2 = expr2.execute(xctxt); 
+					  }
+				  }
+				  else {  
+					  xObj2 = expr2.execute(xctxt);
+				  }
+
+				  try {
+					  result = xpathOp.operate(xObj1, xObj2);
+
+					  if (result == null) {
+						  result = xpathOp.execute(xctxt);   
+					  }
+				  }
+				  catch (TransformerException ex) {
+					  throw new TransformerException(ex.getMessage(), srcLocator); 
+				  }
 			  }
 			  else if (selectExpression instanceof SelfIteratorNoPredicate) {
 				  result = xctxt.getXPath3ContextItem();

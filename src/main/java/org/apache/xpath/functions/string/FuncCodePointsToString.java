@@ -48,6 +48,8 @@ public class FuncCodePointsToString extends FunctionOneArg {
 	 */
 	public FuncCodePointsToString() {
 	    m_arity = new Short[] { 1 };
+	    m_arg_type_str = "xs:integer*";
+		m_return_seq_type_str = "xs:string";
 	}
 
 	/**

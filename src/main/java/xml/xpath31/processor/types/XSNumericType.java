@@ -7,6 +7,7 @@ package xml.xpath31.processor.types;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 /**
  * This class serves as base type, of all the XML Schema built-in 
@@ -125,9 +126,9 @@ public class XSNumericType extends XSCtrType {
     	return result;
     }
     
-    public Object getValue() {
+    public XObject getXObject() {
     	
-    	Object result = null;
+    	XObject result = null;
     	
     	if (_xs_integer != null) {
     		result = _xs_integer; 

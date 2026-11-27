@@ -52,7 +52,9 @@ public class FuncString extends FunctionDef1Arg
 	 * Class constructor.
 	 */
 	public FuncString() {
-		m_arity = new Short[] {0, 1}; 
+		m_arity = new Short[] {0, 1};
+		m_arg_type_str = "item()?";
+		m_return_seq_type_str = "xs:string";
 	}
 
 	/**

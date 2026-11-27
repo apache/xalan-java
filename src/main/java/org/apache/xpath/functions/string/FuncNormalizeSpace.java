@@ -40,6 +40,8 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
 	 */
 	public FuncNormalizeSpace() {
 		m_arity = new Short[] { 0, 1 };
+		m_arg_type_str = "xs:string?";
+		m_return_seq_type_str = "xs:string";
 	}    
 
 	/**

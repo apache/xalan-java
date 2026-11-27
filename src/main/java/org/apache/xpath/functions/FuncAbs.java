@@ -64,6 +64,8 @@ public class FuncAbs extends FunctionDef1Arg
 	 */
 	public FuncAbs() {
 		m_arity = new Short[] { 1 };
+		m_arg_type_str = "xs:numeric?";
+		m_return_seq_type_str = "xs:numeric?";
 	}
 
 	/**
@@ -108,6 +110,7 @@ public class FuncAbs extends FunctionDef1Arg
 		
 		if (arg0Obj instanceof XSFloat) {
 		   XSFloat xsFloatArg = (XSFloat)arg0Obj;
+		   
 		   if (xsFloatArg.zero() || xsFloatArg.negativeZero()) {
 			  result = new XSFloat(0); 
 		   }
@@ -116,11 +119,13 @@ public class FuncAbs extends FunctionDef1Arg
 		   }
 		   else {
 			  float flt1 = xsFloatArg.floatValue();
+			  
 			  result = new XSFloat(Math.abs(flt1));
 		   }
 		}
 		else if (arg0Obj instanceof XSDouble) {
 			XSDouble xsDoubleArg = (XSDouble)arg0Obj;
+			
 			if (xsDoubleArg.zero() || xsDoubleArg.negativeZero()) {
 				result = new XSDouble(0); 
 			}
@@ -129,6 +134,7 @@ public class FuncAbs extends FunctionDef1Arg
 			}
 			else {
 				double dbl1 = xsDoubleArg.doubleValue();
+				
 				result = new XSDouble(Math.abs(dbl1));
 			}
 		}									
@@ -191,17 +197,29 @@ public class FuncAbs extends FunctionDef1Arg
 			
 			result = new XSDecimal(bigDecimal1.abs()); 
 		}
-		else if (arg0Obj instanceof XNumber) {
-			XSDouble xsDoubleArg = new XSDouble(((XNumber)arg0Obj).num());
-			if (xsDoubleArg.zero() || xsDoubleArg.negativeZero()) {
-				result = new XSDouble(0); 
-			}
-			else if (xsDoubleArg.infinite()) {
-				result = new XSDouble(Double.POSITIVE_INFINITY); 
+		else if (arg0Obj instanceof XNumber) {						
+			arg0Obj = XslTransformEvaluationHelper.getXNumberNormalizedValue((XNumber)arg0Obj);
+
+			if (arg0Obj instanceof XNumber) {
+				XSDouble xsDoubleArg = new XSDouble(((XNumber)arg0Obj).num());
+				
+				if (xsDoubleArg.zero() || xsDoubleArg.negativeZero()) {
+					result = new XSDouble(0); 
+				}
+				else if (xsDoubleArg.infinite()) {
+					result = new XSDouble(Double.POSITIVE_INFINITY); 
+				}
+				else {
+					double dbl1 = xsDoubleArg.doubleValue();
+					
+					result = new XSDouble(Math.abs(dbl1));
+				}
 			}
 			else {
-				double dbl1 = xsDoubleArg.doubleValue();
-				result = new XSDouble(Math.abs(dbl1));
+                FuncAbs funcAbs = new FuncAbs();
+                funcAbs.setArg0(arg0Obj);
+                
+                result = funcAbs.execute(xctxt); 
 			}
 		}
 		else if ((arg0Obj instanceof ResultSequence) && ((ResultSequence)arg0Obj).size() == 1) {

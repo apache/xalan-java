@@ -127,9 +127,22 @@ public class XPathSequenceTypeKindTest {
         String dataTypeLocalName2 = sequenceTypeKindTest2.getDataTypeLocalName();
         String dataTypeUri2 = sequenceTypeKindTest2.getDataTypeNsUri();
         
+        if (((this.m_kindVal == XPathSequenceTypeSupport.ELEMENT_KIND) || (this.m_kindVal == XPathSequenceTypeSupport.ATTRIBUTE_KIND)
+        		                                                       || (this.m_kindVal == XPathSequenceTypeSupport.TEXT_KIND) 
+        		                                                       || (this.m_kindVal == XPathSequenceTypeSupport.NAMESPACE_KIND)) 
+        		                                                                            && (kindVal2 == XPathSequenceTypeSupport.NODE_KIND)) {
+           return result;
+        }
+        else if (((kindVal2 == XPathSequenceTypeSupport.ELEMENT_KIND) || (kindVal2 == XPathSequenceTypeSupport.ATTRIBUTE_KIND)
+                                                                      || (kindVal2 == XPathSequenceTypeSupport.TEXT_KIND) 
+                                                                      || (kindVal2 == XPathSequenceTypeSupport.NAMESPACE_KIND)) 
+                                                                                     && (this.m_kindVal == XPathSequenceTypeSupport.NODE_KIND)) {
+           return result;
+        }
+        
         if (this.m_kindVal != kindVal2) {
            result = false;
-        }
+        }        
         else if ((this.m_nodeLocalName == null) && (nodeLocalName2 == null)) {
            result = true;
         }

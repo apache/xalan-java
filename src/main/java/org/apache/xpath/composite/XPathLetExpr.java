@@ -283,7 +283,7 @@ public class XPathLetExpr extends Expression {
     	   
     	   if (evalResult instanceof XMLNodeCursorImpl) {
     		   XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)evalResult;
-    		   DTMCursorIterator iter1 = xmlNodeCursorImpl.iter();
+    		   DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
     		       		   			   
 			   ResultSequence rSeq = new ResultSequence();
 			   
@@ -293,7 +293,7 @@ public class XPathLetExpr extends Expression {
 			   
 			   int count = 0;
     		   
-    		   while ((nextNode = iter1.nextNode()) != DTM.NULL) {
+    		   while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
     			   DTM dtm = xctxt.getDTM(nextNode);    			  
     			   String nodeName = dtm.getNodeName(nextNode);
     			   
