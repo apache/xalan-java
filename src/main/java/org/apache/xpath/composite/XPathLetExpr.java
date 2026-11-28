@@ -49,6 +49,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathInlineFunctionParameter;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.XPathArrowOp;
 import org.apache.xpath.operations.XPathRange;
 import org.w3c.dom.Node;
 
@@ -253,7 +254,7 @@ public class XPathLetExpr extends Expression {
     			   }
     		   }
     		   else if (varBindingEvalResult == null) {
-    			   varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());
+    			   varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, sourceNode, xctxt.getNamespaceContext());    			   
     		   }
 
     		   if (varBindingEvalResult == null) {

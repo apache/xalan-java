@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-10-13T16:36:16Z" fail="2" name="fn-avg" pass="236" run="238" statusUnknown="0">
+<?xml version="1.0" encoding="UTF-8"?><testrun dateTime="2026-11-28T14:41:09Z" fail="1" name="fn-avg" pass="237" run="238" statusUnknown="0">
    <testResult status="pass" testName="fn-avgint1args-1"/>
    <testResult status="pass" testName="fn-avgint1args-2"/>
    <testResult status="pass" testName="fn-avgint1args-3"/>
@@ -131,7 +131,7 @@
    <testResult status="pass" testName="fn-avg-mix-args-026"/>
    <testResult status="pass" testName="fn-avg-mix-args-027"/>
    <testResult status="pass" testName="fn-avg-mix-args-028"/>
-   <testResult status="fail" testName="fn-avg-mix-args-029"/>
+   <testResult status="pass" testName="fn-avg-mix-args-029"/>
    <testResult status="pass" testName="fn-avg-mix-args-030"/>
    <testResult status="pass" testName="fn-avg-mix-args-031"/>
    <testResult status="pass" testName="fn-avg-mix-args-032"/>

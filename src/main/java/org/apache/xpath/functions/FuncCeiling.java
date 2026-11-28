@@ -60,7 +60,7 @@ public class FuncCeiling extends FunctionDef1Arg
 	 */
 	public FuncCeiling() {
 		m_arity = new Short[] { 1 };
-		m_arg_type_str = "xs:numeric?";
+		m_arg_seq_type_str = "xs:numeric?";
 		m_return_seq_type_str = "xs:numeric?";
 	}
 

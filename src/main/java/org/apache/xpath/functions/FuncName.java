@@ -23,7 +23,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -56,7 +56,7 @@ public class FuncName extends FunctionMultiArgs {
    */
   public FuncName() {
 	  m_arity = new Short[] { 0, 1 };	  
-	  m_arg_type_str = "node()?";
+	  m_arg_seq_type_str = "node()?";
 	  m_return_seq_type_str = "xs:string";
   }
 
@@ -85,7 +85,7 @@ public class FuncName extends FunctionMultiArgs {
 			if ((contextItem instanceof XSAnyAtomicType) || (contextItem instanceof XBoolean) 
 					                                                || (contextItem instanceof XBooleanStatic) || (contextItem instanceof XNumber) 
 					                                                || (contextItem instanceof XPathMap) || (contextItem instanceof XPathArray) 
-					                                                || (contextItem instanceof XPathInlineFunction) || (contextItem instanceof ElemFunctionItem)) {
+					                                                || (contextItem instanceof XPathInlineFunction) || (contextItem instanceof XPath3FunctionItem)) {
 				result = new XSString("");
 				   
 				return result;

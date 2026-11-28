@@ -67,7 +67,7 @@ import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.FunctionOneArg;
-import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
@@ -524,8 +524,8 @@ public class InstanceOf extends XPathOperator
     	  
     	  return result;
       }
-      else if (left instanceof ElemFunctionItem) {    	      	  
-    	  left = xslTrfElemFunctionItemToInlineFuncExpr((ElemFunctionItem)left, prefixResolver, xctxt);
+      else if (left instanceof XPath3FunctionItem) {    	      	  
+    	  left = xslTrfElemFunctionItemToInlineFuncExpr((XPath3FunctionItem)left, prefixResolver, xctxt);
       }
       else if (left instanceof XPathNamedFunctionReference) {
     	  result = xslInstanceOfCheckNamedFuncRef((XPathNamedFunctionReference)left, nsPrefixTable, prefixResolver, 
@@ -1671,7 +1671,7 @@ public class InstanceOf extends XPathOperator
    *                                          object.
    * @throws TransformerException
    */
-  private XObject xslTrfElemFunctionItemToInlineFuncExpr(ElemFunctionItem elemFunctionItem, PrefixResolver xmlNsPrefixResolver, 
+  private XObject xslTrfElemFunctionItemToInlineFuncExpr(XPath3FunctionItem elemFunctionItem, PrefixResolver xmlNsPrefixResolver, 
 		                                                                                    XPathContext xctxt) throws TransformerException {
 	  
 	  XObject result = null;
@@ -1815,7 +1815,7 @@ public class InstanceOf extends XPathOperator
 							   if (runTimeArity == arity2) {								   
 								   if (arity2 == 1 && (function instanceof FunctionOneArg)) {
 									  java.lang.String xpathExprStr = funcParamSpecList.get(0);
-									  java.lang.String xpathArgTypeStr = ((FunctionOneArg)function).getArgTypeStr();
+									  java.lang.String xpathArgTypeStr = ((FunctionOneArg)function).getArgSeqTypeStr();
 									  
 									  if (xpathExprStr.equals(xpathArgTypeStr)) {
 										 result = XBoolean.S_TRUE; 

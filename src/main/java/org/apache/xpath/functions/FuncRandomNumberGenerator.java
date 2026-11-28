@@ -69,7 +69,7 @@ public class FuncRandomNumberGenerator extends FunctionMultiArgs {
 	 */
 	public FuncRandomNumberGenerator() {
 		m_arity = new Short[] { 0, 1 };
-		m_arg_type_str = "xs:anyAtomicType?";
+		m_arg_seq_type_str = "xs:anyAtomicType?";
 		m_return_seq_type_str = "map(xs:string, item())";
 	}
 	

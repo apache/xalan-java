@@ -18,32 +18,49 @@
 package org.apache.xpath.objects;
 
 import org.apache.xalan.templates.ElemFunction;
+import org.apache.xpath.functions.Function;
 
 /**
- * A class definition, representing an xsl:function compiled object
- * as an XObject instance.
+ * A class definition, encapsulating either xsl:function reference, 
+ * or XPath 3.1 built-in function reference.
+ * 
+ * There are other types of XPath 3.1 function items as well, 
+ * that're represented by their own classes.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class ElemFunctionItem extends XObject {
+public class XPath3FunctionItem extends XObject {
 	
 	private static final long serialVersionUID = 1324050607867572996L;
 	
 	/**
-	 * An encapsulated ElemFunction object (run-time representation of 
-	 * xsl:function declaration).
+	 * An xsl:function reference, funtion item.
 	 */
 	private ElemFunction m_elemFunction = null;
+	
+	/**
+	 * An XPath 3.1 built-in function reference, function item.
+	 */
+	private Function m_function = null;
 	
 	/**
 	 * Class constructor.
 	 * 
 	 * @param elemFunction
 	 */
-	public ElemFunctionItem(ElemFunction elemFunction) {
+	public XPath3FunctionItem(ElemFunction elemFunction) {
 		m_elemFunction = elemFunction;
+	}
+	
+	/**
+	 * Class constructor.
+	 * 
+	 * @param function
+	 */
+	public XPath3FunctionItem(Function function) {
+		m_function = function;
 	}
 	
 	public ElemFunction getElemFunction() {
@@ -52,6 +69,14 @@ public class ElemFunctionItem extends XObject {
 	
 	public void setElemFunction(ElemFunction elemFunction) {
 		m_elemFunction = elemFunction; 
+	}
+	
+	public Function getFunction() {
+		return m_function;
+	}
+	
+	public void setFunction(Function function) {
+		m_function = function; 
 	}
 
 }

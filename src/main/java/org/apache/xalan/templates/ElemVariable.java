@@ -65,7 +65,7 @@ import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
-import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -938,7 +938,7 @@ public class ElemVariable extends ElemTemplateElement
     					}
     					
     					if (elemFunction != null) {
-    	    				ElemFunctionItem elemFuncObj = new ElemFunctionItem(elemFunction);
+    	    				XPath3FunctionItem elemFuncObj = new XPath3FunctionItem(elemFunction);
 
     	    				return elemFuncObj; 
     	    			}

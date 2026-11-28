@@ -50,7 +50,7 @@ public class FuncMathAtan extends FunctionOneArg
 	 */
 	public FuncMathAtan() {
 		m_arity = new Short[] { 1 };
-		m_arg_type_str = "xs:double?";
+		m_arg_seq_type_str = "xs:double?";
 		m_return_seq_type_str = "xs:double?";
 	}
 

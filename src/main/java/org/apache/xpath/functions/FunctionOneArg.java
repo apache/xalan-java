@@ -47,7 +47,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
 {
   static final long serialVersionUID = -5180174180765609758L;    
   
-  protected String m_arg_type_str = null;
+  protected String m_arg_seq_type_str = null;
   
   private boolean m_arg_count_err = false;
 
@@ -306,12 +306,12 @@ public class FunctionOneArg extends Function implements ExpressionOwner
  	  return result;
    }
 
-   public String getArgTypeStr() {
-	   return m_arg_type_str;
+   public String getArgSeqTypeStr() {
+	   return m_arg_seq_type_str;
    }
 
-   public void setArgTypeStr(String argTypeStr) {
-	   this.m_arg_type_str = argTypeStr;
+   public void setArgSeqTypeStr(String argSeqTypeStr) {
+	   this.m_arg_seq_type_str = argSeqTypeStr;
    }
 
 }

@@ -55,7 +55,7 @@ public class FuncNumber extends FunctionDef1Arg
 	 */
 	public FuncNumber() {
 		m_arity = new Short[] {0, 1};
-		m_arg_type_str = "xs:anyAtomicType?";
+		m_arg_seq_type_str = "xs:anyAtomicType?";
 		m_return_seq_type_str = "xs:double";
 	}
 

@@ -64,7 +64,7 @@ public class FuncAbs extends FunctionDef1Arg
 	 */
 	public FuncAbs() {
 		m_arity = new Short[] { 1 };
-		m_arg_type_str = "xs:numeric?";
+		m_arg_seq_type_str = "xs:numeric?";
 		m_return_seq_type_str = "xs:numeric?";
 	}
 

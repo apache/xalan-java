@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
@@ -80,6 +77,8 @@ public abstract class Function extends Expression
     * returns an xdm map.
     */   
    private String m_func_lookup_arg = null;
+   
+   private boolean m_isFuncArgPlaceholder = false;
 
    /**
    * Set an argument expression for a function.  This method is called by the 
@@ -251,6 +250,14 @@ public abstract class Function extends Expression
 
   public void setReturnSeqTypeStr(String returnSeqTypeStr) {
 	  this.m_return_seq_type_str = returnSeqTypeStr;
+  }
+
+  public boolean isFuncArgPlaceholder() {
+	  return m_isFuncArgPlaceholder;
+  }
+
+  public void setIsFuncArgPlaceholder(boolean isFuncArgPlaceholder) {
+	  this.m_isFuncArgPlaceholder = isFuncArgPlaceholder;
   }
   
 }

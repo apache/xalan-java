@@ -31,6 +31,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.XPathIdentityExpr;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.XPathSequenceConstructor;
+import org.apache.xpath.functions.FuncArgPlaceholder;
 import org.apache.xpath.functions.FuncDistinctValues;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
@@ -46,7 +47,7 @@ import org.apache.xpath.functions.json.FuncJsonDoc;
 import org.apache.xpath.functions.json.FuncJsonToXml;
 import org.apache.xpath.functions.json.FuncParseJson;
 import org.apache.xpath.functions.json.FuncXmlToJson;
-import org.apache.xpath.functions.string.XSL3StringCollationAwareFunction;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNumber;
@@ -367,6 +368,8 @@ public class XPathArrowOp extends XPathOperator
       else if (m_right instanceof Function) {
     	  Function function = (Function)m_right;
     	  
+    	  boolean isFuncArgPlaceholder = false;
+    	  
     	  if (function instanceof FuncParseJson) {
     		  FuncParseJson fnParseJson = (FuncParseJson)function; 
     		  
@@ -514,6 +517,14 @@ public class XPathArrowOp extends XPathOperator
     		  Expression exprArg1 = funcMultiArgs.getArg1();
     		  Expression exprArg2 = funcMultiArgs.getArg2();
     		  
+    		  if ((exprArg0 instanceof FuncArgPlaceholder) || (exprArg1 instanceof FuncArgPlaceholder) 
+    				                                       || (exprArg2 instanceof FuncArgPlaceholder)) {
+    			 isFuncArgPlaceholder = true; 
+    		  }    		  
+    		  else if (m_left instanceof FuncArgPlaceholder) {
+    			 isFuncArgPlaceholder = true; 
+    		  }
+    		  
               if (funcMultiArgs instanceof FuncDistinctValues) {
     			 if (exprArg1 == null) {
     				exprArg0 = null; 
@@ -548,7 +559,11 @@ public class XPathArrowOp extends XPathOperator
     				  int argIdx_1 = 4;
 
     				  for (int idx = 0; idx < size1; idx++) {
-    					  funcMultiArgs.setArg(exprArr[idx], argIdx_1++); 
+    					  funcMultiArgs.setArg(exprArr[idx], argIdx_1++);
+    					  
+    					  if (!isFuncArgPlaceholder && (exprArr[idx] instanceof FuncArgPlaceholder)) {
+    						 isFuncArgPlaceholder = true; 
+    					  }
     				  }
     			  }
     		  }
@@ -556,13 +571,27 @@ public class XPathArrowOp extends XPathOperator
     			  // No op 
     		  }
 
-    		  result = funcMultiArgs.execute(xctxt);
+    		  if (!isFuncArgPlaceholder) {
+    		     result = funcMultiArgs.execute(xctxt);
+    		  }
+    		  else {
+                 ((Function)funcMultiArgs).setIsFuncArgPlaceholder(isFuncArgPlaceholder);
+                 
+    		     result = new XPath3FunctionItem(funcMultiArgs);    		     
+    		  }
     	  }
     	  else if (function instanceof Function3Args) {
     		  Function3Args funcThreeArgs = (Function3Args)function;
     		  
     		  Expression exprArg0 = funcThreeArgs.getArg0();
     		  Expression exprArg1 = funcThreeArgs.getArg1();
+    		  
+    		  if ((exprArg0 instanceof FuncArgPlaceholder) || (exprArg1 instanceof FuncArgPlaceholder)) {
+    			  isFuncArgPlaceholder = true; 
+    		  }    		  
+    		  else if (m_left instanceof FuncArgPlaceholder) {
+    			  isFuncArgPlaceholder = true; 
+    		  }
 
     		  if (!(m_left instanceof Function)) {
     			  funcThreeArgs.setArg0(m_left);  
@@ -583,12 +612,26 @@ public class XPathArrowOp extends XPathOperator
     			  // No op 
     		  }
 
-    		  result = funcThreeArgs.execute(xctxt);
+    		  if (!isFuncArgPlaceholder) {
+     		     result = funcThreeArgs.execute(xctxt);
+     		  }
+     		  else {
+                 ((Function)funcThreeArgs).setIsFuncArgPlaceholder(isFuncArgPlaceholder);
+                  
+     		     result = new XPath3FunctionItem(funcThreeArgs);    		     
+     		  }
     	  }
     	  else if (function instanceof Function2Args) {
     		  Function2Args funcTwoArgs = (Function2Args)function;
     		  
     		  Expression exprArg0 = funcTwoArgs.getArg0();
+    		  
+    		  if (exprArg0 instanceof FuncArgPlaceholder) {
+    			  isFuncArgPlaceholder = true; 
+    		  }    		  
+    		  else if (m_left instanceof FuncArgPlaceholder) {
+    			  isFuncArgPlaceholder = true; 
+    		  }
     		    			  
     		  if (!(m_left instanceof Function)) {
     			  funcTwoArgs.setArg0(m_left);  
@@ -607,10 +650,21 @@ public class XPathArrowOp extends XPathOperator
     			  // No op 
     		  }
 
-    		  result = funcTwoArgs.execute(xctxt);
+    		  if (!isFuncArgPlaceholder) {
+    			  result = funcTwoArgs.execute(xctxt);
+    		  }
+    		  else {
+    			  ((Function)funcTwoArgs).setIsFuncArgPlaceholder(isFuncArgPlaceholder);
+
+    			  result = new XPath3FunctionItem(funcTwoArgs);    		     
+    		  }
     	  }
     	  else if (function instanceof FunctionOneArg) {
     		  FunctionOneArg funcOneArg = (FunctionOneArg)function;
+    		  
+    		  if (m_left instanceof FuncArgPlaceholder) {
+    			  isFuncArgPlaceholder = true; 
+    		  }
     		     			  
     		  if (!(m_left instanceof Function)) {
     			  funcOneArg.setArg0(m_left);  
@@ -620,7 +674,14 @@ public class XPathArrowOp extends XPathOperator
     			  funcOneArg.setArg0(funcEvalResult);
     		  }
 
-    		  result = funcOneArg.execute(xctxt);
+    		  if (!isFuncArgPlaceholder) {
+    			  result = funcOneArg.execute(xctxt);
+    		  }
+    		  else {
+    			  ((Function)funcOneArg).setIsFuncArgPlaceholder(isFuncArgPlaceholder);
+
+    			  result = new XPath3FunctionItem(funcOneArg);    		     
+    		  }
     	  }    	  
       }
       else if (m_right instanceof XPathIdentityExpr) {

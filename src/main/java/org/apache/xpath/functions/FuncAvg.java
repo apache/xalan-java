@@ -274,7 +274,7 @@ public class FuncAvg extends FunctionOneArg
     		else {
     		    throw new TransformerException("FORG0006 : An XPath 3.1 function 'avg' is supplied with a sequence argument, "
     		    		                                                                                                     + "that contains a value that is "
-    		    		                                                                                                     + "neither numeric or subtypes of schema type 'duration'.", srcLocator);
+    		    		                                                                                                     + "neither with one of schema numeric types or subtypes of schema type 'duration'.", srcLocator);
     		}
     	 }
     	 
@@ -381,18 +381,18 @@ public class FuncAvg extends FunctionOneArg
     	  throw new TransformerException("FORG0006 : An XPath 3.1 function 'avg' has evaluation error, since the supplied"
                                                                                                                 + " function argument is of schema type 'boolean'. "
                                                                                                                 + "An XPath function 'avg' argument should be either "
-                                                                                                                + "with type numeric, or an XML schema type 'duration'.", srcLocator); 
+                                                                                                                + "with one of schema numeric types, or 'duration'.", srcLocator); 
       }
       else if ((arg0Obj instanceof XString) || (arg0Obj instanceof XSString) || (arg0Obj instanceof XSAnyURI)) {
     	  throw new TransformerException("FORG0006 : An XPath 3.1 function 'avg' has evaluation error, since the supplied"
                                                                                                                 + " function argument is with schema type 'string', or an 'anyURI'. "
                                                                                                                 + "An XPath function 'avg' argument should be either "
-                                                                                                                + "with type numeric, or an XML schema type 'duration'.", srcLocator); 
+                                                                                                                + "with one of schema numeric types, or 'duration'.", srcLocator); 
       }
       else {
     	  throw new TransformerException("FORG0006 : An XPath 3.1 function 'avg' has evaluation error, since the supplied"
-                                                                                                                + " function argument is neither with type numeric, or "
-                                                                                                                + "an XML schema type 'duration'.", srcLocator); 
+                                                                                                                + " function argument is neither with one of schema numeric types, or "
+                                                                                                                + "'duration'.", srcLocator); 
       }
       
       return result;

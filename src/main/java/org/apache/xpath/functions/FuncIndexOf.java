@@ -73,7 +73,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 
-		final int contextNode = xctxt.getCurrentNode();                
+		final int sourceNode = xctxt.getCurrentNode();                
 
 		if ((m_arg0 == null) || (m_arg1 == null)) {
 			throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'index-of' has been called with wrong "
@@ -82,6 +82,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 		}
 
 		Expression[] fourthAndAboveArgs = getArgs();
+		
 		if ((fourthAndAboveArgs != null) && (fourthAndAboveArgs.length > 0)) {
 			throw new javax.xml.transform.TransformerException("XPST0017 : An XPath 3.1 function 'index-of' has been called with wrong "
 																												+ "number of arguments. Expected function 'index-of' "
@@ -116,21 +117,21 @@ public class FuncIndexOf extends FunctionMultiArgs {
 		if (m_arg0 instanceof LocPathIterator) {
 			arg0ResultSeq = new ResultSequence();
 
-			DTMCursorIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
+			DTMCursorIterator arg0DtmIterator = m_arg0.asIterator(xctxt, sourceNode);        
 
-			int nextNodeDtmHandle;
+			int nextNode = DTM.NULL;
 
-			while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-				XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNodeDtmHandle, dtmMgr);                
+			while ((nextNode = arg0DtmIterator.nextNode()) != DTM.NULL) {
+				XMLNodeCursorImpl xNodeSetItem = new XMLNodeCursorImpl(nextNode, dtmMgr);                
 				String nodeStrValue = xNodeSetItem.str();
 
-				DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
+				DTM dtm = dtmMgr.getDTM(nextNode);
 
-				if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+				if (dtm.getNodeType(nextNode) == DTM.ELEMENT_NODE) {
 					XSUntyped xsUntyped = new XSUntyped(nodeStrValue);
 					arg0ResultSeq.add(xsUntyped);
 				}
-				else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+				else if (dtm.getNodeType(nextNode) == DTM.ATTRIBUTE_NODE) {
 					XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
 					arg0ResultSeq.add(xsUntypedAtomic);
 				}
@@ -141,11 +142,24 @@ public class FuncIndexOf extends FunctionMultiArgs {
 			} 
 		}
 		else {
+			arg0ResultSeq = new ResultSequence();
+			
 			XObject arg0Obj = getFunctionArgEffectiveValue(m_arg0, xctxt);
 
-			if (arg0Obj instanceof ResultSequence) {
+			if (arg0Obj instanceof XMLNodeCursorImpl) {
+				XMLNodeCursorImpl xmlNodeCursorImpl = (XMLNodeCursorImpl)arg0Obj;				
+				DTMCursorIterator dtmCursorIterator = xmlNodeCursorImpl.iter();
+				
+				int nextNode = DTM.NULL;
+				
+				while ((nextNode = dtmCursorIterator.nextNode()) != DTM.NULL) {
+				   XMLNodeCursorImpl xmlNodeCursorImpl1 = new XMLNodeCursorImpl(nextNode, xctxt);
+				   arg0ResultSeq.add(xmlNodeCursorImpl1);
+				}
+			}
+			else if (arg0Obj instanceof ResultSequence) {
 				arg0ResultSeq = (ResultSequence)arg0Obj;     
-			}           
+			}
 			else {
 				arg0ResultSeq = new ResultSequence();
 				arg0ResultSeq.add(arg0Obj);
@@ -171,7 +185,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 			if (xNodeSet.getLength() == 1) {
 				String nodeStrValue = xNodeSet.str();
 
-				DTMCursorIterator sourceNodes = m_arg0.asIterator(xctxt, contextNode);
+				DTMCursorIterator sourceNodes = m_arg0.asIterator(xctxt, sourceNode);
 				int dtmNodeHandle = sourceNodes.nextNode();
 
 				DTM dtm = dtmMgr.getDTM(dtmNodeHandle);
@@ -196,6 +210,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 		ResultSequence resultSeq1 = new ResultSequence();
 
 		boolean isNanSearch = false;
+		
 		if (arg1Obj instanceof XSDouble) {
 			isNanSearch = ((XSDouble)arg1Obj).nan();	
 		}
@@ -211,6 +226,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
 
 				XObject xObj = arg0ResultSeq.item(idx);
 				boolean isNanSearch1 = false;
+				
 				if (xObj instanceof XSDouble) {
 					isNanSearch1 = ((XSDouble)xObj).nan();	
 				}

@@ -45,7 +45,7 @@ public class FuncUpperCase extends FunctionDef1Arg
  	  */
       public FuncUpperCase() {
     	  m_arity = new Short[] { 1 };
-    	  m_arg_type_str = "xs:string?";
+    	  m_arg_seq_type_str = "xs:string?";
     	  m_return_seq_type_str = "xs:string";
       }
 

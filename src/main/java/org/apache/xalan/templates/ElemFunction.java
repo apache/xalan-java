@@ -57,7 +57,7 @@ import org.apache.xpath.composite.XPathSequenceTypeSupport;
 import org.apache.xpath.composite.XPathSequenceTypeSupport.OccurrenceIndicator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XslFunctionMemoization;
-import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XMLNodeCursorImpl;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -1786,7 +1786,7 @@ public class ElemFunction extends ElemTemplate
 						  ElemFunction elemFunction = XslTransformEvaluationHelper.getElemFunctionFromNodeTestExpression(
 								                                                                                        (NodeTest)dtmIter, srcLocator);
 						  if (elemFunction != null) { 
-							  argConvertedVal = new ElemFunctionItem(elemFunction);
+							  argConvertedVal = new XPath3FunctionItem(elemFunction);
 						  }
 					  }
 					  catch (TransformerException ex) {

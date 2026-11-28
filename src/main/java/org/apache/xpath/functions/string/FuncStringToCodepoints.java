@@ -54,7 +54,7 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
 	*/
    public FuncStringToCodepoints() {
 	  m_arity = new Short[] { 1 };
-	  m_arg_type_str = "xs:string?";
+	  m_arg_seq_type_str = "xs:string?";
 	  m_return_seq_type_str = "xs:integer*";
    }
 

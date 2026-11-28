@@ -49,7 +49,7 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceType;
 import org.apache.xpath.composite.XPathSequenceTypeSupport;
-import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -1470,7 +1470,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 						  if (elemFunction != null) {
 							  // REVISIT : To check for elemFunction object's conformance with details in 
 							  // the object seqExpectedTypeData.getSequenceTypeFunctionTest()  
-							  argConvertedVal = new ElemFunctionItem(elemFunction);
+							  argConvertedVal = new XPath3FunctionItem(elemFunction);
 						  }
 					  }
 					  catch (TransformerException ex) {

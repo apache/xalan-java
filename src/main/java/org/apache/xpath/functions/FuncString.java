@@ -53,7 +53,7 @@ public class FuncString extends FunctionDef1Arg
 	 */
 	public FuncString() {
 		m_arity = new Short[] {0, 1};
-		m_arg_type_str = "item()?";
+		m_arg_seq_type_str = "item()?";
 		m_return_seq_type_str = "xs:string";
 	}
 

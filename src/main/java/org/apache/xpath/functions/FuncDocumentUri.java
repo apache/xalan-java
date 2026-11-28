@@ -48,7 +48,7 @@ public class FuncDocumentUri extends FunctionDef1Arg
 	 */
 	public FuncDocumentUri() {
 		m_arity = new Short[] {0, 1};
-		m_arg_type_str = "node()?";
+		m_arg_seq_type_str = "node()?";
 		m_return_seq_type_str = "xs:anyURI?";
 	}
 

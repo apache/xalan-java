@@ -45,7 +45,7 @@ public class FuncNodeName extends FunctionDef1Arg {
     */
    public FuncNodeName() {
 	   m_arity = new Short[] { 0, 1 };
-	   m_arg_type_str = "node()?";
+	   m_arg_seq_type_str = "node()?";
 	   m_return_seq_type_str = "xs:QName?";
    }
 

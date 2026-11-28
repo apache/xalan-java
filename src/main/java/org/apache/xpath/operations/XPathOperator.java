@@ -49,7 +49,7 @@ import org.apache.xpath.functions.FuncRandomNumberGenerator;
 import org.apache.xpath.functions.XSL3ConstructorOrExtensionFunction;
 import org.apache.xpath.functions.XSL3FunctionService;
 import org.apache.xpath.functions.XSLFunctionBuilder;
-import org.apache.xpath.objects.ElemFunctionItem;
+import org.apache.xpath.objects.XPath3FunctionItem;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XBooleanStatic;
@@ -367,7 +367,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
 						}
 
 						if (elemFunction != null) {
-							ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+							XPath3FunctionItem elemFunctionObject = new XPath3FunctionItem(elemFunction);
 
 							left = elemFunctionObject; 
 						}
@@ -438,7 +438,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
 						}
 
 						if (elemFunction != null) {
-							ElemFunctionItem elemFunctionObject = new ElemFunctionItem(elemFunction);
+							XPath3FunctionItem elemFunctionObject = new XPath3FunctionItem(elemFunction);
 
 							right = elemFunctionObject; 
 						}
@@ -599,7 +599,7 @@ public class XPathOperator extends Expression implements ExpressionOwner
    */
   protected boolean isXPathOperandXdmFunctionItem(XObject xObj) {
 	  boolean result = ((xObj instanceof XPathInlineFunction) || (xObj instanceof XPathNamedFunctionReference)
-			                                                  || (xObj instanceof ElemFunctionItem));
+			                                                  || (xObj instanceof XPath3FunctionItem));
 	  
 	  return result;
   }
